@@ -4,7 +4,7 @@ class CreateDiaries < ActiveRecord::Migration
       t.string :title
       t.text :content
       t.integer :user_id
-      t.integer :recorddate_id
+      t.date :record_at
 
       t.datetime :deleted_at
 

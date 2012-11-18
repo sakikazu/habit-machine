@@ -35,10 +35,10 @@ ActiveRecord::Schema.define(:version => 20121118085739) do
     t.string   "title"
     t.text     "content"
     t.integer  "user_id"
-    t.integer  "recorddate_id"
+    t.date     "record_at"
     t.datetime "deleted_at"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "habits", :force => true do |t|
@@ -68,11 +68,11 @@ ActiveRecord::Schema.define(:version => 20121118085739) do
 
   create_table "records", :force => true do |t|
     t.integer  "habit_id"
-    t.integer  "recorddata_id"
+    t.date     "record_at"
     t.integer  "value"
     t.datetime "deleted_at"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "users", :force => true do |t|

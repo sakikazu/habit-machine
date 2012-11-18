@@ -8,9 +8,8 @@ HabitMachine::Application.routes.draw do
 
   resources :diaries
 
-  resources :habits do
-    resources :records
-  end
+  resources :habits
+  resources :records
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

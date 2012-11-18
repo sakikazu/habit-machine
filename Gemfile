@@ -18,6 +18,7 @@ gem 'kaminari'
 gem 'acts-as-taggable-on'
 
 gem 'simple_form'
+gem 'best_in_place'
 
 gem 'rails_admin'
 gem 'faker'

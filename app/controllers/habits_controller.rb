@@ -5,7 +5,17 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
-    @habits = Habit.where(user_id: current_user.id)
+    @date_term = (Date.today - 3)..(Date.today + 3)
+    habits = Habit.where(user_id: current_user.id)
+    @habits = []
+    habits.each do |habit|
+      records = []
+      @date_term.each do |date|
+        records << Record.find_or_create(habit.id, date)
+      end
+      @habits << {id: habit.id, title: habit.title, data_unit: habit.data_unit, records: records}
+    end
+    # @records = @habits.includes(:records).where("records.record_at" => @date_term).group(:habit_id)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -43,6 +53,7 @@ class HabitsController < ApplicationController
   # POST /habits
   # POST /habits.json
   def create
+    params[:habit][:user_id] = current_user.id
     @habit = Habit.new(params[:habit])
 
     respond_to do |format|

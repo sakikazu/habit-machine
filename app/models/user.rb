@@ -21,4 +21,7 @@ class User < ActiveRecord::Base
     return user
   end
 
+  def fullname
+    "#{self.familyname}#{self.givenname}"
+  end
 end

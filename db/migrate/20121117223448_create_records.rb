@@ -2,8 +2,8 @@ class CreateRecords < ActiveRecord::Migration
   def change
     create_table :records do |t|
       t.integer :habit_id
-      t.integer :recorddata_id
-      t.integer :value
+      t.date :record_at
+      t.float :value
 
       t.datetime :deleted_at
 

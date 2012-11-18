@@ -1,31 +1,27 @@
-<h1>Listing habits</h1>
-
-<table>
+<table class="table table-striped table-bordered table-hover">
   <tr>
-    <th>Title</th>
-    <th>Graph type</th>
-    <th>Data type</th>
-    <th>Data unit</th>
-    <th>Reminder</th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <td></td>
+  <% @date_term.each do |date| %>
+    <td><%= date.to_s(:short) %></td>
+  <% end %>
   </tr>
 
 <% @habits.each do |habit| %>
   <tr>
-    <td><%= habit.title %></td>
-    <td><%= habit.graph_type %></td>
-    <td><%= habit.data_type %></td>
-    <td><%= habit.data_unit %></td>
-    <td><%= habit.reminder %></td>
-    <td><%= link_to 'Show', habit %></td>
-    <td><%= link_to 'Edit', edit_habit_path(habit) %></td>
-    <td><%= link_to 'Destroy', habit, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+    <td>
+      <%= habit[:title] %>
+      <span class='label label-inverse'><%= habit[:data_unit] %></span>
+    </td>
+    <% habit[:records].each do |record| %>
+      <td align="center">
+        <%#= link_to '記録', new_habit_record_path(habit.id, habit_id: habit.id, record_at: date) %>
+        <%= best_in_place record, :value, nil: "未入力" %>
+      </td>
+    <% end %>
   </tr>
 <% end %>
 </table>
 
 <br />
 
-<%= link_to 'New Habit', new_habit_path %>
+<%= link_to '習慣を作成する', new_habit_path %>

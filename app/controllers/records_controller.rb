@@ -27,7 +27,7 @@ class RecordsController < ApplicationController
   # GET /records/new
   # GET /records/new.json
   def new
-    @record = Record.new
+    @record = Record.new(habit_id: params[:habit_id], record_at: params[:record_at])
 
     respond_to do |format|
       format.html # new.html.erb
