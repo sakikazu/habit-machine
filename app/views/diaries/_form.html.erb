@@ -1,0 +1,14 @@
+<%= simple_form_for(@diary) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :title %>
+    <%= f.input :content %>
+    <%= f.input :user_id %>
+    <%= f.input :recorddate_id %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Title:</b>
+  <%= @habit.title %>
+</p>
+
+<p>
+  <b>Graph type:</b>
+  <%= @habit.graph_type %>
+</p>
+
+<p>
+  <b>Data type:</b>
+  <%= @habit.data_type %>
+</p>
+
+<p>
+  <b>Data unit:</b>
+  <%= @habit.data_unit %>
+</p>
+
+<p>
+  <b>Reminder:</b>
+  <%= @habit.reminder %>
+</p>
+
+
+<%= link_to 'Edit', edit_habit_path(@habit) %> |
+<%= link_to 'Back', habits_path %>
