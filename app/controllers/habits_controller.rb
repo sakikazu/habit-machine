@@ -88,7 +88,7 @@ class HabitsController < ApplicationController
 
     respond_to do |format|
       if @habit.save
-        format.html { redirect_to @habit, notice: 'Habit was successfully created.' }
+        format.html { redirect_to habits_path, notice: '習慣データを作成しました.' }
         format.json { render json: @habit, status: :created, location: @habit }
       else
         format.html { render action: "new" }
@@ -104,7 +104,7 @@ class HabitsController < ApplicationController
 
     respond_to do |format|
       if @habit.update_attributes(params[:habit])
-        format.html { redirect_to @habit, notice: 'Habit was successfully updated.' }
+        format.html { redirect_to habits_path, notice: '習慣データを更新しました.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

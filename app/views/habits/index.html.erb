@@ -3,7 +3,7 @@
   <p style="float: right"><%= link_to "＞＞", habits_path(one_day: @one_day + 7), class: "btn" %></p>
   <p style="text-align:center"><%= link_to "本日(#{Date.today})", habits_path, class: "btn" %></p>
   <%= form_tag habits_path, method: :get, style: "text-align:center" do %>
-    <%= date_select :record_at, :one_day, {default: @one_day}, {class: "span1"} %>
+    <%= date_select :record_at, :one_day, {default: @one_day}, {class: "span2"} %>
     <%= submit_tag "移動" %>
   <% end %>
 </div>
@@ -20,14 +20,14 @@
 <% @habits.each do |habit| %>
   <tr>
     <th>
-      <%= habit[:title] %>
+      <%= link_to habit[:title], habit_path(habit[:id]) %>
       <span class='label label-inverse'><%= habit[:data_unit] %></span>
     </th>
     <% habit[:records].each do |record| %>
       <td class="center">
         <%#= link_to '記録', new_habit_record_path(habit.id, habit_id: habit.id, record_at: date) %>
-        <%= best_in_place record, :value, nil: "未入力" %>
-        <%= best_in_place record, :memo, nil: "メモ入力", display_with: lambda{|v| dispmemo(v).html_safe} %>
+        <%= input_value_for_inline_edit(record) %>
+        <%= best_in_place record, :memo, nil: "memo", display_with: lambda{|v| dispmemo(v).html_safe} %>
       </td>
     <% end %>
   </tr>

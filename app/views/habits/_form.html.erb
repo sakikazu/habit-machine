@@ -2,11 +2,11 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :title %>
-    <%= f.input :goal %>
-    <%= f.input :graph_type %>
-    <%= f.input :data_type %>
-    <%= f.input :data_unit %>
+    <%= f.input :title, label: "習慣のタイトル" %>
+    <%= f.input :goal, label: "目標", input_html: {rows: 3} %>
+    <%= f.input :graph_type, label: "グラフのタイプ", collection: Habit::GRAPH_TYPE %>
+    <%= f.input :data_type, label: "値のタイプ", collection: Habit::VALUE_TYPE %>
+    <%= f.input :data_unit, label: "値の単位" %>
     <%= f.input :reminder %>
   </div>
 
