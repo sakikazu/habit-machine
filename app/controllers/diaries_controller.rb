@@ -27,7 +27,7 @@ class DiariesController < ApplicationController
   # GET /diaries/new
   # GET /diaries/new.json
   def new
-    @diary = Diary.new
+    @diary = Diary.new(user_id: current_user.id, record_at: params[:record_at])
 
     respond_to do |format|
       format.html # new.html.erb
@@ -47,7 +47,7 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       if @diary.save
-        format.html { redirect_to @diary, notice: 'Diary was successfully created.' }
+        format.html { redirect_to root_path, notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
         format.json { render json: @diary, status: :created, location: @diary }
       else
         format.html { render action: "new" }

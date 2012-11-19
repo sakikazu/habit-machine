@@ -5,17 +5,26 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
+    # 本日から前後＊日分のデータが対象
     @date_term = (Date.today - 3)..(Date.today + 3)
+
+    # 対象期間分の習慣データを取得／作成(インライン編集のためにRecordは予め作成しておく)
     habits = Habit.where(user_id: current_user.id)
     @habits = []
     habits.each do |habit|
       records = []
+      # todo ここはマトリックス分のselectが発生するので、まずは一気にselectして、そこでないもののみcreateするようにしたい
+      # doto これ使うかな→ @records = @habits.includes(:records).where("records.record_at" => @date_term).group(:habit_id)
+
       @date_term.each do |date|
         records << Record.find_or_create(habit.id, date)
       end
       @habits << {id: habit.id, title: habit.title, data_unit: habit.data_unit, records: records}
     end
-    # @records = @habits.includes(:records).where("records.record_at" => @date_term).group(:habit_id)
+
+    # 対象期間分の日記データを取得
+    @diaries = Diary.where(user_id: current_user.id, record_at: @date_term).order("id ASC")
+    @diaries = @diaries.group_by{|d| d.record_at}
 
     respond_to do |format|
       format.html # index.html.erb

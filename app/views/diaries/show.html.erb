@@ -1,4 +1,8 @@
-<p id="notice"><%= notice %></p>
+<h3><%= "#{@diary.record_at.to_s(:normal)}の日記" %></h3>
+<p>
+  <b>Tag:</b>
+  <%= @diary.tag_list %>
+</p>
 
 <p>
   <b>Title:</b>
@@ -7,17 +11,7 @@
 
 <p>
   <b>Content:</b>
-  <%= @diary.content %>
-</p>
-
-<p>
-  <b>User:</b>
-  <%= @diary.user_id %>
-</p>
-
-<p>
-  <b>Recorddate:</b>
-  <%= @diary.recorddate_id %>
+  <%= sani_custom_br(@diary.content) %>
 </p>
 
 

@@ -44,21 +44,14 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="/"><strong><%= current_user.fullname %></strong>は習慣の機械です(￣ー￣)</a>
-          <div class="container-fluid nav-collapse">
-            <ul class="nav">
-              <li><%= link_to "グラフ", "/"  %></li>
-              <li><%= link_to "目標", "/"  %></li>
-              <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete %></li>
-            </ul>
-          </div><!--/.nav-collapse -->
+          <a class="brand" href="/"><strong>HabitMachine</strong></a>
         </div>
       </div>
     </div>
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span12">
+        <div class="span4 well">
           <%= bootstrap_flash %>
           <%= yield %>
         </div>
@@ -69,11 +62,6 @@
       </footer>
 
     </div> <!-- /container -->
-
-    <!-- Javascripts
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <%= javascript_include_tag "application" %>
 
   </body>
 </html>

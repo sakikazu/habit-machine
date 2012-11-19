@@ -2,10 +2,11 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :title %>
-    <%= f.input :content %>
-    <%= f.input :user_id %>
-    <%= f.input :recorddate_id %>
+    <%= f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span7'} %>
+    <%= f.input :content, input_html: {class: 'span7', rows: 6} %>
+    <%= f.input :tag_list, as: :string %>
+    <%= f.input :user_id, as: :hidden %>
+    <%= f.input :record_at, as: :hidden %>
   </div>
 
   <div class="form-actions">
