@@ -11,3 +11,53 @@
  *= require_self
  *= require_tree .
  */
+
+
+/**********************************************
+ common
+**********************************************/
+
+.important {
+  font-weight: bold;
+  color: red;
+}
+.big {
+  font-size: 120%;
+}
+.block {
+  display: block;
+}
+.right {
+  float: right;
+}
+.left {
+  float: left;
+}
+.text-center {
+  text-align: center;
+}
+
+table.th-vertical-top th {
+  vertical-align: top;
+}
+
+.desc {
+  color: #999;
+}
+.well .desc {
+  color: #6C6767;
+}
+
+/* tableでURLなど一単語のものが改行されずレイアウトが崩れてしまう問題の対処 */
+td {
+  word-break: break-all;
+}
+.select_menu {
+  margin: 20px 0px 30px 0px;
+}
+a.colorbox:hover, a.colorbox_fix_size:hover {
+  opacity: 0.8;
+}
+a.colorbox img, a.colorbox_fix_size img{
+  border: 2px solid tomato;
+}

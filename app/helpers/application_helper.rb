@@ -2,6 +2,37 @@
 module ApplicationHelper
 
   #
+  # 記録データのメモ表示(habits#index用)
+  #
+  def dispmemo(memo)
+    icon = '<i class="icon-comment"> </i>'
+    link_to icon.html_safe, "#", title: memo
+  end
+
+  #
+  # 日付表示(habits#index用)
+  #
+  def dispdate(date)
+    wdays = ["日", "月", "火", "水", "木", "金", "土"]
+    ret = date.to_s(:short)
+    ret += "(#{wdays[date.wday]})"
+  end
+
+  #
+  # 日付セル用CSSのclass(habits#index用)
+  #
+  def dateclass(date)
+    if date == Date.today
+      return "today"
+    elsif date.wday == 0
+      return "sunday"
+    elsif date.wday == 6
+      return "saturday"
+    end
+  end
+
+
+  #
   # UserAgentから各デバイス名を割り出す
   #
   def useragent(ua)

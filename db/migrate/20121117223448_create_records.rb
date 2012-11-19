@@ -4,6 +4,7 @@ class CreateRecords < ActiveRecord::Migration
       t.integer :habit_id
       t.date :record_at
       t.float :value
+      t.text :memo
 
       t.datetime :deleted_at
 

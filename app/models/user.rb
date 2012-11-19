@@ -13,10 +13,10 @@ class User < ActiveRecord::Base
   # attr_accessible :title, :body
 
 
-  def self.find_or_create(email, password, familyname, givenname)
-    user = self.find_by_email(email)
+  def self.find_or_create(data)
+    user = self.find_by_email(data[:email])
     if user.blank?
-      user = self.create!(email: email, password: password, password_confirmation: password, familyname: familyname, givenname: givenname)
+      user = self.create!(data)
     end
     return user
   end

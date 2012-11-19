@@ -14,5 +14,7 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+/_download
+/public/upload
 
 .rails_footnotes

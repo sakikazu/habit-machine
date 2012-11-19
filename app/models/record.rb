@@ -2,7 +2,7 @@
 class Record < ActiveRecord::Base
   acts_as_paranoid
 
-  attr_accessible :habit_id, :record_at, :value
+  attr_accessible :habit_id, :record_at, :value, :memo
 
   belongs_to :habit
 

@@ -36,9 +36,13 @@ ActiveRecord::Schema.define(:version => 20121118231043) do
     t.text     "content"
     t.integer  "user_id"
     t.date     "record_at"
+    t.string   "image_file_name"
+    t.string   "image_content_type"
+    t.integer  "image_file_size"
+    t.datetime "image_updated_at"
     t.datetime "deleted_at"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
   end
 
   create_table "habits", :force => true do |t|
@@ -48,6 +52,7 @@ ActiveRecord::Schema.define(:version => 20121118231043) do
     t.integer  "data_type"
     t.string   "data_unit"
     t.boolean  "reminder"
+    t.text     "goal"
     t.datetime "deleted_at"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
@@ -69,7 +74,8 @@ ActiveRecord::Schema.define(:version => 20121118231043) do
   create_table "records", :force => true do |t|
     t.integer  "habit_id"
     t.date     "record_at"
-    t.integer  "value"
+    t.float    "value"
+    t.text     "memo"
     t.datetime "deleted_at"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false

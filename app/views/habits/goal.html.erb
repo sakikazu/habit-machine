@@ -1,0 +1,4 @@
+<% @habits.each do |habit| %>
+  <h3><%= habit.title %></h3>
+  <p><%= sani_custom_br(habit.goal) %></p>
+<% end %>

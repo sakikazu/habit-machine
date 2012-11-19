@@ -1,21 +1,33 @@
-<table class="table table-striped table-bordered table-hover">
+<div class="clearfix">
+  <p style="float: left"><%= link_to "＜＜", habits_path(one_day: @one_day - 7), class: "btn" %></p>
+  <p style="float: right"><%= link_to "＞＞", habits_path(one_day: @one_day + 7), class: "btn" %></p>
+  <p style="text-align:center"><%= link_to "本日(#{Date.today})", habits_path, class: "btn" %></p>
+  <%= form_tag habits_path, method: :get, style: "text-align:center" do %>
+    <%= date_select :record_at, :one_day, {default: @one_day}, {class: "span1"} %>
+    <%= submit_tag "移動" %>
+  <% end %>
+</div>
+<table class="table table-bordered">
   <tr>
-    <td></td>
+    <th></th>
     <% @date_term.each do |date| %>
-      <td><%= date.to_s(:short) %></td>
+      <th class="center <%= dateclass(date) %>">
+        <%= dispdate(date) %>
+      </th>
     <% end %>
   </tr>
 
 <% @habits.each do |habit| %>
   <tr>
-    <td>
+    <th>
       <%= habit[:title] %>
       <span class='label label-inverse'><%= habit[:data_unit] %></span>
-    </td>
+    </th>
     <% habit[:records].each do |record| %>
-      <td align="center">
+      <td class="center">
         <%#= link_to '記録', new_habit_record_path(habit.id, habit_id: habit.id, record_at: date) %>
         <%= best_in_place record, :value, nil: "未入力" %>
+        <%= best_in_place record, :memo, nil: "メモ入力", display_with: lambda{|v| dispmemo(v).html_safe} %>
       </td>
     <% end %>
   </tr>
@@ -24,16 +36,26 @@
   <tr>
     <td></td>
     <% @date_term.each do |date| %>
-      <td>
+      <td class="center">
         <%= link_to "日記を書く", new_diary_path(record_at: date) %>
+      </td>
+    <% end %>
+  </tr>
+
+  <tr>
+    <th>日記</th>
+    <% @date_term.each do |date| %>
+      <td>
         <% @diaries[date].each do |diary| %>
-          <%= "<hr>".html_safe %>
-          <%#= diary.content %>
           <%= link_to diary.dispinfo, diary_path(diary) %>
+          <br>
+          <%= link_to(image_tag(diary.image(:small)), diary.image(:large), {class: colorbox_class}) if diary.image.present? %>
+          <%= "<hr>".html_safe %>
         <% end if @diaries[date].present? %>
       </td>
     <% end %>
   </tr>
+
 </table>
 
 <br />

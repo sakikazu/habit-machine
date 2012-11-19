@@ -5,6 +5,7 @@
     <%= f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span7'} %>
     <%= f.input :content, input_html: {class: 'span7', rows: 6} %>
     <%= f.input :tag_list, as: :string %>
+    <%= f.input :image, as: :file %>
     <%= f.input :user_id, as: :hidden %>
     <%= f.input :record_at, as: :hidden %>
   </div>

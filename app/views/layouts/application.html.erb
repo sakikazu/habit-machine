@@ -48,7 +48,7 @@
           <div class="container-fluid nav-collapse">
             <ul class="nav">
               <li><%= link_to "グラフ", "/"  %></li>
-              <li><%= link_to "目標", "/"  %></li>
+              <li><%= link_to "目標", goal_habits_path  %></li>
               <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete %></li>
             </ul>
           </div><!--/.nav-collapse -->
@@ -74,6 +74,12 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <%= javascript_include_tag "application" %>
+
+<script>
+$(document).ready(function(){
+  $(".colorbox").colorbox();
+})
+</script>
 
   </body>
 </html>

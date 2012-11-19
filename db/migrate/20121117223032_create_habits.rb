@@ -7,6 +7,7 @@ class CreateHabits < ActiveRecord::Migration
       t.integer :data_type
       t.string :data_unit
       t.boolean :reminder
+      t.text :goal
 
       t.datetime :deleted_at
 

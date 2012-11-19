@@ -16,6 +16,7 @@ gem 'exifr'
 gem "rails_autolink"
 gem 'kaminari'
 gem 'acts-as-taggable-on'
+gem 'jpmobile'
 
 gem 'simple_form'
 gem 'best_in_place'

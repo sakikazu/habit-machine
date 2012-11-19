@@ -2,11 +2,32 @@
 class HabitsController < ApplicationController
   before_filter :authenticate_user!
 
+  #
+  # 目標一覧
+  #
+  def goal
+    @habits = Habit.where(user_id: current_user.id)
+  end
+
+
   # GET /habits
   # GET /habits.json
   def index
-    # 本日から前後＊日分のデータが対象
-    @date_term = (Date.today - 3)..(Date.today + 3)
+
+    # 起点（ページの中心日）の前後＊日分のデータが対象
+    if params[:one_day].present?
+      @one_day = Date.strptime(params[:one_day])
+    elsif params[:record_at].present? # from Date Form
+      select_day = Date.new(
+        params[:record_at]["one_day(1i)"].to_i,
+        params[:record_at]["one_day(2i)"].to_i,
+        params[:record_at]["one_day(3i)"].to_i
+      )
+      @one_day = select_day
+    else
+      @one_day = Date.today
+    end
+    @date_term = (@one_day - 3)..(@one_day + 3)
 
     # 対象期間分の習慣データを取得／作成(インライン編集のためにRecordは予め作成しておく)
     habits = Habit.where(user_id: current_user.id)
