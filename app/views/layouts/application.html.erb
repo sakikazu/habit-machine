@@ -81,5 +81,10 @@ $(document).ready(function(){
 })
 </script>
 
+<!-- ページごとのJS
+(memo: JSライブラリをlayoutの最下で呼び出しているので、各ページのJSはその場所に書いてしまうと、jQueryとかがまだ読み込まれていないのでエラーになる)
+-->
+<%= yield :addjs %>
+
   </body>
 </html>

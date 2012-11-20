@@ -1,5 +1,7 @@
 HabitMachine::Application.routes.draw do
 
+  resources :tags
+
   mount RailsAdmin::Engine => '/adamin', :as => 'rails_admin'
 
   devise_for :admins

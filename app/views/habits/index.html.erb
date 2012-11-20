@@ -34,18 +34,10 @@
 <% end %>
 
   <tr>
-    <td></td>
-    <% @date_term.each do |date| %>
-      <td class="center">
-        <%= link_to "日記を書く", new_diary_path(record_at: date) %>
-      </td>
-    <% end %>
-  </tr>
-
-  <tr>
-    <th>日記</th>
+    <th><%= link_to "日記", diaries_path %></th>
     <% @date_term.each do |date| %>
       <td>
+        <%= link_to "<i class='icon-pencil'></i>日記を書く".html_safe, new_diary_path(record_at: date) %><br>
         <% @diaries[date].each do |diary| %>
           <%= link_to diary.dispinfo, diary_path(diary) %>
           <br>

@@ -1,0 +1,17 @@
+<p>
+  <b>タグ名:</b>
+  <%= @tag.name %>
+</p>
+
+<p>
+  <b>関連日記:</b>
+  <ul>
+  <% Diary.tagged_with(@tag.name).each do |diary| %>
+    <li><%= diary.dispinfo %></li>
+  <% end %>
+</ul>
+</p>
+
+
+<%= link_to 'Edit', edit_tag_path(@tag) %> |
+<%= link_to 'Back', tags_path %>

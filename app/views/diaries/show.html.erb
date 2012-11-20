@@ -1,4 +1,4 @@
-<h3><%= "#{@diary.record_at.to_s(:normal)}の日記" %></h3>
+<h2 class="normal2"><%= "#{@diary.record_at.to_s(:normal)}の日記" %></h2>
 <%= link_to(image_tag(@diary.image(:small)), @diary.image(:large), {class: colorbox_class}) if @diary.image.present? %>
 <p>
   <b>Tag:</b>

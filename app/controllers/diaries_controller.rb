@@ -5,7 +5,7 @@ class DiariesController < ApplicationController
   # GET /diaries
   # GET /diaries.json
   def index
-    @diaries = Diary.all
+    @diaries = Diary.order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -63,7 +63,7 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       if @diary.update_attributes(params[:diary])
-        format.html { redirect_to @diary, notice: 'Diary was successfully updated.' }
+        format.html { redirect_to @diary, notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

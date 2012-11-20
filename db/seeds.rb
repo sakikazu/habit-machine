@@ -19,3 +19,25 @@ user = User.find_or_create(sakikazu)
 
 # その日の点数用のHabitデータ
 Habit.create(title: "今日の点数", user_id: user.id, graph_type: 1, data_type: 1, data_unit: "点")
+
+# 初期タグデータ
+tags = [
+  {name: "health"},
+  {name: "近況"},
+  {name: "重要"},
+  {name: "tmp収支"},
+  {name: "恋愛友情"},
+  {name: "memo"},
+  {name: "pc"},
+  {name: "hobby"},
+  {name: "habit"},
+  {name: "experience"},
+  {name: "book"},
+  {name: "初"},
+  {name: "世の中"},
+  {name: "bussiness"},
+  {name: "研鑽"},
+]
+tags.each do |tag|
+  Tag.create(tag)
+end
