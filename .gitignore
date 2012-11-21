@@ -14,7 +14,15 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
-/_download
+
+# my setting
 /public/upload
+public/assets
+
+# Webからダウンロードしたライブラリなど
+/_download
+
+config/database.yml
+.rvmrc
 
 .rails_footnotes
