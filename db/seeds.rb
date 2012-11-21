@@ -10,9 +10,12 @@
 # for rails_admin
 Admin.create(email: 'sakikazu15@gmail.com', password: 'saki0745')
 
+
 #
+# [todo] 個人のデータは、個人のアカウント登録時に入れるようにしたい
+#
+
 # 崎村和孝用データ登録（他の方のデータはユーザー登録から行う）
-#
 sakikazu = {email: "sakikazu15@gmail.com", password: "0745", familyname: "崎村", givenname: "和孝"}
 
 user = User.find_or_create(sakikazu)
