@@ -1,0 +1,68 @@
+<% content_for :addjs do %>
+<script>
+$(function(){
+Morris.Line({
+  element: 'graph',
+  //data: $.parseJSON("<%= @records_for_graph.to_json.html_safe %>"),
+  data: $.parseJSON($('#graph').attr('data')),
+  xkey: 'record_at',
+  ykeys: $.parseJSON($('#xlabels').attr('data')),
+  labels: $.parseJSON($('#xlabels').attr('data')),
+  //ymin: 0
+  //ymax: 100
+  //postUnits: '%'
+  //lineWidth: '5px'
+  //xLabels: 'day'
+  //hideHover: true
+  //lineColors: ['red', 'blue']
+});
+
+})
+</script>
+<% end %>
+
+<p style="text-align:center"><%= link_to "今月(#{Date.today.strftime("%Y年%m月")})", result_habits_path, class: "btn" %></p>
+<%= form_tag result_habits_path, method: :get, style: "text-align:center" do %>
+  <%= date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true}, {class: "span2"} %>
+  <%= submit_tag "移動" %>
+<% end %>
+
+<h2 class="normal2">テーブル表示</h2>
+
+<table class="table table-bordered">
+  <tr>
+    <th>#############</th> <!-- ここに日本語以外の文字を入れないとセル幅が広くなってくれなかった（widthが効かない） -->
+    <% @date_term.each do |date| %>
+      <th class="center <%= dateclass(date) %>">
+        <%= dispdate(date) %>
+      </th>
+    <% end %>
+  </tr>
+
+<% @habits_for_table.each do |habit| %>
+  <tr>
+    <th>
+      <%= link_to habit[:title], habit_path(habit[:id]) %>
+    </th>
+    <% @date_term.each do |date| %>
+      <td class="center">
+        <% found_record = habit[:records].detect{|r| r.record_at == date} if habit[:records].present? %>
+        <%= result_icon(found_record) if found_record.present? %>
+      </td>
+    <% end %>
+  </tr>
+<% end %>
+
+</table>
+
+
+<h2 class="normal2">折れ線グラフ表示</h2>
+<p class="important">（現在対応してない）</p>
+<div id="line_graph" data="<%= @records_for_graph.to_json %>"></div>
+<div id="xlabels" data="<%= @habittitle_for_graph.to_json %>"></div>
+
+
+<h2 class="normal2">棒グラフ表示</h2>
+<p class="important">（まだ不要なので作ってない）</p>
+
+

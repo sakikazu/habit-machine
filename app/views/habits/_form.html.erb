@@ -3,11 +3,13 @@
 
   <div class="form-inputs">
     <%= f.input :title, label: "習慣のタイトル" %>
+    <%= f.input :status, label: "ステータス", collection: Habit::STATUS_TYPE %>
     <%= f.input :goal, label: "目標", input_html: {rows: 3} %>
-    <%= f.input :graph_type, label: "グラフのタイプ", collection: Habit::GRAPH_TYPE %>
-    <%= f.input :data_type, label: "値のタイプ", collection: Habit::VALUE_TYPE %>
-    <%= f.input :data_unit, label: "値の単位" %>
+    <%= f.input :result_type, label: "結果表示の仕方", collection: Habit::RESULT_TYPE %>
+    <%= f.input :value_type, label: "値のタイプ", collection: Habit::VALUE_TYPE %>
+    <%= f.input :value_unit, label: "値の単位 <span class='desc'>ex. kg, 点, 回, ..</span>".html_safe %>
     <%= f.input :reminder %>
+    <%= f.input :memo, input_html: {rows: 4} %>
   </div>
 
   <div class="form-actions">

@@ -4,23 +4,33 @@
 </p>
 
 <p>
-  <b>Graph type:</b>
-  <%= @habit.graph_name %>
+  <b>ステータス:</b>
+  <%= @habit.status_name %>
+</p>
+
+<p>
+  <b>Result type:</b>
+  <%= @habit.result_name %>
 </p>
 
 <p>
   <b>Data type:</b>
-  <%= @habit.data_name %>
+  <%= @habit.value_name %>
 </p>
 
 <p>
   <b>値の単位:</b>
-  <%= @habit.data_unit %>
+  <%= @habit.value_unit %>
 </p>
 
 <p>
   <b>Reminder:</b>
   <%= @habit.reminder %>
+</p>
+
+<p>
+  <b>Memo:</b>
+  <p><%= sani_custom_br(@habit.memo) %></p>
 </p>
 
 

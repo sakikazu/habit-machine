@@ -7,7 +7,7 @@ class Record < ActiveRecord::Base
   belongs_to :habit
 
   # best_in_placeで扱うcollectionの形が、Railsの普通のselectとは表示値と値が逆だった
-  SYMBOLIC_VALUE = [[nil, ""], [1, "○"], [2, "☓"], [3, "△"]]
+  SYMBOLIC_VALUE = [[nil, ""], [1, "1"], [2, "2"], [3, "3"], [4, "4"], [5, "5"]]
 
 
   def self.find_or_create(habit_id, record_at)
@@ -21,14 +21,14 @@ class Record < ActiveRecord::Base
   end
 
   def formatted_value
-    case self.habit.data_type
+    case self.habit.value_type
     when 1
-      self.value.to_i
+      self.symbolic_name
     when 2
+      self.value.to_i
+    when 3
       # 元々float型なのでそのままでOK
       self.value
-    when 3
-      self.symbolic_name
     end
   end
 

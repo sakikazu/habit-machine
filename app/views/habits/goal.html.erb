@@ -1,6 +1,30 @@
 <h1>目標</h1>
 
-<% @habits.each do |habit| %>
-  <h3><%= habit.title %></h3>
-  <p><%= sani_custom_br(habit.goal) %></p>
+<% @enable_habits.each do |habit| %>
+<div class="well">
+  <h4><%= link_to habit.title, edit_habit_path(habit.id) %></h4>
+  <% if habit.goal.present? %>
+    <p class="important"><%= sani_custom_br(habit.goal) %></p>
+  <% end %>
+</div>
+<% end %>
+
+<h2 class="btn btn-block btn-danger disabled">無効</h2>
+<% @disable_habits.each do |habit| %>
+<div class="well">
+  <h4><%= link_to habit.title, edit_habit_path(habit.id) %></h4>
+  <% if habit.goal.present? %>
+    <p class="important"><%= sani_custom_br(habit.goal) %></p>
+  <% end %>
+</div>
+<% end %>
+
+<h2 class="btn btn-block btn-info disabled">完了（目標達成／習慣化済み）</h2>
+<% @close_habits.each do |habit| %>
+<div class="well">
+  <h4><%= link_to habit.title, edit_habit_path(habit.id) %></h4>
+  <% if habit.goal.present? %>
+    <p class="important"><%= sani_custom_br(habit.goal) %></p>
+  <% end %>
+</div>
 <% end %>

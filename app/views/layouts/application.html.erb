@@ -32,7 +32,7 @@
 
     <!-- For all other devices -->
     <!-- Size should be 32 x 32 pixels -->
-    <%= favicon_link_tag 'images/favicon.ico', :rel => 'shortcut icon' %>
+    <%= favicon_link_tag 'favicon.ico', :rel => 'shortcut icon' %>
   </head>
   <body>
 
@@ -47,7 +47,7 @@
           <a class="brand" href="/"><strong><%= current_user.fullname %></strong>は習慣の機械です(￣ー￣)</a>
           <div class="container-fluid nav-collapse">
             <ul class="nav">
-              <li><%= link_to "グラフ", "/"  %></li>
+              <li><%= link_to "記録結果", result_habits_path %></li>
               <li><%= link_to "目標", goal_habits_path  %></li>
               <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete %></li>
             </ul>

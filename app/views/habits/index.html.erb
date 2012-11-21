@@ -21,7 +21,9 @@
   <tr>
     <th>
       <%= link_to habit[:title], habit_path(habit[:id]) %>
-      <span class='label label-inverse'><%= habit[:data_unit] %></span>
+      <% if habit[:value_unit].present? %>
+        <span class='label label-inverse'><%= habit[:value_unit] %></span>
+      <% end %>
     </th>
     <% habit[:records].each do |record| %>
       <td class="center">

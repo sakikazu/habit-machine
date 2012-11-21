@@ -12,6 +12,7 @@ HabitMachine::Application.routes.draw do
 
   resources :habits do
     collection do
+      get 'result'
       get 'goal'
     end
   end

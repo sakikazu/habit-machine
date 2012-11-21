@@ -2,28 +2,6 @@
 class RecordsController < ApplicationController
   before_filter :authenticate_user!
 
-  # GET /records
-  # GET /records.json
-  def index
-    @records = Record.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @records }
-    end
-  end
-
-  # GET /records/1
-  # GET /records/1.json
-  def show
-    @record = Record.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @record }
-    end
-  end
-
   # GET /records/new
   # GET /records/new.json
   def new
