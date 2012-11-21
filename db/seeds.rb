@@ -18,7 +18,7 @@ sakikazu = {email: "sakikazu15@gmail.com", password: "0745", familyname: "崎村
 user = User.find_or_create(sakikazu)
 
 # その日の点数用のHabitデータ
-Habit.create(title: "今日の点数", user_id: user.id, result_type: 1, value_type: 1, value_unit: "点")
+Habit.create(title: "今日の点数", status: 1, user_id: user.id, result_type: 1, value_type: 1, value_unit: "点")
 
 # 初期タグデータ
 tags = [
