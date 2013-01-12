@@ -1,38 +1,20 @@
-<p>
-  <b>Title:</b>
-  <%= @habit.title %>
-</p>
+<div class="row">
+  <div class="span7 offset2">
 
-<p>
-  <b>ステータス:</b>
-  <%= @habit.status_name %>
-</p>
+<div class="form-actions">
+  <%= link_to '戻る', habits_path, class: "btn" %>
+  <%= link_to "編集する", edit_habit_path, class: "btn btn-info" %>
+</div>
 
-<p>
-  <b>Result type:</b>
-  <%= @habit.result_name %>
-</p>
+<table class="table table-striped table-bordered table-hover">
+  <tr><th width="200">タイトル</th><td><%= @habit.title %></td></tr>
+  <tr><th>ステータス</th><td><%= @habit.status_name %></td></tr>
+  <tr><th>結果タイプ</th><td><%= @habit.result_name %></td></tr>
+  <tr><th>データタイプ</th><td><%= @habit.value_name %></td></tr>
+  <tr><th>データの単位</th><td><%= @habit.value_unit %></td></tr>
+  <tr><th>リマインダー(未実装)</th><td><%= @habit.reminder %></td></tr>
+  <tr><th>メモ</th><td><p><%= sani_custom_br(@habit.memo) %></p></td></tr>
+</table>
 
-<p>
-  <b>Data type:</b>
-  <%= @habit.value_name %>
-</p>
-
-<p>
-  <b>値の単位:</b>
-  <%= @habit.value_unit %>
-</p>
-
-<p>
-  <b>Reminder:</b>
-  <%= @habit.reminder %>
-</p>
-
-<p>
-  <b>Memo:</b>
-  <p><%= sani_custom_br(@habit.memo) %></p>
-</p>
-
-
-<%= link_to 'Edit', edit_habit_path(@habit) %> |
-<%= link_to 'Back', habits_path %>
+ </div>
+</div>

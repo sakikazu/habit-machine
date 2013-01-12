@@ -7,7 +7,7 @@
   <b>関連日記:</b>
   <ul>
   <% Diary.tagged_with(@tag.name).each do |diary| %>
-    <li><%= diary.dispinfo %></li>
+    <li><%= link_to diary.title_mod, diary_path(diary) %></li>
   <% end %>
 </ul>
 </p>

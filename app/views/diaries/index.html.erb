@@ -1,15 +1,20 @@
 <%= link_to "タグ管理", tags_path, class: "btn"  %>
 
-<h2 class="normal2">日記一覧</h2>
+<h2 class="normal2">日記一覧
+  <% if @tag.present? %>
+    <%= "　＜タグで絞込み: #{@tag}＞　" %>
+    <%= link_to "絞込み解除", diaries_path %>
+  <% end -%>
+</h2>
 
 <%= paginate @diaries, window: 2 %>
 
 <% @diaries.each do |diary| %>
 <div class="well">
-  <h4><%= diary.record_at.to_s(:normal) %>　<small><%= diary.dispinfo %></small></h4>
+<h4><small><%= diary.record_at.to_s(:normal) %></small>　<%= link_to diary.title_mod, diary_path(diary) %> <%= tags_link(diary) %></h4>
   <p><%= link_to(image_tag(diary.image(:small)), diary.image(:large), {class: colorbox_class}) if diary.image.present? %></p>
   <p><%= sani_custom_br(diary.content) %></p>
-  <%= link_to 'Edit', edit_diary_path(diary) %>
-  <%= link_to 'Destroy', diary, method: :delete, data: { confirm: 'Are you sure?' } %>
+  <%= link_to '編集', edit_diary_path(diary) %>
+  <%= link_to '削除', diary, method: :delete, data: { confirm: 'Are you sure?' } %>
 </div>
 <% end %>

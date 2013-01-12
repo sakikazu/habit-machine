@@ -172,4 +172,17 @@ EOS
     end
     ret.html_safe
   end
+
+  #※マルチバイト文字対応(utf8)
+  def truncate_30_link(text)
+    text2 = strip_tags(text)
+    if text2.split(//u).length > 30
+      ret = sani_br(text2.truncate(30, :omission => ""))
+      ret += link_to " ...(続き)", "javascript:void(0)", :title => text2, :class => "overstring"
+    else
+      ret = sani_br(text2)
+    end
+    ret.html_safe
+  end
+
 end

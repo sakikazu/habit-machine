@@ -5,7 +5,14 @@ class DiariesController < ApplicationController
   # GET /diaries
   # GET /diaries.json
   def index
-    @diaries = Diary.order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
+    @tag = params[:tag]
+
+    # タグでフィルタリング
+    if @tag.present?
+      @diaries = Diary.tagged_with(@tag).order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
+    else
+      @diaries = Diary.order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
+    end
 
     respond_to do |format|
       format.html # index.html.erb

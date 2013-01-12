@@ -1,6 +1,14 @@
-<h1>Editing habit</h1>
+<div class="row">
+  <div class="span7 offset2">
+
+<div class="form-actions">
+  <%= link_to '戻る', habits_path, class: "btn" %>
+  <%= link_to "詳細を見る", @habit, class: "btn" %>
+</div>
+
+<h1>編集する</h1>
 
 <%= render 'form' %>
 
-<%= link_to 'Show', @habit %> |
-<%= link_to 'Back', habits_path %>
+ </div>
+</div>

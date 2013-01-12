@@ -21,15 +21,7 @@ class Diary < ActiveRecord::Base
 
   validates_presence_of :content
 
-  def tag_formatted
-    return "" if self.tag_list.blank?
-    return self.tag_counts.map{|t| "[#{t}]"}.join(" ")
+  def title_mod
+    self.title.presence || "(タイトルなし)"
   end
-
-  def dispinfo
-    return self.tag_formatted if self.tag_list.present?
-    return self.title if self.title.present?
-    return self.content.truncate(20, omission: "...")
-  end
-
 end
