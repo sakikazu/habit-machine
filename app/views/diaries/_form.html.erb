@@ -24,7 +24,6 @@ $(function(){
     <%= f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます'} %>
     <%= f.input :image, as: :file, label: "画像" %>
 
-    <%= f.input :user_id, as: :hidden %>
     <%= f.input :record_at, as: :hidden %>
   </div>
 

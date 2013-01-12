@@ -170,7 +170,7 @@ class HabitsController < ApplicationController
     @habit.destroy
 
     respond_to do |format|
-      format.html { redirect_to habits_url }
+      format.html { redirect_to habits_url, notice: '習慣データを削除しました.' }
       format.json { head :no_content }
     end
   end

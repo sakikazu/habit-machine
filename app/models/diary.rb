@@ -15,7 +15,9 @@ class Diary < ActiveRecord::Base
     :url => "/upload/#{content_name}/:id/:style/:basename.:extension",
     :path => ":rails_root/public/upload/#{content_name}/:id/:style/:basename.:extension"
 
-  attr_accessible :content, :record_at, :title, :user_id, :tag_list, :image
+  attr_accessible :content, :record_at, :title, :tag_list, :image, :search_word
+
+  attr_accessor :search_word
 
   belongs_to :user
 

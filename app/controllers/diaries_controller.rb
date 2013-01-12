@@ -6,13 +6,18 @@ class DiariesController < ApplicationController
   # GET /diaries.json
   def index
     @tag = params[:tag]
+    @search_word = params[:diary][:search_word] if params[:diary]
+    @search_diary = Diary.new(search_word: @search_word)
 
     # タグでフィルタリング
     if @tag.present?
-      @diaries = Diary.tagged_with(@tag).order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
+      @diaries = Diary.tagged_with(@tag)
+    elsif @search_word.present?
+      @diaries = Diary.where('title like :q OR content like :q', :q => "%#{@search_word}%")
     else
-      @diaries = Diary.order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
+      @diaries = Diary.scoped
     end
+    @diaries = @diaries.where(user_id: current_user.id).order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -24,6 +29,10 @@ class DiariesController < ApplicationController
   # GET /diaries/1.json
   def show
     @diary = Diary.find(params[:id])
+    if @diary.user != current_user
+      redirect_to diaries_path, notice: "この日記は存在しません."
+      return
+    end
 
     respond_to do |format|
       format.html # show.html.erb
@@ -34,7 +43,7 @@ class DiariesController < ApplicationController
   # GET /diaries/new
   # GET /diaries/new.json
   def new
-    @diary = Diary.new(user_id: current_user.id, record_at: params[:record_at])
+    @diary = Diary.new(record_at: params[:record_at])
 
     respond_to do |format|
       format.html # new.html.erb
@@ -45,12 +54,17 @@ class DiariesController < ApplicationController
   # GET /diaries/1/edit
   def edit
     @diary = Diary.find(params[:id])
+    if @diary.user != current_user
+      redirect_to diaries_path, notice: "この日記は存在しません."
+      return
+    end
   end
 
   # POST /diaries
   # POST /diaries.json
   def create
     @diary = Diary.new(params[:diary])
+    @diary.user_id = current_user.id
 
     respond_to do |format|
       if @diary.save
@@ -86,7 +100,7 @@ class DiariesController < ApplicationController
     @diary.destroy
 
     respond_to do |format|
-      format.html { redirect_to diaries_url }
+      format.html { redirect_to diaries_url, notice: '日記を削除しました.' }
       format.json { head :no_content }
     end
   end

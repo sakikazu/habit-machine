@@ -1,11 +1,14 @@
 <%= link_to "タグ管理", tags_path, class: "btn"  %>
 
-<h2 class="normal2">日記一覧
-  <% if @tag.present? %>
-    <%= "　＜タグで絞込み: #{@tag}＞　" %>
-    <%= link_to "絞込み解除", diaries_path %>
-  <% end -%>
+<h2 class="normal2"><%= link_to "日記一覧", diaries_path %>
+  <%= "　＜タグで絞込み: #{@tag}＞　" if @tag.present? %>
+  <%= "　＜検索ワード: #{@search_word}＞　" if @search_word.present? %>
 </h2>
+
+<%= simple_form_for(@search_diary, method: "get") do |f| %>
+  <%= f.input :search_word, as: :string, label: "日記検索" %>
+  <%= f.submit "検索する", class: "btn btn-info" %>
+<% end -%>
 
 <%= paginate @diaries, window: 2 %>
 

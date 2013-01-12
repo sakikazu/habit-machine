@@ -12,6 +12,8 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :familyname, :givenname
   # attr_accessible :title, :body
 
+  has_many :diaries
+
 
   def self.find_or_create(data)
     user = self.find_by_email(data[:email])
