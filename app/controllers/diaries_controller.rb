@@ -25,6 +25,19 @@ class DiariesController < ApplicationController
     end
   end
 
+
+  #
+  # 「人生ハイライト」
+  #
+  def hilight
+    @diaries = Diary.where(user_id: current_user.id).where(is_hilight: true).order(["record_at ASC", "id ASC"])
+    # デフォルト時はシークレットがtrueのものは表示しない
+    if params[:nosecret].blank?
+      @diaries = @diaries.where(is_secret: false)
+    end
+  end
+
+
   # GET /diaries/1
   # GET /diaries/1.json
   def show

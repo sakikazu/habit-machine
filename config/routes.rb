@@ -8,7 +8,11 @@ HabitMachine::Application.routes.draw do
 
   devise_for :users
 
-  resources :diaries
+  resources :diaries do
+    collection do
+      get 'hilight'
+    end
+  end
 
   resources :habits do
     collection do

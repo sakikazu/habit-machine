@@ -1,0 +1,19 @@
+<div class="row">
+  <div class="span7 offset2">
+
+    <%= link_to "すべて表示", hilight_diaries_path(nosecret: true), class: "btn" %>
+
+    <% @diaries.each do |diary| %>
+      <h3>
+        <span class="date"><%= diary.record_at.to_s(:normal) %></span><%= " ほど" if diary.is_about_date.present? %>　
+        <span class="hilight"><%= link_to diary.title_mod, diary_path(diary) %></span>
+        <small><%= tags_link(diary) %></small>
+      </h3>
+    <div class="well well2">
+      <p><%= link_to(image_tag(diary.image(:small)), diary.image(:large), {class: colorbox_class}) if diary.image.present? %></p>
+      <p><%= sani_custom_br(diary.content) %></p>
+    </div>
+    <% end -%>
+
+ </div>
+</div>
