@@ -24,9 +24,9 @@ gem 'best_in_place'
 gem 'rails_admin'
 gem 'faker'
 
-gem 'therubyracer'
-gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
-gem "twitter-bootstrap-rails"
+gem 'therubyracer', '0.10.2', :platforms => :ruby
+gem "less-rails", '2.2.3' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
+gem "twitter-bootstrap-rails", '2.1.3'
 # gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
 # gem 'execjs'
 
