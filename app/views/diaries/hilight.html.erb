@@ -1,7 +1,11 @@
 <div class="row">
   <div class="span7 offset2">
 
-    <%= link_to "すべて表示", hilight_diaries_path(nosecret: true), class: "btn" %>
+    <% @years.each do |year| %>
+      <%= link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary" %>
+    <% end %>
+
+    <%= link_to "隠しも表示", hilight_diaries_path(nosecret: true, year: @year), class: "btn" %>
 
     <% @diaries.each do |diary| %>
       <h3>
@@ -10,7 +14,7 @@
         <small><%= tags_link(diary) %></small>
       </h3>
     <div class="well well2">
-      <p><%= link_to(image_tag(diary.image(:small)), diary.image(:large), {class: colorbox_class}) if diary.image.present? %></p>
+      <p><%= link_to(image_tag(diary.image(:large)), diary.image(:original)) if diary.image.present? %></p>
       <p><%= sani_custom_br(diary.content) %></p>
     </div>
     <% end -%>

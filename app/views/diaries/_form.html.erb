@@ -19,8 +19,9 @@ $(function(){
   <% end %>
 
   <div class="form-inputs">
+    <%= f.input :record_at, as: :date, label: "日付", start_year: 2000 %>
     <%= f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span6'}, label: "タイトル" %>
-    <%= f.input :content, input_html: {class: 'span6', rows: 8}, label: "内容" %>
+    <%= f.input :content, input_html: {class: 'span8', rows: 25}, label: "内容" %>
     <%= f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます'} %>
     <%= f.input :image, as: :file, label: "画像" %>
 
@@ -28,7 +29,6 @@ $(function(){
     <%= f.input :is_about_date, label: "日付を曖昧にする" %>
     <%= f.input :is_secret, label: "他人に見られないようにする" %>
 
-    <%= f.input :record_at, as: :hidden %>
   </div>
 
   <div class="form-actions">

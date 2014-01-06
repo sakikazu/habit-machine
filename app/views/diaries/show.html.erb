@@ -2,17 +2,20 @@
   <div class="span7 offset2">
 
 <div class="form-actions">
-  <%= link_to '戻る', diaries_path, class: "btn" %>
+  <%= link_to '戻る', @referer_url, class: "btn" if @referer_url %>
+  <%= link_to '日記一覧へ', diaries_path, class: "btn" %>
   <%= link_to "編集する", edit_diary_path, class: "btn btn-info" %>
 </div>
 
 <h2 class="normal2"><%= @diary.title %>　<small><%= tags_link(@diary) %></small>　(<%= "#{@diary.record_at.to_s(:normal)}の日記" %>)</h2>
-<% if @diary.image.present? -%>
-  <%= link_to(image_tag(@diary.image(:small)), @diary.image(:large), {class: colorbox_class}) %>
-  <br><br>
-<% end -%>
+<div class="well">
+  <% if @diary.image.present? -%>
+    <%= link_to(image_tag(@diary.image(:small)), @diary.image(:large), {class: colorbox_class}) %>
+    <br><br>
+  <% end -%>
 
-<%= sani_custom_br(@diary.content) %>
+  <%= sani_custom_br(@diary.content) %>
+</div>
 
  </div>
 </div>

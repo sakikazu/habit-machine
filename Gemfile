@@ -24,9 +24,9 @@ gem 'best_in_place'
 gem 'rails_admin'
 gem 'faker'
 
-gem "therubyracer"
+gem 'therubyracer'
 gem "less-rails" #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
-gem "twitter-bootstrap-rails", '2.1.3'
+gem "twitter-bootstrap-rails"
 # gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
 # gem 'execjs'
 
@@ -45,7 +45,8 @@ end
 gem 'jquery-rails'
 
 group :development do
-  gem 'mongrel'
+  # 2014/01/07、mongrel有効にすると「fastthread」関連でエラーが出る。ruby2のせい？
+  # gem 'mongrel'
   # gem 'thin'
 
   # gem 'ruby-debug19'

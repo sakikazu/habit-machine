@@ -28,9 +28,24 @@ class DiariesController < ApplicationController
 
   #
   # 「人生ハイライト」
+  # デフォルト表示は、今年のもので、かつシークレットがfalseのもの
   #
   def hilight
+    @years = Diary.all_years
+
     @diaries = Diary.where(user_id: current_user.id).where(is_hilight: true).order(["record_at ASC", "id ASC"])
+
+    if params[:all].present?
+      return
+    end
+
+    if params[:year].present?
+      @year = params[:year].to_i
+      @diaries = @diaries.where(record_at: Date.new(@year).beginning_of_year..Date.new(@year).end_of_year)
+    else
+      @diaries = @diaries.where(record_at: Date.today.beginning_of_year..Date.today.end_of_year)
+    end
+
     # デフォルト時はシークレットがtrueのものは表示しない
     if params[:nosecret].blank?
       @diaries = @diaries.where(is_secret: false)
@@ -46,6 +61,7 @@ class DiariesController < ApplicationController
       redirect_to diaries_path, notice: "この日記は存在しません."
       return
     end
+    @referer_url = session[:referer_url]
 
     respond_to do |format|
       format.html # show.html.erb
@@ -57,6 +73,7 @@ class DiariesController < ApplicationController
   # GET /diaries/new.json
   def new
     @diary = Diary.new(record_at: params[:record_at])
+    session[:referer_url] = request.referer
 
     respond_to do |format|
       format.html # new.html.erb
@@ -67,6 +84,8 @@ class DiariesController < ApplicationController
   # GET /diaries/1/edit
   def edit
     @diary = Diary.find(params[:id])
+    session[:referer_url] = request.referer
+
     if @diary.user != current_user
       redirect_to diaries_path, notice: "この日記は存在しません."
       return
@@ -81,7 +100,7 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       if @diary.save
-        format.html { redirect_to root_path, notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
+        format.html { redirect_to @diary, notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
         format.json { render json: @diary, status: :created, location: @diary }
       else
         format.html { render action: "new" }
