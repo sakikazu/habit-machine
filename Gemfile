@@ -42,7 +42,9 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
+# memo jquery 1.9以上になるとliveが使えずエラーになるのでバージョン指定
+gem 'jquery-rails', '2.1.3'
+gem 'jquery-ui-rails', '2.0.2'
 
 group :development do
   # 2014/01/07、mongrel有効にすると「fastthread」関連でエラーが出る。ruby2のせい？
