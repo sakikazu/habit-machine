@@ -118,11 +118,13 @@ EOS
   end
 
   def colorbox_class
-    request.smart_phone? ? "" : "colorbox"
+    # request.smart_phone? ? "" : "colorbox"
+    "colorbox"
   end
 
   def colorbox_fix_size
-    request.smart_phone? ? "" : "colorbox_fix_size"
+    # request.smart_phone? ? "" : "colorbox_fix_size"
+    "colorbox_fix_size"
   end
 
 

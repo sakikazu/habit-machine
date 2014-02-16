@@ -15,8 +15,6 @@ class Diary < ActiveRecord::Base
     :url => "/upload/#{content_name}/:id/:style/:basename.:extension",
     :path => ":rails_root/public/upload/#{content_name}/:id/:style/:basename.:extension"
 
-  # todo 何のためだっけ？
-  attr_accessible :content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :is_secret, :search_word
 
   attr_accessor :search_word
 

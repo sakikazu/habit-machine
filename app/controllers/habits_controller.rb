@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 class HabitsController < ApplicationController
+  before_action :set_habit, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_user!
 
   #
@@ -106,8 +106,6 @@ class HabitsController < ApplicationController
   # GET /habits/1
   # GET /habits/1.json
   def show
-    @habit = Habit.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @habit }
@@ -127,14 +125,13 @@ class HabitsController < ApplicationController
 
   # GET /habits/1/edit
   def edit
-    @habit = Habit.find(params[:id])
   end
 
   # POST /habits
   # POST /habits.json
   def create
     params[:habit][:user_id] = current_user.id
-    @habit = Habit.new(params[:habit])
+    @habit = Habit.new(habit_params)
 
     respond_to do |format|
       if @habit.save
@@ -150,10 +147,8 @@ class HabitsController < ApplicationController
   # PUT /habits/1
   # PUT /habits/1.json
   def update
-    @habit = Habit.find(params[:id])
-
     respond_to do |format|
-      if @habit.update_attributes(params[:habit])
+      if @habit.update_attributes(habit_params)
         format.html { redirect_to habits_path, notice: '習慣データを更新しました.' }
         format.json { head :no_content }
       else
@@ -166,7 +161,6 @@ class HabitsController < ApplicationController
   # DELETE /habits/1
   # DELETE /habits/1.json
   def destroy
-    @habit = Habit.find(params[:id])
     @habit.destroy
 
     respond_to do |format|
@@ -174,4 +168,16 @@ class HabitsController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_habit
+    @habit = Habit.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def habit_params
+    params.require(:habit).permit(:value_type, :value_unit, :result_type, :reminder, :title, :user_id, :goal, :status, :memo)
+  end
+
 end

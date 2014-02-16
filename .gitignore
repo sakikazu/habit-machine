@@ -26,3 +26,9 @@ config/database.yml
 .rvmrc
 
 .rails_footnotes
+
+tags
+
+config/settings.local.yml
+config/settings/*.local.yml
+config/environments/*.local.yml

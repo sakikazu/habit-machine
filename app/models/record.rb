@@ -2,8 +2,6 @@
 class Record < ActiveRecord::Base
   acts_as_paranoid
 
-  attr_accessible :habit_id, :record_at, :value, :memo
-
   belongs_to :habit
 
   # best_in_placeで扱うcollectionの形が、Railsの普通のselectとは表示値と値が逆だった

@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.8'
+# gem 'rails', '4.0.1'
+gem 'rails', '4.1.0.beta1'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -8,7 +9,7 @@ gem 'rails', '3.2.8'
 gem 'mysql2'
 
 gem 'devise'
-gem "rails3_acts_as_paranoid"
+gem 'rails4_acts_as_paranoid'
 gem 'exception_notification', :require => 'exception_notifier'
 gem "sanitize"
 gem 'paperclip'
@@ -16,60 +17,34 @@ gem 'exifr'
 gem "rails_autolink"
 gem 'kaminari'
 gem 'acts-as-taggable-on'
-gem 'jpmobile'
+# gem 'jpmobile'
 
 gem 'simple_form'
-gem 'best_in_place'
+gem 'best_in_place', github: 'bernat/best_in_place', branch: "rails-4"
 
-gem 'rails_admin'
 gem 'faker'
 
-gem 'therubyracer', '0.10.2', :platforms => :ruby
-gem "less-rails", '2.2.3' #Sprockets (what Rails 3.1 uses for its asset pipeline) supports LESS
-gem "twitter-bootstrap-rails", '2.1.3'
+gem 'therubyracer', platforms: :ruby
+gem 'less-rails'
+gem "twitter-bootstrap-rails"
 # gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
 # gem 'execjs'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
-  gem 'coffee-rails', '~> 3.2.1'
+  gem 'sass-rails', '~> 4.0.0'
+  gem 'coffee-rails', '~> 4.0.0'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
 
-  gem 'uglifier', '>= 1.0.3'
+  gem 'uglifier', '>= 1.3.0'
 end
 
 # memo jquery 1.9以上になるとliveが使えずエラーになるのでバージョン指定
 gem 'jquery-rails', '2.1.3'
 gem 'jquery-ui-rails', '2.0.2'
-
-group :development do
-  # 2014/01/07、mongrel有効にすると「fastthread」関連でエラーが出る。ruby2のせい？
-  # gem 'mongrel'
-  # gem 'thin'
-
-  # gem 'ruby-debug19'
-  gem 'rails-erd'
-  gem 'rails-footnotes'
-  gem 'pry-rails'
-end
-
-group :development, :test do
-  gem "rspec"
-  gem "rspec-rails"
-  # gem "factory_girl_rails" // 2012-08-25現在、r g scaffoldにてエラーになる
-  gem "rails3-generators"
-  gem "rr"
-  gem "capybara"
-  gem 'spork'
-  gem "guard-spork"
-  gem "guard-rspec"
-
-  # gem "hocus_pocus"
-end
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -80,8 +55,61 @@ end
 # Use unicorn as the app server
 gem 'unicorn'
 
-# Deploy with Capistrano
-# gem 'capistrano'
+# unicorn関連？
+gem 'foreman'
 
-# To use debugger
-# gem 'debugger'
+# 定数管理
+gem 'rails_config'
+
+group :development do
+  # erbからhamlに変換
+  gem 'erb2haml'
+
+  # Use Capistrano for deployment
+  gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'rvm1-capistrano3', require: false
+end
+
+
+group :development, :test do
+  # Rails application preloader
+  gem 'spring'
+
+  # Railsコンソールの多機能版
+  gem 'pry-rails'
+
+  # pryの入力に色付け
+  gem 'pry-coolline'
+
+  # デバッカー
+  gem 'pry-byebug'
+
+  # Pryでの便利コマンド
+  gem 'pry-doc'
+
+  # PryでのSQLの結果を綺麗に表示
+  gem 'hirb'
+  gem 'hirb-unicode'
+
+  # pryの色付けをしてくれる
+  gem 'awesome_print'
+
+  # Rspec
+  gem 'rspec-rails'
+
+  # fixtureの代わり
+  gem "factory_girl_rails"
+
+  # テスト環境のテーブルをきれいにする
+  gem 'database_rewinder'
+
+  # デバッグ情報をフッターに出してくれる
+  # 2013-12-28現在、「Hash#diff」のWarningが大量に出るので対処
+  gem 'rails-footnotes', git: 'git://github.com/tommireinikainen/rails-footnotes.git'
+
+  gem 'rails-erd'
+end
+
+

@@ -2,16 +2,14 @@
 class Habit < ActiveRecord::Base
   acts_as_paranoid
 
-  attr_accessible :value_type, :value_unit, :result_type, :reminder, :title, :user_id, :goal, :status, :memo
-
   belongs_to :user
   has_many :records
 
   validates_presence_of :title, :status, :result_type, :value_type
 
-  scope :enable, where(status: 1)
-  scope :disable, where(status: 2)
-  scope :close, where(status: 3)
+  scope :enable, lambda{ where(status: 1) }
+  scope :disable, lambda{ where(status: 2) }
+  scope :close, lambda{ where(status: 3) }
 
   # todo 非公開の設定はまた今後人に見せる機能を追加したときに対応しよう
   STATUS_TYPE = [["有効", 1], ["無効", 2], ["完了", 3]]

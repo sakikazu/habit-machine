@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
 class DiariesController < ApplicationController
+  before_action :set_diary, only: [:show, :edit, :update, :destroy]
   before_filter :authenticate_user!
 
   # GET /diaries
@@ -15,7 +15,7 @@ class DiariesController < ApplicationController
     elsif @search_word.present?
       @diaries = Diary.where('title like :q OR content like :q', :q => "%#{@search_word}%")
     else
-      @diaries = Diary.scoped
+      @diaries = Diary.all
     end
     @diaries = @diaries.where(user_id: current_user.id).order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
 
@@ -56,7 +56,6 @@ class DiariesController < ApplicationController
   # GET /diaries/1
   # GET /diaries/1.json
   def show
-    @diary = Diary.find(params[:id])
     if @diary.user != current_user
       redirect_to diaries_path, notice: "この日記は存在しません."
       return
@@ -83,7 +82,6 @@ class DiariesController < ApplicationController
 
   # GET /diaries/1/edit
   def edit
-    @diary = Diary.find(params[:id])
     session[:referer_url] = request.referer
 
     if @diary.user != current_user
@@ -95,7 +93,7 @@ class DiariesController < ApplicationController
   # POST /diaries
   # POST /diaries.json
   def create
-    @diary = Diary.new(params[:diary])
+    @diary = Diary.new(diary_params)
     @diary.user_id = current_user.id
 
     respond_to do |format|
@@ -112,10 +110,8 @@ class DiariesController < ApplicationController
   # PUT /diaries/1
   # PUT /diaries/1.json
   def update
-    @diary = Diary.find(params[:id])
-
     respond_to do |format|
-      if @diary.update_attributes(params[:diary])
+      if @diary.update_attributes(diary_params)
         format.html { redirect_to @diary, notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
         format.json { head :no_content }
       else
@@ -128,7 +124,6 @@ class DiariesController < ApplicationController
   # DELETE /diaries/1
   # DELETE /diaries/1.json
   def destroy
-    @diary = Diary.find(params[:id])
     @diary.destroy
 
     respond_to do |format|
@@ -136,4 +131,16 @@ class DiariesController < ApplicationController
       format.json { head :no_content }
     end
   end
+
+  private
+  # Use callbacks to share common setup or constraints between actions.
+  def set_diary
+    @diary = Diary.find(params[:id])
+  end
+
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def diary_params
+    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :is_secret, :search_word)
+  end
+
 end
