@@ -6,8 +6,8 @@ pid 'tmp/unicorn.pid'
 # ダウンタイムなくす
 preload_app true
 
-#stderr_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
-#stdout_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
+stderr_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
+stdout_path File.expand_path('log/unicorn.log', ENV['RAILS_ROOT'])
 
 before_fork do |server, worker|
   defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
