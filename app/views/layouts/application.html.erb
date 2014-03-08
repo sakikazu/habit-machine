@@ -48,9 +48,10 @@
           <a class="brand" href="/"><strong><%= current_user.fullname %></strong>は習慣の機械です(￣ー￣)</a>
           <div class="container-fluid nav-collapse">
             <ul class="nav">
-              <li><%= link_to "記録結果", result_habits_path %></li>
-              <li><%= link_to "目標", goal_habits_path %></li>
-              <li><%= link_to "人生ハイライト", hilight_diaries_path %></li>
+              <li class="<%= controller.controller_name == "habits" and controller.action_name == "result" ? "active" : "" %>"><%= link_to "記録結果", result_habits_path %></li>
+              <li class="<%= controller.controller_name == "habits" and controller.action_name == "goal" ? "active" : "" %>"><%= link_to "目標", goal_habits_path %></li>
+              <li class="<%= controller.controller_name == "diaries" and controller.action_name == "hilight" ? "active" : "" %>"><%= link_to "人生ハイライト", hilight_diaries_path %></li>
+              <li class="<%= controller.controller_name == "senses" ? "active" : "" %>"><%= link_to "意識付け", senses_path %></li>
               <li><%= link_to "ユーザー情報", edit_user_registration_path %></li>
               <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete %></li>
             </ul>

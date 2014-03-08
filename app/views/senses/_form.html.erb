@@ -1,0 +1,21 @@
+<%= simple_form_for(@sense) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :title %>
+    <%= f.input :description, input_html: {class: "span5"} %>
+    <%= f.input :content, input_html: {rows: 10, class: "span5"} %>
+    <%= f.input :start_at %>
+    <% if @sense.id.blank? %>
+      <%= f.input :end_at, as: :date, start_year: Date.today.year+5 %>
+    <% else %>
+      <%= f.input :end_at %>
+    <% end %>
+    <%= f.input :is_active %>
+    <%= f.input :sort_order %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit, "作成する", class: "btn btn-success" %>
+  </div>
+<% end %>

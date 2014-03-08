@@ -1,0 +1,21 @@
+<% @senses.each do |sense| %>
+<div class="well span4">
+  <h3>
+    <%= sense.title %>
+    <small><%= sense.description %></small>
+  </h3>
+  <p class="btn btn-info disabled"><%= sense.start_at %> - <%= sense.end_at %></p>
+  <hr>
+  <p><%= simple_format(auto_link(sense.content)) %></p>
+
+  <br>
+  <%= link_to 'Edit', edit_sense_path(sense) %> | 
+  <%= link_to 'Destroy', sense, method: :delete, data: { confirm: 'Are you sure?' } %>
+</div>
+<% end %>
+
+<br>
+
+<div class="clearfix"></div>
+<%= link_to '新しい「意識付け」', new_sense_path, class: "btn" %>
+<%= link_to '過去のもの', past_senses_path, class: "btn" %>
