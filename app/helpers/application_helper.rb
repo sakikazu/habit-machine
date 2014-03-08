@@ -12,9 +12,14 @@ module ApplicationHelper
   #
   # 日付表示(habits#index用)
   #
-  def dispdate(date)
+  def dispdate(date, is_long = false)
     wdays = ["日", "月", "火", "水", "木", "金", "土"]
-    ret = date.to_s(:short)
+    ret = ""
+    if is_long
+      ret = date.to_s(:normal)
+    else
+      ret = date.to_s(:short)
+    end
     ret += "(#{wdays[date.wday]})"
   end
 

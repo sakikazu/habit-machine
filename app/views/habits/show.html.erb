@@ -16,5 +16,13 @@
   <tr><th>メモ</th><td><p><%= sani_custom_br(@habit.memo) %></p></td></tr>
 </table>
 
+<h3>レコード一覧</h3>
+<% @records.each do |record| %>
+  <h4><%= record.record_at %></h4>
+  <%= "#{record.value} #{@habit.value_unit}" %><br>
+  <%= sani_custom(record.memo) %>
+  <hr>
+<% end %>
+
  </div>
 </div>

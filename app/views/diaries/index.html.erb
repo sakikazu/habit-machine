@@ -14,7 +14,11 @@
 
 <% @diaries.each do |diary| %>
 <div class="well">
-<h4><small><%= diary.record_at.to_s(:normal) %></small>　<%= link_to diary.title_mod, diary_path(diary) %> <%= tags_link(diary) %></h4>
+<h4><small><%= dispdate(diary.record_at, true) %></small>　<%= link_to diary.title_mod, diary_path(diary) %> <%= tags_link(diary) %></h4>
+  <%= "<p class='btn btn-block btn-danger disabled'>シークレット日記</p>".html_safe if diary.is_secret %>
+  <%= "<p class='btn btn-block btn-warning disabled'>ハイライト日記</p>".html_safe if diary.is_hilight %>
+  <br>
+
   <p><%= link_to(image_tag(diary.image(:small)), diary.image(:large), {class: colorbox_class}) if diary.image.present? %></p>
   <p><%= sani_custom_br(diary.content) %></p>
   <%= link_to '編集', edit_diary_path(diary) %>

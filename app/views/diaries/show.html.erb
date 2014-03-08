@@ -7,10 +7,14 @@
   <%= link_to "編集する", edit_diary_path, class: "btn btn-info" %>
 </div>
 
-<h2 class="normal2"><%= @diary.title %>　<small><%= tags_link(@diary) %></small>　(<%= "#{@diary.record_at.to_s(:normal)}の日記" %>)</h2>
+<h2 class="normal2"><%= @diary.title %>　<small><%= tags_link(@diary) %></small>　(<%= "#{dispdate(@diary.record_at, true)}の日記" %>)</h2>
+
+<%= "<p class='btn btn-block btn-danger disabled'>シークレット日記</p>".html_safe if @diary.is_secret %>
+<%= "<p class='btn btn-block btn-warning disabled'>ハイライト日記</p>".html_safe if @diary.is_hilight %>
+
 <div class="well">
   <% if @diary.image.present? -%>
-    <%= link_to(image_tag(@diary.image(:small)), @diary.image(:large), {class: colorbox_class}) %>
+    <%= image_tag(@diary.image(:large)) %>
     <br><br>
   <% end -%>
 
