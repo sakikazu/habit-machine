@@ -89,6 +89,7 @@ class HabitsController < ApplicationController
 
       @date_term.each do |date|
         records << Record.find_or_create(habit.id, date)
+        # records << Record.find_or_new(habit.id, date)
       end
       @habits << {id: habit.id, title: habit.title, value_unit: habit.value_unit, records: records}
     end
