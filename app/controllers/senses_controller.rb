@@ -4,11 +4,11 @@ class SensesController < ApplicationController
   # GET /senses
   def index
     # 終了日が現在以降のものを表示（startが未来のものも表示する）
-    @senses = Sense.order("sort_order ASC").where("end_at >= ?", Date.today)
+    @senses = Sense.order("sort_order ASC").where("end_at >= ?", Date.today).where(user_id: current_user.id)
   end
 
   def past
-    @senses = Sense.order("sort_order ASC").where("end_at <?", Date.today)
+    @senses = Sense.order("sort_order ASC").where("end_at <?", Date.today).where(user_id: current_user.id)
     render :index
   end
 
