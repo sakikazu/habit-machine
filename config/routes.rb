@@ -31,7 +31,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :records
+  resources :records do
+    collection do
+      post 'update_or_create'
+      put 'update_or_create'
+    end
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -41,7 +41,7 @@ end
 
 サイトの特徴
 ￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣
-・best_in_placeでインライン編集
+・best_in_placeでインライン編集（Controller側カスタマイズ[update_or_create]）
 ・acts_as_taggale_onの規定Tagモデルを使って、
 　タグ登録、オートコンプリートで設定
 ・グラフをAdanHPの「jpplot」から、「Morris」に変更してみたが、コードがわかりやすいし、ツールチップが良い感じ

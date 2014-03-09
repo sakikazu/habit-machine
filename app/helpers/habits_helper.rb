@@ -6,11 +6,11 @@ module HabitsHelper
   #
   def input_value_for_inline_edit(record)
     if record.habit.value_type == 1
-      best_in_place record, :value, nil: "未入力", display_as: :formatted_value, type: :select, collection: Record::SYMBOLIC_VALUE
+      best_in_place record, :value, nil: "未入力", display_as: :formatted_value, type: :select, collection: Record::SYMBOLIC_VALUE, path: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at)
       # todo ちゃんとヘルパーはimage_tagを出力しているのに画像が表示されない
       # best_in_place record, :value, nil: "未入力", display_with: lambda{|v| result_icon2(v).html_safe}, type: :select, collection: Record::SYMBOLIC_VALUE
     else
-      best_in_place record, :value, nil: "未入力", display_as: :formatted_value
+      best_in_place record, :value, nil: "未入力", display_as: :formatted_value, path: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at)
     end
   end
 

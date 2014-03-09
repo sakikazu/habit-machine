@@ -79,17 +79,17 @@ class HabitsController < ApplicationController
     end
     @date_term = (@one_day - 3)..(@one_day + 3)
 
-    # 対象期間分の習慣データを取得／作成(インライン編集のためにRecordは予め作成しておく)
+    # 対象期間分の習慣データを取得
     habits = Habit.where(user_id: current_user.id).enable
     @habits = []
+    # todo habitsを回すことで、その度にHabitが一個ずつLoadされてるようにログが出るんだけど、最初に一気にLoadしてくれてないのかな？
     habits.each do |habit|
       records = []
-      # todo ここはマトリックス分のselectが発生するので、まずは一気にselectして、そこでないもののみcreateするようにしたい
-      # doto これ使うかな→ @records = @habits.includes(:records).where("records.record_at" => @date_term).group(:habit_id)
+      # todo ここはマトリックス分のselectが発生するので、一気にselectしたい
+      # todo これ使うかな→ @records = @habits.includes(:records).where("records.record_at" => @date_term).group(:habit_id)
 
       @date_term.each do |date|
-        records << Record.find_or_create(habit.id, date)
-        # records << Record.find_or_new(habit.id, date)
+        records << Record.find_or_new(habit.id, date)
       end
       @habits << {id: habit.id, title: habit.title, value_unit: habit.value_unit, records: records}
     end
