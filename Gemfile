@@ -21,6 +21,7 @@ gem 'acts-as-taggable-on'
 
 gem 'simple_form'
 gem 'best_in_place', github: 'bernat/best_in_place', branch: "rails-4"
+gem 'lazy_high_charts'
 
 gem 'faker'
 

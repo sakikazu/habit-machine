@@ -22,32 +22,12 @@ class HabitsController < ApplicationController
     basic_habits = Habit.where(user_id: current_user.id).enable
 
     # 結果をテーブル表示するHabit
-    habits_for_table = basic_habits.where(result_type: 1)
-
-    @habits_for_table = []
-    records_for_table_tmp = Record.where(habit_id: habits_for_table.map{|h| h.id}).where("value IS NOT NULL").where(record_at: @date_term)
-    records_for_table = records_for_table_tmp.group_by{|r| r.habit_id}
-    habits_for_table.each do |habit|
-      @habits_for_table << {id: habit.id, title: habit.title, value_unit: habit.value_unit, records: records_for_table[habit.id]}
-    end
-
+    @habits_for_table = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_TABLE))
 
     # 結果を折れ線グラフで表示するHabit
+    habit_results_for_oresen = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_ORESEN))
+    @graph1_data = build_graph(habit_results_for_oresen)
 
-    # @habittitle_for_graph = @habits.map{|h| h.title}
-    # records = Record.where(habit_id: @habits.map{|h| h.id}).where("value IS NOT NULL").order("record_at ASC")
-    # # todo mapの使い方 viewの方ではto_jsonでJSにオブジェクトを渡したり
-    # grouped_records = records.group_by{|r| r.record_at}
-    # @records_for_graph = grouped_records.map do |key, records|
-      # tmp = {record_at: key}
-      # records.each do |rec|
-        # tmp[rec.habit.title] = rec.value
-      # end
-      # tmp
-    # end
-
-# p @habittitle_for_graph
-    # p @records_for_graph
   end
 
   #
@@ -180,6 +160,51 @@ class HabitsController < ApplicationController
   # Never trust parameters from the scary internet, only allow the white list through.
   def habit_params
     params.require(:habit).permit(:value_type, :value_unit, :result_type, :reminder, :title, :user_id, :goal, :status, :memo)
+  end
+
+
+  def build_graph_data(habits)
+    habit_results = []
+
+    records_its_type = Record.where(habit_id: habits.map{|h| h.id}).where("value IS NOT NULL").where(record_at: @date_term)
+    records_arranged = records_its_type.group_by{|r| r.habit_id}
+    habits.each do |habit|
+      habit_results << {id: habit.id, title: habit.title,
+                        value_unit: habit.value_unit,
+                        records: records_arranged[habit.id]}
+    end
+    habit_results
+  end
+
+  def build_graph(results_for_oresen)
+    xAxis_categories = @date_term.map{|date| date.to_s(:short)}
+    tickInterval     = 0
+
+    return LazyHighCharts::HighChart.new('graph') do |f|
+      f.title(text: '折れ線グラフタイプの結果')
+      f.xAxis(categories: xAxis_categories, tickInterval: tickInterval)
+
+      results_for_oresen.each do |result|
+        # recordをグラフX軸にすべて埋める
+        graph_data = []
+        prev_data = 0
+        @date_term.each do |date|
+          found_record = result[:records].detect{|r| r.record_at == date} if result[:records].present?
+          if found_record.present?
+            graph_data << found_record.value
+            prev_data = found_record.value
+          else
+            graph_data << prev_data
+          end
+        end
+        f.series(name: "#{result[:title]}(#{result[:value_unit]})", data: graph_data, type: 'spline')
+      end
+
+      # 複数にする場合
+      # f.options[:yAxis] = [{ title: { text: 'y軸1のタイトル' }}, { title: { text: 'y軸2のタイトル'}, opposite: true}]
+      # f.series(name: '棒グラフの名前',     data: data1, type: 'column', yAxis: 1)
+      # f.series(name: '折れ線グラフの名前', data: data2, type: 'spline')
+    end
   end
 
 end
