@@ -17,7 +17,7 @@ class DiariesController < ApplicationController
     else
       @diaries = Diary.all
     end
-    @diaries = @diaries.where(user_id: current_user.id).order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
+    @diaries = @diaries.by_user(current_user).order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -33,7 +33,7 @@ class DiariesController < ApplicationController
   def hilight
     @years = Diary.all_years
 
-    @diaries = Diary.where(user_id: current_user.id).where(is_hilight: true).order(["record_at ASC", "id ASC"])
+    @diaries = Diary.by_user(current_user).where(is_hilight: true).order(["record_at ASC", "id ASC"])
 
     if params[:all].present?
       return
@@ -135,7 +135,7 @@ class DiariesController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_diary
-    @diary = Diary.find(params[:id])
+    @diary = Diary.by_user(current_user).find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

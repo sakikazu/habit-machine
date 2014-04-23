@@ -19,7 +19,7 @@ class HabitsController < ApplicationController
     end
     @date_term = @target_month.beginning_of_month..@target_month.end_of_month
 
-    basic_habits = Habit.where(user_id: current_user.id).enable
+    basic_habits = Habit.by_user(current_user).enable
 
     # 結果をテーブル表示するHabit
     @habits_for_table = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_TABLE))
@@ -34,9 +34,9 @@ class HabitsController < ApplicationController
   # 目標一覧
   #
   def goal
-    @enable_habits = Habit.where(user_id: current_user.id).enable
-    @disable_habits = Habit.where(user_id: current_user.id).disable
-    @close_habits = Habit.where(user_id: current_user.id).close
+    @enable_habits = Habit.by_user(current_user).enable
+    @disable_habits = Habit.by_user(current_user).disable
+    @close_habits = Habit.by_user(current_user).close
   end
 
 
@@ -60,7 +60,7 @@ class HabitsController < ApplicationController
     @date_term = (@one_day - 3)..(@one_day + 3)
 
     # 対象期間分の習慣データを取得
-    habits = Habit.where(user_id: current_user.id).enable
+    habits = Habit.by_user(current_user).enable
     @habits = []
     # todo habitsを回すことで、その度にHabitが一個ずつLoadされてるようにログが出るんだけど、最初に一気にLoadしてくれてないのかな？
     habits.each do |habit|
@@ -75,7 +75,7 @@ class HabitsController < ApplicationController
     end
 
     # 対象期間分の日記データを取得
-    @diaries = Diary.where(user_id: current_user.id, record_at: @date_term).order("id ASC")
+    @diaries = Diary.by_user(current_user).where(record_at: @date_term).order("id ASC")
     @diaries = @diaries.group_by{|d| d.record_at}
 
     respond_to do |format|
@@ -154,7 +154,7 @@ class HabitsController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_habit
-    @habit = Habit.find(params[:id])
+    @habit = Habit.by_user(current_user).find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

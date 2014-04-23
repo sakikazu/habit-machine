@@ -11,8 +11,8 @@
     <% else %>
       <%= f.input :end_at %>
     <% end %>
-    <%= f.input :is_active %>
-    <%= f.input :sort_order %>
+    <%= f.input :is_inactive, label: "非アクティブ化（過去ページで見れるようになります）" %>
+    <%= f.input :sort_order, label: "並び順（小さい数字ほど先に並びます）" %>
   </div>
 
   <div class="form-actions">

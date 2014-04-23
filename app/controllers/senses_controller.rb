@@ -3,12 +3,13 @@ class SensesController < ApplicationController
 
   # GET /senses
   def index
-    # 終了日が現在以降のものを表示（startが未来のものも表示する）
-    @senses = Sense.order("sort_order ASC").where("end_at >= ?", Date.today).where(user_id: current_user.id)
+    @senses = Sense.by_user(current_user).order("sort_order ASC").where(is_inactive: false)
   end
 
+  # 終了日で自動判定でなく、is_inactiveを手動で設定することで判定するようにする
   def past
-    @senses = Sense.order("sort_order ASC").where("end_at <?", Date.today).where(user_id: current_user.id)
+    @senses = Sense.by_user(current_user).order("sort_order ASC").where(is_inactive: true)
+    @is_past = true
     render :index
   end
 
@@ -55,11 +56,11 @@ class SensesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_sense
-      @sense = Sense.find(params[:id])
+      @sense = Sense.by_user(current_user).find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.
     def sense_params
-      params.require(:sense).permit(:user_id, :title, :description, :content, :start_at, :end_at, :is_active, :sort_order)
+      params.require(:sense).permit(:user_id, :title, :description, :content, :start_at, :end_at, :is_inactive, :sort_order)
     end
 end
