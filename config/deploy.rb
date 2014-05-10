@@ -40,7 +40,7 @@ namespace :deploy do
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
       # for unicorn
-      execute :cat, "tmp/unicorn.pid | xargs kill -USR2"
+      execute :cat, "/tmp/unicorn.habit-machine.pid | xargs kill -USR2"
     end
   end
 

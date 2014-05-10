@@ -1,5 +1,5 @@
 listen '/tmp/unicorn_habit-machine.sock', :backlog => 1024
-pid 'tmp/unicorn.pid'
+pid '/tmp/unicorn.habit-machine.pid'
 
 # worker_processes 2
 
