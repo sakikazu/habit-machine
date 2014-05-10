@@ -19,6 +19,18 @@ TODO
 
 よく使うコマンド
 ￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣￣
+# Unicorn
+
+$ bundle exec unicorn -E production -c config/unicorn.conf.rb -D
+
+再起動
+$ cat tmp/unicorn.pid | xargs kill -USR2
+
+止めて、開始（上で反映されないときあるのかなぁ？わからんんけど）
+$ cat tmp/unicorn.pid | xargs kill -QUIT
+$ bundle exec unicorn -E production -c config/unicorn.conf.rb -D
+
+
 ※俺個人のデータなので、YAMLファイルはGit管理しないこと
 
 # HabitデータをYAMLで書き出し
