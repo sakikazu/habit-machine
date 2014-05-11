@@ -13,11 +13,11 @@ dirpath='/home/sakikazu/bak'
 filename="$db"_`date +%y%m%d`
 
 # mysqldump実行
-mysqldump --opt --user=$user --password=$password $db > $dirpath/$filename.sql
+mysqldump --opt --user=$user --password=$password $db | gzip -c > $dirpath/$filename.sql.gz
 
 # パーミッション変更
 #chmod 700 $dirpath/$filename.sql
 
 # 古いバックアップファイルを削除
 oldfile="$db"_`date --date "$period days ago" +%y%m%d`
-rm -f $dirpath/$oldfile.sql
+rm -f $dirpath/$oldfile.sql.gz
