@@ -1,5 +1,5 @@
-# config valid only for Capistrano 3.1
-lock '3.1.0'
+# config valid only for Capistrano 3.2.1
+lock '3.2.1'
 
 set :application, 'habit-machine'
 set :repo_url, 'git@bitbucket.org:sakikazu15/habit-machine.git'

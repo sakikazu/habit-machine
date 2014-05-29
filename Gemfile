@@ -10,7 +10,7 @@ gem 'mysql2'
 
 gem 'devise'
 gem "paranoia", "~> 2.0"
-gem 'exception_notification', :require => 'exception_notifier'
+gem 'exception_notification'
 gem "sanitize"
 gem 'paperclip'
 gem 'exifr'
