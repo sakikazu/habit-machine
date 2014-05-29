@@ -9,7 +9,7 @@ gem 'rails', '4.1.0.beta1'
 gem 'mysql2'
 
 gem 'devise'
-gem 'rails4_acts_as_paranoid'
+gem "paranoia", "~> 2.0"
 gem 'exception_notification', :require => 'exception_notifier'
 gem "sanitize"
 gem 'paperclip'
@@ -18,6 +18,8 @@ gem "rails_autolink"
 gem 'kaminari'
 gem 'acts-as-taggable-on'
 # gem 'jpmobile'
+
+gem 'dotenv-rails'
 
 gem 'simple_form'
 gem 'best_in_place', github: 'bernat/best_in_place', branch: "rails-4"
@@ -107,8 +109,7 @@ group :development, :test do
   gem 'database_rewinder'
 
   # デバッグ情報をフッターに出してくれる
-  # 2013-12-28現在、「Hash#diff」のWarningが大量に出るので対処
-  gem 'rails-footnotes', git: 'git://github.com/tommireinikainen/rails-footnotes.git'
+  gem 'rails-footnotes', '>= 4.0.0', '<5'
 
   gem 'rails-erd'
 end

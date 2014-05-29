@@ -22,7 +22,6 @@ public/assets
 # Webからダウンロードしたライブラリなど
 /_download
 
-config/database.yml
 .rvmrc
 
 .rails_footnotes
@@ -35,3 +34,7 @@ config/environments/*.local.yml
 
 .ruby-gemset
 .ruby-version
+
+# database info
+.env
+config/mysqldump.ini

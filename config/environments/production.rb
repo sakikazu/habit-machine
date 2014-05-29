@@ -71,4 +71,12 @@ Rails.application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+ config.middleware.use ExceptionNotification::Rack,
+  :email => {
+    :email_prefix => "[HabitMachine] ", # Subjectのprefix
+    :sender_address => %("HabitMachine_notifier" <notifier@example.com>), # 送信元 ※これは適当アドレスだが、environment.rbでGmailの設定をしているのでGmailが送信元になって送られた
+    :exception_recipients => %w(sakikazu15@gmail.com) # あて先の配列
+  }
+
 end
