@@ -69,7 +69,7 @@ group :development do
   gem 'erb2haml'
 
   # Use Capistrano for deployment
-  gem 'capistrano'
+  gem 'capistrano', '3.2.1'
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'rvm1-capistrano3', require: false

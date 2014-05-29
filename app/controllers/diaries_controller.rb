@@ -62,6 +62,11 @@ class DiariesController < ApplicationController
     end
     @referer_url = session[:referer_url]
 
+    if request.xhr?
+      render partial: "show_ajax"
+      return
+    end
+
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @diary }
