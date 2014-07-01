@@ -4,7 +4,7 @@
   <%= submit_tag "移動" %>
 <% end %>
 
-<h2 class="normal2">テーブル表示</h2>
+<div class="page-header"><h3>テーブル表示</h3></div>
 
 <table class="table table-bordered">
   <tr>
@@ -33,11 +33,11 @@
 </table>
 
 
-<h2 class="normal2">折れ線グラフ表示</h2>
-<%= high_chart("chart1", @graph1_data) %>
+<div class="page-header"><h3>折れ線グラフ表示</h3></div>
+<%= high_chart("chart1", @habits_for_oresen_graph) %>
 
 
-<h2 class="normal2">棒グラフ表示</h2>
-<p class="important">（まだ不要なので作ってない）</p>
+<div class="page-header"><h3>棒グラフ表示</h3></div>
+<%= high_chart("chart2", @habits_for_bou_graph) %>
 
 

@@ -1,9 +1,11 @@
 <%= link_to "タグ管理", tags_path, class: "btn"  %>
 
-<h2 class="normal2"><%= link_to "日記一覧", diaries_path %>
+<div class="page-header">
+<h3><%= link_to "日記一覧", diaries_path %>
   <%= "　＜タグで絞込み: #{@tag}＞　" if @tag.present? %>
   <%= "　＜検索ワード: #{@search_word}＞　" if @search_word.present? %>
-</h2>
+</h3>
+</div>
 
 <%= simple_form_for(@search_diary, method: "get") do |f| %>
   <%= f.input :search_word, as: :string, label: "日記検索" %>

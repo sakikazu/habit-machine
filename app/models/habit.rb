@@ -23,6 +23,10 @@ class Habit < ActiveRecord::Base
   RESULT_TYPE = [["テーブル表示", RESULT_TYPE_TABLE], ["折れ線グラフ", RESULT_TYPE_ORESEN], ["棒グラフ", RESULT_TYPE_BOU]]
 
 
+  GRAPH_TYPE_ORESEN = 'spline'
+  GRAPH_TYPE_BOU = 'column'
+
+
   def status_name
     Hash[*STATUS_TYPE.flatten.reverse][self.status]
   end

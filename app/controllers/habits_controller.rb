@@ -21,12 +21,13 @@ class HabitsController < ApplicationController
 
     basic_habits = Habit.by_user(current_user).enable
 
-    # 結果をテーブル表示するHabit
     @habits_for_table = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_TABLE))
 
-    # 結果を折れ線グラフで表示するHabit
     habit_results_for_oresen = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_ORESEN))
-    @graph1_data = build_graph(habit_results_for_oresen)
+    @habits_for_oresen_graph = build_graph(habit_results_for_oresen)
+
+    habit_results_for_bou = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_BOU))
+    @habits_for_bou_graph = build_bou_graph(habit_results_for_bou)
 
   end
 
@@ -163,6 +164,7 @@ class HabitsController < ApplicationController
   end
 
 
+  # 指定のHabitにひもづくRecordから、指定の期間分取得してグラフ用にデータ整形
   def build_graph_data(habits)
     habit_results = []
 
@@ -197,7 +199,7 @@ class HabitsController < ApplicationController
             graph_data << prev_data
           end
         end
-        f.series(name: "#{result[:title]}(#{result[:value_unit]})", data: graph_data, type: 'spline')
+        f.series(name: "#{result[:title]}(#{result[:value_unit]})", data: graph_data, type: Habit::GRAPH_TYPE_ORESEN)
       end
 
       # 複数にする場合
@@ -206,5 +208,29 @@ class HabitsController < ApplicationController
       # f.series(name: '折れ線グラフの名前', data: data2, type: 'spline')
     end
   end
+
+  def build_bou_graph(results_for_bou)
+    xAxis_categories = @date_term.map{|date| date.to_s(:short)}
+    tickInterval     = 0
+
+    return LazyHighCharts::HighChart.new('graph') do |f|
+      f.title(text: '棒グラフタイプの結果')
+      f.xAxis(categories: xAxis_categories, tickInterval: tickInterval)
+
+      results_for_bou.each do |result|
+        graph_data = []
+        @date_term.each do |date|
+          found_record = result[:records].detect{|r| r.record_at == date} if result[:records].present?
+          if found_record.present?
+            graph_data << found_record.value
+          else
+            graph_data << 0
+          end
+        end
+        f.series(name: "#{result[:title]}(#{result[:value_unit]})", data: graph_data, type: Habit::GRAPH_TYPE_BOU)
+      end
+    end
+  end
+
 
 end
