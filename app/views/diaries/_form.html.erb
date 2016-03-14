@@ -15,21 +15,18 @@ $(function(){
 
 <%= simple_form_for(@diary) do |f| %>
   <% if @diary.errors.any? %>
-    <div class="alert alert-error"><p>入力エラーがあります。下記のエラー内容を確認してください。</p></div>
+    <div class="alert alert-danger"><p>入力エラーがあります。下記のエラー内容を確認してください。</p></div>
   <% end %>
 
-  <div class="form-inputs">
-    <%= f.input :record_at, as: :date, label: "日付", start_year: 2000 %>
-    <%= f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span6'}, label: "タイトル" %>
-    <%= f.input :content, input_html: {class: 'span8', rows: 25}, label: "内容" %>
-    <%= f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます'} %>
-    <%= f.input :image, as: :file, label: "画像" %>
+  <%= f.input :record_at, as: :date, label: "日付", start_year: 2000, wrapper_html: {class: "form-group-inline"} %>
+  <%= f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span6'}, label: "タイトル" %>
+  <%= f.input :content, input_html: {class: 'span8', rows: 25}, label: "内容" %>
+  <%= f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます'} %>
+  <%= f.input :image, as: :file, label: "画像" %>
 
-    <%= f.input :is_hilight, label: "人生ハイライトにする" %>
-    <%= f.input :is_about_date, label: "日付を曖昧にする" %>
-    <%= f.input :is_secret, label: "他人に見られないようにする" %>
-
-  </div>
+  <%= f.input :is_hilight, label: "人生ハイライトにする" %>
+  <%= f.input :is_about_date, label: "日付を曖昧にする" %>
+  <%= f.input :is_secret, label: "他人に見られないようにする" %>
 
   <div class="form-actions">
     <%= f.button :submit, class: "btn btn-primary" %>

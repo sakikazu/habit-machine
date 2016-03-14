@@ -47,6 +47,8 @@ module HabitMachine
     # Enable the asset pipeline
     config.assets.enabled = true
 
+    config.assets.paths << "#{Rails}/vendor/assets/fonts"
+
     # libファイルの自動読み込み
     config.autoload_paths += %W(#{config.root}/lib)
     config.autoload_paths += Dir["#{config.root}/lib/**/"]

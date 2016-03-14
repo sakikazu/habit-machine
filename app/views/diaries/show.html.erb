@@ -1,9 +1,9 @@
 <div class="row">
-  <div class="span7 offset2">
+  <div class="col-sm-6 col-sm-offset-3">
 
 <div class="form-actions">
-  <%= link_to '戻る', @referer_url, class: "btn" if @referer_url %>
-  <%= link_to '日記一覧へ', diaries_path, class: "btn" %>
+  <%= link_to '戻る', @referer_url, class: "btn btn-default" if @referer_url %>
+  <%= link_to '日記一覧へ', diaries_path, class: "btn btn-default" %>
   <%= link_to "編集する", edit_diary_path, class: "btn btn-info" %>
 </div>
 

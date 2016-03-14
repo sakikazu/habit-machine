@@ -1,6 +1,6 @@
 <%= simple_form_for(@habit) do |f| %>
   <% if @habit.errors.any? %>
-    <div class="alert alert-error"><p>入力エラーがあります。下記のエラー内容を確認してください。</p></div>
+    <div class="alert alert-danger"><p>入力エラーがあります。下記のエラー内容を確認してください。</p></div>
   <% end %>
 
   <div class="form-inputs">

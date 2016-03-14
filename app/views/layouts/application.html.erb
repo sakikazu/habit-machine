@@ -37,27 +37,28 @@
   </head>
   <body>
 
-    <div class="navbar navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="btn btn-navbar" data-target=".nav-collapse" data-toggle="collapse">
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse" aria-expanded="false">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href="/"><strong><%= current_user.fullname %></strong>は習慣の機械です(￣ー￣)</a>
-          <div class="container-fluid nav-collapse">
-            <ul class="nav">
-              <li class="<%= controller.controller_name == "diaries" ? "active" : "" %>"><%= link_to "日記", diaries_path %></li>
-              <li class="<%= controller.controller_name == "habits" and controller.action_name == "result" ? "active" : "" %>"><%= link_to "記録結果", result_habits_path %></li>
-              <li class="<%= controller.controller_name == "habits" and controller.action_name == "goal" ? "active" : "" %>"><%= link_to "目標", goal_habits_path %></li>
-              <li class="<%= controller.controller_name == "diaries" and controller.action_name == "hilight" ? "active" : "" %>"><%= link_to "人生ハイライト", hilight_diaries_path %></li>
-              <li class="<%= controller.controller_name == "senses" ? "active" : "" %>"><%= link_to "意識付け", senses_path %></li>
-              <li><%= link_to "ユーザー情報", edit_user_registration_path %></li>
-              <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete %></li>
-            </ul>
-          </div><!--/.nav-collapse -->
+          </button>
+          <a class="navbar-brand" href="/"><strong><%= current_user.fullname %></strong>は習慣の機械です(￣ー￣)</a>
         </div>
+
+        <div class="collapse navbar-collapse" id="nav-collapse">
+          <ul class="nav navbar-nav">
+            <li class="<%= controller.controller_name == "diaries" ? "active" : "" %>"><%= link_to "日記", diaries_path %></li>
+            <li class="<%= controller.controller_name == "habits" and controller.action_name == "result" ? "active" : "" %>"><%= link_to "記録結果", result_habits_path %></li>
+            <li class="<%= controller.controller_name == "habits" and controller.action_name == "goal" ? "active" : "" %>"><%= link_to "目標", goal_habits_path %></li>
+            <li class="<%= controller.controller_name == "diaries" and controller.action_name == "hilight" ? "active" : "" %>"><%= link_to "人生ハイライト", hilight_diaries_path %></li>
+            <li class="<%= controller.controller_name == "senses" ? "active" : "" %>"><%= link_to "意識付け", senses_path %></li>
+            <li><%= link_to "ユーザー情報", edit_user_registration_path %></li>
+            <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete %></li>
+          </ul>
+        </div><!--/#nav-collapse -->
       </div>
     </div>
 
@@ -88,6 +89,7 @@ $(document).ready(function(){
     height:"650px",
   });
 
+  $(".best_in_place").best_in_place();
 })
 </script>
 

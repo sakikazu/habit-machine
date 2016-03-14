@@ -1,4 +1,4 @@
-<p style="text-align:center"><%= link_to "今月(#{Date.today.strftime("%Y年%m月")})", result_habits_path, class: "btn" %></p>
+<p style="text-align:center"><%= link_to "今月(#{Date.today.strftime("%Y年%m月")})", result_habits_path, class: "btn btn-default" %></p>
 <%= form_tag result_habits_path, method: :get, style: "text-align:center" do %>
   <%= date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true}, {class: "span2"} %>
   <%= submit_tag "移動" %>

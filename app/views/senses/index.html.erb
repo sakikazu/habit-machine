@@ -1,6 +1,6 @@
 <% if @is_past %>
   <div class="page-header">
-    <%= link_to '一覧に戻る', senses_path, class: "btn" %>
+    <%= link_to '一覧に戻る', senses_path, class: "btn btn-default" %>
   </div>
 <% end %>
 
@@ -25,5 +25,5 @@
 <div class="clearfix"></div>
 <% unless @is_past %>
 <%= link_to '新しい「意識付け」', new_sense_path, class: "btn btn-info" %>
-<%= link_to '過去のもの', past_senses_path, class: "btn" %>
+<%= link_to '過去のもの', past_senses_path, class: "btn btn-default" %>
 <% end %>

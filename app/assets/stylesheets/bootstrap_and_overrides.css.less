@@ -1,24 +1,8 @@
 @import "twitter/bootstrap/bootstrap";
-body { 
-	padding-top: 60px;
-}
-
-@import "twitter/bootstrap/responsive";
 
 // Set the correct sprite paths
-//@iconSpritePath: asset-path('twitter/bootstrap/glyphicons-halflings.png');
-//@iconWhiteSpritePath: asset-path('twitter/bootstrap/glyphicons-halflings-white.png');
-
-// Set the Font Awesome (Font Awesome is default. You can disable by commenting below lines)
-// Note: If you use asset_path() here, your compiled boostrap_and_overrides.css will not 
-//       have the proper paths. So for now we use the absolute path.
-@fontAwesomeEotPath: '/assets/fontawesome-webfont.eot';
-@fontAwesomeWoffPath: '/assets/fontawesome-webfont.woff';
-@fontAwesomeTtfPath: '/assets/fontawesome-webfont.ttf';
-@fontAwesomeSvgPath: '/assets/fontawesome-webfont.svg';
-
-// Font Awesome
-@import "fontawesome";
+@iconSpritePath: image-url("twitter/bootstrap/glyphicons-halflings.png");
+@iconWhiteSpritePath: image-url("twitter/bootstrap/glyphicons-halflings-white.png");
 
 // Your custom LESS stylesheets goes here
 //
@@ -26,11 +10,21 @@ body {
 // you may use and inherit here
 //
 // If you'd like to override bootstrap's own variables, you can do so here as well
-// See http://twitter.github.com/bootstrap/less.html for their names and documentation
+// See http://twitter.github.com/bootstrap/customize.html#variables for their names and documentation
 //
 // Example:
-// @linkColor: #ff0000;
+// @link-color: #ff0000;
 
+// Glyphicons
+@import "twitter/bootstrap/glyphicons.less";
+@font-face {
+  font-family: 'Glyphicons Halflings';
+  src: url('/assets/glyphicons-halflings-regular.eot');
+  src: url('/assets/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('/assets/glyphicons-halflings-regular.woff') format('woff'), url('/assets/glyphicons-halflings-regular.ttf') format('truetype'), url('/assets/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+}
+
+// for navbar fixed to top
+body { padding-top: 70px; }
 
 hr {
   margin: 5px 0;
@@ -65,7 +59,7 @@ h1, h2.normal2 {
   font-size: 20px;
   background: #F8F8F8;
   border-left: 11px double #CCC;
-  padding: 0px 10px;
+  padding: 13px 10px;
 }
 
 h3 .date {
@@ -82,4 +76,17 @@ h3 .hilight {
   padding-bottom: 0px;
   margin: 25px 0 25px;
   border-bottom: 1px solid #eeeeee;
+}
+
+
+/* simple_formで日付selectを作る場合に改行を適切にできるように */
+.form-group-inline {
+  .control-label {
+    display: block;
+  }
+
+  .form-control {
+    display: inline;
+    width: 32%;
+  }
 }

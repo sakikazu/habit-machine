@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
-# gem 'rails', '4.0.1'
-gem 'rails', '4.1.0.beta1'
+gem 'rails', '4.1.14'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -22,7 +21,7 @@ gem 'acts-as-taggable-on'
 gem 'dotenv-rails'
 
 gem 'simple_form'
-gem 'best_in_place', github: 'bernat/best_in_place', branch: "rails-4"
+gem 'best_in_place', '~> 3.0.1'
 gem 'lazy_high_charts'
 
 gem 'faker'

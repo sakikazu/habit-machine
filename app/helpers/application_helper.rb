@@ -5,7 +5,8 @@ module ApplicationHelper
   # 記録データのメモ表示(habits#index用)
   #
   def dispmemo(memo)
-    icon = '<i class="icon-comment"> </i>'
+	return "" if memo.blank?
+    icon = '<span class="glyphicon glyphicon-comment"> </span>'
     link_to icon.html_safe, "#", title: memo
   end
 
@@ -91,7 +92,7 @@ EOS
 EOS
     else
       output += <<"EOS"
-  #{link_to '<i class="icon-heart"></i>&nbsp;イイネ '.html_safe, nices_path(:type => content_type, :content_id => content.id, :area => area), :method => :post, :remote => true}
+  #{link_to '<span class="glyphicon glyphicon-heart"></span>&nbsp;イイネ '.html_safe, nices_path(:type => content_type, :content_id => content.id, :area => area), :method => :post, :remote => true}
 EOS
     end
 
