@@ -1,7 +1,7 @@
 <p style="text-align:center"><%= link_to "今月(#{Date.today.strftime("%Y年%m月")})", result_habits_path, class: "btn btn-default" %></p>
-<%= form_tag result_habits_path, method: :get, style: "text-align:center" do %>
-  <%= date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true}, {class: "span2"} %>
-  <%= submit_tag "移動" %>
+<%= form_tag result_habits_path, method: :get, style: "text-align:center", class: "form-inline" do %>
+  <%= date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true}, {class: "form-control"} %>
+  <%= submit_tag "移動", class: "btn btn-default" %>
 <% end %>
 
 <div class="page-header"><h3>テーブル表示</h3></div>

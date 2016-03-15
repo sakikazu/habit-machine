@@ -1,3 +1,7 @@
+<div class="mb30">
+  <%= link_to "Back", :back, class: "btn btn-default" %>
+</div>
+
 <h2>ユーザー情報更新</h2>
 
 <% if resource.errors.any? %>
@@ -7,17 +11,15 @@
 
 <%= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f| %>
 
-  <div class="form-inputs">
-    <%= f.input :email, :required => true, :autofocus => true, label: "メールアドレス" %>
-    <%= f.input :password, :autocomplete => "off", :hint => "※パスワードを変更しない場合は空にしてください", :required => false, label: "パスワード" %>
-    <%= f.input :password_confirmation, :required => false, label: "パスワード（確認用）" %>
-    <%= f.input :familyname, label: "名字", required: true %>
-    <%= f.input :givenname, label: "名前", required: true %>
-    <%= f.input :current_password, :hint => "※情報を変更するには現在のパスワードが必要です", :required => true, label: "現在のパスワード" %>
-  </div>
+  <%= f.input :email, :required => true, :autofocus => true, label: "メールアドレス" %>
+  <%= f.input :password, :autocomplete => "off", :hint => "※パスワードを変更しない場合は空にしてください", :required => false, label: "パスワード" %>
+  <%= f.input :password_confirmation, :required => false, label: "パスワード（確認用）" %>
+  <%= f.input :familyname, label: "名字", required: true %>
+  <%= f.input :givenname, label: "名前", required: true %>
+  <%= f.input :current_password, :hint => "※情報を変更するには現在のパスワードが必要です", :required => true, label: "現在のパスワード" %>
 
   <div class="form-actions">
-    <%= f.button :submit, "更新する" %>
+    <%= f.button :submit, "更新する", class: "btn btn-primary" %>
   </div>
 <% end %>
 
@@ -26,6 +28,4 @@
 
 <p>Unhappy? <%#= link_to "Cancel my account", registration_path(resource_name), :data => { :confirm => "Are you sure?" }, :method => :delete %>.</p>
 -->
-
-<%= link_to "Back", :back %>
 

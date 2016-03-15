@@ -15,6 +15,8 @@ class Diary < ActiveRecord::Base
     :url => "/upload/#{content_name}/:id/:style/:basename.:extension",
     :path => ":rails_root/public/upload/#{content_name}/:id/:style/:basename.:extension"
 
+  validates_attachment :image,
+    content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
 
   attr_accessor :search_word
 

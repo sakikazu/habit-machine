@@ -1,11 +1,11 @@
 <div class="row">
-  <div class="col-sm-2 col-sm-offset-5 jumbotron">
+  <div class="col-sm-2 col-sm-offset-1 well">
     <% @diaries.each do |diary| %>
       <%= link_to "#{dispdate(diary.record_at, false)} #{diary.title_mod}", "#diary#{diary.id}" %>
       <hr>
     <% end %>
   </div>
-  <div class="span7">
+  <div class="col-sm-8">
 
     <% @years.each do |year| %>
       <%= link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary" %>
