@@ -15,7 +15,7 @@ gem 'paperclip'
 gem 'exifr'
 gem "rails_autolink"
 gem 'kaminari'
-gem 'acts-as-taggable-on'
+gem 'acts-as-taggable-on', '~> 3.4'
 # gem 'jpmobile'
 
 gem 'dotenv-rails'

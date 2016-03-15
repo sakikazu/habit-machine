@@ -287,7 +287,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  acts-as-taggable-on
+  acts-as-taggable-on (~> 3.4)
   awesome_print
   best_in_place (~> 3.0.1)
   capistrano (= 3.2.1)
