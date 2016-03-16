@@ -3,7 +3,7 @@
 <%= "<p class='btn btn-block btn-danger disabled'>シークレット日記</p>".html_safe if @diary.is_secret %>
 <%= "<p class='btn btn-block btn-warning disabled'>ハイライト日記</p>".html_safe if @diary.is_hilight %>
 
-<div class="jumbotron">
+<div class="well">
   <% if @diary.image.present? -%>
     <%= image_tag(@diary.image(:large)) %>
     <br><br>

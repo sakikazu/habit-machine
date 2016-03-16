@@ -17,8 +17,9 @@
 
 // for best_in_place
 //= require best_in_place
-//= require jquery-ui
-//= require best_in_place.jquery-ui
+// これがあると、autocompleteが動かなくなったのでコメントアウト
+// require jquery-ui
+// require best_in_place.jquery-ui
 
 // lazy_high_charts
 //= require highcharts/highcharts

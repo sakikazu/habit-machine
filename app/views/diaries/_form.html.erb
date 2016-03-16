@@ -1,7 +1,7 @@
 <% content_for :addjs do %>
 <script>
 $(function(){
-  var pattern = "<%= Tag.all.map{|t| t.name}.join(",") %>".split(",");
+  var pattern = "<%= Tag.order(:name).map{|t| t.name}.join(",") %>".split(",");
   $('#taglist').autocomplete(pattern, {
       minChars: 0, // 文字入力なしで↓キーを押すだけで候補が表示されるように
       multiple: true,
