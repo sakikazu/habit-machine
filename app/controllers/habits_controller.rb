@@ -192,7 +192,13 @@ class HabitsController < ApplicationController
         prev_data = 0
         @date_term.each do |date|
           found_record = result[:records].detect{|r| r.record_at == date} if result[:records].present?
-          if found_record.present?
+          # 折れ線グラフの月の初日のデータが記録されていなかった場合、当月以前の最後のデータを取得してそれを使う
+          if date == date.beginning_of_month and found_record.blank?
+            last_record = Record.where(habit_id: result[:id]).where("value IS NOT NULL").where("record_at < ?", date.beginning_of_month).order("record_at DESC").first
+            val_beginning_of_month = last_record.blank? ? 0 : last_record.value
+            graph_data << val_beginning_of_month
+            prev_data = val_beginning_of_month
+          elsif found_record.present?
             graph_data << found_record.value
             prev_data = found_record.value
           else
