@@ -23,7 +23,7 @@ set :scm, :git
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{.env config/mysqldump.ini .ruby-version .ruby-gemset}
+set :linked_files, %w{.env config/mysqldump.ini .ruby-version .ruby-gemset public/assets/glyphicons-halflings-regular.woff public/assets/glyphicons-halflings-regular.ttf public/assets/glyphicons-halflings-regular.woff2 public/assets/glyphicons-halflings-regular.svg public/assets/glyphicons-halflings-regular.eot}
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w{log tmp/cache tmp/sockets vendor/bundle public/upload}
