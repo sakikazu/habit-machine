@@ -50,9 +50,9 @@
 
         <div class="collapse navbar-collapse" id="nav-collapse">
           <ul class="nav navbar-nav">
-            <li class="<%= controller.controller_name == "diaries" ? "active" : "" %>"><%= link_to "日記", diaries_path %></li>
+            <li class="<%= controller.controller_name == "habits" and controller.action_name != "result" and controller.action_name != "top" ? "active" : "" %>"><%= link_to "習慣", habits_path %></li>
+            <li class="<%= controller.controller_name == "diaries" and controller.action_name != "hilight" ? "active" : "" %>"><%= link_to "日記", diaries_path %></li>
             <li class="<%= controller.controller_name == "habits" and controller.action_name == "result" ? "active" : "" %>"><%= link_to "記録結果", result_habits_path %></li>
-            <li class="<%= controller.controller_name == "habits" and controller.action_name == "goal" ? "active" : "" %>"><%= link_to "目標", goal_habits_path %></li>
             <li class="<%= controller.controller_name == "diaries" and controller.action_name == "hilight" ? "active" : "" %>"><%= link_to "人生ハイライト", hilight_diaries_path %></li>
             <li class="<%= controller.controller_name == "senses" ? "active" : "" %>"><%= link_to "意識付け", senses_path %></li>
             <li><%= link_to "ユーザー情報", edit_user_registration_path %></li>

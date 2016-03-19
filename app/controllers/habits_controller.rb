@@ -31,19 +31,19 @@ class HabitsController < ApplicationController
 
   end
 
-  #
-  # 目標一覧
-  #
-  def goal
+
+  # GET /habits
+  # GET /habits.json
+  def index
     @enable_habits = Habit.by_user(current_user).enable
     @disable_habits = Habit.by_user(current_user).disable
     @close_habits = Habit.by_user(current_user).close
   end
 
-
-  # GET /habits
-  # GET /habits.json
-  def index
+  #
+  # top
+  #
+  def top
 
     # 起点（ページの中心日）の前後＊日分のデータが対象
     if params[:one_day].present?

@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   resources :habits do
     collection do
       get 'result'
-      get 'goal'
+      get 'top'
     end
   end
 
@@ -87,7 +87,7 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  root :to => 'habits#index'
+  root :to => 'habits#top'
 
   # See how all your routes lay out with "rake routes"
 

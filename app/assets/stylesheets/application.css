@@ -37,6 +37,10 @@ footer {
   font-weight: bold;
   color: red;
 }
+.hint {
+  color: #666;
+  font-size: 85%;
+}
 .big {
   font-size: 120%;
 }

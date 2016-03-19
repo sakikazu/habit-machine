@@ -1,0 +1,12 @@
+<div class="well">
+  <h4><%= link_to habit.title, habit_path(habit.id) %></h4>
+  <% if habit.goal.present? %>
+    <p class="important"><%= sani_custom_br(habit.goal) %></p>
+  <% end %>
+  <% if habit.memo.present? %>
+    <p class="hint">
+      [memo]<br>
+      <%= sani_custom_br(habit.memo) %>
+    </p>
+  <% end %>
+</div>
