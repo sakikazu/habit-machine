@@ -1,8 +1,8 @@
 <div class="clearfix mb30">
-  <p style="float: left"><%= link_to "＜＜", habits_path(one_day: @one_day - 7), class: "btn btn-default" %></p>
-  <p style="float: right"><%= link_to "＞＞", habits_path(one_day: @one_day + 7), class: "btn btn-default" %></p>
-  <p style="text-align:center"><%= link_to "本日(#{Date.today})", habits_path, class: "btn btn-default" %></p>
-  <%= form_tag habits_path, method: :get, style: "text-align:center", class: "form-inline" do %>
+  <p style="float: left"><%= link_to "＜＜", root_path(one_day: @one_day - 7), class: "btn btn-default" %></p>
+  <p style="float: right"><%= link_to "＞＞", root_path(one_day: @one_day + 7), class: "btn btn-default" %></p>
+  <p style="text-align:center"><%= link_to "本日(#{Date.today})", root_path, class: "btn btn-default" %></p>
+  <%= form_tag root_path, method: :get, style: "text-align:center", class: "form-inline" do %>
     <%= date_select :record_at, :one_day, {default: @one_day}, {class: "form-control"} %>
     <%= submit_tag "移動", class: "btn btn-default" %>
   <% end %>
