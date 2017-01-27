@@ -7,7 +7,7 @@ class Diary < ActiveRecord::Base
   has_attached_file :image,
     :styles => {
       :small => "80x80>",
-      :large => "800x800>"
+      :large => "1600x1600>"
     },
     :convert_options => {
       :small => ['-quality 70', '-strip'],

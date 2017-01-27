@@ -1,7 +1,7 @@
 <div class="row">
 <div class="col-sm-8 col-sm-offset-2">
 
-<h1>習慣一覧</h1>
+<h1 class="normal">習慣一覧</h1>
 
 <% @enable_habits.each do |habit| %>
   <%= render partial: 'index_detail', locals: {habit: habit} %>

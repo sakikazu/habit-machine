@@ -1,12 +1,13 @@
-<h2 class="normal2"><%= @diary.title %>　<small><%= tags_link(@diary) %></small>　(<%= "#{dispdate(@diary.record_at, true)}の日記" %>)</h2>
+<h2 class="hilight mt30 mb25"><%= @diary.title %>　<small><%= tags_link(@diary) %></small>　(<%= "#{dispdate(@diary.record_at, true)}の日記" %>)</h2>
 
 <%= "<p class='btn btn-block btn-danger disabled'>シークレット日記</p>".html_safe if @diary.is_secret %>
 <%= "<p class='btn btn-block btn-warning disabled'>ハイライト日記</p>".html_safe if @diary.is_hilight %>
 
 <div class="well">
   <% if @diary.image.present? -%>
-    <%= image_tag(@diary.image(:large)) %>
-    <br><br>
+    <div class="mb25">
+      <%= image_tag(@diary.image(:large), width: "100%", class: "img-thumbnail") %>
+    </div>
   <% end -%>
 
   <%= sani_custom_br(@diary.content) %>

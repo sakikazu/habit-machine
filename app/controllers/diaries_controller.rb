@@ -1,5 +1,5 @@
 class DiariesController < ApplicationController
-  before_action :set_diary, only: [:show, :edit, :update, :destroy]
+  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image]
   before_filter :authenticate_user!
 
   # GET /diaries
@@ -52,6 +52,11 @@ class DiariesController < ApplicationController
     end
   end
 
+  def delete_image
+    @diary.image = nil
+    @diary.save
+    redirect_to edit_diary_path(@diary), notice: "画像を削除しました."
+  end
 
   # GET /diaries/1
   # GET /diaries/1.json

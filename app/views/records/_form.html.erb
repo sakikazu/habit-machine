@@ -1,4 +1,4 @@
-<h1><%= @record.habit.title %>の記録</h1>
+<h1 class="normal"><%= @record.habit.title %>の記録</h1>
 
   <%= simple_form_for(@record, url: [@record.habit, @record]) do |f| %>
   <%= f.error_notification %>
