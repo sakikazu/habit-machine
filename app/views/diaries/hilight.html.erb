@@ -5,7 +5,7 @@
       <hr>
     <% end %>
   </div>
-  <div class="col-sm-8">
+  <div class="col-sm-7">
 
     <% @years.each do |year| %>
       <%= link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary" %>
@@ -20,7 +20,7 @@
         <small><%= tags_link(diary) %></small>
       </h3>
     <div class="well well2">
-      <p><%= link_to(image_tag(diary.image(:large)), diary.image(:original)) if diary.image.present? %></p>
+      <p class="mb25"><%= link_to(image_tag(diary.image(:large), width: "100%", class: "img-thumbnail"), diary.image(:original)) if diary.image.present? %></p>
       <p><%= sani_custom_br(diary.content) %></p>
     </div>
     <% end -%>
