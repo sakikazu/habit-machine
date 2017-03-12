@@ -180,7 +180,7 @@ class HabitsController < ApplicationController
       records = {}
       records_group_by_habit[habit.id].each do |r|
         records[r.record_at.to_s] = r
-      end
+      end if records_group_by_habit[habit.id].present?
       habit_results << {id: habit.id, title: habit.title,
                         value_unit: habit.value_unit,
                         records: records}
