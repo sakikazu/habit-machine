@@ -94,6 +94,12 @@ footer {
 .text-center {
   text-align: center;
 }
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
 
 table.th-vertical-top th {
   vertical-align: top;
@@ -130,6 +136,7 @@ a.colorbox img, a.colorbox_fix_size img{
   .record_memo {
     font-size: 80%;
     color: #666;
+    text-align: left;
   }
 }
 

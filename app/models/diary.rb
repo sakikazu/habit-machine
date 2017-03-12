@@ -38,4 +38,9 @@ class Diary < ActiveRecord::Base
       return oldest_diary.record_at.year..Date.today.year
     end
   end
+
+  def self.group_by_record_at(current_user, date_term)
+    diaries = self.by_user(current_user).where(record_at: date_term).order("id ASC")
+    diaries.group_by{|d| d.record_at}
+  end
 end

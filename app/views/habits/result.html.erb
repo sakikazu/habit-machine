@@ -4,13 +4,22 @@
   <%= submit_tag "移動", class: "btn btn-default" %>
 <% end %>
 
-<div class="page-header"><h3>すべての記録結果（閲覧用）</h3></div>
+<div class="page-header"><h3>
+    すべての記録結果（閲覧用）　
+    <small>
+      <% if @showable.present? %>
+        <%= link_to "通常モード", result_habits_path, class: "btn btn-default" %>
+      <% else %>
+        <%= link_to "全部見るモード", result_habits_path(showable: 1), class: "btn btn-default" %>
+      <% end %>
+    </small>
+</h3></div>
 
-<table class="table table-bordered">
+<table class="table table-bordered" style="table-layout: <%= @showable.present? ? "fixed" : "auto" %>">
   <tr>
-    <th>#############</th> <!-- ここに日本語以外の文字を入れないとセル幅が広くなってくれなかった（widthが効かない） -->
+    <th style="width:150px"><%= @showable.present? ? "" : "#############" %></th> <!-- table-layout: "auto"だとwidthが効かないので、日本語以外の文字で埋める -->
     <% @date_term.each do |date| %>
-      <th class="center <%= dateclass(date) %>">
+      <th class="center <%= dateclass(date) %>" style="<%= "width: 180px" if @showable.present? %>">
         <%= dispdate(date) %>
       </th>
     <% end %>
@@ -29,13 +38,35 @@
         <% found_record = habit[:records][date.to_s] %>
         <% if found_record.present? %>
           <div class="record_value"><%= found_record.value %></div>
-          <div class="record_memo"><%= found_record.memo %></div>
+          <% if found_record.memo.present? %>
+            <div class="record_memo">
+              <% if @showable.present? %>
+                <%= simple_format(h(found_record.memo)) %>
+              <% else %>
+                <%= found_record.memo.truncate(30) %>
+              <% end %>
+            </div>
+          <% end %>
         <% end %>
         <%#= result_icon(found_record) if found_record.present? %>
       </td>
     <% end %>
   </tr>
 <% end %>
+
+  <tr>
+    <th><%= link_to "日記", diaries_path %></th>
+    <% @date_term.each do |date| %>
+      <td>
+        <% is_first_diary = true %>
+        <% @diaries[date].each do |diary| %>
+          <%= "<hr>".html_safe unless is_first_diary %>
+          <%= show_diary_for_toppage(diary) %>
+          <% is_first_diary = false %>
+        <% end if @diaries[date].present? %>
+      </td>
+    <% end %>
+  </tr>
 
 </table>
 

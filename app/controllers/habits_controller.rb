@@ -7,6 +7,10 @@ class HabitsController < ApplicationController
   # 記録結果
   #
   def result
+    @action_name = "記録の結果"
+
+    @showable = params[:showable]
+
     # 対象月
     if params[:target].present? # from Date Form
       target_month = Date.new(
@@ -30,6 +34,7 @@ class HabitsController < ApplicationController
     habit_results_for_bou = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_BOU))
     @habits_for_bou_graph = build_bou_graph(habit_results_for_bou)
 
+    @diaries = Diary.group_by_record_at(current_user, @date_term)
   end
 
 
@@ -45,6 +50,7 @@ class HabitsController < ApplicationController
   # top
   #
   def top
+    @action_name = "トップページ"
 
     # 起点（ページの中心日）の前後＊日分のデータが対象
     if params[:one_day].present?
@@ -76,9 +82,7 @@ class HabitsController < ApplicationController
       @habits << {id: habit.id, title: habit.title, value_unit: habit.value_unit, records: records}
     end
 
-    # 対象期間分の日記データを取得
-    @diaries = Diary.by_user(current_user).where(record_at: @date_term).order("id ASC")
-    @diaries = @diaries.group_by{|d| d.record_at}
+    @diaries = Diary.group_by_record_at(current_user, @date_term)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -232,6 +236,8 @@ class HabitsController < ApplicationController
     return LazyHighCharts::HighChart.new('graph') do |f|
       f.title(text: '棒グラフタイプの結果')
       f.xAxis(categories: xAxis_categories, tickInterval: tickInterval)
+      # デフォルトだと画面サイズになってしまい、棒グラフの棒が細くなりすぎるのを防ぐため
+      f.chart(width: 3000)
 
       results_for_bou.each do |result|
         graph_data = []

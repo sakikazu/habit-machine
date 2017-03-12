@@ -5,7 +5,7 @@ module ApplicationHelper
   # <title>
   #
   def page_title
-    action_name_h = case controller.action_name
+    action_name_h = @action_name || case controller.action_name
                     when "show"
                       ""
                     when "edit"
