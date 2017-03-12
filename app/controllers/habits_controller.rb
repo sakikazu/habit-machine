@@ -1,6 +1,7 @@
 class HabitsController < ApplicationController
   before_action :set_habit, only: [:show, :edit, :update, :destroy]
-  before_filter :authenticate_user!
+  before_action :set_content_title, only: [:show, :edit]
+  before_action :authenticate_user!
 
   #
   # 記録結果
@@ -153,6 +154,10 @@ class HabitsController < ApplicationController
   end
 
   private
+  def set_content_title
+    @content_title = @habit.present? ? @habit.title : ""
+  end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_habit
     @habit = Habit.by_user(current_user).find(params[:id])

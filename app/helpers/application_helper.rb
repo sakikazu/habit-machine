@@ -2,6 +2,36 @@
 module ApplicationHelper
 
   #
+  # <title>
+  #
+  def page_title
+    action_name_h = case controller.action_name
+                    when "show"
+                      ""
+                    when "edit"
+                      "編集 | "
+                    when "index"
+                      "一覧 | "
+                    when "new"
+                      "新規作成 | "
+                    end
+    controller_name_h = case controller.controller_name
+                        when "senses"
+                          "意識付け"
+                        when "tags"
+                          "日記タグ"
+                        when "diaries"
+                          "日記"
+                        when "habits"
+                          "習慣"
+                        when "records"
+                          "記録"
+                        end
+
+    "#{action_name_h}#{@content_title}[#{controller_name_h}]"
+  end
+
+  #
   # 記録データのメモ表示(habits#index用)
   #
   def dispmemo(memo)

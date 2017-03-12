@@ -1,6 +1,7 @@
 class DiariesController < ApplicationController
   before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image]
-  before_filter :authenticate_user!
+  before_action :set_content_title, only: [:show, :edit]
+  before_action :authenticate_user!
 
   # GET /diaries
   # GET /diaries.json
@@ -143,6 +144,9 @@ class DiariesController < ApplicationController
   end
 
   private
+  def set_content_title
+    @content_title = @diary.present? ? @diary.title : ""
+  end
   # Use callbacks to share common setup or constraints between actions.
   def set_diary
     @diary = Diary.by_user(current_user).find(params[:id])

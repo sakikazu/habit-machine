@@ -1,5 +1,7 @@
 class SensesController < ApplicationController
   before_action :set_sense, only: [:show, :edit, :update, :destroy]
+  before_action :set_content_title, only: [:edit]
+  before_action :authenticate_user!
 
   # GET /senses
   def index
@@ -54,6 +56,10 @@ class SensesController < ApplicationController
   end
 
   private
+  def set_content_title
+    @content_title = @sense.present? ? @sense.title : ""
+  end
+
     # Use callbacks to share common setup or constraints between actions.
     def set_sense
       @sense = Sense.by_user(current_user).find(params[:id])
