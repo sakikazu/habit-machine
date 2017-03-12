@@ -68,19 +68,33 @@ class HabitsController < ApplicationController
     @date_term = (@one_day - 3)..(@one_day + 3)
 
     # 対象期間分の習慣データを取得
-    habits = Habit.by_user(current_user).enable
     @habits = []
-    # todo habitsを回すことで、その度にHabitが一個ずつLoadされてるようにログが出るんだけど、最初に一気にLoadしてくれてないのかな？
+    habits = Habit.by_user(current_user).enable
+    records = Record.where(habit_id: habits.map{|h| h.id}, record_at: @date_term).order(:record_at)
+    records_grouped_by_habit = records.group_by{|r| r.habit_id}
+
     habits.each do |habit|
       records = []
-      # todo ここはマトリックス分のselectが発生するので、一気にselectしたい
-      # todo これ使うかな→ @records = @habits.includes(:records).where("records.record_at" => @date_term).group(:habit_id)
-
+      records_by_habit = records_grouped_by_habit[habit.id]
       @date_term.each do |date|
-        records << Record.find_or_new(habit.id, date)
+        found_record = records_by_habit.blank? ? nil : records_by_habit.detect{|r| r.record_at == date}
+        records << (found_record.present? ? found_record : Record.new(habit_id: habit.id, record_at: date))
       end
-      @habits << {id: habit.id, title: habit.title, value_unit: habit.value_unit, records: records}
+
+      @habits << {id: habit.id, title: habit.title, value_unit: habit.value_unit, value_type: habit.value_type, records: records}
     end
+
+    # memo これはシンプルだが、Recordが日付範囲にない場合、LEFT OUTER JOINでもhabitsさえ取得できなくなる。これができるSQLってあるのか？
+    # @habits = Habit.by_user(current_user).enable.includes(:records).where("records.record_at" => @date_term)
+    # @habits.each do |habit|
+      # records_included_new_instance = []
+      # @date_term.each do |date|
+        # found_record = habit.records.detect{|r| r.record_at == date}
+        # records_included_new_instance << (found_record.present? ? found_record : Record.new(habit_id: habit.id, record_at: date))
+      # end
+      # habit.records_included_new_instance = records_included_new_instance
+    # end
+
 
     @diaries = Diary.group_by_record_at(current_user, @date_term)
 
