@@ -17,12 +17,16 @@
 </table>
 
 <h1 class="normal">レコード一覧</h1>
+<%= paginate @records %>
 <% @records.each do |record| %>
   <h4><%= record.record_at %></h4>
-  <%= "#{record.value} #{@habit.value_unit}" %><br>
-  <%= sani_custom(record.memo) %>
+  <p><%= "#{record.value} #{@habit.value_unit}" %></p>
+  <% if record.memo.present? %>
+    <div class="description well well-narrow"><%= simple_format(sani_custom(record.memo)) %></div>
+  <% end %>
   <hr>
 <% end %>
+<%= paginate @records %>
 
  </div>
 </div>

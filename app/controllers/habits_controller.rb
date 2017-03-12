@@ -107,7 +107,7 @@ class HabitsController < ApplicationController
   # GET /habits/1
   # GET /habits/1.json
   def show
-    @records = @habit.records.where("value is not NULL").order("record_at DESC")
+    @records = @habit.records.where("value is not NULL").order("record_at DESC").page(params[:page]).per(200)
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @habit }
