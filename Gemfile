@@ -72,6 +72,13 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'rvm1-capistrano3', require: false
+
+  # エラー画面をわかりやすく整形してくれる
+  gem 'better_errors'
+
+  # better_errorsの画面上にirb/pry(PERL)を表示する
+  gem 'binding_of_caller'
+
 end
 
 
