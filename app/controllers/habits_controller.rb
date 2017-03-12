@@ -22,7 +22,7 @@ class HabitsController < ApplicationController
 
     basic_habits = Habit.by_user(current_user).enable
 
-    @habits_for_table = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_TABLE))
+    @habits_all= build_graph_data(basic_habits.all)
 
     habit_results_for_oresen = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_ORESEN))
     @habits_for_oresen_graph = build_graph(habit_results_for_oresen)
@@ -173,12 +173,17 @@ class HabitsController < ApplicationController
   def build_graph_data(habits)
     habit_results = []
 
-    records_its_type = Record.where(habit_id: habits.map{|h| h.id}).where("value IS NOT NULL").where(record_at: @date_term)
-    records_arranged = records_its_type.group_by{|r| r.habit_id}
+    records_its_type = Record.where(habit_id: habits.map{|h| h.id}).where("value IS NOT NULL").where(record_at: @date_term).order(:record_at)
+    records_group_by_habit = records_its_type.group_by{|r| r.habit_id}
     habits.each do |habit|
+      # group_by{|r| r.record_at.to_s} だとグループ化されたデータは配列になってしまうので使用側で注意が必要になる。のでわざわざループで設定する
+      records = {}
+      records_group_by_habit[habit.id].each do |r|
+        records[r.record_at.to_s] = r
+      end
       habit_results << {id: habit.id, title: habit.title,
                         value_unit: habit.value_unit,
-                        records: records_arranged[habit.id]}
+                        records: records}
     end
     habit_results
   end
@@ -196,7 +201,7 @@ class HabitsController < ApplicationController
         graph_data = []
         prev_data = 0
         @date_term.each do |date|
-          found_record = result[:records].detect{|r| r.record_at == date} if result[:records].present?
+          found_record = result[:records][date.to_s]
           # 折れ線グラフの月の初日のデータが記録されていなかった場合、当月以前の最後のデータを取得してそれを使う
           if date == date.beginning_of_month and found_record.blank?
             last_record = Record.where(habit_id: result[:id]).where("value IS NOT NULL").where("record_at < ?", date.beginning_of_month).order("record_at DESC").first
@@ -230,16 +235,24 @@ class HabitsController < ApplicationController
 
       results_for_bou.each do |result|
         graph_data = []
+        max_value = 0
         @date_term.each do |date|
-          found_record = result[:records].detect{|r| r.record_at == date} if result[:records].present?
+          found_record = result[:records][date.to_s]
           if found_record.present?
             graph_data << found_record.value
+            max_value = found_record.value if max_value < found_record.value
           else
             graph_data << 0
           end
         end
-        f.series(name: "#{result[:title]}(#{result[:value_unit]})", data: graph_data, type: Habit::GRAPH_TYPE_BOU)
+        # ジョギング(km)のデータも小さい値に表示したいので、MAXが30と考えていいかな
+        yaxis_type = max_value > 30 ? 0 : 1
+        f.series(name: "#{result[:title]}(#{result[:value_unit]})", yAxis: yaxis_type, data: graph_data, type: Habit::GRAPH_TYPE_BOU)
       end
+      f.yAxis [
+        {title: {text: "値が大きいやつ", margin: 20} },
+        {title: {text: "値が小さいやつ"}, margin: 20, opposite: true},
+      ]
     end
   end
 

@@ -4,7 +4,7 @@
   <%= submit_tag "移動", class: "btn btn-default" %>
 <% end %>
 
-<div class="page-header"><h3>テーブル表示</h3></div>
+<div class="page-header"><h3>すべての記録結果（閲覧用）</h3></div>
 
 <table class="table table-bordered">
   <tr>
@@ -16,15 +16,22 @@
     <% end %>
   </tr>
 
-<% @habits_for_table.each do |habit| %>
+<% @habits_all.each do |habit| %>
   <tr>
     <th>
       <%= link_to habit[:title], habit_path(habit[:id]) %>
+      <% if habit[:value_unit].present? %>
+        <span class='label label-default'><%= habit[:value_unit] %></span>
+      <% end %>
     </th>
     <% @date_term.each do |date| %>
       <td class="center">
-        <% found_record = habit[:records].detect{|r| r.record_at == date} if habit[:records].present? %>
-        <%= result_icon(found_record) if found_record.present? %>
+        <% found_record = habit[:records][date.to_s] %>
+        <% if found_record.present? %>
+          <div class="record_value"><%= found_record.value %></div>
+          <div class="record_memo"><%= found_record.memo %></div>
+        <% end %>
+        <%#= result_icon(found_record) if found_record.present? %>
       </td>
     <% end %>
   </tr>
