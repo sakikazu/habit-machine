@@ -3,22 +3,64 @@ class DiariesController < ApplicationController
   before_action :set_content_title, only: [:show, :edit]
   before_action :authenticate_user!
 
+  SEARCH_KEY_TAGS = "tags:"
+  SEARCH_KEY_HILIGHT = "hilight:"
+
   # GET /diaries
   # GET /diaries.json
   def index
-    @tag = params[:tag]
-    @search_word = params[:diary][:search_word] if params[:diary]
-    @search_diary = Diary.new(search_word: @search_word)
+    @diary_for_search = Diary.new
+    @searching = false
+    @diaries = Diary.by_user(current_user)
 
-    # タグでフィルタリング
-    if @tag.present?
-      @diaries = Diary.tagged_with(@tag)
-    elsif @search_word.present?
-      @diaries = Diary.where('title like :q OR content like :q', :q => "%#{@search_word}%")
-    else
-      @diaries = Diary.all
+    # タグのリンクからの遷移の場合
+    if params[:tag].present?
+      tag = params[:tag]
+      @diaries = @diaries.tagged_with(tag)
+      @diary_for_search.search_word = "tags:#{tag}"
+      @searching = true
+    # 検索ボタンからの遷移の場合
+    elsif params[:diary].present? and params[:diary][:search_word].present?
+      search_word = params[:diary][:search_word]
+      @diary_for_search.search_word = search_word
+      @searching = true
+
+      inputs = search_word.split(/[ 　]/).delete_if{|n| n.blank?}
+      if inputs.present?
+        tags = []
+        hilight = false
+        words = []
+        inputs.each do |input|
+          if !input.index(SEARCH_KEY_TAGS).nil?
+            input[SEARCH_KEY_TAGS.length..-1].split(",").each{|n| tags << n}
+          elsif !input.index(SEARCH_KEY_HILIGHT).nil?
+            hilight = true
+          else
+            words << input
+          end
+        end
+
+        if tags.present?
+          # tagged_with(["aaa", "bbb"])のように配列引数だと、そのタグのOR検索となる
+          tags.each do |n|
+            @diaries = @diaries.tagged_with(n)
+          end
+        end
+
+        if hilight
+          @diaries = @diaries.hilight
+        end
+
+        if words.present?
+          words.each do |word|
+            @diaries = @diaries.where('title like :q OR content like :q', :q => "%#{word}%")
+          end
+        end
+      end
     end
-    @diaries = @diaries.by_user(current_user).order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
+    @diaries = @diaries.order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
+
+    @tags = Tag.all
 
     respond_to do |format|
       format.html # index.html.erb
@@ -34,7 +76,7 @@ class DiariesController < ApplicationController
   def hilight
     @years = Diary.all_years
 
-    @diaries = Diary.by_user(current_user).where(is_hilight: true).order(["record_at ASC", "id ASC"])
+    @diaries = Diary.by_user(current_user).hilight.order(["record_at ASC", "id ASC"])
 
     if params[:all].present?
       return
