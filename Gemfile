@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.14'
+gem 'rails', '~> 4.2'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -61,7 +61,7 @@ gem 'unicorn'
 gem 'foreman'
 
 # 定数管理
-gem 'rails_config'
+gem 'config'
 
 group :development do
   # erbからhamlに変換
@@ -92,7 +92,7 @@ group :development, :test do
   # pryの入力に色付け
   gem 'pry-coolline'
 
-  # デバッカー
+  # デバッガー
   gem 'pry-byebug'
 
   # Pryでの便利コマンド
