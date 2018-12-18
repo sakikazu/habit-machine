@@ -26,10 +26,10 @@ gem 'lazy_high_charts'
 
 gem 'faker'
 
-gem 'therubyracer', platforms: :ruby
-gem 'less-rails'
-gem "twitter-bootstrap-rails"
-# gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
+gem 'mini_racer'
+# todo これがあると色々エラー。なくても大丈夫なら削除する
+# gem 'less-rails'
+gem 'bootstrap', '~> 4.1.3'
 # gem 'execjs'
 
 # Gems used only for assets and not required
@@ -45,6 +45,7 @@ group :assets do
 end
 
 # memo jquery 1.9以上になるとliveが使えずエラーになるのでバージョン指定
+# todo liveを使わないようにして最新にしたい
 gem 'jquery-rails', '2.1.3'
 gem 'jquery-ui-rails', '2.0.2'
 

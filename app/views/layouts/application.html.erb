@@ -64,7 +64,16 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-        <%= bootstrap_flash %>
+        <% if flash[:error].present? %>
+          <div class=".alert.alert-danger">
+            <%= flash[:error] %>
+		  </div>
+        <% end %>
+        <% if flash[:info].present? %>
+          <div class=".alert.alert-info">
+            <%= flash[:info] %>
+		  </div>
+        <% end %>
         <%= yield %>
       </div><!--/row-->
 
