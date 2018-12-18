@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
@@ -37,51 +37,50 @@
   </head>
   <body class="<%= controller.controller_name %>_controller">
 
-    <div class="navbar navbar-default navbar-fixed-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse" aria-expanded="false">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="/"><strong><%= current_user.fullname %></strong>は習慣の機械です(￣ー￣)</a>
-        </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/">HabitMachine</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-        <div class="collapse navbar-collapse" id="nav-collapse">
-          <ul class="nav navbar-nav">
-            <li class="<%= controller.controller_name == "habits" and controller.action_name != "result" and controller.action_name != "top" ? "active" : "" %>"><%= link_to "習慣", habits_path %></li>
-            <li class="<%= controller.controller_name == "diaries" and controller.action_name != "hilight" ? "active" : "" %>"><%= link_to "日記", diaries_path %></li>
-            <li class="<%= controller.controller_name == "habits" and controller.action_name == "result" ? "active" : "" %>"><%= link_to "記録結果", result_habits_path %></li>
-            <li class="<%= controller.controller_name == "diaries" and controller.action_name == "hilight" ? "active" : "" %>"><%= link_to "人生ハイライト", hilight_diaries_path %></li>
-            <li class="<%= controller.controller_name == "senses" ? "active" : "" %>"><%= link_to "意識付け", senses_path %></li>
-            <li><%= link_to "ユーザー情報", edit_user_registration_path %></li>
-            <li><%= link_to "ログアウト", destroy_user_session_path, method: :delete %></li>
-          </ul>
-        </div><!--/#nav-collapse -->
-      </div>
-    </div>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item <%= controller.controller_name == "habits" and controller.action_name != "result" and controller.action_name != "top" ? "active" : "" %>">
+			  <%= link_to "習慣", habits_path, class: 'nav-link' %>
+		  </li>
+		  <li class="nav-item <%= controller.controller_name == "diaries" and controller.action_name != "hilight" ? "active" : "" %>">
+			  <%= link_to "日記", diaries_path, class: 'nav-link' %>
+		  </li>
+		  <li class="nav-item <%= controller.controller_name == "habits" and controller.action_name == "result" ? "active" : "" %>">
+			  <%= link_to "記録結果", result_habits_path, class: 'nav-link' %>
+		  </li>
+		  <li class="nav-item <%= controller.controller_name == "diaries" and controller.action_name == "hilight" ? "active" : "" %>">
+			  <%= link_to "人生ハイライト", hilight_diaries_path, class: 'nav-link' %>
+		  </li>
+          <li class="nav-item <%= controller.controller_name == "senses" ? "active" : "" %>"><%= link_to "意識付け", senses_path, class: 'nav-link' %></li>
+          <li class="nav-item"><%= link_to "ユーザー情報", edit_user_registration_path, class: 'nav-link' %></li>
+          <li class="nav-item"><%= link_to "ログアウト", destroy_user_session_path, method: :delete, class: 'nav-link' %></li>
+        </ul>
+      </div><!--/#nav-collapse -->
+    </nav>
 
     <div class="container-fluid">
-      <div class="row-fluid">
-        <% if flash[:error].present? %>
-          <div class=".alert.alert-danger">
-            <%= flash[:error] %>
-		  </div>
-        <% end %>
-        <% if flash[:info].present? %>
-          <div class=".alert.alert-info">
-            <%= flash[:info] %>
-		  </div>
-        <% end %>
-        <%= yield %>
-      </div><!--/row-->
-
-      <footer>
-        <p>Habit Machine (Sakikazu Company 2012-<%= Date.today.year %>)</p>
-      </footer>
-
+      <% if flash[:error].present? %>
+        <div class=".alert.alert-danger">
+          <%= flash[:error] %>
+	    </div>
+      <% end %>
+      <% if flash[:info].present? %>
+        <div class=".alert.alert-info">
+          <%= flash[:info] %>
+	    </div>
+      <% end %>
+      <%= yield %>
     </div> <!-- /container -->
+
+    <footer>
+      <p>Habit Machine (Sakikazu Company 2012-<%= Date.today.year %>)</p>
+    </footer>
 
     <!-- Javascripts
     ================================================== -->
