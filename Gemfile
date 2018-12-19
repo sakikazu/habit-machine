@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+ruby '2.5.1'
 gem 'rails', '~> 4.2'
 
 # Bundle edge Rails instead:
@@ -27,16 +28,14 @@ gem 'lazy_high_charts'
 gem 'faker'
 
 gem 'mini_racer'
-# todo これがあると色々エラー。なくても大丈夫なら削除する
-# gem 'less-rails'
+# twitter bootstrap4
 gem 'bootstrap', '~> 4.1.3'
-# gem 'execjs'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', '~> 4.0.0'
-  gem 'coffee-rails', '~> 4.0.0'
+  gem 'sass-rails', '~> 5.0'
+  gem 'coffee-rails', '~> 4.2'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
@@ -116,7 +115,7 @@ group :development, :test do
   gem 'database_rewinder'
 
   # デバッグ情報をフッターに出してくれる
-  gem 'rails-footnotes', '>= 4.0.0', '<5'
+  gem 'rails-footnotes'
 
   gem 'rails-erd'
 end
