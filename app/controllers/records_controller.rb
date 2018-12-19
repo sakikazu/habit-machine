@@ -1,6 +1,6 @@
 class RecordsController < ApplicationController
   before_action :set_record, only: [:show, :edit, :update, :destroy]
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   def update_or_create
     # idではなくhabit_id, record_atでfindしている理由は、まだDBにない状態でフォーム編集し、その直後に再度そこのフォームを編集した場合、idが付加されていないので、idだとそのデータが特定できなくなるため

@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
 ruby '2.5.1'
-gem 'rails', '~> 4.2'
+gem 'rails', '~> 5.2.0'
+gem 'bootsnap' # railsの起動を速くする
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -16,8 +17,7 @@ gem 'paperclip'
 gem 'exifr'
 gem "rails_autolink"
 gem 'kaminari'
-gem 'acts-as-taggable-on', '~> 3.4'
-# gem 'jpmobile'
+gem 'acts-as-taggable-on', '~> 6.0'
 
 gem 'dotenv-rails'
 
@@ -45,8 +45,8 @@ end
 
 # memo jquery 1.9以上になるとliveが使えずエラーになるのでバージョン指定
 # todo liveを使わないようにして最新にしたい
-gem 'jquery-rails', '2.1.3'
-gem 'jquery-ui-rails', '2.0.2'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -64,6 +64,8 @@ gem 'foreman'
 gem 'config'
 
 group :development do
+  gem 'listen'
+
   # erbからhamlに変換
   gem 'erb2haml'
 
@@ -115,7 +117,8 @@ group :development, :test do
   gem 'database_rewinder'
 
   # デバッグ情報をフッターに出してくれる
-  gem 'rails-footnotes'
+  # memo rails5には対応していないようでコメントアウト
+  # gem 'rails-footnotes'
 
   gem 'rails-erd'
 end
