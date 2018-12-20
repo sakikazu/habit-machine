@@ -70,12 +70,11 @@
 
 </table>
 
+<div style="width: 3000px">
+  <div class="page-header"><h3>折れ線グラフ表示</h3></div>
+  <%= high_chart("chart1", @habits_for_oresen_graph) %>
 
-<div class="page-header"><h3>折れ線グラフ表示</h3></div>
-<%= high_chart("chart1", @habits_for_oresen_graph) %>
-
-
-<div class="page-header"><h3>棒グラフ表示</h3></div>
-<%= high_chart("chart2", @habits_for_bou_graph) %>
-
+  <div class="page-header"><h3>棒グラフ表示</h3></div>
+  <%= high_chart("chart2", @habits_for_bou_graph) %>
+</div>
 

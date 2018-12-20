@@ -23,6 +23,7 @@
 // require best_in_place.jquery-ui
 
 // lazy_high_charts
-//= require highcharts/highcharts
-//= require highcharts/highcharts-more
+// NOTE: highchartsはhighstock内でincludeされてるから不要。-moreの方はわからないが動作に異常はないので無効にしとく
+// require highcharts/highcharts
+// require highcharts/highcharts-more
 //= require highcharts/highstock
