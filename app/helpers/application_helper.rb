@@ -98,17 +98,6 @@ module ApplicationHelper
     return ret
   end
 
-  def colorbox_class
-    # request.smart_phone? ? "" : "colorbox"
-    "colorbox"
-  end
-
-  def colorbox_fix_size
-    # request.smart_phone? ? "" : "colorbox_fix_size"
-    "colorbox_fix_size"
-  end
-
-
   def form_html_option
     # request.smart_phone? ? {} : {:multipart => true}
     {:multipart => true}

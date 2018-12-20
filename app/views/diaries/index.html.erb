@@ -21,7 +21,7 @@
         <%= "<p class='btn btn-block btn-warning disabled'>ハイライト日記</p>".html_safe if diary.is_hilight %>
         <br>
 
-        <p class="card-text text-center"><%= link_to(image_tag(diary.image(:small), class: "w-75"), diary.image(:large), {class: colorbox_class}) if diary.image.present? %></p>
+        <p class="card-text text-center"><%= image_tag(diary.image(:small), class: "w-50 img-thumbnail") if diary.image.present? %></p>
         <p class="card-text"><%= sani_custom_br(diary.content) %></p>
         <%= link_to '編集', edit_diary_path(diary), class: "card-link" %>
         <%= link_to '削除', diary, method: :delete, data: { confirm: '本当に日記を削除してもいいですか?' }, class: "card-link" %>

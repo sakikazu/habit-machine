@@ -46,11 +46,5 @@ $(document).on('turbolinks:load', function() {
 		// popoverが古い値もまま表示されたままになる問題があり、消すこともできないので、更新された値で再度表示できるようにする
 		$(this).children('a').popover('update');
 	});
-
-	$(".colorbox").colorbox();
-	$(".colorbox_big").colorbox({
-		width:"700px",
-		height:"650px",
-	});
 })
 
