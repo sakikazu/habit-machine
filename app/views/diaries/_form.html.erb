@@ -2,13 +2,7 @@
 <script>
 $(function(){
   var pattern = "<%= Tag.order(:name).map{|t| t.name}.join(",") %>".split(",");
-  $('#taglist').autocomplete(pattern, {
-      minChars: 0, // 文字入力なしで↓キーを押すだけで候補が表示されるように
-      multiple: true,
-      max: 100, // 最大候補表示数
-      //mustMatch: true, //候補にあるものしか入力できないようにする
-      //autoFill: true //入力中にオートフィルしてくれるみたいだけど、他の文字が入っちゃったりすることがあったので（日本語だからかな）、無効にしておく
-  });
+  $('#taglist').autocompleteMultiple(pattern);
 })
 </script>
 <% end %>

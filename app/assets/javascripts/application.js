@@ -11,7 +11,8 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
-//= require jquery_ujs
+//= require jquery-ui/widgets/autocomplete
+//= require rails-ujs
 //= require turbolinks
 //= require popper
 //= require bootstrap-sprockets
@@ -19,8 +20,7 @@
 
 // for best_in_place
 //= require best_in_place
-// これがあると、autocompleteが動かなくなったのでコメントアウト
-// require jquery-ui
+// todo なにこれ？
 // require best_in_place.jquery-ui
 
 // lazy_high_charts

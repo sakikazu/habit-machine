@@ -42,8 +42,6 @@ group :assets do
   gem 'uglifier', '>= 1.3.0'
 end
 
-# memo jquery 1.9以上になるとliveが使えずエラーになるのでバージョン指定
-# todo liveを使わないようにして最新にしたい
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 
