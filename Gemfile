@@ -28,8 +28,7 @@ gem 'lazy_high_charts'
 gem 'faker'
 
 gem 'mini_racer'
-# twitter bootstrap4
-gem 'bootstrap', '~> 4.1.3'
+gem 'bootstrap', '~> 4.1.3' # twitter bootstrap4
 
 # Gems used only for assets and not required
 # in production environments by default.
