@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-class Diary < ActiveRecord::Base
+class Diary < ApplicationRecord
   acts_as_paranoid
   acts_as_taggable
 
