@@ -85,18 +85,6 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <%#= javascript_include_tag "application" %>
 
-<script>
-$(document).ready(function(){
-  $(".colorbox").colorbox();
-  $(".colorbox_big").colorbox({
-    width:"700px",
-    height:"650px",
-  });
-
-  $(".best_in_place").best_in_place();
-})
-</script>
-
 <!-- ページごとのJS
 (memo: JSライブラリをlayoutの最下で呼び出しているので、各ページのJSはその場所に書いてしまうと、jQueryとかがまだ読み込まれていないのでエラーになる)
 -->

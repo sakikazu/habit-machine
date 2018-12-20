@@ -3,7 +3,8 @@ class RecordsController < ApplicationController
   before_action :authenticate_user!
 
   def update_or_create
-    # idではなくhabit_id, record_atでfindしている理由は、まだDBにない状態でフォーム編集し、その直後に再度そこのフォームを編集した場合、idが付加されていないので、idだとそのデータが特定できなくなるため
+    # idではなくhabit_id, record_atでfindしている理由は、まだDBにない状態でフォーム編集し、その直後に再度そこのフォームを編集した場合、
+    # idが付加されていないので、idだとそのデータが特定できなくなるため
     @record = Record.find_by_habit_id_and_record_at(params[:habit_id], params[:record_at])
 
     if @record

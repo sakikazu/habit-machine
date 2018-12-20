@@ -149,6 +149,8 @@ GEM
     faker (1.9.1)
       i18n (>= 0.7)
     ffi (1.9.25)
+    font-awesome-rails (4.7.0.4)
+      railties (>= 3.2, < 6.0)
     foreman (0.85.0)
       thor (~> 0.19.1)
     globalid (0.4.1)
@@ -390,6 +392,7 @@ DEPENDENCIES
   exifr
   factory_bot
   faker
+  font-awesome-rails
   foreman
   hirb
   hirb-unicode

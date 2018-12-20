@@ -32,12 +32,16 @@ module ApplicationHelper
   end
 
   #
-  # 記録データのメモ表示(habits#index用)
+  # 記録データのメモ表示(best_in_place用)
   #
-  def dispmemo(memo)
-	return "" if memo.blank?
-    icon = '<span class="glyphicon glyphicon-comment"> </span>'
-    link_to icon.html_safe, "#", title: memo
+  def link_including_icon_for_bip(memo)
+    return "" if memo.blank?
+    icon = fa_icon 'comment'
+    link_to icon.html_safe, "#", data: {
+      toggle: 'popover',
+      trigger: 'hover',
+      content: memo
+    }
   end
 
   #

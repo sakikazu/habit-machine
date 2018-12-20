@@ -6,6 +6,7 @@ module HabitsHelper
   #
   def input_value_for_inline_edit(record, habit_value_type)
     # record_formatted_valueの中で使用する(record_formatted_valueの引数にできないのかな、わかりづらい)
+    # todo HabitsController#topをリファクタリングとともにできそうなので対応する
     record.habit_value_type = habit_value_type
 
     # セレクトボックス形式

@@ -23,6 +23,7 @@ gem 'dotenv-rails'
 
 gem 'simple_form'
 gem 'best_in_place', '~> 3.0.1'
+gem 'font-awesome-rails'
 gem 'lazy_high_charts'
 
 gem 'faker'
