@@ -11,13 +11,13 @@ module HabitsHelper
 
     # セレクトボックス形式
     if habit_value_type == 1
-      best_in_place record, :value, nil: "未入力", display_as: :record_formatted_value, type: :select, collection: Record::SYMBOLIC_VALUE, path: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at)
+      best_in_place record, :value, place_holder: "未入力", display_as: :record_formatted_value, as: :select, collection: Record::SYMBOLIC_VALUE, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at)
       # todo ちゃんとヘルパーはimage_tagを出力しているのに画像が表示されない
-      # best_in_place record, :value, nil: "未入力", display_with: lambda{|v| result_icon2(v).html_safe}, type: :select, collection: Record::SYMBOLIC_VALUE
+      # best_in_place record, :value, place_holder: "未入力", display_with: lambda{|v| result_icon2(v).html_safe}, as: :select, collection: Record::SYMBOLIC_VALUE
 
     # 自由入力形式
     else
-      best_in_place record, :value, nil: "未入力", display_as: :record_formatted_value, path: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at)
+      best_in_place record, :value, place_holder: "未入力", display_as: :record_formatted_value, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at)
     end
   end
 
