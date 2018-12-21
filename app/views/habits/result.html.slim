@@ -50,11 +50,11 @@ tr
   - @date_term.each do |date|
     td
       - is_first_diary = true
-      - @diaries[date].each do |diary|
-        = "<hr>".html_safe unless is_first_diary
-        = show_diary_for_toppage(diary)
-        - is_first_diary = false
-        - end if @diaries[date].present?
+      - if @diaries[date].present?
+        - @diaries[date].each do |diary|
+          = "<hr>".html_safe unless is_first_diary
+          = show_diary_for_toppage(diary)
+          - is_first_diary = false
 div[style="width: 3000px"]
   .page-header
     h3

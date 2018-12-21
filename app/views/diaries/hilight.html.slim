@@ -11,17 +11,15 @@
         = link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary"
       = link_to "隠しも表示", hilight_diaries_path(nosecret: true, year: @year), class: "btn btn-light"
     - @diaries.each do |diary|
-      |  <h3 id="diary
-      = diary.id
-      | " class="page-header"> 
-      span.date
-        = dispdate(diary.record_at, true)
-      = " ほど" if diary.is_about_date.present?
-      | 　 
-      span.hilight
-        = link_to diary.title_mod, diary_path(diary)
-      small
-        = tags_link(diary)
+      h3 id="diary#{diary.id}" class="page-header"
+        span.date
+          = dispdate(diary.record_at, true)
+        = " ほど" if diary.is_about_date.present?
+        | 　 
+        span.hilight
+          = link_to diary.title_mod, diary_path(diary)
+        small
+          = tags_link(diary)
       .well.well2
         p.mb25
           = link_to(image_tag(diary.image(:large), width: "100%", class: "img-thumbnail"), diary.image(:original)) if diary.image.present?
