@@ -151,7 +151,7 @@ class HabitsController < ApplicationController
   def update
     respond_to do |format|
       if @habit.update_attributes(habit_params)
-        format.html { redirect_to root_path, notice: '習慣データを更新しました.' }
+        format.html { redirect_to habit_path(@habit), notice: '習慣データを更新しました.' }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }

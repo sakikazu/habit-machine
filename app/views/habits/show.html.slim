@@ -2,7 +2,7 @@
   .col-sm-7
     .form-actions.mb30
       = link_to '戻る', root_path, class: "btn btn-light"
-      = link_to "編集する", edit_habit_path, class: "btn btn-info"
+      =< link_to "編集する", edit_habit_path, class: "btn btn-info"
     table.table.table-striped.table-bordered.table-hover
       tr
         th[width="200"]
@@ -40,8 +40,8 @@
         td
           p
             = sani_custom_br(@habit.memo)
-    h1.normal
-      | レコード一覧
+    .page-header.mt35
+      h2 レコード一覧
     = paginate @records, window: 3, outer_window: 2
     - @records.each do |record|
       h5
