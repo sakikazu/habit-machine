@@ -51,7 +51,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :debug
+  config.log_level = :info
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
@@ -91,12 +91,4 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
-
-  config.middleware.use ExceptionNotification::Rack,
-    :email => {
-      :email_prefix => "[HabitMachine] ", # Subjectのprefix
-      :sender_address => %("HabitMachine_notifier" <notifier@example.com>), # 送信元 ※これは適当アドレスだが、environment.rbでGmailの設定をしているのでGmailが送信元になって送られた
-
-      :exception_recipients => %w(sakikazu15@gmail.com) # あて先の配列
-    }
 end
