@@ -1,0 +1,14 @@
+= simple_form_for(@sense) do |f|
+  = f.error_notification
+  = f.input :title
+  = f.input :description
+  = f.input :content, input_html: {rows: 10}
+  = f.input :start_at, wrapper_html: {class: "form-group-inline"}
+  - if @sense.id.blank?
+    = f.input :end_at, as: :date, start_year: Date.today.year+5, wrapper_html: {class: "form-group-inline"}
+  - else
+    = f.input :end_at, wrapper_html: {class: "form-group-inline"}
+  = f.input :is_inactive, label: "非アクティブ化（過去ページで見れるようになります）"
+  = f.input :sort_order, label: "並び順（小さい数字ほど先に並びます）"
+  .form-actions
+    = f.button :submit, "作成する", class: "btn btn-success"

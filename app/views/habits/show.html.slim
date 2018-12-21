@@ -1,0 +1,55 @@
+.row.justify-content-center.mt15
+  .col-sm-7
+    .form-actions.mb30
+      = link_to '戻る', root_path, class: "btn btn-light"
+      = link_to "編集する", edit_habit_path, class: "btn btn-info"
+    table.table.table-striped.table-bordered.table-hover
+      tr
+        th[width="200"]
+          | タイトル
+        td
+          = @habit.title
+      tr
+        th
+          | ステータス
+        td
+          = @habit.status_name
+      tr
+        th
+          | 結果タイプ
+        td
+          = @habit.result_name
+      tr
+        th
+          | データタイプ
+        td
+          = @habit.value_name
+      tr
+        th
+          | データの単位
+        td
+          = @habit.value_unit
+      tr
+        th
+          | リマインダー(未実装)
+        td
+          = @habit.reminder
+      tr
+        th
+          | メモ
+        td
+          p
+            = sani_custom_br(@habit.memo)
+    h1.normal
+      | レコード一覧
+    = paginate @records
+    - @records.each do |record|
+      h4
+        = record.record_at
+      p
+        = "#{record.value} #{@habit.value_unit}"
+      - if record.memo.present?
+        .description.well.well-narrow
+          = simple_format(sani_custom(record.memo))
+      hr
+    = paginate @records

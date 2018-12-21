@@ -1,0 +1,8 @@
+.row.justify-content-center
+  .col-sm-6
+    .form-actions.mt15
+      = link_to '戻る', diaries_path, class: "btn btn-light"
+      = link_to "詳細を見る", @diary, class: "btn btn-light"
+    h1.normal
+      | 編集する
+    = render 'form'

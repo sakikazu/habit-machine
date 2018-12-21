@@ -64,11 +64,12 @@ gem 'foreman'
 # 定数管理
 gem 'config'
 
+# NOTE: View handlerの設定で使用されるのでどの環境でも必要
+gem 'slim'
+
 group :development do
   gem 'listen'
-
-  # erbからhamlに変換
-  gem 'erb2haml'
+  gem 'slim-rails' # generator時にslim対応可能になる
 
   # Use Capistrano for deployment
   gem 'capistrano', '3.2.1'
@@ -81,9 +82,7 @@ group :development do
 
   # better_errorsの画面上にirb/pry(PERL)を表示する
   gem 'binding_of_caller'
-
 end
-
 
 group :development, :test do
   # Rails application preloader
@@ -123,5 +122,4 @@ group :development, :test do
 
   gem 'rails-erd'
 end
-
 

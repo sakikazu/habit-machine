@@ -1,0 +1,28 @@
+.mt20
+- if @is_past
+  .page-header
+    = link_to '一覧に戻る', senses_path, class: "btn btn-light"
+.bd-callout.bd-callout-warning
+  |  意識付け＝目標みたいなもの 
+.row
+  - @senses.each do |sense|
+    .col-sm-3
+      .card
+        .card-header
+          h5.card-title
+            = sense.title
+          h6.card-subtitle.text-muted
+            = sense.description
+          p.alert.alert-info.mb-0.text-center
+            = sense.start_at
+            |  - 
+            = sense.end_at
+        .card-body
+          p.card-text
+            = simple_format(auto_link(sense.content))
+          = link_to '編集', edit_sense_path(sense), class: "card-link"
+          = link_to '削除', sense, method: :delete, data: { confirm: '本当に削除してもよろしいですか?' }, class: "card-link"
+- unless @is_past
+  .buttons.mt20
+  = link_to '新しい「意識付け」', new_sense_path, class: "btn btn-info"
+  = link_to '過去のもの', past_senses_path, class: "btn btn-light"

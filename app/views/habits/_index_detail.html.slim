@@ -1,0 +1,11 @@
+.well
+  h4
+    = link_to habit.title, habit_path(habit.id)
+  - if habit.goal.present?
+    p.important
+      = sani_custom_br(habit.goal)
+  - if habit.memo.present?
+    p.hint
+      |  [memo]
+      br
+      = sani_custom_br(habit.memo)
