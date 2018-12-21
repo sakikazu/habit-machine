@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-class Habit < ActiveRecord::Base
+class Habit < ApplicationRecord
   acts_as_paranoid
 
   belongs_to :user

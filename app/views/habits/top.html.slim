@@ -1,0 +1,48 @@
+.row.justify-content-center.mt10
+  p.col.text-left
+    = link_to "＜＜", root_path(one_day: @one_day - 7), class: "btn btn-light"
+  p.col.text-center
+    = link_to "本日(#{Date.today})", root_path, class: "btn btn-light"
+  p.col.text-right
+    = link_to "＞＞", root_path(one_day: @one_day + 7), class: "btn btn-light"
+.mx-auto.mb10[style="width: 300px"]
+  = form_tag root_path, method: :get, class: "form-inline" do
+    = date_select :record_at, :one_day, {default: @one_day}, {class: "form-control"}
+    = submit_tag "移動", class: "btn btn-light"
+table.table.table-bordered.table-hover
+  thead
+    tr
+      th
+      - @date_term.each do |date|
+        |  <th class="center 
+        = dateclass(date)
+        | "> 
+        = dispdate(date)
+  tbody
+    - @habits.each do |habit|
+      tr
+        th
+          = link_to habit[:title], habit_path(habit[:id])
+          - if habit[:value_unit].present?
+            span.badge.badge-secondary
+              = habit[:value_unit]
+        - habit[:records].each do |record|
+          td.center
+            - #= link_to '記録', new_habit_record_path(habit.id, habit_id: habit.id, record_at: date)
+            = input_value_for_inline_edit(record, habit[:value_type])
+            = best_in_place record, :memo, place_holder: "memo", display_with: lambda{|v| link_including_icon_for_bip(v).html_safe}, as: :textarea, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at)
+    tr
+      th
+        = link_to "日記", diaries_path
+      - @date_term.each do |date|
+        td
+          p.text-center.mb20
+            = link_to fa_icon('pencil') + ' 日記を書く', new_diary_path(record_at: date), class: "btn btn-light"
+          - is_first_diary = true
+          - if @diaries[date].present?
+            - @diaries[date].each do |diary|
+              = "<hr>".html_safe unless is_first_diary
+              = show_diary_for_toppage(diary)
+              - is_first_diary = false
+br
+= link_to '習慣を登録する', new_habit_path, class: "btn btn-light"

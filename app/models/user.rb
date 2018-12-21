@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   acts_as_paranoid
 
   # Include default devise modules. Others available are:

@@ -1,0 +1,12 @@
+h1.normal
+  = @record.habit.title
+  | の記録
+= simple_form_for(@record, url: [@record.habit, @record]) do |f|
+  = f.error_notification
+  .form-inputs
+    = f.input :habit_id, as: :hidden
+    = f.input :record_at, as: :hidden
+    = f.input :value
+  .form-actions
+    = f.button :submit
+= link_to 'Back', root_path

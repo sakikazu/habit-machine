@@ -1,0 +1,8 @@
+.row.justify-content-center.mt15
+  .col-sm-7
+    .form-actions.mb30
+      = link_to '戻る', root_path, class: "btn btn-light"
+      = link_to "詳細を見る", @habit, class: "btn btn-light"
+    h1.normal
+      | 編集する
+    = render 'form'

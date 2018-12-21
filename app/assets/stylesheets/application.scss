@@ -8,6 +8,9 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
+ *= require jquery-ui/menu
+ *= require jquery-ui/autocomplete
+ *= require font-awesome
  *= require_self
  *= require_tree .
  */
@@ -125,13 +128,6 @@ td {
 .select_menu {
   margin: 20px 0px 30px 0px;
 }
-a.colorbox:hover, a.colorbox_fix_size:hover {
-  opacity: 0.8;
-}
-a.colorbox img, a.colorbox_fix_size img{
-  border: 2px solid tomato;
-}
-
 
 .habits_controller {
   .record_value {
@@ -200,6 +196,10 @@ hr {
 .well2 {
   padding: 5px 20px 10px 20px;
   margin-top: 5px;
+}
+
+.btn-light {
+  border-color: #ccc;
 }
 
 /**********************************************

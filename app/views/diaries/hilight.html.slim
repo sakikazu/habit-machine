@@ -1,0 +1,29 @@
+.row.justify-content-center.mt15
+  .col-sm-2
+    .card
+      ul.list-group.list-group-flush
+        - @diaries.each do |diary|
+          li.list-group-item
+            = link_to "#{dispdate(diary.record_at, false)} #{diary.title_mod}", "#diary#{diary.id}"
+  .col-sm-7
+    .years
+      - @years.each do |year|
+        = link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary"
+      = link_to "隠しも表示", hilight_diaries_path(nosecret: true, year: @year), class: "btn btn-light"
+    - @diaries.each do |diary|
+      |  <h3 id="diary
+      = diary.id
+      | " class="page-header"> 
+      span.date
+        = dispdate(diary.record_at, true)
+      = " ほど" if diary.is_about_date.present?
+      | 　 
+      span.hilight
+        = link_to diary.title_mod, diary_path(diary)
+      small
+        = tags_link(diary)
+      .well.well2
+        p.mb25
+          = link_to(image_tag(diary.image(:large), width: "100%", class: "img-thumbnail"), diary.image(:original)) if diary.image.present?
+        p
+          = sani_custom_br(diary.content)

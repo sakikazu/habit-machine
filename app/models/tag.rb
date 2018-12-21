@@ -1,3 +1,3 @@
-class Tag < ActiveRecord::Base
+class Tag < ApplicationRecord
   validates_uniqueness_of :name
 end

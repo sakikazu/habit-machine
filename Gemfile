@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
 ruby '2.5.1'
-gem 'rails', '~> 4.2'
+gem 'rails', '~> 5.2.0'
+gem 'bootsnap' # railsの起動を速くする
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -16,20 +17,19 @@ gem 'paperclip'
 gem 'exifr'
 gem "rails_autolink"
 gem 'kaminari'
-gem 'acts-as-taggable-on', '~> 3.4'
-# gem 'jpmobile'
+gem 'acts-as-taggable-on', '~> 6.0'
 
 gem 'dotenv-rails'
 
 gem 'simple_form'
 gem 'best_in_place', '~> 3.0.1'
+gem 'font-awesome-rails'
 gem 'lazy_high_charts'
 
 gem 'faker'
 
 gem 'mini_racer'
-# twitter bootstrap4
-gem 'bootstrap', '~> 4.1.3'
+gem 'bootstrap', '~> 4.1.3' # twitter bootstrap4
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -43,13 +43,14 @@ group :assets do
   gem 'uglifier', '>= 1.3.0'
 end
 
-# memo jquery 1.9以上になるとliveが使えずエラーになるのでバージョン指定
-# todo liveを使わないようにして最新にしたい
-gem 'jquery-rails', '2.1.3'
-gem 'jquery-ui-rails', '2.0.2'
+gem 'jquery-rails'
+gem 'jquery-ui-rails'
 
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
+# Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
+gem 'turbolinks', '~> 5'
+
+# Use ActiveModel has_secure_password
+# gem 'bcrypt', '~> 3.1.7'
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'
@@ -63,9 +64,12 @@ gem 'foreman'
 # 定数管理
 gem 'config'
 
+# NOTE: View handlerの設定で使用されるのでどの環境でも必要
+gem 'slim'
+
 group :development do
-  # erbからhamlに変換
-  gem 'erb2haml'
+  gem 'listen'
+  gem 'slim-rails' # generator時にslim対応可能になる
 
   # Use Capistrano for deployment
   gem 'capistrano', '3.2.1'
@@ -78,9 +82,7 @@ group :development do
 
   # better_errorsの画面上にirb/pry(PERL)を表示する
   gem 'binding_of_caller'
-
 end
-
 
 group :development, :test do
   # Rails application preloader
@@ -109,15 +111,15 @@ group :development, :test do
   gem 'rspec-rails'
 
   # fixtureの代わり
-  gem "factory_girl_rails"
+  gem "factory_bot"
 
   # テスト環境のテーブルをきれいにする
   gem 'database_rewinder'
 
   # デバッグ情報をフッターに出してくれる
-  gem 'rails-footnotes'
+  # memo rails5には対応していないようでコメントアウト
+  # gem 'rails-footnotes'
 
   gem 'rails-erd'
 end
-
 

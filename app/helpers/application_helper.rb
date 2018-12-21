@@ -32,12 +32,16 @@ module ApplicationHelper
   end
 
   #
-  # 記録データのメモ表示(habits#index用)
+  # 記録データのメモ表示(best_in_place用)
   #
-  def dispmemo(memo)
-	return "" if memo.blank?
-    icon = '<span class="glyphicon glyphicon-comment"> </span>'
-    link_to icon.html_safe, "#", title: memo
+  def link_including_icon_for_bip(memo)
+    return "" if memo.blank?
+    icon = fa_icon 'comment'
+    link_to icon.html_safe, "#", data: {
+      toggle: 'popover',
+      trigger: 'hover',
+      content: memo
+    }
   end
 
   #
@@ -93,76 +97,6 @@ module ApplicationHelper
     end
     return ret
   end
-
-
-  #
-  # イイネの表示フィールド
-  # 何度もrenderされるので、無理にヘルパーにした
-  #
-  def nice_field(content, content_type, area)
-    output = <<"EOS"
-<script>
-jQuery(document).ready(function(){
-  nice_member();
-})
-</script>
-
-EOS
-
-    if content.nices.size > 0
-      output += <<"EOS"
-<strong style="color:red" class="nice_members" nice_members="#{content.nices.map{|n| n.user.dispname}.join(",")}">イイネ(#{content.nices.size})</strong>
-EOS
-    end
-
-    nice = content.nices.blank? ? nil : content.nices.where(:user_id => current_user.id).first
-    if nice.present?
-      output += <<"EOS"
-  :#{link_to 'イイネを取り消す', nice_path(:id => nice.id, :type => content_type, :content_id => content.id, :area => area), :method => :delete, :remote => true}
-EOS
-    else
-      output += <<"EOS"
-  #{link_to '<span class="glyphicon glyphicon-heart"></span>&nbsp;イイネ '.html_safe, nices_path(:type => content_type, :content_id => content.id, :area => area), :method => :post, :remote => true}
-EOS
-    end
-
-    return output.html_safe
-  end
-
-  def nice_field_disp_only(content)
-    output = <<"EOS"
-<script>
-jQuery(document).ready(function(){
-  nice_member();
-})
-</script>
-
-EOS
-
-    if content.nices.size > 0
-      output += <<"EOS"
-<strong style="color:red" class="nice_members" nice_members="#{content.nices.map{|n| n.user.dispname}.join(",")}">イイネ(#{content.nices.size})</strong>
-EOS
-    end
-
-    return output.html_safe
-  end
-
-
-  def nice_author_and_created_at(obj)
-     "<div class='nice_content_info'>投稿者：#{obj.user.dispname} / 投稿日：#{l obj.created_at}</div>".html_safe
-  end
-
-  def colorbox_class
-    # request.smart_phone? ? "" : "colorbox"
-    "colorbox"
-  end
-
-  def colorbox_fix_size
-    # request.smart_phone? ? "" : "colorbox_fix_size"
-    "colorbox_fix_size"
-  end
-
 
   def form_html_option
     # request.smart_phone? ? {} : {:multipart => true}

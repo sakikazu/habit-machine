@@ -1,0 +1,15 @@
+h2.hilight.mt30.mb25
+  = @diary.title
+  | 　
+  small
+    = tags_link(@diary)
+  | 　(
+  = "#{dispdate(@diary.record_at, true)}の日記"
+  | )
+= "<p class='btn btn-block btn-danger disabled'>シークレット日記</p>".html_safe if @diary.is_secret
+= "<p class='btn btn-block btn-warning disabled'>ハイライト日記</p>".html_safe if @diary.is_hilight
+.well
+  - if @diary.image.present?
+    .mb25
+      = image_tag(@diary.image(:large), width: "100%", class: "img-thumbnail")
+  = sani_custom_br(@diary.content)

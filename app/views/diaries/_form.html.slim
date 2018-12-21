@@ -1,0 +1,30 @@
+- content_for :addjs do
+  script
+    |  $(function(){ var pattern = "<ruby code="= Tag.order(:name).map{|t| t.name}.join(",")"></ruby>".split(","); $('#taglist').autocompleteMultiple(pattern); }) 
+= simple_form_for(@diary) do |f|
+  - if @diary.errors.any?
+    .alert.alert-danger
+      p
+        | 入力エラーがあります。下記のエラー内容を確認してください。
+  = f.input :record_at, as: :date, label: "日付", start_year: 2000, wrapper_html: {class: "form-group-inline"}
+  = f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span6'}, label: "タイトル"
+  = f.input :content, input_html: {class: 'span8', rows: 25}, label: "内容"
+  = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます'}
+  p
+    label.string.optional.control-label
+      | 画像
+  - unless @diary.new_record?
+    - if @diary.image?
+      p
+        |  現在の画像 
+        = image_tag(@diary.image(:small), class: "img-thumbnail")
+        = link_to "画像削除する", delete_image_diary_path(@diary), method: :put, data: { confirm: '本当に画像を削除してもいいですか?' }
+    - else
+      p
+        | 画像は未添付
+  = f.input :image, as: :file, label: false
+  = f.input :is_hilight, label: "人生ハイライトにする"
+  = f.input :is_about_date, label: "日付を曖昧にする"
+  = f.input :is_secret, label: "他人に見られないようにする"
+  .form-actions
+    = f.button :submit, class: "btn btn-primary"

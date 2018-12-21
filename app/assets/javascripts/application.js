@@ -11,18 +11,40 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
-//= require jquery_ujs
+//= require jquery-ui/widgets/autocomplete
+//= require rails-ujs
+//= require turbolinks
 //= require popper
 //= require bootstrap-sprockets
 //= require_tree .
 
 // for best_in_place
 //= require best_in_place
-// これがあると、autocompleteが動かなくなったのでコメントアウト
-// require jquery-ui
+// NOTE: jQuery UI datepickersを使用する場合
 // require best_in_place.jquery-ui
 
 // lazy_high_charts
-//= require highcharts/highcharts
-//= require highcharts/highcharts-more
+// NOTE: highchartsはhighstock内でincludeされてるから不要。-moreの方はわからないが動作に異常はないので無効にしとく
+// require highcharts/highcharts
+// require highcharts/highcharts-more
 //= require highcharts/highstock
+
+$(document).on('turbolinks:load', function() {
+	$('[data-toggle="popover"]').popover();
+
+	$('.best_in_place').best_in_place()
+	// textareaタイプの場合、turbolinksの遷移から戻った後に変更内容が失われる問題の対処
+	$('.best_in_place').bind("ajax:success", function() {
+		if ($(this).data('bip-type') != 'textarea') {
+			return
+		}
+		// 正しい値はspan.best_in_place > aが持っている
+		var updatedValue = $(this).children('a').first().data('content');
+		// data-bip-original-contentを書き換えると、遷移後も値が正しいままとなる
+		// data()メソッドでは書き換えができなかった
+		$(this).attr('data-bip-original-content', updatedValue);
+		// popoverが古い値もまま表示されたままになる問題があり、消すこともできないので、更新された値で再度表示できるようにする
+		$(this).children('a').popover('update');
+	});
+})
+
