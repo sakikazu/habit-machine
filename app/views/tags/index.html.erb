@@ -12,9 +12,9 @@
     <td><%= tag.name %></td>
     <td><%= Diary.tagged_with(tag.name).count %></td>
     <td>
-      <%= link_to 'Show', tag %> / 
-      <%= link_to 'Edit', edit_tag_path(tag) %> / 
-      <%= link_to 'Destroy', tag, method: :delete, data: { confirm: 'Are you sure?' } %>
+      <%= link_to '詳細', tag %> /
+      <%= link_to '編集', edit_tag_path(tag) %> /
+      <%= link_to '削除', tag, method: :delete, data: { confirm: '本当に削除してもよろしいですか?' } %>
     </td>
   </tr>
 <% end %>
@@ -22,4 +22,4 @@
 
 <br />
 
-<%= link_to '新しいタグを作成', new_tag_path, class: "btn btn-default" %>
+<%= link_to '新しいタグを作成', new_tag_path, class: "btn btn-light" %>

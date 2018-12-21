@@ -1,16 +1,16 @@
-<p style="text-align:center"><%= link_to "今月(#{Date.today.strftime("%Y年%m月")})", result_habits_path, class: "btn btn-default" %></p>
+<p style="text-align:center"><%= link_to "今月(#{Date.today.strftime("%Y年%m月")})", result_habits_path, class: "btn btn-light" %></p>
 <%= form_tag result_habits_path, method: :get, style: "text-align:center", class: "form-inline" do %>
   <%= date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true}, {class: "form-control"} %>
-  <%= submit_tag "移動", class: "btn btn-default" %>
+  <%= submit_tag "移動", class: "btn btn-light" %>
 <% end %>
 
 <div class="page-header"><h3>
     すべての記録結果（閲覧用）　
     <small>
       <% if @showable.present? %>
-        <%= link_to "通常モード", result_habits_path, class: "btn btn-default" %>
+        <%= link_to "通常モード", result_habits_path, class: "btn btn-light" %>
       <% else %>
-        <%= link_to "全部見るモード", result_habits_path(showable: 1), class: "btn btn-default" %>
+        <%= link_to "全部見るモード", result_habits_path(showable: 1), class: "btn btn-light" %>
       <% end %>
     </small>
 </h3></div>
@@ -30,7 +30,7 @@
     <th>
       <%= link_to habit[:title], habit_path(habit[:id]) %>
       <% if habit[:value_unit].present? %>
-        <span class='label label-default'><%= habit[:value_unit] %></span>
+        <span class='badge badge-secondary'><%= habit[:value_unit] %></span>
       <% end %>
     </th>
     <% @date_term.each do |date| %>

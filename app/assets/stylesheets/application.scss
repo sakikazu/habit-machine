@@ -12,19 +12,25 @@
  *= require_tree .
  */
 
+// Custom bootstrap variables must be set or imported *before* bootstrap.
+@import "bootstrap";
 
 
 /*footer*/
 footer {
-  margin-top: 80px;
+  margin-top: 70px;
   background-color: black;
   color: white;
   text-align: center;
-  padding: 5px 0px;
+  padding: 6px 0px;
   width: 100%;
   filter: alpha(opacity=80);
   -moz-opacity:0.8;
   opacity:0.8;
+}
+footer > p {
+  margin: 1px 0;
+  font-size: 90%;
 }
 
 
@@ -145,3 +151,112 @@ a.colorbox img, a.colorbox_fix_size img{
   }
 }
 
+/**********************************************
+ from bootstrap_and_overrides.css.less
+ todo グルーピングして別ファイル切り出したい
+**********************************************/
+
+hr {
+  margin: 5px 0;
+}
+
+.table th.today {
+  background-color: red;
+  color: white;
+}
+.table th.sunday {
+  background-color: rosybrown;
+}
+.table th.saturday {
+  background-color: Lightblue;
+}
+.table td.center, .table th.center {
+  text-align: center;
+}
+
+.well {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+.well blockquote {
+  border-color: #ddd;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+.well-lg {
+  padding: 24px;
+  border-radius: 6px;
+}
+
+.well.well-narrow {
+  padding: 6px 8px 0px 8px;
+}
+
+.well2 {
+  padding: 5px 20px 10px 20px;
+  margin-top: 5px;
+}
+
+/**********************************************
+見出し h1, h2, h3, h4
+**********************************************/
+
+/* 真面目系 */
+h1.normal2, h2.normal2 {
+  margin-top: 20px;
+  font-size: 20px;
+  background: #F8F8F8;
+  border-left: 11px double #CCC;
+  padding: 13px 10px;
+}
+
+h1.normal {
+  margin-top: 30px;
+  margin-bottom: 25px;
+  font-size: 24px;
+  text-shadow: 1px 1px 1px white, 1px 1px 0px #000;
+  color: #767676;
+}
+
+h3 .date {
+  font-family: Impact;
+  font-size: 26px;
+}
+
+h2.hilight {
+  font-weight: bold;
+  font-size: 22px;
+  text-shadow: 1px 1px 0px white, 3px 3px 0px #B0D3FF;
+  color: #428bca;
+}
+
+/* 上のh2とは構造が違っていることに注意 */
+h3 .hilight {
+  font-weight: bold;
+  font-size: 26px;
+  text-shadow: 1px 1px 0px white, 3px 3px 0px #B0D3FF;
+}
+
+.page-header {
+  padding-bottom: 0px;
+  margin: 25px 0 25px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+
+/* simple_formで日付selectを作る場合に改行を適切にできるように */
+.form-group-inline {
+  .control-label {
+    display: block;
+  }
+
+  .form-control {
+    display: inline;
+    width: 32%;
+  }
+}

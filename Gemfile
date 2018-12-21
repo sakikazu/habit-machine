@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.14'
+ruby '2.5.1'
+gem 'rails', '~> 4.2'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -26,17 +27,15 @@ gem 'lazy_high_charts'
 
 gem 'faker'
 
-gem 'therubyracer', platforms: :ruby
-gem 'less-rails'
-gem "twitter-bootstrap-rails"
-# gem 'twitter-bootstrap-rails', :git => 'git://github.com/seyhunak/twitter-bootstrap-rails.git'
-# gem 'execjs'
+gem 'mini_racer'
+# twitter bootstrap4
+gem 'bootstrap', '~> 4.1.3'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', '~> 4.0.0'
-  gem 'coffee-rails', '~> 4.0.0'
+  gem 'sass-rails', '~> 5.0'
+  gem 'coffee-rails', '~> 4.2'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
@@ -45,6 +44,7 @@ group :assets do
 end
 
 # memo jquery 1.9以上になるとliveが使えずエラーになるのでバージョン指定
+# todo liveを使わないようにして最新にしたい
 gem 'jquery-rails', '2.1.3'
 gem 'jquery-ui-rails', '2.0.2'
 
@@ -61,7 +61,7 @@ gem 'unicorn'
 gem 'foreman'
 
 # 定数管理
-gem 'rails_config'
+gem 'config'
 
 group :development do
   # erbからhamlに変換
@@ -92,7 +92,7 @@ group :development, :test do
   # pryの入力に色付け
   gem 'pry-coolline'
 
-  # デバッカー
+  # デバッガー
   gem 'pry-byebug'
 
   # Pryでの便利コマンド
@@ -115,7 +115,7 @@ group :development, :test do
   gem 'database_rewinder'
 
   # デバッグ情報をフッターに出してくれる
-  gem 'rails-footnotes', '>= 4.0.0', '<5'
+  gem 'rails-footnotes'
 
   gem 'rails-erd'
 end
