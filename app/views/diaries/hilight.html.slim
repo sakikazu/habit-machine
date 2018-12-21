@@ -7,9 +7,13 @@
             = link_to "#{dispdate(diary.record_at, false)} #{diary.title_mod}", "#diary#{diary.id}"
   .col-sm-7
     .years
-      - @years.each do |year|
-        = link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary"
-      = link_to "隠しも表示", hilight_diaries_path(nosecret: true, year: @year), class: "btn btn-light"
+      - @years.each_with_index do |year, idx|
+        - disabled_class = year == @year ? "disabled" : ""
+        = link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary mr5 #{disabled_class}"
+        - if idx == 8
+          .mb10
+      .mt10
+        = link_to "隠しも表示", hilight_diaries_path(nosecret: true, year: @year), class: "btn btn-light"
     - @diaries.each do |diary|
       h3 id="diary#{diary.id}" class="page-header"
         span.date

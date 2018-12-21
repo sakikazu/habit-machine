@@ -86,6 +86,7 @@ class DiariesController < ApplicationController
       @year = params[:year].to_i
       @diaries = @diaries.where(record_at: Date.new(@year).beginning_of_year..Date.new(@year).end_of_year)
     else
+      @year = Date.today.year
       @diaries = @diaries.where(record_at: Date.today.beginning_of_year..Date.today.end_of_year)
     end
 

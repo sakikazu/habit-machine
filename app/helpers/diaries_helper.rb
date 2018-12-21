@@ -4,7 +4,7 @@ module DiariesHelper
   def tags_link(diary)
     output = ""
     diary.tag_counts.each do |tag|
-      output += link_to "[#{tag.name}]", diaries_path(tag: tag.name)
+      output += link_to tag.name, diaries_path(tag: tag.name), class: "badge badge-secondary mr5"
     end
     return output.html_safe
   end
@@ -13,12 +13,12 @@ module DiariesHelper
     output = ""
     tags = tags_link(diary)
 
-    output += "<span class='badge badge-danger'>ｼｰｸﾚｯﾄ</span>".html_safe if diary.is_secret
+    output += "<span class='mr5 badge badge-danger'>ｼｰｸﾚｯﾄ</span>".html_safe if diary.is_secret
     output += "<span class='badge badge-warning'>ﾊｲﾗｲﾄ</span>".html_safe if diary.is_hilight
     output += "<br>".html_safe if diary.is_hilight or diary.is_secret
     output += tags + "<br>".html_safe if tags.present?
     output += "<strong>" + (link_to diary.title_mod, diary_path(diary)) + "</strong>"
-    output += " " + (link_to "[edit]", edit_diary_path(diary)) + "<br>"
+    output += " " + (link_to fa_icon('pencil'), edit_diary_path(diary)) + "<br>"
     output += image_tag(diary.image(:small), class: "img-thumbnail") + "<br>".html_safe if diary.image.present?
     output += sani(strip_tags(diary.content).truncate(30, :omission => "..."))
     return output.html_safe

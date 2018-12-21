@@ -1,7 +1,7 @@
 .mb30
-  = link_to "Back", :back, class: "btn btn-light"
-h2
-  | ユーザー情報更新
+  = link_to "戻る", root_path, class: "btn btn-light"
+.page-header
+  h2 ユーザー情報更新
 - if resource.errors.any?
   .alert.alert-danger
     p

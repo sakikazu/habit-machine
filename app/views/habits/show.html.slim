@@ -1,4 +1,4 @@
-.row.justify-content-center.mt15
+.row.justify-content-center
   .col-sm-7
     .form-actions.mb30
       = link_to '戻る', root_path, class: "btn btn-light"
@@ -42,9 +42,9 @@
             = sani_custom_br(@habit.memo)
     h1.normal
       | レコード一覧
-    = paginate @records
+    = paginate @records, window: 3, outer_window: 2
     - @records.each do |record|
-      h4
+      h5
         = record.record_at
       p
         = "#{record.value} #{@habit.value_unit}"
@@ -52,4 +52,5 @@
         .description.well.well-narrow
           = simple_format(sani_custom(record.memo))
       hr
-    = paginate @records
+    .mt30
+      = paginate @records, window: 3, outer_window: 2
