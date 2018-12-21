@@ -72,7 +72,7 @@ group :development do
   gem 'slim-rails' # generator時にslim対応可能になる
 
   # Use Capistrano for deployment
-  gem 'capistrano', '3.2.1'
+  gem 'capistrano'
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'rvm1-capistrano3', require: false

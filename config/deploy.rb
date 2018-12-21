@@ -1,5 +1,5 @@
 # config valid only for Capistrano 3.2.1
-lock '3.2.1'
+lock '3.11.0'
 
 set :application, 'habit-machine'
 set :repo_url, 'git@bitbucket.org:sakikazu15/habit-machine.git'
@@ -9,9 +9,6 @@ set :repo_url, 'git@bitbucket.org:sakikazu15/habit-machine.git'
 
 # Default deploy_to directory is /var/www/my_app
 set :deploy_to, '/usr/local/site/habit-machine'
-
-# Default value for :scm is :git
-set :scm, :git
 
 # Default value for :format is :pretty
 # set :format, :pretty
@@ -23,7 +20,7 @@ set :scm, :git
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, %w{.env config/mysqldump.ini .ruby-version .ruby-gemset public/assets/glyphicons-halflings-regular.woff public/assets/glyphicons-halflings-regular.ttf public/assets/glyphicons-halflings-regular.woff2 public/assets/glyphicons-halflings-regular.svg public/assets/glyphicons-halflings-regular.eot}
+set :linked_files, %w{.env config/mysqldump.ini .ruby-version .ruby-gemset}
 
 # Default value for linked_dirs is []
 set :linked_dirs, %w{log tmp/cache tmp/sockets vendor/bundle public/upload}
