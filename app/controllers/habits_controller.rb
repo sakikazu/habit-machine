@@ -53,18 +53,17 @@ class HabitsController < ApplicationController
     @action_name = "トップページ"
 
     # 起点（ページの中心日）の前後＊日分のデータが対象
-    if params[:one_day].present?
-      @one_day = Date.strptime(params[:one_day])
-    elsif params[:record_at].present? # from Date Form
-      select_day = Date.new(
-        params[:record_at]["one_day(1i)"].to_i,
-        params[:record_at]["one_day(2i)"].to_i,
-        params[:record_at]["one_day(3i)"].to_i
-      )
-      @one_day = select_day
-    else
-      @one_day = Date.today
-    end
+    @one_day = if params[:one_day].present?
+                 Date.strptime(params[:one_day])
+               elsif params[:record_at].present? # from Date Form
+                 Date.new(
+                   params[:record_at]["one_day(1i)"].to_i,
+                   params[:record_at]["one_day(2i)"].to_i,
+                   params[:record_at]["one_day(3i)"].to_i
+                 )
+               else
+                 Date.today
+               end
     @date_term = (@one_day - 3)..(@one_day + 3)
 
     # 対象期間分の習慣データを取得

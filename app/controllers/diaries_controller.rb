@@ -109,7 +109,6 @@ class DiariesController < ApplicationController
       redirect_to diaries_path, notice: "この日記は存在しません."
       return
     end
-    @referer_url = session[:referer_url]
 
     if request.xhr?
       render partial: "show_ajax"
@@ -133,7 +132,6 @@ class DiariesController < ApplicationController
                   Date.today
                 end
     @diary = Diary.new(record_at: record_at)
-    session[:referer_url] = request.referer
 
     respond_to do |format|
       format.html # new.html.erb
@@ -143,8 +141,6 @@ class DiariesController < ApplicationController
 
   # GET /diaries/1/edit
   def edit
-    session[:referer_url] = request.referer
-
     if @diary.user != current_user
       redirect_to diaries_path, notice: "この日記は存在しません."
       return

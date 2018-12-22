@@ -1,11 +1,11 @@
 .row.justify-content-center.mt15
-  .col-sm-2
+  .col-sm-3
     .card
       ul.list-group.list-group-flush
         - @diaries.each do |diary|
           li.list-group-item
             = link_to "#{dispdate(diary.record_at, false)} #{diary.title_mod}", "#diary#{diary.id}"
-  .col-sm-7
+  .col-sm-6
     .years
       - @years.each_with_index do |year, idx|
         - disabled_class = year == @year ? "disabled" : ""
