@@ -125,7 +125,14 @@ class DiariesController < ApplicationController
   # GET /diaries/new
   # GET /diaries/new.json
   def new
-    @diary = Diary.new(record_at: params[:record_at])
+    record_at = if params[:record_at].present?
+                  params[:record_at]
+                elsif params[:days_ago].present?
+                  Date.today - params[:days_ago].to_i
+                else
+                  Date.today
+                end
+    @diary = Diary.new(record_at: record_at)
     session[:referer_url] = request.referer
 
     respond_to do |format|

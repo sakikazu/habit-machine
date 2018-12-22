@@ -30,10 +30,13 @@ html[lang="ja"]
         = controller.controller_name == "habits" and controller.action_name != "result" and controller.action_name != "top" ? "active" : ""
         | "> 
         = link_to "習慣", habits_path, class: 'nav-link'
-        |  <li class="nav-item 
-        = controller.controller_name == "diaries" and controller.action_name != "hilight" ? "active" : ""
-        | "> 
-        = link_to "日記", diaries_path, class: 'nav-link'
+        li class="dropdown nav-item #{controller.controller_name == "diaries" and controller.action_name != "hilight" ? "active" : ""}"
+          = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+          .dropdown-menu
+            = link_to '日記一覧', diaries_path, class: 'dropdown-item'
+            = link_to '今日分を書く', new_diary_path(days_ago: 0), class: 'dropdown-item'
+            = link_to '昨日分を書く', new_diary_path(days_ago: 1), class: 'dropdown-item'
+            = link_to '一昨日分を書く', new_diary_path(days_ago: 2), class: 'dropdown-item'
         |  <li class="nav-item 
         = controller.controller_name == "habits" and controller.action_name == "result" ? "active" : ""
         | "> 
@@ -47,7 +50,7 @@ html[lang="ja"]
         | ">
         = link_to "意識付け", senses_path, class: 'nav-link'
         li.nav-item.dropdown
-          = link_to current_user.fullname, '#', class: 'btn btn-outline-dark dropdown-toggle', data: {toggle: 'dropdown'}
+          = link_to current_user.fullname, '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
           .dropdown-menu
             = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
             = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}
