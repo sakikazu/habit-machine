@@ -22,7 +22,7 @@ html[lang="ja"]
   nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb20
     a.navbar-brand[href="/"]
       | HabitMachine
-    button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"]
+    button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
       span.navbar-toggler-icon
     #navbarSupportedContent.collapse.navbar-collapse
       ul.navbar-nav.mr-auto
@@ -46,10 +46,11 @@ html[lang="ja"]
         = controller.controller_name == "senses" ? "active" : ""
         | ">
         = link_to "意識付け", senses_path, class: 'nav-link'
-        li.nav-item
-          = link_to "ユーザー情報", edit_user_registration_path, class: 'nav-link'
-        li.nav-item
-          = link_to "ログアウト", destroy_user_session_path, method: :delete, class: 'nav-link', data: {confirm: "ログアウトしますか？"}
+        li.nav-item.dropdown
+          = link_to current_user.fullname, '#', class: 'btn btn-outline-dark dropdown-toggle', data: {toggle: 'dropdown'}
+          .dropdown-menu
+            = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
+            = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}
   .container-fluid
     - if notice.present?
       p.alert.alert-info

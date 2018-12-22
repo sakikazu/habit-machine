@@ -38,12 +38,11 @@
 
   .col-sm-2.order-1.order-sm-2
     .card.mt15
-      / TODO: bootstrapのdata-*やaria-*でアコーディオンを実現する仕組みがよくわからん
       .accordion#accordionExample
-        .card-header data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="cursor: pointer;"
+        .card-header data-toggle="collapse" data-target="#collapseOne" style="cursor: pointer;"
           h4
             button.btn.btn-link style="padding:0;font-size:1em;" タグ
-        #collapseOne class="collapse #{browser.device.mobile? ? '' : 'show'}" aria-labelledby="headingOne" data-parent="#accordionExample"
+        #collapseOne class="collapse #{browser.device.mobile? ? '' : 'show'}" data-parent="#accordionExample"
           ul.list-group.list-group-flush
             - @tags.each do |tag|
               li.list-group-item
