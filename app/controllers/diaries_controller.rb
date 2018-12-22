@@ -74,6 +74,8 @@ class DiariesController < ApplicationController
   # デフォルト表示は、今年のもので、かつシークレットがfalseのもの
   #
   def hilight
+    @action_name = '人生ハイライト'
+
     @years = Diary.all_years
 
     @diaries = Diary.by_user(current_user).hilight.order(["record_at ASC", "id ASC"])
@@ -191,8 +193,9 @@ class DiariesController < ApplicationController
 
   private
   def set_content_title
-    @content_title = @diary.present? ? @diary.title : ""
+    @content_title = @diary.present? ? "#{@diary.record_at.strftime("%Y/%m/%d")}の日記「#{@diary.title}」" : ""
   end
+
   # Use callbacks to share common setup or constraints between actions.
   def set_diary
     @diary = Diary.by_user(current_user).find(params[:id])

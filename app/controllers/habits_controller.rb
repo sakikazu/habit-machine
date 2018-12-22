@@ -50,8 +50,6 @@ class HabitsController < ApplicationController
   # top
   #
   def top
-    @action_name = "トップページ"
-
     # 起点（ページの中心日）の前後＊日分のデータが対象
     @one_day = if params[:one_day].present?
                  Date.strptime(params[:one_day])
@@ -65,6 +63,8 @@ class HabitsController < ApplicationController
                  Date.today
                end
     @date_term = (@one_day - 3)..(@one_day + 3)
+
+    @action_name = "#{@one_day.strftime('%Y/%m/%d')}を含む週"
 
     # 対象期間分の習慣データを取得
     @habits = []
