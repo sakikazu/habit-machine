@@ -90,24 +90,14 @@ group :development, :test do
   # Rails application preloader
   gem 'spring'
 
-  # Railsコンソールの多機能版
-  gem 'pry-rails'
-
-  # pryの入力に色付け
-  gem 'pry-coolline'
-
   # デバッガー
   gem 'pry-byebug'
 
   # Pryでの便利コマンド
   gem 'pry-doc'
 
-  # PryでのSQLの結果を綺麗に表示
+  # PryでのSQLの結果を綺麗に表示。Hirb.enableの実行が必要
   gem 'hirb'
-  gem 'hirb-unicode'
-
-  # pryの色付けをしてくれる
-  gem 'awesome_print'
 
   # Rspec
   gem 'rspec-rails'
