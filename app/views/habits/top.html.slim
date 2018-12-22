@@ -7,17 +7,15 @@
     = link_to "＞＞", root_path(one_day: @one_day + 7), class: "btn btn-light"
 .mx-auto.mb10[style="width: 250px"]
   = form_tag root_path, method: :get, class: "form-inline" do
-    = date_select :record_at, :one_day, {default: @one_day}, {class: "form-control mr5"}
+    = date_select :record_at, :one_day, {default: @one_day, start_year: Settings.start_year, end_year: Date.today.year + 1}, {class: "form-control mr5"}
     = submit_tag "移動", class: "btn btn-light"
 table.table.table-bordered.table-hover
   thead
     tr
       th
       - @date_term.each do |date|
-        |  <th class="center 
-        = dateclass(date)
-        | "> 
-        = dispdate(date)
+        th class="center #{dateclass(date)}"
+          = dispdate(date)
   tbody
     - @habits.each do |habit|
       tr

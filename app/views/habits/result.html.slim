@@ -2,7 +2,9 @@ p[style="text-align:center"]
   = link_to "今月(#{Date.today.strftime("%Y年%m月")})", result_habits_path, class: "btn btn-light"
 .mx-auto.mb10[style="width: 190px"]
   = form_tag result_habits_path, method: :get, style: "text-align:center", class: "form-inline" do
-    = date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true}, {class: "form-control mr5"}
+    = date_select :target, :month,
+      {default: @target_month, discard_day: true, use_month_numbers: true, start_year: Settings.start_year, end_year: Date.today.year + 1},
+      {class: "form-control mr5"}
     = submit_tag "移動", class: "btn btn-light"
 .page-header
   h3
