@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 module DiariesHelper
-
   def tags_link(diary)
     output = ""
     diary.tag_counts.each do |tag|

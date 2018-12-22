@@ -27,5 +27,5 @@
       .well.well2
         p.mb25
           = link_to(image_tag(diary.image(:large), width: "100%", class: "img-thumbnail"), diary.image(:original)) if diary.image.present?
-        p
-          = sani_custom_br(diary.content)
+        .markdown
+          = markdown(diary.content)

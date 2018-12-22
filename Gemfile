@@ -26,6 +26,7 @@ gem 'best_in_place', '~> 3.0.1'
 gem 'font-awesome-rails'
 gem 'lazy_high_charts'
 gem 'browser'
+gem 'redcarpet' # markdown
 
 gem 'faker'
 

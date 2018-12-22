@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
 module ApplicationHelper
-
   #
   # <title>
   #
@@ -157,4 +155,27 @@ module ApplicationHelper
     ret.html_safe
   end
 
+  def nl2br(str)
+    return sanitize(str).gsub("\r\n", '<br>').html_safe
+  end
+
+  # filter_htmlオプションにより入力されたタグを無効化してくれるのでサニタイズは不要
+  def markdown text
+    options = {
+      filter_html:     true, # htmlタグをサニタイズではなく<p>タグに置き換えて無効化
+      hard_wrap:       true, # 空行を改行ではなく、改行を改行に変換
+      space_after_headers: true, # ｼｬｰﾌﾟの後に空白がないと見出しと認めません
+    }
+
+    extensions = {
+      autolink:           true, # リンクタグ適用
+      no_intra_emphasis:  true, # aaa_bbb_ccc の bbb を強調しないように
+      fenced_code_blocks: true, # ```で囲まれた部分をコードとして装飾
+    }
+
+    renderer = Redcarpet::Render::HTML.new(options)
+    md = Redcarpet::Markdown.new(renderer, extensions)
+
+    md.render(text).html_safe
+  end
 end

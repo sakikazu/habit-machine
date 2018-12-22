@@ -8,6 +8,7 @@
         | 入力エラーがあります。下記のエラー内容を確認してください。
   = f.input :record_at, as: :date, label: "日付", start_year: 2000, wrapper_html: {class: "form-group-inline"}
   = f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span6'}, label: "タイトル"
+  = link_to "markdown記法", "https://qiita.com/tbpgr/items/989c6badefff69377da7", target: :blank
   = f.input :content, input_html: {class: 'span8', rows: 25}, label: "内容"
   = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます'}
   p

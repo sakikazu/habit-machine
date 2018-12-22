@@ -27,10 +27,10 @@
           = "<p class='btn btn-block btn-danger disabled'>シークレット日記</p>".html_safe if diary.is_secret
           = "<p class='btn btn-block btn-warning disabled'>ハイライト日記</p>".html_safe if diary.is_hilight
           br
-          p.card-text.text-center
+          .text-center
             = image_tag(diary.image(:small), class: "w-50 img-thumbnail") if diary.image.present?
-          p.card-text
-            = sani_custom_br(diary.content)
+          .markdown
+            = markdown(diary.content)
           = link_to '編集', edit_diary_path(diary), class: "card-link"
           = link_to '削除', diary, method: :delete, data: { confirm: '本当に日記を削除してもいいですか?' }, class: "card-link"
     .mt30
