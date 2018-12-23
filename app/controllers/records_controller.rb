@@ -13,8 +13,14 @@ class RecordsController < ApplicationController
       @record = Record.new(record_params)
       @record.save
     end
-    # best_in_place専用のjson formatレンダー
-    respond_with_bip(@record)
+
+    # NOTE: 入力がブランクの場合「未入力」と表示したいが、record.valueは0になってレスポンスされるので、明示するようにした
+    if record_params[:value].blank? && record_params[:memo].blank?
+      render json: {display_as: '未入力'}
+    else
+      # best_in_place専用のjson formatレンダー
+      respond_with_bip(@record)
+    end
   end
 
   # GET /records/new

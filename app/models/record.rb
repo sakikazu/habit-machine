@@ -3,10 +3,9 @@ class Record < ApplicationRecord
 
   belongs_to :habit
 
-  # best_in_placeで扱うcollectionの形が、Railsの普通のselectとは表示値と値が逆だった
-  SYMBOLIC_VALUE = [[nil, ""], [1.0, "1"], [2.0, "2"], [3.0, "3"], [4.0, "4"], [5.0, "5"]]
-
-  attr_accessor :habit_value_type
+  # NOTE: valueはFloat型のためフォームには小数点を含む値がセットされており、optionsの値も合わせておかないと正しく表示されない
+  # NOTE: 空の選択肢の値がnilだと0がポストされてしまうので、空文字列にする必要がある
+  SYMBOLIC_VALUE = [['', ''], [1.0, "1"], [2.0, "2"], [3.0, "3"], [4.0, "4"], [5.0, "5"]]
 
   # def self.find_or_new(habit_id, record_at)
     # record = self.where(habit_id: habit_id, record_at: record_at).first
@@ -19,21 +18,4 @@ class Record < ApplicationRecord
     # record = self.create(habit_id: habit_id, record_at: record_at) if record.blank?
     # return record
   # end
-
-  def symbolic_name
-    Hash[*SYMBOLIC_VALUE.flatten][self.value.to_i]
-  end
-
-  def record_formatted_value
-    case habit_value_type
-    when 1
-      self.symbolic_name
-    when 2
-      self.value.to_i
-    else
-      # 元々float型なのでそのままでOK
-      self.value
-    end
-  end
-
 end

@@ -17,6 +17,7 @@ class Diary < ApplicationRecord
   validates_attachment :image,
     content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
 
+  validates_presence_of :record_at
   attr_accessor :search_word
 
   belongs_to :user
