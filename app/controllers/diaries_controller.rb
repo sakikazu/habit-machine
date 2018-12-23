@@ -5,10 +5,13 @@ class DiariesController < ApplicationController
 
   SEARCH_KEY_TAGS = "tags:"
   SEARCH_KEY_HILIGHT = "hilight:"
+  SEARCH_KEY_SINCE = "since:"
+  SEARCH_KEY_UNTIL = "until:"
 
   # GET /diaries
   # GET /diaries.json
   def index
+    # TODO: Searchクラスに切り出したいところだがまあいいや
     @diary_for_search = Diary.new
     @searching = false
     @diaries = Diary.by_user(current_user)
@@ -29,19 +32,27 @@ class DiariesController < ApplicationController
       if inputs.present?
         tags = []
         hilight = false
+        since_date = nil
+        until_date = nil
         words = []
         inputs.each do |input|
           if !input.index(SEARCH_KEY_TAGS).nil?
             input[SEARCH_KEY_TAGS.length..-1].split(",").each{|n| tags << n}
           elsif !input.index(SEARCH_KEY_HILIGHT).nil?
             hilight = true
+          elsif !input.index(SEARCH_KEY_SINCE).nil?
+            since_str = input[SEARCH_KEY_SINCE.length..-1]
+            since_date = Date.parse(since_str) rescue nil
+          elsif !input.index(SEARCH_KEY_UNTIL).nil?
+            until_str = input[SEARCH_KEY_UNTIL.length..-1]
+            until_date = Date.parse(until_str) rescue nil
           else
             words << input
           end
         end
 
         if tags.present?
-          # tagged_with(["aaa", "bbb"])のように配列引数だと、そのタグのOR検索となる
+          # タグのAND検索にしたいので、OR検索となるtagged_with(["aaa", "bbb"])という配列引数は使えない
           tags.each do |n|
             @diaries = @diaries.tagged_with(n)
           end
@@ -49,6 +60,14 @@ class DiariesController < ApplicationController
 
         if hilight
           @diaries = @diaries.hilight
+        end
+
+        if since_date.present?
+          @diaries = @diaries.where("record_at >= ?", since_date)
+        end
+
+        if until_date.present?
+          @diaries = @diaries.where("record_at <= ?", until_date)
         end
 
         if words.present?

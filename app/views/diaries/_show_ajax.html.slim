@@ -1,12 +1,13 @@
-.row
-  .col-9
-    h2.hilight.mt30.mb25
-      = @diary.title
-      | 　
-      small
-        = "(#{dispdate(@diary.record_at, true)}の日記)"
-  .col-3
-    p.mt30 = tags_link(@diary)
+.page-header
+  .row
+    .col-9
+      h3
+        span.date
+          = dispdate(@diary.record_at, true)
+        span.hilight.ml10
+          = @diary.title
+    .col-3
+      p = tags_link(@diary)
 
 = "<p class='btn btn-block btn-danger disabled'>シークレット日記</p>".html_safe if @diary.is_secret
 = "<p class='btn btn-block btn-warning disabled'>ハイライト日記</p>".html_safe if @diary.is_hilight

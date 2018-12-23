@@ -1,31 +1,33 @@
 .row.justify-content-center.mt15
+  .col-sm-1
+    .years
+      - @years.reverse_each.with_index(1) do |year, idx|
+        - disabled_class = year == @year ? "disabled" : ""
+        p = link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary mr5 #{disabled_class}"
+  .col-sm-6
+    .mt10
+      = link_to "隠しも表示", hilight_diaries_path(nosecret: true, year: @year), class: "btn btn-light"
+    - @diaries.each do |diary|
+      .page-header
+        .row
+          .col-9
+            h3 id="diary#{diary.id}"
+              span.date
+                = dispdate(diary.record_at, true)
+              = " ほど" if diary.is_about_date.present?
+              span.hilight.ml10
+                = link_to diary.title_mod, diary_path(diary)
+          .col-3
+            p = tags_link(diary)
+      .well.well2
+        p.mb25
+          = link_to(image_tag(diary.image(:large), width: "100%", class: "img-thumbnail"), diary.image(:original)) if diary.image.present?
+        .markdown
+          = markdown(diary.content)
   .col-sm-3
     .card
       ul.list-group.list-group-flush
         - @diaries.each do |diary|
           li.list-group-item
             = link_to "#{dispdate(diary.record_at, false)} #{diary.title_mod}", "#diary#{diary.id}"
-  .col-sm-6
-    .years
-      - @years.each.with_index(1) do |year, idx|
-        - disabled_class = year == @year ? "disabled" : ""
-        = link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary mr5 #{disabled_class}"
-        - if idx % 8 == 0
-          .mb10
-      .mt10
-        = link_to "隠しも表示", hilight_diaries_path(nosecret: true, year: @year), class: "btn btn-light"
-    - @diaries.each do |diary|
-      h3 id="diary#{diary.id}" class="page-header"
-        span.date
-          = dispdate(diary.record_at, true)
-        = " ほど" if diary.is_about_date.present?
-        | 　 
-        span.hilight
-          = link_to diary.title_mod, diary_path(diary)
-        small
-          = tags_link(diary)
-      .well.well2
-        p.mb25
-          = link_to(image_tag(diary.image(:large), width: "100%", class: "img-thumbnail"), diary.image(:original)) if diary.image.present?
-        .markdown
-          = markdown(diary.content)
+
