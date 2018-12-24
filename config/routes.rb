@@ -37,7 +37,7 @@ Rails.application.routes.draw do
 		end
 	end
 
-	resources :records do
+	resources :records, only: [] do
 		collection do
 			post 'update_or_create'
 			put 'update_or_create'
