@@ -24,6 +24,7 @@ class Habit < ApplicationRecord
   has_many :records
 
   validates_presence_of :title, :status, :result_type, :value_type
+  attr_accessor :search_word
 
   scope :enable, lambda{ where(status: 1) }
   scope :disable, lambda{ where(status: 2) }

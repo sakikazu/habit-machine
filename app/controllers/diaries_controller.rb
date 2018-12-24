@@ -12,21 +12,18 @@ class DiariesController < ApplicationController
   # GET /diaries.json
   def index
     # TODO: Searchクラスに切り出したいところだがまあいいや
-    @diary_for_search = Diary.new
-    @searching = false
+    @q = Diary.new
     @diaries = Diary.by_user(current_user)
 
     # タグのリンクからの遷移の場合
     if params[:tag].present?
       tag = params[:tag]
       @diaries = @diaries.tagged_with(tag)
-      @diary_for_search.search_word = "tags:#{tag}"
-      @searching = true
+      @q.search_word = "tags:#{tag}"
     # 検索ボタンからの遷移の場合
     elsif params[:diary].present? and params[:diary][:search_word].present?
       search_word = params[:diary][:search_word]
-      @diary_for_search.search_word = search_word
-      @searching = true
+      @q.search_word = search_word
 
       inputs = search_word.split(/[ 　]/).delete_if{|n| n.blank?}
       if inputs.present?
@@ -36,14 +33,14 @@ class DiariesController < ApplicationController
         until_date = nil
         words = []
         inputs.each do |input|
-          if !input.index(SEARCH_KEY_TAGS).nil?
+          if input =~ /^#{SEARCH_KEY_TAGS}/
             input[SEARCH_KEY_TAGS.length..-1].split(",").each{|n| tags << n}
-          elsif !input.index(SEARCH_KEY_HILIGHT).nil?
+          elsif input =~ /^#{SEARCH_KEY_HILIGHT}/
             hilight = true
-          elsif !input.index(SEARCH_KEY_SINCE).nil?
+          elsif input =~ /^#{SEARCH_KEY_SINCE}/
             since_str = input[SEARCH_KEY_SINCE.length..-1]
             since_date = Date.parse(since_str) rescue nil
-          elsif !input.index(SEARCH_KEY_UNTIL).nil?
+          elsif input =~ /^#{SEARCH_KEY_UNTIL}/
             until_str = input[SEARCH_KEY_UNTIL.length..-1]
             until_date = Date.parse(until_str) rescue nil
           else

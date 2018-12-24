@@ -107,6 +107,12 @@ class HabitsController < ApplicationController
   # GET /habits/1.json
   def show
     @records = @habit.records.where("value is not NULL").order("record_at DESC").page(params[:page]).per(200)
+    if params[:habit].present? && params[:habit][:search_word].present?
+      searcher = HabitRecordSearcher.new(@records, params[:habit][:search_word])
+      @records = searcher.result
+      @habit.search_word = params[:habit][:search_word]
+    end
+
     respond_to do |format|
       format.html # show.html.erb
       format.json { render json: @habit }
