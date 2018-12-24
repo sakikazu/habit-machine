@@ -13,7 +13,7 @@ class DiariesController < ApplicationController
   def index
     # TODO: Searchクラスに切り出したいところだがまあいいや
     @q = Diary.new
-    @diaries = Diary.by_user(current_user)
+    @diaries = current_user.diaries
 
     # タグのリンクからの遷移の場合
     if params[:tag].present?
@@ -94,7 +94,7 @@ class DiariesController < ApplicationController
 
     @years = Diary.all_years
 
-    @diaries = Diary.by_user(current_user).hilight.order(["record_at ASC", "id ASC"])
+    @diaries = current_user.diaries.hilight.order(["record_at ASC", "id ASC"])
 
     if params[:all].present?
       return
@@ -214,7 +214,7 @@ class DiariesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_diary
-    @diary = Diary.by_user(current_user).find(params[:id])
+    @diary = Diary.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

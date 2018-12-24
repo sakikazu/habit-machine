@@ -5,12 +5,12 @@ class SensesController < ApplicationController
 
   # GET /senses
   def index
-    @senses = Sense.by_user(current_user).order("sort_order ASC").where(is_inactive: false)
+    @senses = current_user.senses.order("sort_order ASC").where(is_inactive: false)
   end
 
   # 終了日で自動判定でなく、is_inactiveを手動で設定することで判定するようにする
   def past
-    @senses = Sense.by_user(current_user).order("sort_order ASC").where(is_inactive: true)
+    @senses = current_user.senses.order("sort_order ASC").where(is_inactive: true)
     @is_past = true
     render :index
   end
@@ -62,7 +62,7 @@ class SensesController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_sense
-      @sense = Sense.by_user(current_user).find(params[:id])
+      @sense = Sense.find(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.

@@ -24,7 +24,7 @@ class HabitsController < ApplicationController
     end
     @date_term = @target_month.beginning_of_month..@target_month.end_of_month
 
-    basic_habits = Habit.by_user(current_user).enable
+    basic_habits = current_user.habits.enable
 
     @habits_all= build_graph_data(basic_habits.all)
 
@@ -41,9 +41,9 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
-    @enable_habits = Habit.by_user(current_user).enable
-    @disable_habits = Habit.by_user(current_user).disable
-    @close_habits = Habit.by_user(current_user).close
+    @enable_habits = current_user.habits.enable
+    @disable_habits = current_user.habits.disable
+    @close_habits = current_user.habits.close
   end
 
   #
@@ -68,7 +68,7 @@ class HabitsController < ApplicationController
 
     # 対象期間分の習慣データを取得
     @habits = []
-    habits = Habit.by_user(current_user).enable
+    habits = current_user.habits.enable
     records = Record.where(habit_id: habits.map{|h| h.id}, record_at: @date_term).order(:record_at)
     records_grouped_by_habit = records.group_by{|r| r.habit_id}
 
@@ -84,7 +84,7 @@ class HabitsController < ApplicationController
     end
 
     # memo これはシンプルだが、Recordが日付範囲にない場合、LEFT OUTER JOINでもhabitsさえ取得できなくなる。これができるSQLってあるのか？
-    # @habits = Habit.by_user(current_user).enable.includes(:records).where("records.record_at" => @date_term)
+    # @habits = current_user.habits.enable.includes(:records).where("records.record_at" => @date_term)
     # @habits.each do |habit|
       # records_included_new_instance = []
       # @date_term.each do |date|
@@ -183,7 +183,7 @@ class HabitsController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_habit
-    @habit = Habit.by_user(current_user).find(params[:id])
+    @habit = Habit.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

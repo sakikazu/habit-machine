@@ -43,7 +43,6 @@ class Diary < ApplicationRecord
 
   belongs_to :user
 
-  scope :by_user, lambda {|user| where(user_id: user.id)}
   scope :hilight, lambda {where(is_hilight: true)}
 
   def title_mod
@@ -60,7 +59,7 @@ class Diary < ApplicationRecord
   end
 
   def self.group_by_record_at(current_user, date_term)
-    diaries = self.by_user(current_user).where(record_at: date_term).order("id ASC")
+    diaries = current_user.diaries.where(record_at: date_term).order("id ASC")
     diaries.group_by{|d| d.record_at}
   end
 end

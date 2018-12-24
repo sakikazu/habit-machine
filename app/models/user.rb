@@ -30,8 +30,9 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  has_many :habits
   has_many :diaries
-
+  has_many :senses
 
   def self.find_or_create(data)
     user = self.find_by_email(data[:email])
