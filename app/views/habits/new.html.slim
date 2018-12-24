@@ -1,7 +1,7 @@
-.row.justify-content-center.mt15
-  .col-sm-7
+.row.justify-content-center
+  .col-sm-6
     .form-actions.mb30
       = link_to '戻る', root_path, class: "btn btn-light"
-    h1.normal
-      | 習慣を登録する
+    .page-header
+      h2 習慣を登録する
     = render 'form'

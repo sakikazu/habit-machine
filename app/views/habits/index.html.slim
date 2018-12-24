@@ -1,14 +1,12 @@
 .row.justify-content-center
   .col-sm-8
-    h1.normal
-      | 習慣一覧
+    .page-header
+      h2 習慣一覧
     - @enable_habits.each do |habit|
       = render partial: 'index_detail', locals: {habit: habit}
-    h2.btn.btn-block.btn-danger.disabled
-      | 無効
+    h2.btn.btn-block.btn-danger.disabled 無効
     - @disable_habits.each do |habit|
       = render partial: 'index_detail', locals: {habit: habit}
-    h2.btn.btn-block.btn-info.disabled
-      | 完了（目標達成／習慣化済み）
+    h2.btn.btn-block.btn-info.disabled 完了（目標達成／習慣化済み）
     - @close_habits.each do |habit|
       = render partial: 'index_detail', locals: {habit: habit}
