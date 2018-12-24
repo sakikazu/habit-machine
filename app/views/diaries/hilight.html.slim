@@ -2,7 +2,7 @@
   .col-sm-2
     .years
       - @years_including_diaries_count.each do |year, count|
-        - disable_class = year == @year ? "disabled" : ""
+        - disable_class = year.to_i == @year.to_i ? "disabled" : ""
         p.mb10 = link_to "#{year}年<span class='badge badge-light ml5'>#{count}</span>".html_safe,
                          hilight_diaries_path(year: year), class: "btn btn-primary btn-block #{disable_class}"
   .col-sm-6
