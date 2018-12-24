@@ -49,15 +49,6 @@ class Diary < ApplicationRecord
     self.title.presence || "(タイトルなし)"
   end
 
-  def self.all_years
-    oldest_diary = Diary.order("record_at ASC").first
-    if oldest_diary.record_at.year == Date.today.year
-      return [Date.today.year]
-    else
-      return oldest_diary.record_at.year..Date.today.year
-    end
-  end
-
   def self.group_by_record_at(current_user, date_term)
     diaries = current_user.diaries.where(record_at: date_term).order("id ASC")
     diaries.group_by{|d| d.record_at}

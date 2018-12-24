@@ -92,21 +92,20 @@ class DiariesController < ApplicationController
   def hilight
     @action_name = '人生ハイライト'
 
-    @years = Diary.all_years
+    @years_including_diaries_count = current_user.diaries.hilight.group("DATE_FORMAT(record_at, '%Y')").count
+                                       .sort_by {|k, _v| k}.reverse
 
     @diaries = current_user.diaries.hilight.order(["record_at ASC", "id ASC"])
+    return if params[:all].present?
 
-    if params[:all].present?
-      return
-    end
-
-    if params[:year].present?
-      @year = params[:year].to_i
-      @diaries = @diaries.where(record_at: Date.new(@year).beginning_of_year..Date.new(@year).end_of_year)
-    else
-      @year = Date.today.year
-      @diaries = @diaries.where(record_at: Date.today.beginning_of_year..Date.today.end_of_year)
-    end
+    record_at_range = if params[:year].present?
+                        @year = params[:year].to_i
+                        Date.new(@year).beginning_of_year..Date.new(@year).end_of_year
+                      else
+                        @year = Date.today.year
+                        Date.today.beginning_of_year..Date.today.end_of_year
+                      end
+    @diaries = @diaries.where(record_at: record_at_range)
 
     # デフォルト時はシークレットがtrueのものは表示しない
     if params[:nosecret].blank?

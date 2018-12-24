@@ -1,7 +1,8 @@
 .row.justify-content-center
-  .col-sm-5
+  / スマホではHabit情報テーブルが上になるようにする
+  .col-sm-5.order-2.order-sm-1
     .form-actions.mb30
-      = link_to '一覧', root_path, class: "btn btn-light"
+      = link_to '一覧', habits_path, class: "btn btn-light"
 
     .page-header
       h3 「#{@habit.title}」のレコード
@@ -25,7 +26,7 @@
           hr
       .mt30
         = paginate @records, window: 3, outer_window: 2
-  .col-sm-3
+  .col-sm-3.order-1.order-sm-2
     .form-actions.mb30
       = link_to "編集する", edit_habit_path, class: "btn btn-info"
     table.table.table-striped.table-bordered.table-hover.mt30

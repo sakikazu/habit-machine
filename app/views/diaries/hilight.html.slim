@@ -1,9 +1,10 @@
 .row.justify-content-center.mt15
-  .col-sm-1
+  .col-sm-2
     .years
-      - @years.reverse_each.with_index(1) do |year, idx|
-        - disabled_class = year == @year ? "disabled" : ""
-        p = link_to "#{year}年", hilight_diaries_path(year: year), class: "btn btn-primary mr5 #{disabled_class}"
+      - @years_including_diaries_count.each do |year, count|
+        - disable_class = year == @year ? "disabled" : ""
+        p.mb10 = link_to "#{year}年<span class='badge badge-light ml5'>#{count}</span>".html_safe,
+                         hilight_diaries_path(year: year), class: "btn btn-primary btn-block #{disable_class}"
   .col-sm-6
     .mt10
       = link_to "隠しも表示", hilight_diaries_path(nosecret: true, year: @year), class: "btn btn-light"
