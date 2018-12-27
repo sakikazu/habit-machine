@@ -11,10 +11,10 @@
     .alert.alert-danger
       p 入力エラーがあります。下記のエラー内容を確認してください。
   = f.input :record_at, as: :date, label: "日付", start_year: Settings.start_year, end_year: Date.today.year + 1, wrapper_html: {class: "form-group-inline"}
-  = f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span6'}, label: "タイトル"
+  = f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span6', autofocus: true, tabindex: 1}, label: "タイトル"
   = link_to "markdown記法", "https://qiita.com/tbpgr/items/989c6badefff69377da7", target: :blank
-  = f.input :content, input_html: {class: 'span8', rows: 15}, label: "内容"
-  = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます'}
+  = f.input :content, input_html: {class: 'span8', rows: 15, tabindex: 2}, label: "内容"
+  = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます', tabindex: 3}
   p
     label.string.optional.control-label 画像
   - unless @diary.new_record?
@@ -30,4 +30,4 @@
   = f.input :is_about_date, label: "日付を曖昧にする"
   = f.input :is_secret, label: "他人に見られないようにする"
   .form-actions
-    = f.button :submit, class: "btn btn-primary"
+    = f.button :submit, class: "btn btn-primary", tabindex: 4
