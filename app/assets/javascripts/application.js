@@ -30,6 +30,11 @@
 //= require highcharts/highstock
 
 $(document).on('turbolinks:load', function() {
+	// best_in_place内のpopoverを表示させてそのtextareaにフォーカスすると、popoverが表示されたままになってしまう問題の対処
+	$('table.hm_top td.record').on('click', function() {
+		$('.popover').hide();
+	});
+
 	$('[data-toggle="popover"]').popover();
 
 	$('.best_in_place').best_in_place()
