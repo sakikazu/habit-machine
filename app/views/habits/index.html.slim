@@ -1,5 +1,7 @@
 .row.justify-content-center
   .col-sm-8
+    .form_actions
+      = link_to '習慣を登録する', new_habit_path, class: "btn btn-info"
     .page-header
       h2 習慣一覧
     - @enable_habits.each do |habit|
@@ -10,3 +12,4 @@
     h2.btn.btn-block.btn-info.disabled 完了（目標達成／習慣化済み）
     - @close_habits.each do |habit|
       = render partial: 'index_detail', locals: {habit: habit}
+

@@ -142,7 +142,7 @@ class HabitsController < ApplicationController
 
     respond_to do |format|
       if @habit.save
-        format.html { redirect_to root_path, notice: '習慣データを作成しました.' }
+        format.html { redirect_to habit_path(@habit), notice: '習慣データを作成しました.' }
         format.json { render json: @habit, status: :created, location: @habit }
       else
         format.html { render action: "new" }

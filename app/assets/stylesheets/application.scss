@@ -19,6 +19,34 @@
 @import "bootstrap";
 
 
+h3 .date {
+  font-family: Impact;
+  font-size: 26px;
+}
+
+.page-header {
+  padding-bottom: 0px;
+  margin: 25px 0 25px;
+  border-bottom: 1px solid #eeeeee;
+}
+
+/* simple_formで日付selectを作る場合に改行を適切にできるように */
+.form-group-inline {
+  .control-label {
+    display: block;
+  }
+
+  .form-control {
+    display: inline;
+    width: 32%;
+  }
+}
+
+.has-error > .help-block {
+  font-weight: bold;
+  color: red;
+}
+
 /*footer*/
 footer {
   margin-top: 70px;
@@ -34,6 +62,31 @@ footer {
 footer > p {
   margin: 1px 0;
   font-size: 90%;
+}
+
+.desc {
+  color: #999;
+}
+.well .desc {
+  color: #6C6767;
+}
+
+.habits_controller {
+  .record_value {
+    font-size: 125%;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  .record_memo {
+    font-size: 80%;
+    color: #666;
+    text-align: left;
+  }
+
+  div.description {
+    font-size: 80%;
+    color: #666;
+  }
 }
 
 
@@ -114,37 +167,12 @@ table.th-vertical-top th {
   vertical-align: top;
 }
 
-.desc {
-  color: #999;
-}
-.well .desc {
-  color: #6C6767;
-}
-
 /* tableでURLなど一単語のものが改行されずレイアウトが崩れてしまう問題の対処 */
 td {
   word-break: break-all;
 }
 .select_menu {
   margin: 20px 0px 30px 0px;
-}
-
-.habits_controller {
-  .record_value {
-    font-size: 125%;
-    font-weight: bold;
-    margin-bottom: 5px;
-  }
-  .record_memo {
-    font-size: 80%;
-    color: #666;
-    text-align: left;
-  }
-
-  div.description {
-    font-size: 80%;
-    color: #666;
-  }
 }
 
 /**********************************************
@@ -155,6 +183,17 @@ td {
     border-bottom: 1px solid #ddd;
     padding-bottom: .1em;
   }
+  h1 {
+    margin-top: -20px;
+    margin-bottom: 20px;
+    padding-top: 35px;
+  }
+  h2 {
+    margin-top: -15px;
+    margin-bottom: 15px;
+    padding-top: 25px;
+  }
+
   h1 { font-size: 1.8em; }
   h2 { font-size: 1.5em; }
   h3 { font-size: 1.3em; }
@@ -232,30 +271,3 @@ hr {
   border-color: #ccc;
 }
 
-/**********************************************
-見出し h1, h2, h3, h4
-**********************************************/
-
-h3 .date {
-  font-family: Impact;
-  font-size: 26px;
-}
-
-.page-header {
-  padding-bottom: 0px;
-  margin: 25px 0 25px;
-  border-bottom: 1px solid #eeeeee;
-}
-
-
-/* simple_formで日付selectを作る場合に改行を適切にできるように */
-.form-group-inline {
-  .control-label {
-    display: block;
-  }
-
-  .form-control {
-    display: inline;
-    width: 32%;
-  }
-}
