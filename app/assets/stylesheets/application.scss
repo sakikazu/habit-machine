@@ -273,3 +273,14 @@ hr {
   border-color: #ccc;
 }
 
+
+/**********************************************
+ for vendor plugins
+**********************************************/
+
+// jQuery UI autocomplete
+ul.ui-menu.ui-widget.ui-widget-content.ui-autocomplete {
+  height: 250px;
+  overflow-y: scroll;
+}
+
