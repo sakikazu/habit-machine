@@ -23,7 +23,7 @@ set :deploy_to, '/usr/local/site/habit-machine'
 set :linked_files, %w{.env config/mysqldump.ini .ruby-version .ruby-gemset}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{log tmp/cache tmp/sockets vendor/bundle public/upload}
+set :linked_dirs, %w{log tmp/cache tmp/sockets tmp/pids vendor/bundle public/upload}
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -37,7 +37,7 @@ namespace :deploy do
   task :restart do
     on roles(:app), in: :sequence, wait: 5 do
       # for unicorn
-      execute :cat, "/tmp/unicorn.habit-machine.pid | xargs kill -USR2"
+      execute :cat, "#{File.join(current_path, 'tmp/pids/unicorn.pid')} | xargs kill -USR2"
     end
   end
 
