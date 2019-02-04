@@ -5,7 +5,7 @@ html[lang="ja"]
     meta[http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"]
     meta[name="viewport" content="width=device-width, initial-scale=1.0"]
     title
-      = "[dev]" if Rails.env != "production"
+      = "[dev]" unless Rails.env.production?
       = page_title
       |  - HabitMachine
     = csrf_meta_tags
@@ -54,10 +54,7 @@ html[lang="ja"]
         = alert
     = yield
   footer
-    p
-      | Habit Machine (Sakikazu Company 2012-
-      = Date.today.year
-      | )
+    p HabitMachine ( Sakikazu Company 2012-#{Date.today.year} )
   - #= javascript_include_tag "application"
 
   / NOTE: ページごとのJS（現状はライブラリをHEADで読んでるから意味ないけど）

@@ -27,7 +27,8 @@ module HabitsHelper
     link_to icon.html_safe, "#", data: {
       toggle: 'popover',
       trigger: 'hover',
-      content: memo
+      html: true,
+      content: nl2br(memo).html_safe
     }
   end
 

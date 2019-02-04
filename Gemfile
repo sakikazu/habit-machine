@@ -95,6 +95,9 @@ group :development, :test do
   # Rails application preloader
   gem 'spring'
 
+  # rails consoleでpryを使うために必要
+  gem 'pry-rails'
+
   # デバッガー
   gem 'pry-byebug'
 

@@ -97,8 +97,8 @@ module ApplicationHelper
   end
 
   def sani_br(html)
-    html.gsub!(/\r\n|\r|\n/, "<br>") unless html.blank?
-    auto_link(Sanitize.clean(html, Sanitize::Config::BASIC)).html_safe
+    html_br = nl2br(html)
+    auto_link(Sanitize.clean(html_br, Sanitize::Config::BASIC)).html_safe
   end
 
   def sani_custom(html)
@@ -106,8 +106,8 @@ module ApplicationHelper
   end
 
   def sani_custom_br(html)
-    html.gsub!(/\r\n|\r|\n/, "<br>") unless html.blank?
-    auto_link(Sanitize.clean(html, Sanitize::Config::CUSTOM)).html_safe
+    html_br = nl2br(html)
+    auto_link(Sanitize.clean(html_br, Sanitize::Config::CUSTOM)).html_safe
   end
 
   #jsコード内に出力するときに改行コードがあるとjsコード自体が改行されてしまうのでスペースに変換する
@@ -143,7 +143,8 @@ module ApplicationHelper
   end
 
   def nl2br(str)
-    return sanitize(str).gsub("\r\n", '<br>').html_safe
+    return str.present? ? str.gsub(/\r\n|\r|\n/, '<br>') : ''
+    # return sanitize(str).gsub(/\r\n|\n/, '<br>').html_safe
   end
 
   # filter_htmlオプションにより入力されたタグを無効化してくれるのでサニタイズは不要

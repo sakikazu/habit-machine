@@ -8,6 +8,8 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
+ *= require jquery-ui/core
+ *= require jquery-ui/theme
  *= require jquery-ui/menu
  *= require jquery-ui/autocomplete
  *= require font-awesome
@@ -188,17 +190,17 @@ td {
     margin-bottom: 20px;
     padding-top: 35px;
   }
-  h2 {
+  h2, h3, h4, h5 {
     margin-top: -15px;
     margin-bottom: 15px;
     padding-top: 25px;
   }
 
-  h1 { font-size: 1.8em; }
-  h2 { font-size: 1.5em; }
-  h3 { font-size: 1.3em; }
-  h4 { font-size: 1.2em; }
-  h4 { font-size: 1.1em; }
+  h1 { font-size: 1.9em; }
+  h2 { font-size: 1.7em; }
+  h3 { font-size: 1.5em; }
+  h4 { font-size: 1.3em; }
+  h5 { font-size: 1.2em; }
 
   blockquote {
     border-left: 5px solid #ddd;
