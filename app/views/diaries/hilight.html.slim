@@ -14,7 +14,7 @@
           .col-9
             h3 id="diary#{diary.id}"
               span.date
-                = dispdate(diary.record_at, true)
+                = link_to dispdate(diary.record_at, true), day_path(diary.record_at)
               = " ほど" if diary.is_about_date.present?
               span.hilight.ml10
                 = link_to diary.title_mod, diary_path(diary)

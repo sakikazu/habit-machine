@@ -1,7 +1,8 @@
 .row.justify-content-center
   .col-sm-6
     .form-actions.mb30
-      = link_to 'トップに戻る', root_path, class: "btn btn-light"
+      = link_to '戻る', :back, class: "btn btn-light"
+      =< link_to 'トップに戻る', root_path, class: "btn btn-light"
       =< link_to 'この日を含む週へ', root_path(one_day: @date), class: "btn btn-light"
 
 .row.justify-content-center

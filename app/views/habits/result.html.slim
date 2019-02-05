@@ -24,7 +24,7 @@ table class="table table-bordered" style="table-layout: #{@showable.present? ? '
       | " style="
       = "width: 180px" if @showable.present?
       | "> 
-      = dispdate(date)
+      = link_to dispdate(date), day_path(date)
   - @habits_all.each do |habit|
     tr
       th

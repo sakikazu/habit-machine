@@ -17,7 +17,7 @@
       - @records.each do |record|
         .record
           h5
-            = record.record_at
+            = link_to record.record_at, day_path(record.record_at)
             small.ml10
               = "#{record.value} #{@habit.value_unit}"
           - if record.memo.present?
