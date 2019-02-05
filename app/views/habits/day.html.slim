@@ -1,0 +1,39 @@
+.row.justify-content-center
+  .col-sm-6
+    .form-actions.mb30
+      = link_to 'トップに戻る', root_path, class: "btn btn-light"
+      =< link_to 'この日を含む週へ', root_path(one_day: @date), class: "btn btn-light"
+
+.row.justify-content-around
+  .col-sm-1
+    = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1)
+  .col-sm-1
+    = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1)
+
+.row.justify-content-center
+  .col-sm-6
+    .page-header
+      h2 #{@date.to_s(:normal)}の記録
+    - if @records.blank?
+      p 習慣の記録はありません。
+    - @records.each do |record|
+      .well.well-narrow
+        h5 = record.habit.title
+        - if record.value.present?
+          span.badge.badge-success = "#{record.value} #{record.habit.value_unit}"
+        - else
+          span.badge.badge-secondary 値は未設定
+
+        - if record.memo.present?
+          .description.mt20
+            = simple_format(sani_custom(record.memo))
+
+    .page-header.mt50
+      h2
+        | #{@date.to_s(:normal)}の日記
+        .pull-right
+          = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-light'
+    - if @diaries.blank?
+      p 日記はありません。
+    - @diaries.each do |diary|
+      = render partial: 'diaries/index_detail', locals: { diary: diary }

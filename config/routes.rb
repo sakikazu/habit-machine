@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
 	# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-	root :to => 'habits#top'
+  root :to => 'habits#top'
+  get 'day/:date', to: 'habits#day', as: :day
 
 	resources :senses do
 		collection do

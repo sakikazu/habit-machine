@@ -2,6 +2,7 @@
   .col-sm-7
     .form-actions.mt15
       = link_to "編集する", edit_diary_path, class: "btn btn-info"
+      =< link_to 'この日のデータ', day_path(@diary.record_at), class: "btn btn-light"
       =< link_to 'この日を含む週へ', root_path(one_day: @diary.record_at), class: "btn btn-light"
       =< link_to '日記一覧へ', diaries_path, class: "btn btn-light"
     = render partial: "show_ajax"

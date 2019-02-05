@@ -172,7 +172,7 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       if @diary.save
-        format.html { redirect_to @diary, notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
+        format.html { redirect_to day_path(@diary.record_at.to_s), notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
         format.json { render json: @diary, status: :created, location: @diary }
       else
         format.html { render action: "new" }
@@ -186,7 +186,7 @@ class DiariesController < ApplicationController
   def update
     respond_to do |format|
       if @diary.update_attributes(diary_params)
-        format.html { redirect_to @diary, notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
+        format.html { redirect_to day_path(@diary.record_at.to_s), notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
         format.json { head :no_content }
       else
         format.html { render action: "edit" }
@@ -198,10 +198,11 @@ class DiariesController < ApplicationController
   # DELETE /diaries/1
   # DELETE /diaries/1.json
   def destroy
+    day = @diary.record_at.to_s
     @diary.destroy
 
     respond_to do |format|
-      format.html { redirect_to diaries_url, notice: '日記を削除しました.' }
+      format.html { redirect_to day_path(day), notice: '日記を削除しました.' }
       format.json { head :no_content }
     end
   end

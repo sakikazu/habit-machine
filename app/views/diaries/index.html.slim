@@ -12,24 +12,7 @@
         =< link_to "検索解除", diaries_path, class: "btn btn-light" if @q.search_word.present?
     = paginate @diaries, window: 3, outer_window: 2
     - @diaries.each do |diary|
-      .well
-        .page-header
-          .row
-            .col-9
-              h4
-                span.date = dispdate(diary.record_at, true)
-                span.ml10 = link_to diary.title_mod, diary_path(diary)
-            .col-3
-              p = tags_link(diary)
-        = "<p class='btn btn-block btn-danger disabled mb5'>シークレット日記</p>".html_safe if diary.is_secret
-        = "<p class='btn btn-block btn-warning disabled mb5'>ハイライト日記</p>".html_safe if diary.is_hilight
-        .text-center.mt20
-          = image_tag(diary.image(:small), class: "w-50 img-thumbnail") if diary.image.present?
-        .markdown
-          = markdown(diary.content)
-        .buttons
-          = link_to '編集', edit_diary_path(diary), class: "btn btn-light"
-          =< link_to '削除', diary, method: :delete, data: { confirm: '本当に日記を削除してもいいですか?' }, class: "btn btn-light"
+      = render partial: 'index_detail', locals: { diary: diary }
     .mt30
       = paginate @diaries, window: 3, outer_window: 2
 

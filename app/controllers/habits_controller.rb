@@ -103,6 +103,18 @@ class HabitsController < ApplicationController
     end
   end
 
+  # 一日分のデータを表示するページ
+  def day
+    begin
+      @date = Date.parse(params[:date])
+    rescue
+      raise NotFound
+    end
+
+    @records = Record.where(record_at: @date)
+    @diaries = Diary.where(record_at: @date)
+  end
+
   # GET /habits/1
   # GET /habits/1.json
   def show
