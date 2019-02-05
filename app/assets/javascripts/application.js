@@ -55,3 +55,15 @@ $(document).on('turbolinks:load', function() {
 	});
 })
 
+
+// Diaryのフォームのタグフィールドに選択したタグ名を追加する
+addTagToField = function(tagname) {
+  $tag_input = $('input[name="diary[tag_list]"]');
+  inputted_tags = $tag_input.val();
+  if (inputted_tags.length == 0) {
+    $tag_input.val(tagname);
+  } else {
+    $tag_input.val(inputted_tags + ', ' + tagname);
+  }
+}
+

@@ -76,7 +76,7 @@ class DiariesController < ApplicationController
     end
     @diaries = @diaries.order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
 
-    @tags = Tag.all
+    @tags = CustomTag.mytags(current_user)
 
     respond_to do |format|
       format.html # index.html.erb

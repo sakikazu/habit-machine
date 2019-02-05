@@ -36,6 +36,7 @@ html[lang="ja"]
             = link_to '今日分を書く', new_diary_path(days_ago: 0), class: 'dropdown-item'
             = link_to '昨日分を書く', new_diary_path(days_ago: 1), class: 'dropdown-item'
             = link_to '一昨日分を書く', new_diary_path(days_ago: 2), class: 'dropdown-item'
+            = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
         li class="nav-item #{controller.controller_name == "habits" and controller.action_name == "result" ? "active" : ""}"
           = link_to "記録結果", result_habits_path, class: 'nav-link'
         li class="nav-item #{controller.controller_name == "senses" ? "active" : ""}"

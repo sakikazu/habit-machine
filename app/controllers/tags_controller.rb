@@ -5,7 +5,7 @@ class TagsController < ApplicationController
   # GET /tags
   # GET /tags.json
   def index
-    @tags = Tag.all
+    @tags = CustomTag.mytags(current_user)
 
     respond_to do |format|
       format.html # index.html.erb
@@ -25,7 +25,7 @@ class TagsController < ApplicationController
   # GET /tags/new
   # GET /tags/new.json
   def new
-    @tag = Tag.new
+    @tag = CustomTag.new
 
     respond_to do |format|
       format.html # new.html.erb
@@ -40,7 +40,8 @@ class TagsController < ApplicationController
   # POST /tags
   # POST /tags.json
   def create
-    @tag = Tag.new(tag_params)
+    @tag = CustomTag.new(tag_params)
+    @tag.user_id = current_user.id
 
     respond_to do |format|
       if @tag.save
@@ -81,12 +82,12 @@ class TagsController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_tag
-    @tag = Tag.find(params[:id])
+    @tag = CustomTag.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def tag_params
-    params.require(:tag).permit(:name)
+    params.require(:custom_tag).permit(:name, :description)
   end
 
 end

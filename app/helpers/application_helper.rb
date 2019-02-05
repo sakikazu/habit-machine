@@ -119,27 +119,28 @@ module ApplicationHelper
   end
 
   #※マルチバイト文字対応(utf8)
-  def truncate_120_link(text)
+  def truncate_link(text, length)
+    return '' if text.blank?
     text2 = strip_tags(text)
-    if text2.split(//u).length > 120
-      ret = sani_br(text2.truncate(120, :omission => ""))
+    if text2.split(//u).length > length
+      ret = sani_switching(text2.truncate(length, :omission => ""), length)
       ret += link_to " ...(続き)", "javascript:void(0)", :title => text2, :class => "overstring"
     else
-      ret = sani_br(text2)
+      ret = sani_switching(text2, length)
     end
     ret.html_safe
   end
 
-  #※マルチバイト文字対応(utf8)
+  def sani_switching(text, length)
+    length > 100 ? sani_br(text) : sani(text)
+  end
+
+  def truncate_120_link(text)
+    truncate_link(text, 120)
+  end
+
   def truncate_30_link(text)
-    text2 = strip_tags(text)
-    if text2.split(//u).length > 30
-      ret = sani(text2.truncate(30, :omission => ""))
-      ret += link_to " ...(続き)", "javascript:void(0)", :title => text2, :class => "overstring"
-    else
-      ret = sani(text2)
-    end
-    ret.html_safe
+    truncate_link(text, 30)
   end
 
   def nl2br(str)
@@ -149,6 +150,8 @@ module ApplicationHelper
 
   # filter_htmlオプションにより入力されたタグを無効化してくれるのでサニタイズは不要
   def markdown text
+    return '' if text.blank?
+
     options = {
       filter_html:     true, # htmlタグをサニタイズではなく<p>タグに置き換えて無効化
       hard_wrap:       true, # 空行を改行ではなく、改行を改行に変換

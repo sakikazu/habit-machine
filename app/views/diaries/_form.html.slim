@@ -1,4 +1,5 @@
-- tagnames = Tag.order(:name).map{|t| t.name}.join(",")
+- latest_tagnames = CustomTag.latest_used_tags(current_user).map{|t| t.name}
+- tagnames = CustomTag.mytags(current_user).order(:name).map{|t| t.name}.join(",")
 - content_for :addjs
 	javascript:
 		$(function() {
@@ -14,7 +15,11 @@
   = f.input :title, placeholder: '未入力でもOK', input_html: {class: 'span6', autofocus: true, tabindex: 1}, label: "タイトル"
   = link_to "markdown記法", "https://qiita.com/tbpgr/items/989c6badefff69377da7", target: :blank
   = f.input :content, input_html: {class: 'span8', rows: 15, tabindex: 2}, label: "内容"
-  = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます', tabindex: 3}
+  = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要</span>".html_safe, input_html: {id: 'taglist', class: 'span5', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます', tabindex: 3}
+  p
+    | 最近使ったタグ 
+    - latest_tagnames.each do |tag|
+      = link_to tag, "javascript:addTagToField('#{tag}')", class: 'badge badge-secondary mr5'
   p
     label.string.optional.control-label 画像
   - unless @diary.new_record?
