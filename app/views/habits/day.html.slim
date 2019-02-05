@@ -4,11 +4,13 @@
       = link_to 'トップに戻る', root_path, class: "btn btn-light"
       =< link_to 'この日を含む週へ', root_path(one_day: @date), class: "btn btn-light"
 
-.row.justify-content-around
-  .col-sm-1
-    = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1)
-  .col-sm-1
-    = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1)
+.row.justify-content-center
+  .col-sm-6
+    .row
+      .col.text-left
+        = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1)
+      .col.text-right
+        = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1)
 
 .row.justify-content-center
   .col-sm-6
@@ -29,10 +31,8 @@
             = simple_format(sani_custom(record.memo))
 
     .page-header.mt50
-      h2
-        | #{@date.to_s(:normal)}の日記
-        .pull-right
-          = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-light'
+      h2 #{@date.to_s(:normal)}の日記
+    p = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-block btn-light'
     - if @diaries.blank?
       p 日記はありません。
     - @diaries.each do |diary|
