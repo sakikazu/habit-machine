@@ -1,0 +1,23 @@
+.row.justify-content-center
+  .col-sm-7
+    .page-header
+      h2 タグ一覧
+    table.table.table-bordered
+      tr
+        th タグ名
+        th 説明
+        th 日記での使用数
+        th
+      - @tags.each do |tag|
+        tr
+          td = tag.name
+          td = truncate_30_link(tag.description)
+          td = Diary.tagged_with(tag.name).count
+          td
+            = link_to '詳細', tag_path(tag)
+            |  / 
+            = link_to '編集', edit_tag_path(tag)
+            |  / 
+            = link_to '削除', tag_path(tag), method: :delete, data: { confirm: '本当に削除してもよろしいですか?' }
+    br
+    = link_to '新しいタグを作成', new_tag_path, class: "btn btn-light"

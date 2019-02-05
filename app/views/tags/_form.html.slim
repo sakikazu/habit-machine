@@ -1,0 +1,8 @@
+- url = @tag.new_record? ? tags_path : tag_path(@tag)
+= simple_form_for(@tag, url: url) do |f|
+  = f.error_notification
+  .form-inputs
+    = f.input :name, label: 'タグ名'
+    = f.input :description, label: '説明', input_html: { rows: 4 }
+  .form-actions
+    = f.button :submit, class: "btn btn-primary"

@@ -26,13 +26,4 @@ class CustomTag < ActsAsTaggableOn::Tag
   def self.latest_used_tags(user)
     self.mytags(user).order('last_used_at DESC').limit(5)
   end
-
-  # NOTE: tagのcreate時に独自のパラメーターをセットするには、gemのコードをかなりオーバーライドしなきゃいけないので、
-  # 任意に呼べるメソッドを用意して使うようにした
-  # def self.update_user_id_and_last_used_at(tags, user_id)
-  # end
-
-  # def update_user_id(user_id)
-    # update(user_id: user_id) if self.user_id.blank?
-  # end
 end

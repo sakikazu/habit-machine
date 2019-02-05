@@ -26,7 +26,7 @@ public/assets
 
 .rails_footnotes
 
-tags
+/tags
 
 config/settings.local.yml
 config/settings/*.local.yml

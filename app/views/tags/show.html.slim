@@ -1,0 +1,15 @@
+.row.justify-content-center
+  .col-sm-7
+    = link_to '戻る', tags_path, class: "btn btn-light"
+    =< link_to '編集', edit_tag_path(@tag), class: "btn btn-light"
+    .page-header
+      h3 タグ: #{@tag.name}
+    p.description
+      = sani_br(@tag.description)
+    .card.mt40
+      .card-header 関連日記
+      ul.list-group.list-group-flush
+        - Diary.tagged_with(@tag.name).each do |diary|
+          li.list-group-item
+            = link_to diary.title_mod, diary_path(diary)
+
