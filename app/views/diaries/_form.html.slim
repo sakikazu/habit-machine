@@ -1,5 +1,5 @@
 - latest_tagnames = CustomTag.latest_used_tags(current_user).map{|t| t.name}
-- tagnames = CustomTag.mytags(current_user).order(:name).map{|t| t.name}.join(",")
+- tagnames = current_user.mytags.order(:name).map{|t| t.name}.join(",")
 - content_for :addjs
 	javascript:
 		$(function() {

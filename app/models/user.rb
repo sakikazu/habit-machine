@@ -33,6 +33,7 @@ class User < ApplicationRecord
   has_many :habits
   has_many :diaries
   has_many :senses
+  has_many :mytags, class_name: 'CustomTag'
 
   def self.find_or_create(data)
     user = self.find_by_email(data[:email])

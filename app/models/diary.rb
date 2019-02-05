@@ -68,7 +68,7 @@ class Diary < ApplicationRecord
 
   def exists_tags?
     return if self.tag_list.blank?
-    existed_tagnames = CustomTag.mytags(self.user).map { |tag| tag.name }
+    existed_tagnames = self.user.mytags.map { |tag| tag.name }
     not_exists_tags = []
     self.tag_list.each do |tagname|
       not_exists_tags << tagname unless existed_tagnames.include?(tagname)

@@ -5,7 +5,7 @@ class TagsController < ApplicationController
   # GET /tags
   # GET /tags.json
   def index
-    @tags = CustomTag.mytags(current_user)
+    @tags = current_user.mytags
 
     respond_to do |format|
       format.html # index.html.erb
