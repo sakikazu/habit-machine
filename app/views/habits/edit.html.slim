@@ -6,3 +6,6 @@
     .page-header
       h2 編集する
     = render 'form'
+    .bg-light.mt30.p-5.text-center
+      = link_to '削除する', habit_path(@habit), method: :delete, data: { confirm: '本当に削除してもよろしいですか?' }, class: 'btn btn-danger'
+

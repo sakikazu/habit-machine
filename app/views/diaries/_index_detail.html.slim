@@ -3,7 +3,7 @@
     .row
       .col-9
         h4
-          span.date = link_to dispdate(diary.record_at, true), day_path(diary.record_at)
+          span.date = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
           span.ml10 = link_to diary.title_mod, diary_path(diary)
       .col-3
         p = tags_link(diary)

@@ -5,7 +5,9 @@
       = link_to '一覧へ', habits_path, class: "btn btn-light"
 
     .page-header
-      h3 「#{@habit.title}」のレコード
+      h3
+        | 「#{@habit.title}」のレコード
+        small.badge.badge-pill.badge-warning.ml20 =< "レコード数：#{@records.size}"
     .search-form.mb30
       = simple_form_for(@habit, method: "get") do |f|
         = f.input :search_word, as: :string, label: false, placeholder: "例：value:3> / 4=　memo:AAA,BBB　hasmemo:1　since:年月日　until:年月日"
@@ -17,7 +19,7 @@
       - @records.each do |record|
         .record
           h5
-            = link_to record.record_at, day_path(record.record_at)
+            = link_to fa_icon('calendar', text: record.record_at), day_path(record.record_at)
             small.ml10
               = "#{record.value} #{@habit.value_unit}"
           - if record.memo.present?

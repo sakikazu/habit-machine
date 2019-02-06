@@ -64,7 +64,7 @@ class HabitsController < ApplicationController
                end
     @date_term = (@one_day - 3)..(@one_day + 3)
 
-    @action_name = "#{@one_day.strftime('%Y/%m/%d')}を含む週"
+    @action_name = "#{@one_day.to_s(:normal)}を含む週"
 
     # 対象期間分の習慣データを取得
     @habits = []
@@ -111,6 +111,7 @@ class HabitsController < ApplicationController
       raise NotFound
     end
 
+    @action_name = @date.to_s(:normal)
     @records = Record.where(record_at: @date)
     @diaries = Diary.where(record_at: @date)
   end
@@ -118,7 +119,7 @@ class HabitsController < ApplicationController
   # GET /habits/1
   # GET /habits/1.json
   def show
-    @records = @habit.records.where("value is not NULL").order("record_at DESC").page(params[:page]).per(200)
+    @records = @habit.records.where("value is not NULL OR memo is not NULL").order("record_at DESC").page(params[:page]).per(200)
     if params[:habit].present? && params[:habit][:search_word].present?
       searcher = HabitRecordSearcher.new(@records, params[:habit][:search_word])
       @records = searcher.result

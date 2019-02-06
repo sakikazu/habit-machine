@@ -3,7 +3,7 @@
   .page-header
     = link_to '一覧に戻る', senses_path, class: "btn btn-light"
 .bd-callout.bd-callout-warning
-  |  意識付け＝目標みたいなもの 
+  |  意識付け＝目標みたいなもの
 .row
   - @senses.each do |sense|
     .col-sm-3
@@ -13,12 +13,11 @@
             = sense.title
           h6.card-subtitle.text-muted
             = sense.description
-          p.alert.alert-info.mb-0.text-center
-            = sense.start_at
-            |  - 
-            = sense.end_at
+          .alert.alert-info.mb-0.text-center
+            = "#{sense.start_at} - #{sense.end_at}"
         .card-body
-          p = simple_format(auto_link(sense.content))
+          .card-text.mt20 = simple_format(auto_link(sense.content))
+        .card-footer
           = link_to '編集', edit_sense_path(sense), class: "card-link"
           = link_to '削除', sense, method: :delete, data: { confirm: '本当に削除してもよろしいですか?' }, class: "card-link"
 - unless @is_past

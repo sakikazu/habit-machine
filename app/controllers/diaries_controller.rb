@@ -7,6 +7,7 @@ class DiariesController < ApplicationController
   SEARCH_KEY_HILIGHT = "hilight:"
   SEARCH_KEY_SINCE = "since:"
   SEARCH_KEY_UNTIL = "until:"
+  SEARCH_KEY_YEAR = "year:"
 
   # GET /diaries
   # GET /diaries.json
@@ -31,6 +32,7 @@ class DiariesController < ApplicationController
         hilight = false
         since_date = nil
         until_date = nil
+        date_range = nil
         words = []
         inputs.each do |input|
           if input =~ /^#{SEARCH_KEY_TAGS}/
@@ -43,6 +45,9 @@ class DiariesController < ApplicationController
           elsif input =~ /^#{SEARCH_KEY_UNTIL}/
             until_str = input[SEARCH_KEY_UNTIL.length..-1]
             until_date = Date.parse(until_str) rescue nil
+          elsif input =~ /^#{SEARCH_KEY_YEAR}/
+            year = input[SEARCH_KEY_YEAR.length..-1]
+            date_range = Date.new(year.to_i).beginning_of_year..Date.new(year.to_i).end_of_year rescue nil
           else
             words << input
           end
@@ -65,6 +70,10 @@ class DiariesController < ApplicationController
 
         if until_date.present?
           @diaries = @diaries.where("record_at <= ?", until_date)
+        end
+
+        if date_range.present?
+          @diaries = @diaries.where(record_at: date_range)
         end
 
         if words.present?

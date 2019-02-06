@@ -3,7 +3,7 @@
     .col-9
       h3
         span.date
-          = dispdate(@diary.record_at, true)
+          = link_to fa_icon('calendar', text: dispdate(@diary.record_at, true)), day_path(@diary.record_at)
         span.hilight.ml10
           = @diary.title_mod
     .col-3
