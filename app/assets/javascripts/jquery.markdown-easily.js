@@ -1,7 +1,11 @@
-// fork from https://github.com/fukayatsu/esarea
 //
 // esaのChromeエクステンションのソースを変更したもの
-// require jquery.selection.js
+// fork from https://github.com/fukayatsu/esarea
+//
+// KNOWHOW: ソース中にノウハウをメモ
+//
+// # require
+// - jquery.selection.js
 //
 // # key bindings
 // - `Tab` / `Shift + Tab`
@@ -15,6 +19,7 @@
 // - `Alt + Shift + Space`
 //   - toggle tasklist status of current line
 //     - tasklist: `- [x] foo`
+//
 
 var $, getCurrentLine, getPrevLine, handleEnterKey, handleSpaceKey, handleTabKey, replaceText;
 
@@ -31,16 +36,31 @@ jQuery.fn.markdownEasily = function() {
       case ENTER_KEY:
         handleEnterKey(e);
         break;
-      case SPACE_KEY:
-        handleSpaceKey(e);
+      // tasklistのステータスのトグル機能は不要
+      // case SPACE_KEY:
+      //   handleSpaceKey(e);
     }
   });
 }
 
+//
+// 元の仕様からの変更は、箇条書きスタイル以外の行の時には
+// タブを元の動きのまま（入力フォーム移動）にすること
+//
+// # original features
+// - `Tab` / `Shift + Tab`
+//   - indent / unindent
+//     - multiline supported
+//   - move to next/prev cell in table
+//
 handleTabKey = function(e) {
   var currentLine, indentedText, newPos, pos, reindentedCount, reindentedText, text;
-  e.preventDefault();
   currentLine = getCurrentLine(e);
+  // 箇条書きスタイル以外の行の時には処理をスルー
+  if (!currentLine.text.match(/^ *- /)) {
+    return;
+  }
+  e.preventDefault();
   text = $(e.target).val();
   pos = $(e.target).selection('getPos');
   if (currentLine) {
@@ -183,6 +203,9 @@ handleEnterKey = function(e) {
   return $(e.target).trigger('input');
 };
 
+//
+// Alt + Shift + Space: tasklistのステータスのトグル
+//
 handleSpaceKey = function(e) {
   var checkMark, currentLine, match, replaceTo;
   if (!(e.shiftKey && e.altKey)) {
@@ -191,19 +214,24 @@ handleSpaceKey = function(e) {
   if (!(currentLine = getCurrentLine(e))) {
     return;
   }
+  // KNOWHOW: 任意のマッチ文字列を取得する正規表現が参考になる
   if (match = currentLine.text.match(/^(\s*)(-|\+|\*|\d+\.) (?:\[(x| )\] )(.*)/)) {
+    // KNOWHOW: 処理が確定した時のみ、元操作をキャンセルする
     e.preventDefault();
     checkMark = match[3] === ' ' ? 'x' : ' ';
     replaceTo = "" + match[1] + match[2] + " [" + checkMark + "] " + match[4];
+    // 置換前に対象文字列を選択状態にする
     $(e.target).selection('setPos', {
       start: currentLine.start,
       end: currentLine.end
     });
     replaceText(e.target, replaceTo);
+    // 置換後は選択状態をキャンセルして元のキャレット位置に戻す
     $(e.target).selection('setPos', {
       start: currentLine.caret,
       end: currentLine.caret
     });
+    // KNOWHOW: どういう意味がある？
     return $(e.target).trigger('input');
   }
 };
@@ -215,6 +243,7 @@ getCurrentLine = function(e) {
   if (!text) {
     return null;
   }
+  // 文字列選択状態の時はスルー
   if (pos.start !== pos.end) {
     return null;
   }
@@ -245,6 +274,7 @@ getPrevLine = function(e) {
   };
 };
 
+// 置換対象文字列を選択状態にして呼ばれる
 replaceText = function(target, str) {
   var e, expectedLen, fromIdx, inserted, pos, toIdx, value;
   pos = $(target).selection('getPos');
@@ -257,6 +287,7 @@ replaceText = function(target, str) {
     target.selectionStart = fromIdx;
     target.selectionEnd = toIdx;
     try {
+      // KNOWHOW: このやり方でテキスト入力することで、Undo, Redoを可能にできる
       inserted = document.execCommand('insertText', false, str);
     } catch (_error) {
       e = _error;
@@ -266,6 +297,7 @@ replaceText = function(target, str) {
       inserted = false;
     }
   }
+  // KNOWHOW: 例外時にUndoで戻し
   if (!inserted) {
     try {
       document.execCommand('ms-beginUndoUnit');
@@ -280,6 +312,7 @@ replaceText = function(target, str) {
       e = _error;
     }
   }
+  // KNOWHOW: return時になぜこれをやるのか不明？？
   return $(target).trigger('blur').trigger('focus');
 };
 
