@@ -33,6 +33,8 @@ gem 'faker'
 gem 'mini_racer'
 gem 'bootstrap', '~> 4.1.3' # twitter bootstrap4
 
+gem 'uglifier', '>= 1.3.0'
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -41,8 +43,6 @@ group :assets do
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
-
-  gem 'uglifier', '>= 1.3.0'
 end
 
 gem 'jquery-rails'
