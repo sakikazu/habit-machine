@@ -39,6 +39,8 @@ $(document).on('turbolinks:load', function() {
     html: true,
   });
 
+  $("a[rel=tooltip]").tooltip();
+
 	$('.best_in_place').best_in_place()
 	// textareaタイプの場合、turbolinksの遷移から戻った後に変更内容が失われる問題の対処
 	$('.best_in_place').bind("ajax:success", function() {
