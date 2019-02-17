@@ -1,10 +1,10 @@
 .well
-  .page-header
+  .page-header.mt0
     .row
       .col-9
-        h4
+        h3.diary-title
           span.date = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
-          span.ml10 = link_to diary.title_mod, diary_path(diary)
+          span.title.ml10 = link_to diary.title_mod, diary_path(diary)
       .col-3
         p = tags_link(diary)
   = "<p class='btn btn-block btn-danger disabled mb5'>シークレット日記</p>".html_safe if diary.is_secret

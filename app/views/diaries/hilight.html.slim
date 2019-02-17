@@ -12,11 +12,11 @@
       .page-header
         .row
           .col-9
-            h3 id="diary#{diary.id}"
+            h3.diary-title id="diary#{diary.id}"
               span.date
                 = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
               = " ほど" if diary.is_about_date.present?
-              span.hilight.ml10
+              span.title.ml10
                 = link_to diary.title_mod, diary_path(diary)
           .col-3
             p = tags_link(diary)

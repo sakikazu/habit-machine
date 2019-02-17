@@ -169,4 +169,8 @@ module ApplicationHelper
 
     md.render(text).html_safe
   end
+
+  def markdown_help_link
+    link_to "markdown記法", "https://qiita.com/tbpgr/items/989c6badefff69377da7", target: :blank
+  end
 end

@@ -5,12 +5,12 @@ class SensesController < ApplicationController
 
   # GET /senses
   def index
-    @senses = current_user.senses.order("sort_order ASC").where(is_inactive: false)
+    @senses = current_user.senses.index_order.active
   end
 
   # 終了日で自動判定でなく、is_inactiveを手動で設定することで判定するようにする
   def past
-    @senses = current_user.senses.order("sort_order ASC").where(is_inactive: true)
+    @senses = current_user.senses.index_order.inactive
     @is_past = true
     render :index
   end

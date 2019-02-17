@@ -1,10 +1,10 @@
 .page-header
   .row
     .col-9
-      h3
+      h3.diary-title
         span.date
           = link_to fa_icon('calendar', text: dispdate(@diary.record_at, true)), day_path(@diary.record_at)
-        span.hilight.ml10
+        span.title.ml10
           = @diary.title_mod
     .col-3
       p = tags_link(@diary)

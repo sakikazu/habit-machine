@@ -21,9 +21,17 @@
 @import "bootstrap";
 
 
-h3 .date {
-  font-family: Impact;
-  font-size: 26px;
+h3.diary-title {
+  .date {
+    font-family: Impact;
+    font-size: 0.8em;
+  }
+
+  .title {
+    font-weight: bold;
+    text-shadow: 2px 2px 2px silver;
+    //text-shadow: 1px 1px 0px white, 3px 3px 0px #B0D3FF;
+  }
 }
 
 .page-header {
@@ -210,6 +218,10 @@ td {
   h3 { font-size: 1.5em; }
   h4 { font-size: 1.3em; }
   h5 { font-size: 1.2em; }
+
+  ul {
+    padding-left: 20px;
+  }
 
   blockquote {
     border-left: 5px solid #ddd;

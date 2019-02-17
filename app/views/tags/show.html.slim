@@ -3,13 +3,17 @@
     = link_to '戻る', tags_path, class: "btn btn-light"
     =< link_to '編集', edit_tag_path(@tag), class: "btn btn-light"
     .page-header
-      h3 タグ: #{@tag.name}
+      h3
+        | タグ: #{@tag.name}
+        small.badge.badge-pill.badge-warning.ml20 =< "日記数：#{@diaries.size}"
     p.description
       = sani_br(@tag.description)
     .card.mt40
       .card-header 関連日記
       ul.list-group.list-group-flush
-        - Diary.tagged_with(@tag.name).each do |diary|
+        - @diaries.each do |diary|
           li.list-group-item
-            = link_to diary.title_mod, diary_path(diary)
+            = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
+            span.ml10
+              = link_to diary.title_mod, diary_path(diary)
 

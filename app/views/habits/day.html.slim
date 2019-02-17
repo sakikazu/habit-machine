@@ -22,7 +22,7 @@
       .row
         - @records.each do |record|
           .col-sm-4
-            .card
+            .card.mb20
               h5.card-header = link_to record.habit.title, habit_path(record.habit)
               .card-body
                 - if record.value.present?

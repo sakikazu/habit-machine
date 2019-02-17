@@ -2,11 +2,11 @@
 - if @is_past
   .page-header
     = link_to '一覧に戻る', senses_path, class: "btn btn-light"
-.bd-callout.bd-callout-warning
+.bd-callout.bd-callout-warning.mb40
   |  意識付け＝目標みたいなもの
 .row
   - @senses.each do |sense|
-    .col-sm-3
+    .col-sm-3.mb20
       .card
         .card-header
           h5.card-title
@@ -16,7 +16,8 @@
           .alert.alert-info.mb-0.text-center
             = "#{sense.start_at} - #{sense.end_at}"
         .card-body
-          .card-text.mt20 = simple_format(auto_link(sense.content))
+          .card-text.markdown.mt20 = markdown(sense.content)
+
         .card-footer
           = link_to '編集', edit_sense_path(sense), class: "card-link"
           = link_to '削除', sense, method: :delete, data: { confirm: '本当に削除してもよろしいですか?' }, class: "card-link"

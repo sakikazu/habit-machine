@@ -15,7 +15,7 @@
       p 入力エラーがあります。下記のエラー内容を確認してください。
   = f.input :record_at, as: :date, label: "日付", start_year: Settings.start_year, end_year: Date.today.year + 1, wrapper_html: {class: "form-group-inline"}
   = f.input :title, placeholder: '未入力でもOK', input_html: {autofocus: true, tabindex: 1}, label: "タイトル"
-  = link_to "markdown記法", "https://qiita.com/tbpgr/items/989c6badefff69377da7", target: :blank
+  = markdown_help_link
   = f.input :content, input_html: {id: 'markdownable_textarea', rows: 15, tabindex: 2}, label: "内容"
   = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要</span>".html_safe, input_html: {id: 'taglist', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます', tabindex: 3}
   p
