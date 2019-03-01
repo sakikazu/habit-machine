@@ -1,14 +1,13 @@
-.row.justify-content-center.mt10
-  p.col.text-left
-    = link_to fa_icon('caret-left', class: 'fa-2x'), root_path(one_day: @one_day - 7), class: "btn btn-light"
-  p.col.text-center
+.d-flex.justify-content-between.mt10.mb15
+  = link_to fa_icon('caret-left', class: 'fa-2x', style: 'padding:0.8em 0'), root_path(one_day: @one_day - 7), class: "btn btn-light"
+  .text-center
     = link_to "本日(#{Date.today})", root_path, class: "btn btn-light"
-  p.col.text-right
-    = link_to fa_icon('caret-right', class: 'fa-2x'), root_path(one_day: @one_day + 7), class: "btn btn-light"
-.mx-auto.mb10[style="width: 250px"]
-  = form_tag root_path, method: :get, class: "form-inline" do
-    = date_select :record_at, :one_day, {default: @one_day, start_year: Settings.start_year, end_year: Date.today.year + 1}, {class: "form-control mr5"}
-    = submit_tag "移動", class: "btn btn-light"
+    .mt10
+      = form_tag root_path, method: :get, class: "form-inline" do
+        = date_select :record_at, :one_day, {default: @one_day, start_year: Settings.start_year, end_year: Date.today.year + 1}, {class: "form-control mr5"}
+        = submit_tag "移動", class: "btn btn-light"
+  = link_to fa_icon('caret-right', class: 'fa-2x', style: 'padding:0.8em 0'), root_path(one_day: @one_day + 7), class: "btn btn-light"
+
 table.hm_top.table.table-bordered.table-hover
   thead
     tr

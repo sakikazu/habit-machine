@@ -1,12 +1,11 @@
 .well
   .page-header.mt0
-    .row
-      .col-9
-        h3.diary-title
+    .d-flex.justify-content-end
+      .flex-grow-1
+        h5.diary-title
           span.date = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
           span.title.ml10 = link_to diary.title_mod, diary_path(diary)
-      .col-3
-        p = tags_link(diary)
+      .tags.ml-3 = tags_link(diary)
   = "<p class='btn btn-block btn-danger disabled mb5'>シークレット日記</p>".html_safe if diary.is_secret
   = "<p class='btn btn-block btn-warning disabled mb5'>ハイライト日記</p>".html_safe if diary.is_hilight
   .text-center.mt20

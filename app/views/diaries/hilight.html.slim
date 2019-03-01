@@ -10,16 +10,13 @@
       = link_to "隠しも表示", hilight_diaries_path(nosecret: true, year: @year), class: "btn btn-light"
     - @diaries.each do |diary|
       .page-header
-        .row
-          .col-9
-            h3.diary-title id="diary#{diary.id}"
-              span.date
-                = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
+        .d-flex.justify-content-end
+          .flex-grow-1
+            h5.diary-title id="diary#{diary.id}"
+              span.date = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
               = " ほど" if diary.is_about_date.present?
-              span.title.ml10
-                = link_to diary.title_mod, diary_path(diary)
-          .col-3
-            p = tags_link(diary)
+              span.title.ml10 = link_to diary.title_mod, diary_path(diary)
+          .tags.ml-3 = tags_link(diary)
       .well.well2
         p.mb25
           = link_to(image_tag(diary.image(:large), width: "100%", class: "img-thumbnail"), diary.image(:original)) if diary.image.present?

@@ -20,17 +20,17 @@
 // Custom bootstrap variables must be set or imported *before* bootstrap.
 @import "bootstrap";
 
-
-h3.diary-title {
+h5.diary-title {
   .date {
     font-family: Impact;
-    font-size: 0.8em;
+    a {
+      color: #337ab7;
+    }
   }
-
   .title {
     font-weight: bold;
-    text-shadow: 2px 2px 2px silver;
-    //text-shadow: 1px 1px 0px white, 3px 3px 0px #B0D3FF;
+    // text-shadow: 2px 2px 2px silver;
+    // text-shadow: 1px 1px 0px white, 3px 3px 0px #B0D3FF;
   }
 }
 
