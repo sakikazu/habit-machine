@@ -34,6 +34,27 @@ h5.diary-title {
   }
 }
 
+table.ten-years-diaries {
+  table-layout: fixed;
+
+  th {
+    text-align: center;
+    padding: 0.4rem;
+  }
+  td {
+    font-size: 0.5rem;
+    padding: 0.4rem;
+  }
+  th.day {
+    width: 3rem;
+  }
+  td.day {
+    text-align: center;
+    background-color: gray;
+    color: white;
+  }
+}
+
 .page-header {
   padding-bottom: 0px;
   margin: 25px 0 25px;

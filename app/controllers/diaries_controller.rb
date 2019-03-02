@@ -122,6 +122,21 @@ class DiariesController < ApplicationController
     end
   end
 
+  #
+  # 10年日記
+  #
+  def years
+    @year = params[:year].to_i
+    diaries = current_user.diaries.where.not(title: nil).where("DATE_FORMAT(record_at, '%Y') = ?", @year).select(:record_at, :title)
+    @diaries_by_date = []
+    diaries.each do |diary|
+      month = diary.record_at.month
+      day = diary.record_at.day
+      @diaries_by_date[month] ||= []
+      @diaries_by_date[month][day] = diary.title
+    end
+  end
+
   def delete_image
     @diary.image = nil
     @diary.save

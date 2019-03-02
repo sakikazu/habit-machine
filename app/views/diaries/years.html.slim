@@ -1,0 +1,29 @@
+.d-flex.justify-content-between.mt10.mb15
+  = link_to fa_icon('caret-left', class: 'fa-2x', style: 'padding:0.8em 0'), years_diaries_path(@year -1), class: "btn btn-light"
+  .text-center
+    = link_to "2019年", years_diaries_path(Date.today.year), class: "btn btn-light"
+    / .mt10
+      / = form_tag years_diaries_path, method: :get, class: "form-inline" do
+        / = select_tag :year, options_for_select((Settings.start_year..Date.today.year + 1), selected: @year), { class: 'form-control' }
+        / = submit_tag "移動", class: "btn btn-light"
+  = link_to fa_icon('caret-right', class: 'fa-2x', style: 'padding:0.8em 0'), years_diaries_path(@year + 1), class: "btn btn-light"
+
+table.table.table-bordered.table-hover.ten-years-diaries
+  thead
+    tr
+      th.day
+      - (1..12).each do |month|
+        th = "#{month}月"
+  tbody
+    - (1..31).each do |day|
+      tr
+        td.day = day
+        - (1..12).each do |month|
+          td
+            - date = Date.parse("#{@year}/#{month}/#{day}") rescue nil
+            - if date.present?
+              - if @diaries_by_date[month].present? && @diaries_by_date[month][day].present?
+                = @diaries_by_date[month][day].truncate(25)
+            - else
+              | -
+
