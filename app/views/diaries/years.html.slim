@@ -22,8 +22,10 @@ table.table.table-bordered.table-hover.ten-years-diaries
           td
             - date = Date.parse("#{@year}/#{month}/#{day}") rescue nil
             - if date.present?
-              - if @diaries_by_date[month].present? && @diaries_by_date[month][day].present?
-                = @diaries_by_date[month][day].truncate(25)
+              = link_to day_path("#{@year}-#{month}-#{day}") do
+                span.badge.badge-info = @diaries_by_date[month][day].size
+              - if (diary = @diaries_by_date[month][day].first).present?
+                span.ml-1 = diary.title.truncate(25)
             - else
               | -
 

@@ -126,14 +126,23 @@ class DiariesController < ApplicationController
   # 10年日記
   #
   def years
+    @action_name = '10年日記'
+
     @year = params[:year].to_i
-    diaries = current_user.diaries.where.not(title: nil).where("DATE_FORMAT(record_at, '%Y') = ?", @year).select(:record_at, :title)
+    diaries = current_user.diaries.where("DATE_FORMAT(record_at, '%Y') = ?", @year).select(:record_at, :title)
+
     @diaries_by_date = []
+    (1..12).each do |month|
+      @diaries_by_date[month] = []
+      (1..31).each do |day|
+        @diaries_by_date[month][day] = []
+      end
+    end
+
     diaries.each do |diary|
       month = diary.record_at.month
       day = diary.record_at.day
-      @diaries_by_date[month] ||= []
-      @diaries_by_date[month][day] = diary.title
+      @diaries_by_date[month][day] << diary
     end
   end
 
