@@ -16,48 +16,48 @@ html[lang="ja"]
     - #= favicon_link_tag 'images/apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png'
     = favicon_link_tag 'favicon.ico', :rel => 'shortcut icon'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
-  |  <body class="
-  = controller.controller_name
-  | _controller"> 
-  nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb20
-    a.navbar-brand[href="/"]
-      | HabitMachine
-    button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
-      span.navbar-toggler-icon
-    #navbarSupportedContent.collapse.navbar-collapse
-      ul.navbar-nav.mr-auto
+  body[class="#{controller.controller_name}_controller"]
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb20
+      a.navbar-brand[href="/"]
+        | HabitMachine
+      ul.navbar-nav.ml-auto.mr-3.mr-lg-0
         li class="nav-item"
           = link_to "本日", today_path, class: 'nav-link'
-        li class="dropdown nav-item #{controller.controller_name == "habits" and controller.action_name != "day" and controller.action_name != "top" ? "active" : ""}"
-          = link_to "習慣", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
-          .dropdown-menu
-            = link_to '習慣一覧', habits_path, class: 'dropdown-item'
-            = link_to '記録結果', result_habits_path, class: 'dropdown-item'
-        li class="dropdown nav-item #{controller.controller_name == "diaries" ? "active" : ""}"
-          = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
-          .dropdown-menu
-            = link_to '日記一覧', diaries_path, class: 'dropdown-item'
-            = link_to "人生ハイライト", hilight_diaries_path, class: 'dropdown-item'
-            = link_to "10年日記", years_diaries_path(Date.today.year), class: 'dropdown-item'
-            = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
-        li class="nav-item #{controller.controller_name == "senses" ? "active" : ""}"
-          = link_to "意識付け", senses_path, class: 'nav-link'
-        li.nav-item.dropdown
-          = link_to current_user.fullname, '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
-          .dropdown-menu
-            = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
-            = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}
-  .container-fluid
-    - if notice.present?
-      p.alert.alert-info
-        = notice
-    - if alert.present?
-      p.alert.alert-danger
-        = alert
-    = yield
-  footer
-    p HabitMachine ( Sakikazu Company 2012-#{Date.today.year} )
-  - #= javascript_include_tag "application"
+      button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li class="dropdown nav-item #{controller.controller_name == "habits" and controller.action_name != "day" and controller.action_name != "top" ? "active" : ""}"
+            = link_to "習慣", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+            .dropdown-menu
+              = link_to '習慣一覧', habits_path, class: 'dropdown-item'
+              = link_to '記録結果', result_habits_path, class: 'dropdown-item'
+          li class="dropdown nav-item #{controller.controller_name == "diaries" ? "active" : ""}"
+            = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+            .dropdown-menu
+              = link_to '日記一覧', diaries_path, class: 'dropdown-item'
+              = link_to "人生ハイライト", hilight_diaries_path, class: 'dropdown-item'
+              = link_to "10年日記", years_diaries_path(Date.today.year), class: 'dropdown-item'
+              = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
+          li class="nav-item #{controller.controller_name == "senses" ? "active" : ""}"
+            = link_to "意識付け", senses_path, class: 'nav-link'
+          li.nav-item.dropdown
+            = link_to current_user.fullname, '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
+            .dropdown-menu
+              = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
+              = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}
+    .container-fluid
+      - if notice.present?
+        p.alert.alert-info
+          = notice
+      - if alert.present?
+        p.alert.alert-danger
+          = alert
+      = yield
+    footer
+      p HabitMachine ( Sakikazu Company 2012-#{Date.today.year} )
+    - #= javascript_include_tag "application"
 
-  / NOTE: ページごとのJS（現状はライブラリをHEADで読んでるから意味ないけど）
-  = yield :addjs
+    / TODO: AdanHP同様にhead内に置き、各所でも対応、確認が必要
+    / NOTE: ページごとのJS（現状はライブラリをHEADで読んでるから意味ないけど）
+    = yield :addjs
