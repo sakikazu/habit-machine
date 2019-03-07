@@ -62,39 +62,12 @@ class HabitsController < ApplicationController
                else
                  Date.today
                end
+    # 開始曜日を月曜固定にしない理由は、特定日に飛んだ際に、その日を画面の中心にしたいため
     @date_term = (@one_day - 3)..(@one_day + 3)
 
     @action_name = "#{@one_day.to_s(:normal)}を含む週"
 
-    # 対象期間分の習慣データを取得
-    @habits = []
-    habits = current_user.habits.enable
-    records = Record.where(habit_id: habits.map{|h| h.id}, record_at: @date_term).order(:record_at)
-    records_grouped_by_habit = records.group_by{|r| r.habit_id}
-
-    habits.each do |habit|
-      records = []
-      records_by_habit = records_grouped_by_habit[habit.id]
-      @date_term.each do |date|
-        found_record = records_by_habit.blank? ? nil : records_by_habit.detect{|r| r.record_at == date}
-        records << (found_record.present? ? found_record : Record.new(habit_id: habit.id, record_at: date))
-      end
-
-      @habits << {id: habit.id, title: habit.title, value_unit: habit.value_unit, value_type: habit.value_type, records: records}
-    end
-
-    # memo これはシンプルだが、Recordが日付範囲にない場合、LEFT OUTER JOINでもhabitsさえ取得できなくなる。これができるSQLってあるのか？
-    # @habits = current_user.habits.enable.includes(:records).where("records.record_at" => @date_term)
-    # @habits.each do |habit|
-      # records_included_new_instance = []
-      # @date_term.each do |date|
-        # found_record = habit.records.detect{|r| r.record_at == date}
-        # records_included_new_instance << (found_record.present? ? found_record : Record.new(habit_id: habit.id, record_at: date))
-      # end
-      # habit.records_included_new_instance = records_included_new_instance
-    # end
-
-
+    @habits = Habit.with_records_in_date_term(current_user.habits.enable, @date_term)
     @diaries = Diary.group_by_record_at(current_user, @date_term)
 
     respond_to do |format|

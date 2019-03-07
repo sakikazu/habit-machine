@@ -24,7 +24,7 @@ class Habit < ApplicationRecord
   has_many :records
 
   validates_presence_of :title, :status, :result_type, :value_type
-  attr_accessor :search_word
+  attr_accessor :search_word, :records_in_date_term
 
   scope :enable, lambda{ where(status: 1) }
   scope :disable, lambda{ where(status: 2) }
@@ -60,4 +60,30 @@ class Habit < ApplicationRecord
     Hash[*RESULT_TYPE.flatten.reverse][self.result_type]
   end
 
+  # 対象期間分の習慣データを取得
+  def self.with_records_in_date_term(habits, date_term)
+    records = Record.where(habit_id: habits.map {|h| h.id }, record_at: date_term).order(:record_at)
+    records_grouped_by_habit = records.group_by {|r| r.habit_id }
+
+    habits.each do |habit|
+      habit.records_in_date_term = []
+      records_by_habit = records_grouped_by_habit[habit.id]
+      date_term.each do |date|
+        found_record = records_by_habit.blank? ? nil : records_by_habit.detect{|r| r.record_at == date}
+        habit.records_in_date_term << (found_record || Record.new(habit_id: habit.id, record_at: date))
+      end
+    end
+    habits
+
+    # memo これはシンプルだが、Recordが日付範囲にない場合、LEFT OUTER JOINでもhabitsさえ取得できなくなる。これができるSQLってあるのか？
+    # habits = user.habits.enable.includes(:records).where("records.record_at" => date_term)
+    # habits.each do |habit|
+      # records_included_new_instance = []
+      # date_term.each do |date|
+        # found_record = habit.records.detect{|r| r.record_at == date}
+        # records_included_new_instance << (found_record.present? ? found_record : Record.new(habit_id: habit.id, record_at: date))
+      # end
+      # habit.records_included_new_instance = records_included_new_instance
+    # end
+  end
 end
