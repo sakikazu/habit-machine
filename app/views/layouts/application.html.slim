@@ -26,20 +26,20 @@ html[lang="ja"]
       span.navbar-toggler-icon
     #navbarSupportedContent.collapse.navbar-collapse
       ul.navbar-nav.mr-auto
-        li class="nav-item #{controller.controller_name == "habits" and controller.action_name != "result" and controller.action_name != "top" ? "active" : ""}"
-          = link_to "習慣", habits_path, class: 'nav-link'
+        li class="nav-item"
+          = link_to "本日", today_path, class: 'nav-link'
+        li class="dropdown nav-item #{controller.controller_name == "habits" and controller.action_name != "day" and controller.action_name != "top" ? "active" : ""}"
+          = link_to "習慣", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+          .dropdown-menu
+            = link_to '習慣一覧', habits_path, class: 'dropdown-item'
+            = link_to '記録結果', result_habits_path, class: 'dropdown-item'
         li class="dropdown nav-item #{controller.controller_name == "diaries" ? "active" : ""}"
           = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
           .dropdown-menu
             = link_to '日記一覧', diaries_path, class: 'dropdown-item'
             = link_to "人生ハイライト", hilight_diaries_path, class: 'dropdown-item'
-            = link_to '今日分を書く', new_diary_path(days_ago: 0), class: 'dropdown-item'
-            = link_to '昨日分を書く', new_diary_path(days_ago: 1), class: 'dropdown-item'
-            = link_to '一昨日分を書く', new_diary_path(days_ago: 2), class: 'dropdown-item'
-            = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
             = link_to "10年日記", years_diaries_path(Date.today.year), class: 'dropdown-item'
-        li class="nav-item #{controller.controller_name == "habits" and controller.action_name == "result" ? "active" : ""}"
-          = link_to "記録結果", result_habits_path, class: 'nav-link'
+            = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
         li class="nav-item #{controller.controller_name == "senses" ? "active" : ""}"
           = link_to "意識付け", senses_path, class: 'nav-link'
         li.nav-item.dropdown

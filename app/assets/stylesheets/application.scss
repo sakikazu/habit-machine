@@ -269,14 +269,17 @@ hr {
   margin: 5px 0;
 }
 
+.table-fixed {
+  table-layout: fixed;
+}
 .table th.today {
   border: 3px solid red;
 }
 .table th.sunday {
-  background-color: rosybrown;
+  background-color: aqua;
 }
 .table th.saturday {
-  background-color: Lightblue;
+  background-color: aliceblue;
 }
 .table td.center, .table th.center {
   text-align: center;

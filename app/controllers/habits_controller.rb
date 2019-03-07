@@ -78,10 +78,14 @@ class HabitsController < ApplicationController
 
   # 一日分のデータを表示するページ
   def day
-    begin
-      @date = Date.parse(params[:date])
-    rescue
-      raise NotFound
+    if params[:date].blank?
+      @date = Date.today
+    else
+      begin
+        @date = Date.parse(params[:date])
+      rescue
+        raise NotFound
+      end
     end
 
     @action_name = @date.to_s(:normal)

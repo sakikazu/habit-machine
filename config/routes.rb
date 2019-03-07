@@ -3,6 +3,7 @@ Rails.application.routes.draw do
 
   root to: 'habits#top'
   get 'day/:date', to: 'habits#day', as: :day
+  get 'today', to: 'habits#day', as: :today
 
 	resources :senses do
 		collection do
