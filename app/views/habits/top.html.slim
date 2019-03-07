@@ -8,7 +8,7 @@
         = submit_tag "移動", class: "btn btn-light"
   = link_to fa_icon('caret-right', class: 'fa-2x', style: 'padding:0.8em 0'), root_path(one_day: @one_day + 7), class: "btn btn-light"
 
-table.table.table-bordered.table-hover.table-fixed.hm_top
+table.table.table-bordered.table-hover.hm_top
   thead
     tr
       th
@@ -34,7 +34,7 @@ table.table.table-bordered.table-hover.table-fixed.hm_top
       - @date_term.each do |date|
         td
           p.text-center.mb20
-            = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: date), class: "btn btn-light"
+            = link_to fa_icon('pencil', text: '日記'), new_diary_path(record_at: date), class: "btn btn-light"
           - is_first_diary = true
           - if @diaries[date].present?
             - @diaries[date].each do |diary|

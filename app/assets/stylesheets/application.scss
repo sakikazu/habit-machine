@@ -269,9 +269,15 @@ hr {
   margin: 5px 0;
 }
 
-.table-fixed {
-  table-layout: fixed;
+table.hm_top {
+  table-layout: auto;
 }
+@media (min-width: 992px) {
+  table.hm_top {
+    table-layout: fixed;
+  }
+}
+
 .table th.today {
   border: 3px solid red;
 }
