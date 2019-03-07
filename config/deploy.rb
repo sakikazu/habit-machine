@@ -31,14 +31,16 @@ set :linked_dirs, %w{log tmp/cache tmp/sockets tmp/pids vendor/bundle public/upl
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
+# unicorn
+set :unicorn_config_path, "#{current_path}/config/unicorn.conf.rb"
+# set :unicorn_pid, 'default'
+
+
 namespace :deploy do
 
   desc 'Restart application'
   task :restart do
-    on roles(:app), in: :sequence, wait: 5 do
-      # for unicorn
-      execute :cat, "#{File.join(current_path, 'tmp/pids/unicorn.pid')} | xargs kill -USR2"
-    end
+    invoke 'unicorn:restart'
   end
 
   after :publishing, :restart
