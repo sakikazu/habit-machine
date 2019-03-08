@@ -41,7 +41,7 @@ table class="table table-bordered" style="table-layout: #{@showable.present? ? '
             - if found_record.memo.present?
               .record_memo
                 - if @showable.present?
-                  = simple_format(h(found_record.memo))
+                  = sani_br(found_record.memo)
                 - else
                   = found_record.memo.truncate(30)
           - #= result_icon(found_record) if found_record.present?
