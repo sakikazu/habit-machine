@@ -41,9 +41,21 @@ HabitMachine
 * turbolinksを意識したJSの記述方法（ソース参照）
 
 ## heroku
+https://hm-a-dan.herokuapp.com/
+
+### test login
+| email            | password  |
+| ---------------- | --------- |
+| test@example.com | password  |
 
 ```
-todo
+$ git push heroku master
+$ heroku run rake db:migrate
+$ heroku open
+# 必要なら
+$ heroku restart
+# エラー時はlog --tailで調査
+$ heroku logs --tail
 ```
 
 ## Deployment instructions
@@ -74,12 +86,12 @@ todo
 ```
 
 
-## OTHER
+## Other
 
 ### bitbucket's README.md
 https://bitbucket.org/tutorials/markdowndemo/src/master/
 
-### エラー処理
+### エラー通知
 * エラー時はexception_notificationによって、sakikazuのGmailにExceptionメールが送信される
 
 
