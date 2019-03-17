@@ -47,13 +47,14 @@ module ApplicationHelper
   # 日付セル用CSSのclass(habits#index用)
   #
   def dateclass(date)
-    if date == Date.today
-      return "today"
-    elsif date.wday == 0
-      return "sunday"
-    elsif date.wday == 6
-      return "saturday"
-    end
+    wday = if date.wday == 0
+             "sunday"
+           elsif date.wday == 6
+             "saturday"
+           else
+             ""
+           end
+    date == Date.today ? "#{wday} today" : wday
   end
 
 
