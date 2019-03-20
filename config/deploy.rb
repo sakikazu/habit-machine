@@ -1,8 +1,11 @@
 # config valid only for Capistrano 3.2.1
 lock '3.11.0'
 
+require 'dotenv/load'
+Dotenv.load
+
 set :application, 'habit-machine'
-set :repo_url, 'git@bitbucket.org:sakikazu15/habit-machine.git'
+set :repo_url, ENV['BITBUCKET_URL']
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }

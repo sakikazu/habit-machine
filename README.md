@@ -93,6 +93,7 @@ https://bitbucket.org/tutorials/markdowndemo/src/master/
 
 ### エラー通知
 * エラー時はexception_notificationによって、sakikazuのGmailにExceptionメールが送信される
+* Exceptionメールが正しく動作しているかの確認は、「ActionController::InvalidAuthenticityToken」を出すのが手軽
 
 
 ## よく使うコマンド
