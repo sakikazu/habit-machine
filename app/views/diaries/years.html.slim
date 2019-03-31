@@ -1,12 +1,12 @@
 .d-flex.justify-content-between.mt10.mb15
-  = link_to fa_icon('caret-left', class: 'fa-2x', style: 'padding:0.8em 0'), years_diaries_path(@year -1), class: "btn btn-light"
+  = link_to fa_icon('caret-left', class: 'fa-lg', style: 'padding:0.6em 0.1em'), years_diaries_path(@year -1), class: "btn btn-light"
   .text-center
-    = link_to "2019年", years_diaries_path(Date.today.year), class: "btn btn-light"
-    / .mt10
-      / = form_tag years_diaries_path, method: :get, class: "form-inline" do
-        / = select_tag :year, options_for_select((Settings.start_year..Date.today.year + 1), selected: @year), { class: 'form-control' }
-        / = submit_tag "移動", class: "btn btn-light"
-  = link_to fa_icon('caret-right', class: 'fa-2x', style: 'padding:0.8em 0'), years_diaries_path(@year + 1), class: "btn btn-light"
+    span.text-140.mr-2 = "#{@year}年"
+    = link_to '年選択', '#', class: 'btn btn-light dropdown-toggle', data: {toggle: 'dropdown'}
+    .dropdown-menu
+      - Date.today.year.step(Settings.start_year, -1).each do |year|
+        = link_to year, years_diaries_path(year), class: 'dropdown-item'
+  = link_to fa_icon('caret-right', class: 'fa-lg', style: 'padding:0.6em 0.1em'), years_diaries_path(@year + 1), class: "btn btn-light"
 
 table.table.table-bordered.table-hover.ten-years-diaries
   thead
@@ -19,13 +19,13 @@ table.table.table-bordered.table-hover.ten-years-diaries
       tr
         td.day = day
         - (1..12).each do |month|
-          td
-            - date = Date.parse("#{@year}/#{month}/#{day}") rescue nil
-            - if date.present?
+          - date = Date.parse("#{@year}/#{month}/#{day}") rescue nil
+          - if date.present?
+            td
               = link_to day_path("#{@year}-#{month}-#{day}") do
                 span.badge.badge-info = @diaries_by_date[month][day].size
-              - if (diary = @diaries_by_date[month][day].first).present?
-                span.ml-1 = diary.title.truncate(25)
-            - else
-              | -
+              - @diaries_by_date[month][day].each do |diary|
+                .text-underline = fa_icon 'square', text: diary.title.truncate(40) if diary.title.present?
+          - else
+            td.bg-secondary
 
