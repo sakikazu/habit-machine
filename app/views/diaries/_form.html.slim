@@ -1,15 +1,15 @@
 - latest_tagnames = CustomTag.latest_used_tags(current_user).map{|t| t.name}
 - tagnames = current_user.mytags.order(:name).map{|t| t.name}.join(",")
 - content_for :addjs
-	javascript:
-		$(function() {
-			var pattern = "#{tagnames}".split(",");
-			$('#taglist').autocompleteMultiple(pattern);
+  javascript:
+    $(function() {
+      var pattern = "#{tagnames}".split(",");
+      $('#taglist').autocompleteMultiple(pattern);
 
-			$('#markdownable_textarea').markdownEasily();
-		})
+      $('#markdownable_textarea').markdownEasily();
+    })
 
-= simple_form_for(@diary) do |f|
+= simple_form_for(@diary, html: { class: 'warning-before-move' }) do |f|
   - if @diary.errors.any?
     .alert.alert-danger
       p 入力エラーがあります。下記のエラー内容を確認してください。
