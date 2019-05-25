@@ -254,8 +254,8 @@ class DiariesController < ApplicationController
   end
 
   def set_form_variables
-    @pinned_tags = CustomTag.pinned_tags(current_user)
-    @latest_tags = CustomTag.latest_used_tags(current_user)
+    @pinned_tags = current_user.mytags.only_pinned
+    @latest_tags = current_user.mytags.without_pinned.last_used_order.limit(5)
     @tagnames = current_user.mytags.order(:name).map{|t| t.name}.join(",")
   end
 

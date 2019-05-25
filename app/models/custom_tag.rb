@@ -24,18 +24,13 @@ class CustomTag < ActsAsTaggableOn::Tag
   # あとでコメントアウトを外して対応する
   # validates :name, uniqueness: { scope: :user_id }
 
+  scope :only_pinned, -> { where(pinned: true) }
+  scope :without_pinned, -> { where(pinned: false) }
+  scope :last_used_order, -> { order('last_used_at DESC') }
 
   # NOTE: taggableモデルのUpdate時は、その時追加されたタグのみlast_used_atを更新したいけどまあいっか
   def self.update_last_used_at(tags)
     tags.update_all(last_used_at: Time.now)
-  end
-
-  def self.latest_used_tags(user)
-    user.mytags.where(pinned: false).order('last_used_at DESC').limit(5)
-  end
-
-  def self.pinned_tags(user)
-    user.mytags.where(pinned: true)
   end
 
   def color_style
