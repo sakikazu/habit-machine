@@ -19,11 +19,11 @@
   p
     | ピン留めタグ 
     - @pinned_tags.each do |tag|
-      = content_tag 'span', "#{fa_icon('thumb-tack')} #{tag}".html_safe, onclick: "addTagToField('#{tag.name}')", class: 'badge mr5 cursor-pointer', style: tag.color_style
+      = content_tag 'span', "#{fa_icon('thumb-tack')} #{tag}".html_safe, onclick: "toggleTag('#{tag.name}')", class: 'badge mr5 cursor-pointer', style: tag.color_style
   p
     | 最近使ったタグ 
     - @latest_tags.each do |tag|
-      = content_tag 'span', tag, onclick: "addTagToField('#{tag.name}')", class: 'badge mr5 cursor-pointer', style: tag.color_style
+      = content_tag 'span', tag, onclick: "toggleTag('#{tag.name}')", class: 'badge mr5 cursor-pointer', style: tag.color_style
   p
     label.string.optional.control-label 画像
   - unless @diary.new_record?

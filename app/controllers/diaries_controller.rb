@@ -209,6 +209,7 @@ class DiariesController < ApplicationController
         format.html { redirect_to day_path(@diary.record_at.to_s), notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
         format.json { render json: @diary, status: :created, location: @diary }
       else
+        set_form_variables
         format.html { render action: "new" }
         format.json { render json: @diary.errors, status: :unprocessable_entity }
       end
@@ -223,6 +224,7 @@ class DiariesController < ApplicationController
         format.html { redirect_to day_path(@diary.record_at.to_s), notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
         format.json { head :no_content }
       else
+        set_form_variables
         format.html { render action: "edit" }
         format.json { render json: @diary.errors, status: :unprocessable_entity }
       end
