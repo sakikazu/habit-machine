@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_25_024531) do
+ActiveRecord::Schema.define(version: 2019_05_25_120321) do
 
   create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 2019_05_25_024531) do
     t.integer "sort_order", default: 1
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer "parent_id"
   end
 
   create_table "taggings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

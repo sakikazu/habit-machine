@@ -1,0 +1,6 @@
+.row.justify-content-center
+  .col-sm-6
+    .mb30
+      = link_to '一覧に戻る', senses_path, class: "btn btn-light"
+    = render partial: 'content', locals: { sense: @sense }
+

@@ -6,6 +6,7 @@
 
 = simple_form_for(@sense) do |f|
   = f.error_notification
+  = f.input :parent_id, collection: current_user.senses.active.map {|n| [n.title, n.id]}, label: '元になるデータ', as: :select
   = f.input :title, label: 'タイトル'
   = f.input :description, label: '説明'
   = markdown_help_link

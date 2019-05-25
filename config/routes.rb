@@ -5,11 +5,12 @@ Rails.application.routes.draw do
   get 'day/:date', to: 'habits#day', as: :day
   get 'today', to: 'habits#day', as: :today
 
-	resources :senses do
-		collection do
-			get 'past'
-		end
-	end
+  resources :senses do
+    collection do
+      get 'past'
+      get 'current'
+    end
+  end
 
 	resources :tags
 

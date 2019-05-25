@@ -1,27 +1,26 @@
-.mt20
 - if @is_past
-  .page-header
+  .mb30
     = link_to '一覧に戻る', senses_path, class: "btn btn-light"
-.bd-callout.bd-callout-warning.mb40
-  |  意識付け＝目標みたいなもの
-.row
-  - @senses.each do |sense|
-    .col-sm-3.mb20
-      .card
-        .card-header
-          h5.card-title
-            = sense.title
-          h6.card-subtitle.text-muted
-            = sense.description
-          .alert.alert-info.mb-0.text-center
-            = "#{sense.start_at} - #{sense.end_at}"
-        .card-body
-          .card-text.markdown.mt20 = markdown(sense.content)
+  .alert.alert-danger 非アクティブのもの
+  .row
+    - @senses.each do |sense|
+      .col-sm-3.mb20
+        = render partial: 'content', locals: { sense: sense }
+- else
+  .bd-callout.bd-callout-warning.mb40
+    |  意識付け＝目標みたいなもの
 
-        .card-footer
-          = link_to '編集', edit_sense_path(sense), class: "card-link"
-          = link_to '削除', sense, method: :delete, data: { confirm: '本当に削除してもよろしいですか?' }, class: "card-link"
-- unless @is_past
+  .alert.alert-primary 現在のもの
+  .row
+    - @senses.current.each do |sense|
+      .col-sm-3.mb20
+        = render partial: 'content', locals: { sense: sense }
+  .alert.alert-primary 未来・過去のもの
+  .row
+    - @senses.nocurrent.each do |sense|
+      .col-sm-3.mb20
+        = render partial: 'content', locals: { sense: sense }
+
   .buttons.mt20
-  = link_to '新しい「意識付け」', new_sense_path, class: "btn btn-info"
-  =< link_to '過去のもの', past_senses_path, class: "btn btn-light"
+    = link_to '新しい「意識付け」', new_sense_path, class: "btn btn-info"
+    =< link_to '非アクティブのもの', past_senses_path, class: "btn btn-light"

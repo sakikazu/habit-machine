@@ -78,3 +78,14 @@ toggleTag = function(tagname) {
   $tag_input.val(inputted_tags.join(', '));
 }
 
+showCurrentSenses = function() {
+  $.ajax({
+    type: 'GET',
+    url: '/senses/current',
+    success: function(html) {
+      $('#current-senses.modal').remove();
+      $('body').append(html);
+      $('#current-senses.modal').modal('show');
+    }
+  });
+}

@@ -1,0 +1,17 @@
+.card
+  .card-header
+    h5.card-title
+      = link_to sense.title, sense_path(sense)
+      - if sense.parent.present?
+        = " < "
+        = link_to sense.parent.title, sense_path(sense.parent)
+    h6.card-subtitle.text-muted
+      = sense.description
+    .alert.alert-info.mb-0.text-center
+      = "#{sense.start_at} - #{sense.end_at}"
+  .card-body
+    .card-text.markdown.mt20 = markdown(sense.content)
+
+  .card-footer
+    = link_to '編集', edit_sense_path(sense), class: "card-link"
+    = link_to '削除', sense, method: :delete, data: { confirm: '本当に削除してもよろしいですか?' }, class: "card-link"
