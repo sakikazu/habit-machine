@@ -3,6 +3,8 @@
   = f.error_notification
   .form-inputs
     = f.input :name, label: 'タグ名'
+    = f.input :color, label: '文字色、背景色（カンマ区切り）'
+    = f.input :pinned, label: 'ピン留め'
     = f.input :description, label: '説明', input_html: { rows: 4 }
   .form-actions
     = f.button :submit, class: "btn btn-primary"

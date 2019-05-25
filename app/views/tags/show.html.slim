@@ -4,7 +4,7 @@
     =< link_to '編集', edit_tag_path(@tag), class: "btn btn-light"
     .page-header
       h3
-        | タグ: #{@tag.name}
+        | タグ: #{content_tag('span', @tag.name, class: 'badge badge-big', style: @tag.color_style)}
         small.badge.badge-pill.badge-warning.ml20 =< "日記数：#{@diaries.size}"
     p.description
       = sani_br(@tag.description)

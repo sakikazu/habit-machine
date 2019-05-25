@@ -5,7 +5,7 @@ class TagsController < ApplicationController
   # GET /tags
   # GET /tags.json
   def index
-    @tags = current_user.mytags
+    @tags = current_user.mytags.order("pinned DESC")
 
     respond_to do |format|
       format.html # index.html.erb
@@ -89,7 +89,7 @@ class TagsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def tag_params
-    params.require(:custom_tag).permit(:name, :description)
+    params.require(:custom_tag).permit(:name, :description, :color, :pinned)
   end
 
 end

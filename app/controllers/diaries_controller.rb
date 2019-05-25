@@ -1,5 +1,6 @@
 class DiariesController < ApplicationController
   before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image]
+  before_action :set_form_variables, only: [:new, :edit]
   before_action :set_content_title, only: [:show, :edit]
   before_action :authenticate_user!
 
@@ -85,7 +86,7 @@ class DiariesController < ApplicationController
     end
     @diaries = @diaries.order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
 
-    @tags = current_user.mytags
+    @tags = current_user.mytags.order("pinned DESC")
 
     respond_to do |format|
       format.html # index.html.erb
@@ -248,6 +249,12 @@ class DiariesController < ApplicationController
   # Use callbacks to share common setup or constraints between actions.
   def set_diary
     @diary = Diary.find(params[:id])
+  end
+
+  def set_form_variables
+    @pinned_tags = CustomTag.pinned_tags(current_user)
+    @latest_tags = CustomTag.latest_used_tags(current_user)
+    @tagnames = current_user.mytags.order(:name).map{|t| t.name}.join(",")
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

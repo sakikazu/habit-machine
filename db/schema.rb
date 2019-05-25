@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_05_004215) do
+ActiveRecord::Schema.define(version: 2019_05_25_024531) do
 
   create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -114,6 +114,8 @@ ActiveRecord::Schema.define(version: 2019_02_05_004215) do
     t.integer "user_id"
     t.datetime "last_used_at"
     t.text "description"
+    t.string "color"
+    t.boolean "pinned", default: false
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
@@ -133,8 +135,6 @@ ActiveRecord::Schema.define(version: 2019_02_05_004215) do
     t.string "last_sign_in_ip"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "authentication_token"
-    t.index ["authentication_token"], name: "index_users_on_authentication_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end

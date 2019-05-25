@@ -173,6 +173,9 @@ footer > p {
 .mb60 { margin-bottom: 60px !important; }
 
 
+.cursor-pointer {
+  cursor: pointer;
+}
 .important {
   font-weight: bold;
   color: red;
@@ -354,7 +357,9 @@ table.hm_top {
   padding: 5px 20px 10px 20px;
   margin-top: 5px;
 }
-
+.badge-big {
+  font-size: 95%;
+}
 .btn-light {
   border-color: #ccc;
 }

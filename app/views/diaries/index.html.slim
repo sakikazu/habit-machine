@@ -26,6 +26,7 @@
           ul.list-group.list-group-flush
             - @tags.each do |tag|
               li.list-group-item
+                = fa_icon('thumb-tack') + "&nbsp;".html_safe if tag.pinned?
                 = link_to "#{tag.name} (#{tag.taggings_count})", diaries_path(tag: tag.name)
           .card-footer
             = link_to "タグ管理", tags_path, class: "card-link"
