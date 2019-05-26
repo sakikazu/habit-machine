@@ -22,6 +22,7 @@ class Sense < ApplicationRecord
   validates_presence_of :title
 
   scope :index_order, -> { order("sort_order ASC, start_at DESC") }
+  scope :options_order, -> { order("title ASC") }
   scope :active, -> { where(is_inactive: false) }
   scope :inactive, -> { where(is_inactive: true) }
   scope :current, -> { where("start_at <= :day AND end_at >= :day", day: Date.today) }
