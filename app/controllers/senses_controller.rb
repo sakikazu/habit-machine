@@ -9,7 +9,7 @@ class SensesController < ApplicationController
   end
 
   def current
-    @senses = current_user.senses.active.current
+    @senses = current_user.senses.active.current.index_order
     render partial: 'current', layout: false
   end
 

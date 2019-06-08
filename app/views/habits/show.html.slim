@@ -19,7 +19,7 @@
       - @records.each do |record|
         .record
           h5
-            = link_to fa_icon('calendar', text: record.record_at), day_path(record.record_at)
+            = link_to fa_icon('calendar', text: dispdate(record.record_at, true)), day_path(record.record_at)
             small.ml10
               = "#{record.value} #{@habit.value_unit}"
           - if record.memo.present?
