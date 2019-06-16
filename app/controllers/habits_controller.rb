@@ -91,6 +91,7 @@ class HabitsController < ApplicationController
     @action_name = @date.to_s(:normal)
     @records = Record.where(record_at: @date)
     @diaries = Diary.where(record_at: @date)
+    @saved_diary_id = params[:saved_diary_id].to_i
   end
 
   # GET /habits/1

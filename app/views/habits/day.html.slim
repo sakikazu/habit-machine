@@ -34,4 +34,4 @@
     - if @diaries.blank?
       p 日記はありません。
     - @diaries.each do |diary|
-      = render partial: 'diaries/index_detail', locals: { diary: diary }
+      = render partial: 'diaries/index_detail', locals: { diary: diary, highlight: diary.id == @saved_diary_id }

@@ -206,7 +206,7 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       if @diary.save
-        format.html { redirect_to diary_path(@diary), notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
+        format.html { redirect_to day_path_with_highlight(@diary), notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
         format.json { render json: @diary, status: :created, location: @diary }
       else
         set_form_variables
@@ -221,7 +221,7 @@ class DiariesController < ApplicationController
   def update
     respond_to do |format|
       if @diary.update_attributes(diary_params)
-        format.html { redirect_to diary_path(@diary), notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
+        format.html { redirect_to day_path_with_highlight(@diary), notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
         format.json { head :no_content }
       else
         set_form_variables
@@ -264,4 +264,7 @@ class DiariesController < ApplicationController
     params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :is_secret, :search_word)
   end
 
+  def day_path_with_highlight(diary)
+    day_path(diary.record_at.to_s, saved_diary_id: diary.id, anchor: "diary-#{diary.id}")
+  end
 end

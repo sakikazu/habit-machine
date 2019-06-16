@@ -184,6 +184,15 @@ footer > p {
   color: #666;
   font-size: 85%;
 }
+.highlight-border {
+  border: 3px solid red !important;
+  animation: BlinkBorder 1s infinite;
+}
+@keyframes BlinkBorder {
+  50% {
+    border-color: pink;
+  }
+}
 .text-120, .big {
   font-size: 120%;
 }
