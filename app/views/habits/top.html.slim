@@ -23,9 +23,10 @@ table.table.table-bordered.table-hover.hm_top
               = habit.value_unit
         - habit.records_in_date_term.each do |record|
           td.record.center
+            .habit-data data-toggle="popover" data-placement="top" title="#{habit.title}" data-content="#{nl2br(record.memo).html_safe}"
             - #= link_to '記録', new_habit_record_path(habit.id, habit_id: habit.id, record_at: date)
-            = input_value_for_inline_edit(record, habit.value_type)
-            =< best_in_place record, :memo, place_holder: "memo", display_with: lambda{|v| link_including_icon_for_bip(v).html_safe}, as: :textarea, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at)
+            = best_in_place_wrapper(record, habit.value_type)
+            =< best_in_place record, :memo, place_holder: "#{fa_icon 'comment-o'}", display_with: lambda {|v| best_in_place_textarea_content(v)}, as: :textarea, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at), classes: 'text-danger'
     tr
       th
         = link_to "日記", diaries_path
