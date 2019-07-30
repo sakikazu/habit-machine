@@ -1,6 +1,16 @@
 Rails.application.routes.draw do
-	# For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
+  ### for API
+  namespace 'api' do
+    namespace 'v1' do
+      post 'sign_in' => 'sessions#create'
+      get 'diaries/:id' => 'diaries#show'
+      patch 'diaries/:id' => 'diaries#update'
+    end
+  end
+
+
+  ### for web
   root to: 'habits#top'
   get 'day/:date', to: 'habits#day', as: :day
   get 'today', to: 'habits#day', as: :today

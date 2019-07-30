@@ -24,6 +24,10 @@
 class User < ApplicationRecord
   acts_as_paranoid
 
+  # API認証時のtokenを用意するため
+  # NOTE: 通常はデータ作成時に自動で指定カラムにトークンが作られて保存されるが、regenerate_auth_tokenを使えば後で作成することも可能
+  has_secure_token :auth_token
+
   # Include default devise modules. Others available are:
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
