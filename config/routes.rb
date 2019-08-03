@@ -4,8 +4,10 @@ Rails.application.routes.draw do
   namespace 'api' do
     namespace 'v1' do
       post 'sign_in' => 'sessions#create'
+      get 'diaries/latest' => 'diaries#latest'
+      post 'diaries/:id' => 'diaries#append_memo'
+      post 'diaries' => 'diaries#create'
       get 'diaries/:id' => 'diaries#show'
-      patch 'diaries/:id' => 'diaries#update'
     end
   end
 

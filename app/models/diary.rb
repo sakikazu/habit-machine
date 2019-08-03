@@ -38,6 +38,9 @@ class Diary < ApplicationRecord
   validates_attachment :image,
     content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
 
+  ACTION_MEMO_LINE = "# ----- ACTION MEMO -----"
+  CRLF = "\r\n"
+
   validates_presence_of :record_at
   validate :exists_tags?
 
@@ -63,8 +66,38 @@ class Diary < ApplicationRecord
     CustomTag.update_last_used_at(self.tags) if self.tags.present?
   end
 
+  def append_memo(memo)
+    line_existed = self.content.present? && self.content.match(/^#{ACTION_MEMO_LINE}/)
+    if line_existed
+      self.content = append_memo_below_line(memo)
+    else
+      self.content = "" if self.content.nil?
+      self.content += CRLF + ACTION_MEMO_LINE + CRLF + memo + CRLF
+    end
+  end
+
 
   private
+
+  def append_memo_below_line(memo)
+    # 文字列の最後を、2行以上の空行にしておく。lines.eachでは、イテレーターは改行付きなので、1行しか空行がないと、その行のループはされない
+    # NOTE: \Rは、\r\nや\nを同一に扱ってくれる正規表現。2つあるのは、1つ目は最後の文字列
+    if self.content.match(/.+\R\R\Z/).blank?
+      self.content += CRLF + CRLF
+    end
+    appending_content = ""
+    is_line_start = false
+    self.content.lines.each do |line|
+      if is_line_start && line.blank?
+        appending_content += "#{memo}#{CRLF}"
+        is_line_start = false
+      else
+        appending_content += line
+        is_line_start = true if line.match(/^#{ACTION_MEMO_LINE}/).present?
+      end
+    end
+    appending_content
+  end
 
   def exists_tags?
     return if self.tag_list.blank?

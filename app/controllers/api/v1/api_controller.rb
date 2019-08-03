@@ -8,9 +8,10 @@ module Api
         # NOTE: "authenticate_or_request_with_http_token" リクエストヘッダーの「Authorization: Token XXXX」という情報からトークンを抜き出し、
         # メソッドの戻り値がfalseの場合は自動でエラーのレスポンスを作ってくれる
         authenticate_or_request_with_http_token do |token, options|
-          @current_user = User.find_by(auth_token: token)
-          if @current_user.present?
-            sign_in @current_user
+          user = User.find_by(auth_token: token)
+          if user.present?
+            # NOTE: sign_inするとcurrent_userが使える模様。ログイン時間の更新も行っている。
+            sign_in user
             true
           else
             false
