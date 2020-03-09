@@ -108,6 +108,9 @@ class Habit < ApplicationRecord
       habit
     end
     # Habitが有効でなく、そのRecordも未登録なら除外する
-    habits.delete_if { |h| !h.enabled? && h.record_at_date.new_record? }
+    habits = habits.delete_if { |h| !h.enabled? && h.record_at_date.new_record? }
+    # Recordが登録されているHabitを前方に持ってくる
+    habits.partition { |h| !h.record_at_date.new_record? }.flatten
   end
 end
+
