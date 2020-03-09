@@ -267,7 +267,7 @@ td {
   .flex-row-full-width {
     .flex-item {
       display: flex;
-      flex: 1 0 0;
+      flex: 1 0 auto;
       margin-left: 5px;
       margin-right: 5px;
     }

@@ -24,7 +24,7 @@ class Habit < ApplicationRecord
   has_many :records
 
   validates_presence_of :title, :status, :result_type, :value_type
-  attr_accessor :search_word, :records_in_date_term
+  attr_accessor :search_word, :records_in_date_term, :record_at_date
 
   scope :enable, lambda{ where(status: 1) }
   scope :disable, lambda{ where(status: 2) }
@@ -47,6 +47,10 @@ class Habit < ApplicationRecord
   GRAPH_TYPE_ORESEN = 'spline'
   GRAPH_TYPE_BOU = 'column'
 
+  # TODO: enumを使って良い感じにやりたい
+  def enabled?
+    self.status == 1
+  end
 
   def status_name
     Hash[*STATUS_TYPE.flatten.reverse][self.status]
@@ -75,7 +79,9 @@ class Habit < ApplicationRecord
     end
     habits
 
-    # memo これはシンプルだが、Recordが日付範囲にない場合、LEFT OUTER JOINでもhabitsさえ取得できなくなる。これができるSQLってあるのか？
+    # NOTE: これはシンプルだが、Recordが日付範囲にない場合、LEFT OUTER JOINでもhabitsさえ取得できなくなる
+    # これはwhereでrecordsを絞ってそれがHabitにも影響しているためで、うまくやるにはOUTER JOINのONにこのwhereの条件を追加する必要がある
+    # まあ、上のようにテーブルごとに取得して処理するやり方で良いだろう
     # habits = user.habits.enable.includes(:records).where("records.record_at" => date_term)
     # habits.each do |habit|
       # records_included_new_instance = []
@@ -85,5 +91,23 @@ class Habit < ApplicationRecord
       # end
       # habit.records_included_new_instance = records_included_new_instance
     # end
+  end
+
+  # 特定の1日分用の習慣データ
+  # Recordは登録されていればそのHabitが有効かを問わずに対象とし、
+  # Recordが登録されているかを問わず、有効なHabitを対象とする
+  def self.with_record_at_date(habits, date)
+    registered_records = Record.where(habit: habits).where(record_at: date)
+    records_grouped_by_habit = registered_records.group_by { |r| r.habit_id }
+    habits = habits.map do |habit|
+      habit.record_at_date = if records_grouped_by_habit[habit.id].present?
+                               records_grouped_by_habit[habit.id].first
+                             else
+                               Record.new(habit_id: habit.id, record_at: date)
+                             end
+      habit
+    end
+    # Habitが有効でなく、そのRecordも未登録なら除外する
+    habits.delete_if { |h| !h.enabled? && h.record_at_date.new_record? }
   end
 end

@@ -22,7 +22,7 @@ gem 'acts-as-taggable-on', '~> 6.0'
 gem 'dotenv-rails'
 
 gem 'simple_form'
-gem 'best_in_place', '~> 3.0.1'
+gem 'best_in_place'
 gem 'font-awesome-rails'
 gem 'lazy_high_charts'
 gem 'browser'

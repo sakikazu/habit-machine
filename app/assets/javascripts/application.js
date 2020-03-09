@@ -56,9 +56,9 @@ $(document).on('turbolinks:load', function() {
   });
 
   // bipがtextareaタイプの場合、turbolinksの遷移から戻った後に変更内容が失われる問題の対処
-  // NOTE: 理由：bipは変更確定時、データをポストし、表示用であるdisplay_withの関数にのみ、変更後の値を保持するようだ
-  //             でも、turbolinksで戻った時、textareaの値は、data-bip-original-content属性からセットされるので、
-  //             diaplay_withの中の値をdata-bip-original-contentにセットすることで、正しくtextarea値をセットすることができる
+  // NOTE: 理由：bipは変更確定時、変更後データをdata-bip-valueに保持する
+  //             でも、turbolinksで戻った時、textareaの値は、以前のデータであるdata-bip-original-content属性からセットされる仕様なので、
+  //             data-bip-valueの値をdata-bip-original-contentにセットすることで、正しくtextarea値をセットすることができる
   // NOTE: この中ではdata-*属性はdata()メソッドで書き換えできなかった。毎度datasetを使った方が良さそう
   $('.best_in_place').bind("ajax:success", function() {
     if ($(this).data('bip-type') != 'textarea') { return }
@@ -67,10 +67,12 @@ $(document).on('turbolinks:load', function() {
     // その際にPopoverが表示されてしまうので、それをこのタイミングで非表示にする
     hidePopover(shownPopoverElements);
 
-    // 正しい値はspan.best_in_place > spanが持っている(display_withの中)
-    var updatedValue = $(this).children('span').first().data('content');
-    // 表示用の値を変更後のものにする
-    $(this).parents('.record').children('.habit-data')[0].dataset.content = nl2br(updatedValue);
+    var updatedValue = $(this).data('bip-value');
+    // 表示用の値を変更後のものにする（トップページのみ）
+    var display_data = $(this).parents('.record').children('.habit-data')[0];
+    if (display_data) {
+      display_data.dataset.content = nl2br(updatedValue);
+    }
     // data-bip-original-contentを書き換えると、遷移後も値が正しいままとなる
     this.dataset.bipOriginalContent = updatedValue;
   });

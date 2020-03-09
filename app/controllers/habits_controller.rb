@@ -76,7 +76,7 @@ class HabitsController < ApplicationController
     end
   end
 
-  # 一日分のデータを表示するページ
+  # 一日分のデータを表示
   def day
     if params[:date].blank?
       @date = Date.today
@@ -89,8 +89,8 @@ class HabitsController < ApplicationController
     end
 
     @action_name = @date.to_s(:normal)
-    @records = Record.where(record_at: @date)
-    @diaries = Diary.where(record_at: @date)
+    @habits = Habit.with_record_at_date(current_user.habits, @date)
+    @diaries = current_user.diaries.where(record_at: @date)
     @saved_diary_id = params[:saved_diary_id].to_i
   end
 

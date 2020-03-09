@@ -12,26 +12,27 @@
 
     .page-header
       h3 本日の記録
-    - if @records.blank?
-      p 習慣の記録はありません。
+    - if @habits.blank?
+      p 習慣が登録されていません。
     - else
       .flex-row-full-width
-        - @records.each do |record|
+        - @habits.each do |habit|
+          - record = habit.record_at_date
           .flex-item.card.mb20
-            h5.card-header.p-2 = link_to record.habit.title, habit_path(record.habit)
+            h5.card-header.p-2 = link_to habit.title, habit_path(habit)
             .card-body.p-2
-              - if record.value.present?
-                span.badge.badge-success = "#{record.value} #{record.habit.value_unit}"
-              - else
-                span.badge.badge-secondary 値は未設定
-              - if record.memo.present?
-                .card-text.mt10
-                  = sani_br(record.memo)
+              span.badge.badge-light
+                span.text-140 = best_in_place_wrapper(record, habit.value_type)
+                =< habit.value_unit if record.value.present?
+              .card-text.mt10
+                = best_in_place record, :memo, place_holder: "メモ入力", display_with: lambda { |v| sani_br(v) }, as: :textarea, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at), classes: 'text-danger d-block'
 
     .page-header.mt40
       h3 本日の日記
     p = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-block btn-light'
     - if @diaries.blank?
       p 日記はありません。
-    - @diaries.each do |diary|
-      = render partial: 'diaries/index_detail', locals: { diary: diary, highlight: diary.id == @saved_diary_id }
+    - else
+      - @diaries.each do |diary|
+        = render partial: 'diaries/index_detail', locals: { diary: diary, highlight: diary.id == @saved_diary_id }
+
