@@ -36,15 +36,16 @@ Rails.application.routes.draw do
 		put 'users' => 'devise/registrations#update', :as => 'user_registration'
 	end
 
-	resources :diaries do
-		member do
-			put :delete_image
-		end
-		collection do
+  resources :diaries do
+    member do
+      put :delete_image
+      get :cancel
+    end
+    collection do
       get 'hilight'
       get 'years/:year', action: :years, as: :years
     end
-	end
+  end
 
 	resources :habits do
 		collection do

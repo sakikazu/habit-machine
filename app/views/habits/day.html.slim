@@ -1,3 +1,32 @@
+- content_for :addjs
+  javascript:
+    var formWarningMessage = "登録・保存していない入力内容は破棄されますがよろしいですか？";
+    $(document).on('turbolinks:load', function() {
+      $('a').on('click', function(e) {
+        var unsaved = getUnsavedStatus();
+        var href = $(this).attr('href');
+        if (
+          typeof(href) === "undefined" ||
+          href == '#' ||
+          !unsaved ||
+          $(this).hasClass('ignore-checking-changes')
+        ) { return; }
+
+        if(confirm(formWarningMessage) == false) {
+          e.preventDefault();
+        }
+      })
+
+      //ブラウザのタブを閉じようとした時、またはturbolinks以外のリンクをクリックした時の警告
+      $(window).on('beforeunload', function() {
+        var unsaved = getUnsavedStatus();
+        if (unsaved) {
+          return formWarningMessage;
+        }
+      })
+    })
+
+
 .row.justify-content-center
   .col-sm-6
     .form-actions.mb30
@@ -25,14 +54,15 @@
                 span.text-140 = best_in_place_wrapper(record, habit.value_type)
                 =< habit.value_unit if record.value.present?
               .card-text.mt10
-                = best_in_place record, :memo, place_holder: "メモ入力", display_with: lambda { |v| sani_br(v) }, as: :textarea, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at), classes: 'text-danger d-block'
+                = best_in_place record, :memo, place_holder: "メモ入力", display_with: lambda { |v| sani_br(v) }, as: :textarea, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at), class: 'text-danger d-block'
 
     .page-header.mt40
       h3 本日の日記
-    p = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-block btn-light'
     - if @diaries.blank?
       p 日記はありません。
     - else
       - @diaries.each do |diary|
-        = render partial: 'diaries/index_detail', locals: { diary: diary, highlight: diary.id == @saved_diary_id }
+        .diary-wrapper[id="diary-#{diary.id}"]
+          = render partial: 'diaries/index_detail', locals: { diary: diary, is_day_page: true }
+    p = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-block btn-light ignore-checking-changes', id: 'new-diary-btn', remote: true
 

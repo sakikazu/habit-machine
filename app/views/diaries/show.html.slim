@@ -1,7 +1,6 @@
 .row.justify-content-center
   .col-sm-7
     .form-actions.mt15
-      = link_to "編集する", edit_diary_path, class: "btn btn-info"
-      =< link_to 'この日を週表示', root_path(one_day: @diary.record_at), class: "btn btn-light"
+      = link_to 'この日を週表示', root_path(one_day: @diary.record_at), class: "btn btn-light"
       =< link_to "#{@diary.record_at.year}年の日記", diaries_path("diary[search_word]" => "year:#{@diary.record_at.year}"), class: "btn btn-light"
     = render partial: "show_ajax"

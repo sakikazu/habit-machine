@@ -12,7 +12,7 @@
         =< link_to "検索解除", diaries_path, class: "btn btn-light" if @q.search_word.present?
     = paginate @diaries, window: 3, outer_window: 2
     - @diaries.each do |diary|
-      = render partial: 'index_detail', locals: { diary: diary, highlight: false }
+      = render partial: 'index_detail', locals: { diary: diary, is_day_page: false }
     .mt30
       = paginate @diaries, window: 3, outer_window: 2
 

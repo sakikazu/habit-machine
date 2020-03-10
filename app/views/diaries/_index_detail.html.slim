@@ -1,10 +1,11 @@
-.well[id="diary-#{diary.id}" class="#{'highlight-border' if highlight.present?}"]
+.well
   .page-header.mt0
     .d-flex.justify-content-end
       .flex-grow-1
         h5.diary-title
-          span.date = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
-          span.title.ml10 = link_to diary.title_mod, diary_path(diary)
+          - unless is_day_page
+            span.date.mr10 = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
+          span.title = link_to diary.title_mod, diary_path(diary)
       .tags.ml-3 = tags_link(diary)
   = "<p class='btn btn-block btn-danger disabled mb5'>シークレット日記</p>".html_safe if diary.is_secret
   = "<p class='btn btn-block btn-warning disabled mb5'>ハイライト日記</p>".html_safe if diary.is_hilight
@@ -12,6 +13,6 @@
     = image_tag(diary.image(:small), class: "w-50 img-thumbnail") if diary.image.present?
   .markdown
     = markdown(diary.content)
-  .buttons
-    = link_to '編集', edit_diary_path(diary), class: "btn btn-light"
-    =< link_to '削除', diary, method: :delete, data: { confirm: '本当に日記を削除してもいいですか?' }, class: "btn btn-light"
+  - if is_day_page
+    .buttons
+      = link_to '編集', edit_diary_path(diary), class: "btn btn-light ignore-checking-changes", remote: true

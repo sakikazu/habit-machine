@@ -5,7 +5,7 @@ module HabitsHelper
   #
   def best_in_place_wrapper(record, habit_value_type)
     action_url = url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at)
-    options = { place_holder: "未入力", url: action_url, classes: 'text-danger' }
+    options = { place_holder: "未入力", url: action_url, class: 'text-danger' }
 
     # セレクトボックス形式
     if habit_value_type == Habit::VALUE_TYPE_COLLECTION

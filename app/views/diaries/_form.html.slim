@@ -1,42 +1,52 @@
-- content_for :addjs
-  javascript:
-    $(function() {
-      var pattern = "#{@tagnames}".split(",");
-      $('#taglist').autocompleteMultiple(pattern);
+/ response.js.erbからrenderされる想定の作り（JS処理をそちらのみで行っているため）
+.card.border-secondary
+  h5.card-header
+    .d-flex.justify-content-end
+      .flex-grow-1
+        ' 日記の
+        = @diary.new_record? ? "作成" : "編集"
+      = link_to 'キャンセル', 'javascript:void(0)', onclick: "cancelEdit(event, #{@diary.new_record? ? 'null' : @diary.id})", class: 'btn btn-light ignore-checking-changes'
+  = simple_form_for(@diary, html: { class: 'diary-form' }, remote: true) do |f|
+    .card-body
+      - if @diary.errors.any?
+        .alert.alert-danger
+          p 入力エラーがあります。下記のエラー内容を確認してください。
 
-      $('#markdownable_textarea').markdownEasily();
-    })
+      / Ajaxのレスポンスを反映するtargetのid（このフォーム描画時にセットされる想定）
+      = f.input :wrapper_dom_id, as: :hidden
 
-= simple_form_for(@diary, html: { class: 'warning-before-move' }) do |f|
-  - if @diary.errors.any?
-    .alert.alert-danger
-      p 入力エラーがあります。下記のエラー内容を確認してください。
-  = f.input :record_at, as: :date, label: "日付", start_year: Settings.start_year, end_year: Date.today.year + 1, wrapper_html: {class: "form-group-inline"}
-  = f.input :title, placeholder: '未入力でもOK', input_html: {autofocus: true, tabindex: 1}, label: "タイトル"
-  = markdown_help_link
-  = f.input :content, input_html: {id: 'markdownable_textarea', rows: 15, tabindex: 2}, label: "内容"
-  = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要</span>".html_safe, input_html: {id: 'taglist', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます', tabindex: 3}
-  p
-    | ピン留めタグ 
-    - @pinned_tags.each do |tag|
-      = content_tag 'span', "#{fa_icon('thumb-tack')} #{tag}".html_safe, onclick: "toggleTag('#{tag.name}')", class: 'badge mr5 cursor-pointer', style: tag.color_style
-  p
-    | 最近使ったタグ 
-    - @latest_tags.each do |tag|
-      = content_tag 'span', tag, onclick: "toggleTag('#{tag.name}')", class: 'badge mr5 cursor-pointer', style: tag.color_style
-  p
-    label.string.optional.control-label 画像
-  - unless @diary.new_record?
-    - if @diary.image?
+      - if @diary.record_at.present?
+        = f.input :record_at, as: :hidden
+      - else
+        = f.input :record_at, as: :date, label: "日付", start_year: Settings.start_year, end_year: Date.today.year + 1, wrapper_html: {class: "form-group-inline"}
+      = f.input :title, label: false, placeholder: 'タイトル（未入力可）', input_html: {autofocus: true, tabindex: 1}
+      = markdown_help_link
+      = f.input :content, input_html: {id: 'markdownable_textarea', rows: 15, tabindex: 2}, label: false, placeholder: "日記の内容"
+      = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要</span>".html_safe, input_html: {id: 'taglist', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます', tabindex: 3}
       p
-        |  現在の画像 
-        = image_tag(@diary.image(:small), class: "img-thumbnail")
-        = link_to "画像削除する", delete_image_diary_path(@diary), method: :put, data: { confirm: '本当に画像を削除してもいいですか?' }
-    - else
-      p 画像は未添付
-  = f.input :image, as: :file, label: false
-  = f.input :is_hilight, label: "人生ハイライトにする"
-  = f.input :is_about_date, label: "日付を曖昧にする"
-  = f.input :is_secret, label: "他人に見られないようにする"
-  .form-actions
-    = f.button :submit, class: "btn btn-primary", tabindex: 4
+        | ピン留めタグ 
+        - @pinned_tags.each do |tag|
+          = content_tag 'span', "#{fa_icon('thumb-tack')} #{tag}".html_safe, onclick: "toggleTag(event, '#{tag.name}')", class: 'badge mr5 cursor-pointer', style: tag.color_style
+      p
+        | 最近使ったタグ 
+        - @latest_tags.each do |tag|
+          = content_tag 'span', tag, onclick: "toggleTag(event, '#{tag.name}')", class: 'badge mr5 cursor-pointer', style: tag.color_style
+      p
+        label.string.optional.control-label 画像
+      - unless @diary.new_record?
+        - if @diary.image?
+          p
+            |  現在の画像 
+            = image_tag(@diary.image(:small), class: "img-thumbnail")
+            = link_to "画像削除する", delete_image_diary_path(@diary), method: :put, data: { confirm: '本当に画像を削除してもいいですか?' }
+        - else
+          p 画像は未添付
+      = f.input :image, as: :file, label: false
+      = f.input :is_hilight, label: "人生ハイライトにする"
+      = f.input :is_about_date, label: "日付を曖昧にする"
+      = f.input :is_secret, label: "他人に見られないようにする"
+    .card-footer
+      .form-actions.d-flex.justify-content-between
+        = f.button :submit, class: "btn btn-primary", tabindex: 4
+        =< link_to '削除', @diary, method: :delete, data: { confirm: '本当に日記を削除してもいいですか?' }, class: "btn btn-danger"
+

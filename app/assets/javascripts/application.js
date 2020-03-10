@@ -86,24 +86,6 @@ hidePopover = function(elements, $withoutEle = null) {
   });
 }
 
-// Diaryのフォームのタグフィールドに選択したタグ名をトグルで追加/削除する
-toggleTag = function(tagname) {
-  var $tag_input = $('input[name="diary[tag_list]"]');
-  var inputted_tags_string = $tag_input.val();
-  if (inputted_tags_string.length == 0) {
-    $tag_input.val(tagname);
-    return
-  }
-  var inputted_tags = inputted_tags_string.split(/\s*,\s*/);
-  var find_idx = inputted_tags.indexOf(tagname);
-  if (find_idx > -1) {
-    inputted_tags.splice(find_idx, 1);
-  } else {
-    inputted_tags.push(tagname);
-  }
-  $tag_input.val(inputted_tags.join(', '));
-}
-
 showCurrentSenses = function() {
   $.ajax({
     type: 'GET',

@@ -1,0 +1,49 @@
+<% action_name = controller.action_name.to_sym %>
+<% if action_name == :new %>
+    getTimestamp = function() {
+      return new Date().getTime();
+    }
+    var wrapperId = "new-diary-" + getTimestamp();
+    $("#new-diary-btn").before("<div class='diary-wrapper' id='" + wrapperId + "'>");
+
+<% elsif action_name == :edit %>
+    var wrapperId = "diary-<%= @diary.id %>";
+<% end %>
+
+<% if [:new, :edit].include?(action_name) %>
+  $("#" + wrapperId).html(
+    "<%= j(render partial: 'form', local: { diary: @diary, pinned_tags: @pinned_tags, latest_tags: @latest_tags, tagnames: @tagnames }) %>"
+  );
+  $("#" + wrapperId).addClass('mb-3');
+
+  $(function() {
+    var pattern = "<%= @tagnames %>".split(",");
+    $('#taglist').autocompleteMultiple(pattern);
+
+    $('#markdownable_textarea').markdownEasily();
+
+    // diary-wrapperのidをフォームのinputにセットする
+    $("#" + wrapperId).find("input[name='diary[wrapper_dom_id]']").val(wrapperId);
+
+    setCheckUnsavedEvent($("#" + wrapperId).find('form'));
+  })
+<% end %>
+
+<% if [:create, :update].include?(action_name) %>
+  $("#<%= @diary.wrapper_dom_id %>").html(
+    "<%= j(render partial: 'index_detail', locals: { diary: @diary, is_day_page: true }) %>"
+  );
+  $('.well').removeClass('highlight-border');
+  $("#<%= @diary.wrapper_dom_id %>").find('.well').addClass('highlight-border');
+<% end %>
+
+<% if action_name == :create %>
+  $("#<%= @diary.wrapper_dom_id %>").attr('id', 'diary-<%= @diary.id %>');
+<% end %>
+
+<% if action_name == :cancel %>
+  $("#<%= @wrapper_id %>").html(
+    "<%= j(render partial: 'index_detail', locals: { diary: @diary, is_day_page: true }) %>"
+  );
+<% end %>
+

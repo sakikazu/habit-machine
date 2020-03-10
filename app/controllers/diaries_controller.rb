@@ -1,5 +1,5 @@
 class DiariesController < ApplicationController
-  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image]
+  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image, :cancel]
   before_action :set_form_variables, only: [:new, :edit]
   before_action :set_content_title, only: [:show, :edit]
   before_action :authenticate_user!
@@ -150,7 +150,8 @@ class DiariesController < ApplicationController
   def delete_image
     @diary.image = nil
     @diary.save
-    redirect_to edit_diary_path(@diary), notice: "画像を削除しました."
+    # todo Ajaxで削除するようにしたい
+    redirect_to day_path(@diary.record_at), notice: "画像を削除しました."
   end
 
   # GET /diaries/1
@@ -187,15 +188,28 @@ class DiariesController < ApplicationController
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @diary }
+      format.js   { render 'response.js' }
     end
   end
 
   # GET /diaries/1/edit
+  #
+  # format html/js
   def edit
     if @diary.user != current_user
       redirect_to diaries_path, notice: "この日記は存在しません."
       return
     end
+
+    respond_to do |format|
+      format.html
+      format.js   { render 'response.js' }
+    end
+  end
+
+  def cancel
+    @wrapper_id = params[:wrapperId]
+    render 'response.js'
   end
 
   # POST /diaries
@@ -206,12 +220,14 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       if @diary.save
-        format.html { redirect_to day_path_with_highlight(@diary), notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
+        format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
         format.json { render json: @diary, status: :created, location: @diary }
+        format.js   { render 'response.js' }
       else
         set_form_variables
         format.html { render action: "new" }
         format.json { render json: @diary.errors, status: :unprocessable_entity }
+        format.js   { render 'response.js' }
       end
     end
   end
@@ -221,12 +237,14 @@ class DiariesController < ApplicationController
   def update
     respond_to do |format|
       if @diary.update_attributes(diary_params)
-        format.html { redirect_to day_path_with_highlight(@diary), notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
+        format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
         format.json { head :no_content }
+        format.js   { render 'response.js' }
       else
         set_form_variables
         format.html { render action: "edit" }
         format.json { render json: @diary.errors, status: :unprocessable_entity }
+        format.js   { render 'response.js' }
       end
     end
   end
@@ -261,10 +279,6 @@ class DiariesController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def diary_params
-    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :is_secret, :search_word)
-  end
-
-  def day_path_with_highlight(diary)
-    day_path(diary.record_at.to_s, saved_diary_id: diary.id, anchor: "diary-#{diary.id}")
+    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :is_secret, :search_word, :wrapper_dom_id)
   end
 end
