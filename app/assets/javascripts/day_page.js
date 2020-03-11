@@ -1,3 +1,4 @@
+// フォームデータの変更ステータスをフォームに記録しておく
 setCheckUnsavedEvent = function($form) {
   $form.data('unsaved', false);
 
@@ -10,6 +11,7 @@ setCheckUnsavedEvent = function($form) {
   })
 }
 
+// ページ内のすべてのフォームからデータ変更をチェック
 getUnsavedStatus = function() {
   var unsaved = false;
   $('form').each(function(idx, ele) {
@@ -20,6 +22,23 @@ getUnsavedStatus = function() {
   return unsaved;
 }
 
+// フォームが複数表示している場合、tabindexがかぶらないようにインクリメントする
+// タイトルにフォーカスする
+setTabIndexAndFocus = function($form) {
+  tabidx += 1;
+  $form.find("input[name='diary[title]']").attr("tabindex", tabidx);
+  tabidx += 1;
+  $form.find("textarea[name='diary[content]']").attr("tabindex", tabidx);
+  tabidx += 1;
+  $form.find("input[name='diary[tag_list]']").attr("tabindex", tabidx);
+  tabidx += 1;
+  $form.find("input[name='commit']").attr("tabindex", tabidx);
+
+  $form.find("input[name='diary[title]']").focus();
+}
+
+// 編集をキャンセルするボタン押下時、
+// そのフォームデータが変更されていれば確認メッセージを表示する
 cancelEdit = function(event, diaryId) {
   $form = $(event.target).parents('.diary-wrapper').find('form');
   if ($form.data('unsaved')) {
@@ -36,7 +55,7 @@ cancelEdit = function(event, diaryId) {
   }
 }
 
-// Diaryのフォームのタグフィールドに選択したタグ名をトグルで追加/削除する
+// Diaryのフォームのタグフィールドに、選択したタグ名をトグルで追加/削除する
 toggleTag = function(event, tagname) {
   var $tag_input = $(event.target).parents('.diary-form').find('input[name="diary[tag_list]"]');
   var inputted_tags_string = $tag_input.val();

@@ -11,21 +11,24 @@
 <% end %>
 
 <% if [:new, :edit].include?(action_name) %>
-  $("#" + wrapperId).html(
+  var $diaryWrapper = $("#" + wrapperId);
+  $diaryWrapper.html(
     "<%= j(render partial: 'form', local: { diary: @diary, pinned_tags: @pinned_tags, latest_tags: @latest_tags, tagnames: @tagnames }) %>"
   );
-  $("#" + wrapperId).addClass('mb-3');
+  $diaryWrapper.addClass('mb-3');
 
   $(function() {
     var pattern = "<%= @tagnames %>".split(",");
-    $('#taglist').autocompleteMultiple(pattern);
+    $diaryWrapper.find('#taglist').autocompleteMultiple(pattern);
 
-    $('#markdownable_textarea').markdownEasily();
+    $diaryWrapper.find('#markdownable_textarea').markdownEasily();
 
-    // diary-wrapperのidをフォームのinputにセットする
-    $("#" + wrapperId).find("input[name='diary[wrapper_dom_id]']").val(wrapperId);
+    // diary-wrapperのidをフォームのinputにセットしておく
+    $diaryWrapper.find("input[name='diary[wrapper_dom_id]']").val(wrapperId);
 
-    setCheckUnsavedEvent($("#" + wrapperId).find('form'));
+    setCheckUnsavedEvent($diaryWrapper.find('form'));
+
+    setTabIndexAndFocus($diaryWrapper.find('form'));
   })
 <% end %>
 
@@ -38,6 +41,7 @@
 <% end %>
 
 <% if action_name == :create %>
+  // 日記作成後、その日記のwrapperのidを、一時的なものからそのDiaryのidに応じたものに変更する
   $("#<%= @diary.wrapper_dom_id %>").attr('id', 'diary-<%= @diary.id %>');
 <% end %>
 

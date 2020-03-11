@@ -19,10 +19,10 @@
         = f.input :record_at, as: :hidden
       - else
         = f.input :record_at, as: :date, label: "日付", start_year: Settings.start_year, end_year: Date.today.year + 1, wrapper_html: {class: "form-group-inline"}
-      = f.input :title, label: false, placeholder: 'タイトル（未入力可）', input_html: {autofocus: true, tabindex: 1}
+      = f.input :title, label: false, placeholder: 'タイトル（未入力可）', input_html: {autofocus: true}
       = markdown_help_link
-      = f.input :content, input_html: {id: 'markdownable_textarea', rows: 15, tabindex: 2}, label: false, placeholder: "日記の内容"
-      = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要</span>".html_safe, input_html: {id: 'taglist', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます', tabindex: 3}
+      = f.input :content, input_html: {id: 'markdownable_textarea', rows: 15}, label: false, placeholder: "日記の内容"
+      = f.input :tag_list, as: :string, label: "タグ <span class='desc'>カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要</span>".html_safe, input_html: {id: 'taglist', placeholder: '矢印キーを押下すれば既存のタグリストが表示されます'}
       p
         | ピン留めタグ 
         - @pinned_tags.each do |tag|
@@ -47,6 +47,6 @@
       = f.input :is_secret, label: "他人に見られないようにする"
     .card-footer
       .form-actions.d-flex.justify-content-between
-        = f.button :submit, class: "btn btn-primary", tabindex: 4
+        = f.button :submit, class: "btn btn-primary"
         =< link_to '削除', @diary, method: :delete, data: { confirm: '本当に日記を削除してもいいですか?' }, class: "btn btn-danger"
 

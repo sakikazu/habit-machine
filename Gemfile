@@ -22,6 +22,7 @@ gem 'acts-as-taggable-on', '~> 6.0'
 gem 'dotenv-rails'
 
 gem 'simple_form'
+# TODO: best_in_placeはクセが強い(application.js参照)ので、いずれJSで置き換える
 gem 'best_in_place'
 gem 'font-awesome-rails'
 gem 'lazy_high_charts'
