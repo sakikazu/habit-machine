@@ -34,7 +34,12 @@
 
 <% if [:create, :update].include?(action_name) %>
   $("#<%= @diary.wrapper_dom_id %>").html(
-    "<%= j(render partial: 'index_detail', locals: { diary: @diary, is_day_page: true }) %>"
+    <% if @changed_record_at.present? %>
+      <% link = link_to "日記【#{@diary.title}】の日付が変更されました(#{@changed_record_at.to_s})", day_path(@changed_record_at) %>
+      "<%= j(render html: tag.div(class: 'well') { link }) %>"
+    <% else %>
+      "<%= j(render partial: 'index_detail', locals: { diary: @diary, is_day_page: true }) %>"
+    <% end %>
   );
   $('.well').removeClass('highlight-border');
   $("#<%= @diary.wrapper_dom_id %>").find('.well').addClass('highlight-border');

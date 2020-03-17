@@ -15,7 +15,7 @@
       / Ajaxのレスポンスを反映するtargetのid（このフォーム描画時にセットされる想定）
       = f.input :wrapper_dom_id, as: :hidden
 
-      - if @diary.record_at.present?
+      - if @diary.new_record? && @diary.record_at.present?
         = f.input :record_at, as: :hidden
       - else
         = f.input :record_at, as: :date, label: "日付", start_year: Settings.start_year, end_year: Date.today.year + 1, wrapper_html: {class: "form-group-inline"}

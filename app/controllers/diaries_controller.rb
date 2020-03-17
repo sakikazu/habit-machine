@@ -237,6 +237,9 @@ class DiariesController < ApplicationController
   def update
     respond_to do |format|
       if @diary.update_attributes(diary_params)
+        # NOTE: rails5.1以降では、save後のカラム変更チェックはsaved_change_to_(column)?メソッドを使用すること
+        @changed_record_at = @diary.saved_change_to_record_at? ? @diary.record_at : nil
+
         format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
         format.json { head :no_content }
         format.js   { render 'response.js' }
