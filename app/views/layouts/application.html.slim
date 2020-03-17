@@ -16,6 +16,8 @@ html[lang="ja"]
     - #= favicon_link_tag 'images/apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png'
     = favicon_link_tag 'favicon.ico', :rel => 'shortcut icon'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    / NOTE: turbolinksでは、head内のscriptはページの初回表示時のみに実行されるので、重複実行させたくないものを置くこと。全てここに置いた方が事故がないか・・
+    = yield :addjs_in_head
   body[class="#{controller.controller_name}_controller"]
     nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb20
       a.navbar-brand[href="/"]
@@ -61,6 +63,6 @@ html[lang="ja"]
       p HabitMachine ( Sakikazu Company 2012-#{Date.today.year} )
     - #= javascript_include_tag "application"
 
-    / TODO: AdanHP同様にhead内に置き、各所でも対応、確認が必要
+    / TODO: AdanHP同様にhead内に置き、各所でも対応、確認が必要（turbolinks関連で多重イベント登録を避けるため）
     / NOTE: ページごとのJS（現状はライブラリをHEADで読んでるから意味ないけど）
     = yield :addjs

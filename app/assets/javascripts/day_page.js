@@ -73,3 +73,23 @@ toggleTag = function(event, tagname) {
   $tag_input.val(inputted_tags.join(', '));
 }
 
+// ショートカットキー
+// shift + < : 日戻し / shift + > : 日送り
+const PREV_KEY = 188;
+const NEXT_KEY = 190;
+shortcutOfPagingLink = function(prev_class, next_class) {
+  $(document).on('keydown', function(e) {
+    if (!e.shiftKey) { return; }
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) { return; }
+    switch (e.which || e.keyCode) {
+      case PREV_KEY:
+        // NOTE: これが2019年版のクリックのさせ方らしい
+        $('a.' + prev_class)[0].click();
+        break;
+      case NEXT_KEY:
+        $('a.' + next_class)[0].click();
+        break;
+    }
+  });
+}
+

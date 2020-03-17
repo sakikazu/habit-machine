@@ -1,4 +1,4 @@
-- content_for :addjs
+- content_for :addjs_in_head
   javascript:
     var tabidx = 0;
 
@@ -18,7 +18,7 @@
         if(confirm(formWarningMessage) == false) {
           e.preventDefault();
         }
-      })
+      });
 
       // ブラウザのタブを閉じようとした時、またはturbolinks以外のリンクをクリックした時の警告
       $(window).on('beforeunload', function() {
@@ -26,8 +26,11 @@
         if (unsaved) {
           return formWarningMessage;
         }
-      })
+      });
     })
+
+    // ショートカットで日にち移動
+    shortcutOfPagingLink('prev-day', 'next-day');
 
 
 .row.justify-content-center
@@ -37,10 +40,10 @@
       =< link_to 'この日を週表示', root_path(one_day: @date), class: "btn btn-light"
 
     .d-flex.justify-content-between
-      = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1)
+      = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
       .align-self-center
         h2.text-secondary.font-weight-bold = dispdate(@date, true)
-      = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1)
+      = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
 
     .page-header
       h3 本日の記録

@@ -231,7 +231,7 @@ handleSpaceKey = function(e) {
       start: currentLine.caret,
       end: currentLine.caret
     });
-    // KNOWHOW: どういう意味がある？
+    // KNOWHOW: targetに対して改めてinputイベントを発生させている。詳しくは理解できていない
     return $(e.target).trigger('input');
   }
 };
@@ -312,7 +312,8 @@ replaceText = function(target, str) {
       e = _error;
     }
   }
-  // KNOWHOW: return時になぜこれをやるのか不明？？
+  // KNOWHOW: 戻り値を参照してないのでreturnでやる必要はなさそう
+  // targetに対してblurとfocusのイベントを発生させている。このイベントを乗っ取ったからかな？イベントをハンドリングする際のマナーかな？
   return $(target).trigger('blur').trigger('focus');
 };
 
