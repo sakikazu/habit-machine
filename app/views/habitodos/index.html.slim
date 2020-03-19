@@ -1,0 +1,75 @@
+/ todo 個別にincludeしても、application.jsにまとめられるとかは？ちゃんと調べる。railsとvue.js
+/ todo textareaでも、caretを駆使すればsetPosして目次は実現できそうだな
+/ todo turbolinksとの共存をトライして
+/- content_for :addjs_in_head
+= javascript_include_tag 'vue/habitodos', defer: true
+
+#habitodo
+  #habitodo-header.row.bg-dark.text-light
+    .flex-grow-1 todo この領域は不要かな？
+    .flex-grow-0 Chromeのみ対応
+  #habitodo-body.row
+    .col-sm-2.bg-secondary.text-light
+      / データのリスト
+      ul.sidebar.list-unstyled.mt-3
+        li.d-flex [
+          v-for="h in habitodos"
+          v-bind:class="h.isCurrent ? 'selected-data' : ''"
+          v-on:click="showDoc(h.id)"
+          v-on:mouseover="addHilightOnList($event)"
+          v-on:mouseout="removeHilightOnList($event)"
+        ]
+          .flex-grow-1
+            | {{ h.title }}
+          .ml-2
+            i.fa.fa-save v-show="h.unsaved" v-on:click="saveData(h.id)"
+          .ml-2
+            i.fa.fa-trash v-on:click="deleteData(h.id)"
+
+      / 新規作成
+      .create-doc-form.input-group.mt-3
+        input type='text' class='form-control' v-model='newTitle' placeholder="タイトル"
+        .input-group-append
+          span.input-group-text[v-on:click="createData()"] 作成
+
+      / 検索
+      .searchbox.input-group.mt-5.mb-3
+        input type='text' class='form-control' v-model='searchWord' v-on:keyup="preSearchData()" placeholder="検索ワード"
+        .input-group-append
+          span.input-group-text[v-on:click="searchData()" v-bind:style="{ color: searchBtnColor }"] 検索
+      ul.search-result.list-group.list-group-flush.list-unstyled.mt-3.mb-3(v-if="searchResult.length > 0")
+        li.list-group-item.list-group-item-primary v-for="d in searchResult" v-on:click="selectFoundData(d.docId, d.rows)" class="cursor-pointer"{{ d.text + '(' + d.rows + ')' }}
+
+    .col-sm-8
+      p v-show="habitodos.length == 0" データないです
+      / NOTE: height:100%にしておくと、contentEditableの要素に何も存在しなくても、領域全部がクリッカブルになって編集可能
+      .editor[v-for="ht in habitodos" v-show="ht.isCurrent" v-on:keydown="handleKeyinput($event, ht.id)" v-bind:id="`editor-${ht.id}`" contentEditable=true v-html="ht.markdownedBody" class="h100"]
+
+    .col-sm-2.bg-light.text-secondary[style="position:relative"]
+      #mokujis.mt-3[style="position:absolute"]
+        h4.text-center 目次
+        ul.right-sidebar
+          li [
+            v-for="m in mokuji"
+          ]
+            a v-bind:href="'#' + m['anchor']" v-text="m['text']"
+
+scss:
+  .editor {
+    padding: 10px;
+    font-size: 1.1em;
+    line-height: 1.8em;
+
+    p {
+      margin-bottom: 0;
+    }
+  }
+  ul.sidebar {
+    li {
+      color: white;
+      cursor: pointer;
+    }
+    li.selected-data {
+      background-color: cornflowerblue;
+    }
+  }

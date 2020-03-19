@@ -18,14 +18,23 @@
 //= require bootstrap-sprockets
 //= require jquery.selection
 //= require jquery.markdown-easily
-//= require_tree .
+// todo replace production
+//= require vue
+// TODO: vue.js用のファイルはjavascript_include_tagでdeferをつけて読み込みたいので、「.」は使わずファイル指定で読み込むようにしている
+// うまいやり方あると思う
+//= require jquery.autopager-1.0.0.min.js
+//= require cable.js
+//= require_tree ./channels
+//= require jquery-ui-autocomplete-multiple.js
+//= require jquery.markdown-easily.js
+//= require day_page.js
 
 // for best_in_place
 //= require best_in_place
 // NOTE: jQuery UI datepickersを使用する場合
 // require best_in_place.jquery-ui
 
-// lazy_high_charts
+// for lazy_high_charts
 // NOTE: highchartsはhighstock内でincludeされてるから不要。-moreの方はわからないが動作に異常はないので無効にしとく
 // require highcharts/highcharts
 // require highcharts/highcharts-more

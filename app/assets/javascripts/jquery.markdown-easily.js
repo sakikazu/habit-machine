@@ -139,6 +139,7 @@ handleEnterKey = function(e) {
   if (currentLine.start === currentLine.caret) {
     return;
   }
+  // --- ハイフンによるリスト作成
   if (match = currentLine.text.match(/^(\s*(?:-|\+|\*|\d+\.) (?:\[(?:x| )\] )?)\s*\S/)) {
     if (currentLine.text.match(/^(\s*(?:-|\+|\*|\d+\.) (?:\[(?:x| )\] ))\s*$/)) {
       $(e.target).selection('setPos', {
@@ -167,6 +168,7 @@ handleEnterKey = function(e) {
       start: currentLine.start,
       end: currentLine.end
     });
+  // --- パイプによる表作成
   } else if (currentLine.text.match(/^.*\|\s*$/)) {
     if (currentLine.text.match(/^[\|\s]+$/)) {
       $(e.target).selection('setPos', {
@@ -238,7 +240,9 @@ handleSpaceKey = function(e) {
 
 getCurrentLine = function(e) {
   var endPos, pos, startPos, text;
-  text = $(e.target).val();
+  // targetは編集中の要素となる
+  // inputやtextareaではないcontentEditableでの編集時もあるので、val()で取得できない場合はtext()を使う
+  text = $(e.target).val() || e.target.innerText;
   pos = $(e.target).selection('getPos');
   if (!text) {
     return null;

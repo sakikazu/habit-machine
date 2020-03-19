@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_29_092531) do
+ActiveRecord::Schema.define(version: 2020_03_19_023819) do
 
   create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -44,6 +44,18 @@ ActiveRecord::Schema.define(version: 2019_07_29_092531) do
     t.boolean "is_hilight"
     t.boolean "is_about_date"
     t.boolean "is_secret"
+  end
+
+  create_table "habitodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "title"
+    t.text "body"
+    t.bigint "user_id"
+    t.string "uuid"
+    t.integer "order_number", default: 0
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_habitodos_on_user_id"
   end
 
   create_table "habits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

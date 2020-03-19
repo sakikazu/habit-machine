@@ -18,7 +18,7 @@ html[lang="ja"]
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
     / NOTE: turbolinksでは、head内のscriptはページの初回表示時のみに実行されるので、重複実行させたくないものを置くこと。全てここに置いた方が事故がないか・・
     = yield :addjs_in_head
-  body[class="#{controller.controller_name}_controller"]
+  body[class="#{controller.controller_name}_controller" data-turbolinks="#{'false' if @turbolinks_off}"]
     nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb20
       a.navbar-brand[href="/"]
         | HabitMachine
@@ -46,6 +46,8 @@ html[lang="ja"]
               = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
           li class="nav-item #{controller.controller_name == "senses" ? "active" : ""}"
             = link_to "意識付け", senses_path, class: 'nav-link'
+          li class="nav-item #{controller.controller_name == "habitodos" ? "active" : ""}"
+            = link_to "HabiTodo", habitodos_path, class: 'nav-link'
           li.nav-item.dropdown
             = link_to current_user.fullname, '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
