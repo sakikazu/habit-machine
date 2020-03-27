@@ -20,7 +20,7 @@ const vm = new Vue({
             ht.unsaved = false;
             return ht;
           });
-          this.showDoc(this.habitodos[0].id);
+          this.showDoc(this.habitodos[0].uuid);
         }
       })
       .catch(e => {
@@ -43,13 +43,19 @@ const vm = new Vue({
   },
   updated: function() {
   },
+  // Vue: methodsでやる場合と違い、引数が取れないが、キャッシュしてくれるので、ReadOnlyならこっち使う
   computed: {
+    // todo 削除
     filteredProjects: function () {
       const reg = new RegExp(this.filterWord);
       return this.projects.filter(p => p.name.match(reg) != null);
     }
   },
   methods: {
+    findData: function(uuid) {
+      const idx = this.habitodos.findIndex(h => h.uuid === uuid);
+      return { idx: idx, data: this.habitodos[idx] };
+    },
     preSearchData: function() {
       if (!this.searchWord) {
         this.searchBtnColor = '';
@@ -68,7 +74,7 @@ const vm = new Vue({
       this.habitodos.forEach(d => {
         // titleにマッチ
         if (d.title.match(new RegExp(this.searchWord))) {
-          this.searchResult.push({ 'docId': d.id, 'text': '[' + d.title + ']', 'rows': 0 });
+          this.searchResult.push({ 'docId': d.uuid, 'text': '[' + d.title + ']', 'rows': 0 });
         }
         if (!d.body) {
           // forEach内でcontinueしたい時はreturnを使う
@@ -79,18 +85,18 @@ const vm = new Vue({
           lines = d.body.split(/\r\n|\n|\r/);
           lines.forEach((line, idx) => {
             if (line.match(new RegExp(this.searchWord))) {
-              this.searchResult.push({ 'docId': d.id, 'text': '[' + d.title + '] ' + line, 'rows': idx + 1 });
+              this.searchResult.push({ 'docId': d.uuid, 'text': '[' + d.title + '] ' + line, 'rows': idx + 1 });
             }
           });
         }
       });
       this.searchBtnColor = '';
     },
-    selectFoundData: function(id, rows) {
-      this.showDoc(id);
+    selectFoundData: function(uuid, rows) {
+      this.showDoc(uuid);
       Vue.nextTick().then(function() {
         // caretを指定行に移動
-        const el = document.getElementById(`editor-${id}`);
+        const el = document.getElementById(`editor-${uuid}`);
         let kaigyoCount = 1;
         let nodesCount;
         // rowsは検索結果で見つかった行数を示すが、
@@ -119,31 +125,36 @@ const vm = new Vue({
         scrollTo({ top: offsetTop, behavior: "smooth" });
       });
     },
-    buildMokuji: function(id) {
-      vm.mokuji = [];
-      // htmlタグを評価するのでhtmlを取得する
-      text = document.getElementById(`editor-${id}`).innerHTML;
-      textArray = text.split(/\r\n|\n|\r/);
-      textArray.forEach(t => {
+    // hタグは目次として抽出
+    // todo これもcurrentData運用すればcomputedにできるなあ
+    buildMokuji: function(uuid) {
+      // NOTE: DOMにアクセスする処理はすべてnextTick内で行うこと
+      // また、これをやったからといって、この後の処理はDOM構築後というわけではないので、都度、囲む
+      Vue.nextTick().then(function() {
+        // nextTick内のthisはWindowオブジェクトだった
+        vm.mokuji = [];
+        // htmlタグを評価するのでhtmlを取得する。改行は含まず1行で取得されるので注意
+        text = document.getElementById(`editor-${uuid}`).innerHTML;
+        // まずはすべてのhタグ要素を取得して、それぞれからidとtextを取得する
         // 「g」オプションだとマッチしたものが配列になって返却されるが、カッコのキャプチャは使えなくなった
-        if (matched = t.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/g)) {
+        if (matched = text.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/g)) {
           //console.log(matched);
-          if (matched.length > 0) {
-            matched.forEach(d => {
-              if (matched2 = d.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/)) {
-                vm.mokuji.push({ text: matched2[2], anchor: matched2[1] });
-              }
-            });
-          }
+          matched.forEach(d => {
+            if (matched2 = d.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/)) {
+              vm.mokuji.push({ text: matched2[2], anchor: matched2[1] });
+            }
+          });
         }
       });
     },
-    updateMarkdownedBody: function(id) {
-      idx = this.habitodos.findIndex(h => h.id == id);
-      if (!this.habitodos[idx].body) {
+    // todo computedでできれば良いんだけど、あれは引数が取れないのでやるならcurrentDataをまた使用するやり方になりそう
+    // でもそれだと、切り替える度にデータが変更になってレンダリングされるのは変わらないので、パフォーマンスも変更ないか
+    updateMarkdownedBody: function(uuid) {
+      const found = this.findData(uuid);
+      if (!found.data.body) {
         return;
       }
-      textArray = this.habitodos[idx].body.split(/\r\n|\n|\r/);
+      textArray = found.data.body.split(/\r\n|\n|\r/);
       newArray = [];
       textArray.forEach((t, idx) => {
         if (t.match(/^#{4}/)) {
@@ -159,7 +170,7 @@ const vm = new Vue({
         }
       });
       newText = this.nl2br(newArray.join(''));
-      this.habitodos[idx].markdownedBody = newText;
+      found.data.markdownedBody = newText;
       //Vue.set(this.habitodos, idx, habitodos[idx]);
     },
     nl2br: function(str) {
@@ -168,20 +179,15 @@ const vm = new Vue({
       str = str.replace(/(\n|\r)/g, "<br>");
       return str;
     },
-    showDoc: function(id) {
+    showDoc: function(uuid) {
       this.habitodos = this.habitodos.map(ht => {
         ht.isCurrent = false;
         return ht;
       })
-      habitodo = this.habitodos.find(h => h.id == id);
-      habitodo.isCurrent = true;
-      this.updateMarkdownedBody(id);
-      // NOTE: DOMにアクセスする処理はすべてnextTick内で行うこと
-      // また、これをやったからといって、この後の処理はDOM構築後というわけではないので、都度、囲む
-      Vue.nextTick().then(function() {
-        // nextTick内のthisはWindowオブジェクトだった
-        vm.buildMokuji(id);
-      });
+      const found = this.findData(uuid);
+      found.data.isCurrent = true;
+      this.updateMarkdownedBody(uuid);
+      this.buildMokuji(uuid);
     },
     addHilightOnList: function(event) {
       // NOTE: event.targetにしてしまうと、子要素が対象になりうるので、イベント登録されている要素を取得するためにevent.currentTargetを指定する
@@ -213,20 +219,20 @@ const vm = new Vue({
         }
       });
     },
-    handleKeyinput: function(event, id) {
-      this.markdownText(event, id);
-      this.checkUnsaved(event, id);
+    handleKeyinput: function(event, uuid) {
+      this.markdownText(event, uuid);
+      this.checkUnsaved(event, uuid);
     },
     // 自然なのは、editor表示時に、箇条書き部分は<li>に変換すれば、insertUnorderedListだけで済むが、
     // 入れ子のliとかも、判定して変換するのは面倒くさいので、躊躇。あとtabで入れ子部分を制御しなきゃだしで、テキストのままいじる方が楽だな
-    markdownText: function(event, id) {
+    markdownText: function(event, uuid) {
       if (![13, 9].includes(event.keyCode)) { return; }
       if (event.keyCode === 13) {
         // caret位置の行の文字列を取得。startContainerでも基本的には良いだろうけど
         const currentLine = window.getSelection().getRangeAt(0).endContainer.data;
         const caretPosition = window.getSelection().getRangeAt(0).startOffset;
-        // Caretが行の先頭の場合は処理せずにそのまま改行
-        if (caretPosition > 0 && currentLine && currentLine.match(/^\s*\- /)) {
+        // Caretが行の先頭の場合はスルーしてそのまま改行
+        if (caretPosition > 0 && currentLine && currentLine.match(/^\s*\-\s/)) {
           // Caretを行の先頭に移動し、formatblockで現在行をpタグで囲む
           // その後、Caretを行の末尾に移動し、insertParagraphで改行して「- 」を挿入する
           Vue.nextTick().then(function() {
@@ -249,7 +255,7 @@ const vm = new Vue({
       // todo shift+tabも対応
       } else if (event.keyCode === 9) {
         let currentLine = window.getSelection().getRangeAt(0).endContainer.data;
-        if (currentLine && currentLine.match(/^\s*\- /)) {
+        if (currentLine && currentLine.match(/^\s*\-\s/)) {
           Vue.nextTick().then(function() {
             vm.moveCaret(window.getSelection().getRangeAt(0).startContainer, 0);
             document.execCommand('insertText', false, '    ');
@@ -296,22 +302,21 @@ const vm = new Vue({
       // const KEvent = new KeyboardEvent( "keydown", { keyCode: 37 });
       // document.getElementById(`editor-${id}`).dispatchEvent( KEvent );
     },
-    checkUnsaved: function(event, id) {
-      idx = this.habitodos.findIndex(h => h.id == id);
-      habitodo = this.habitodos[idx];
-      if (!habitodo.body) {
+    checkUnsaved: function(event, uuid) {
+      const found = this.findData(uuid);
+      if (!found.data.body) {
         if (event.target.textContent) {
-          habitodo.unsaved = true;
+          found.data.unsaved = true;
         } else {
-          habitodo.unsaved = false;
+          found.data.unsaved = false;
         }
       // NOTE: textContentはタグも改行も除去したテキスト
-      } else if (habitodo.body.replace(/\n/g, '') !== event.target.textContent) {
-        habitodo.unsaved = true;
+      } else if (found.data.body.replace(/\n/g, '') !== event.target.textContent) {
+        found.data.unsaved = true;
       } else {
-        habitodo.unsaved = false;
+        found.data.unsaved = false;
       }
-      Vue.set(this.habitodos, idx, habitodo);
+      Vue.set(this.habitodos, found.idx, found.data);
     },
     // 未使用。changeイベントを発生させるやり方
     setContentEditableChangeEvent: function() {
@@ -359,12 +364,12 @@ const vm = new Vue({
         end: range.endOffset
       };
     },
-    saveData: function(id) {
+    saveData: function(uuid) {
       // NOTE: これをやるには、bodyがv-modelである必要があるが、contentEditableとv-modelは特別なことをしなければ併用できないとのエラーが出る
       // data = this.currentData.body
       // NOTE: innerTextは、h1やpなどタグが存在すると、間に改行の行を一つはさむようにして勝手に改行が挿入されたものが取得されてしまう。ので使えない
       // data = document.getElementById(`editor-${id}`).innerText;
-      data = document.getElementById(`editor-${id}`).innerHTML
+      data = document.getElementById(`editor-${uuid}`).innerHTML
         // hとdivとpの開始タグを除去
         .replace(/\<h\d.*?\>|\<div\>|\<p\>/g, '')
         // spanを除去
@@ -374,15 +379,15 @@ const vm = new Vue({
       //debugger
       $.ajax({
         type: 'PUT',
-        url: '/habitodos/' + id,
+        url: '/habitodos/' + uuid,
         data: { habitodo: { 'body' : data } },
         success: function(res) {
           console.log(res);
           // todo currentDataを変更するだけで配列内も変更されそうだが、Vue.setを使う必要があった。consoleからcurrentDataを変更すると配列も反映されるが、ナゾ
           // todo showDocはこの後に実行しなきゃという制限あるし、良い感じにしたい
-          idx = vm.habitodos.findIndex(h => h.id == res.data.id);
-          Vue.set(vm.habitodos, idx, res.data);
-          vm.showDoc(res.data.id);
+          const found = vm.findData(res.data.uuid);
+          Vue.set(vm.habitodos, found.idx, res.data);
+          vm.showDoc(res.data.uuid);
         }
       });
     },
@@ -401,15 +406,15 @@ const vm = new Vue({
         }
       });
     },
-    deleteData: function(id) {
+    deleteData: function(uuid) {
       if (!confirm('本当に削除してもよろしいですか？')) {
         return;
       }
       $.ajax({
         type: 'DELETE',
-        url: '/habitodos/' + id,
+        url: '/habitodos/' + uuid,
         success: function(_res) {
-          vm.habitodos = vm.habitodos.filter(d => d.id != id);
+          vm.habitodos = vm.habitodos.filter(d => d.uuid != uuid);
         }
       });
     },

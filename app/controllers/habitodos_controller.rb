@@ -54,7 +54,6 @@ class HabitodosController < ApplicationController
 
   # DELETE /habitodos/1
   def destroy
-    id = @habitodo.id
     @habitodo.destroy
     render json: {
       status: 200,
@@ -64,7 +63,7 @@ class HabitodosController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_habitodo
-      @habitodo = Habitodo.find(params[:id])
+      @habitodo = Habitodo.find_by_uuid(params[:id])
     end
 
     # Only allow a trusted parameter "white list" through.

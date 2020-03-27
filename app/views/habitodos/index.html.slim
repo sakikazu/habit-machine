@@ -15,16 +15,16 @@
         li.d-flex [
           v-for="h in habitodos"
           v-bind:class="h.isCurrent ? 'selected-data' : ''"
-          v-on:click="showDoc(h.id)"
+          v-on:click="showDoc(h.uuid)"
           v-on:mouseover="addHilightOnList($event)"
           v-on:mouseout="removeHilightOnList($event)"
         ]
           .flex-grow-1
             | {{ h.title }}
           .ml-2
-            i.fa.fa-save v-show="h.unsaved" v-on:click="saveData(h.id)"
+            i.fa.fa-save v-show="h.unsaved" v-on:click="saveData(h.uuid)"
           .ml-2
-            i.fa.fa-trash v-on:click="deleteData(h.id)"
+            i.fa.fa-trash v-on:click="deleteData(h.uuid)"
 
       / 新規作成
       .create-doc-form.input-group.mt-3
@@ -43,7 +43,7 @@
     .col-sm-8
       p v-show="habitodos.length == 0" データないです
       / NOTE: height:100%にしておくと、contentEditableの要素に何も存在しなくても、領域全部がクリッカブルになって編集可能
-      .editor[v-for="ht in habitodos" v-show="ht.isCurrent" v-on:keydown="handleKeyinput($event, ht.id)" v-bind:id="`editor-${ht.id}`" contentEditable=true v-html="ht.markdownedBody" class="h100"]
+      .editor[v-for="ht in habitodos" v-show="ht.isCurrent" v-on:keydown="handleKeyinput($event, ht.uuid)" v-bind:id="`editor-${ht.uuid}`" contentEditable=true v-html="ht.markdownedBody" class="h100"]
 
     .col-sm-2.bg-light.text-secondary[style="position:relative"]
       #mokujis.mt-3[style="position:absolute"]
