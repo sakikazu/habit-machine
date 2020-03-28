@@ -169,6 +169,10 @@ const vm = new Vue({
           newArray.push(t + '\n');
         }
       });
+      // 最後に無駄な改行コードが追加されてしまうので除去
+      if (newArray[newArray.length - 1] === '\n') {
+        newArray.pop();
+      }
       newText = this.nl2br(newArray.join(''));
       found.data.markdownedBody = newText;
       //Vue.set(this.habitodos, idx, habitodos[idx]);
@@ -376,7 +380,6 @@ const vm = new Vue({
         .replace(/\<\/?span.*?\>/g, '')
         // hとdivとpの終了タグと、brタグを改行に変換
         .replace(/\<\/h\d\>|\<\/div\>|\<\/p\>|\<br\>/g, '\n')
-      //debugger
       $.ajax({
         type: 'PUT',
         url: '/habitodos/' + uuid,

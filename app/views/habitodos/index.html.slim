@@ -14,6 +14,7 @@
       ul.sidebar.list-unstyled.mt-3
         li.d-flex [
           v-for="h in habitodos"
+          v-bind:key="h.uuid"
           v-bind:class="h.isCurrent ? 'selected-data' : ''"
           v-on:click="showDoc(h.uuid)"
           v-on:mouseover="addHilightOnList($event)"
@@ -22,9 +23,10 @@
           .flex-grow-1
             | {{ h.title }}
           .ml-2
-            i.fa.fa-save v-show="h.unsaved" v-on:click="saveData(h.uuid)"
+            / バブリングを止める
+            i.fa.fa-save v-show="h.unsaved" v-on:click.stop="saveData(h.uuid)"
           .ml-2
-            i.fa.fa-trash v-on:click="deleteData(h.uuid)"
+            i.fa.fa-trash v-on:click.stop="deleteData(h.uuid)"
 
       / 新規作成
       .create-doc-form.input-group.mt-3
@@ -38,12 +40,25 @@
         .input-group-append
           span.input-group-text[v-on:click="searchData()" v-bind:style="{ color: searchBtnColor }"] 検索
       ul.search-result.list-group.list-group-flush.list-unstyled.mt-3.mb-3(v-if="searchResult.length > 0")
-        li.list-group-item.list-group-item-primary v-for="d in searchResult" v-on:click="selectFoundData(d.docId, d.rows)" class="cursor-pointer"{{ d.text + '(' + d.rows + ')' }}
+        li.list-group-item.list-group-item-primary.cursor-pointer [
+          v-for="d in searchResult"
+          v-bind:key="`${d.docId}-${d.rows}`"
+          v-on:click="selectFoundData(d.docId, d.rows)"
+        ]
+          | {{ d.text + '(' + d.rows + ')' }}
 
     .col-sm-8
       p v-show="habitodos.length == 0" データないです
       / NOTE: height:100%にしておくと、contentEditableの要素に何も存在しなくても、領域全部がクリッカブルになって編集可能
-      .editor[v-for="ht in habitodos" v-show="ht.isCurrent" v-on:keydown="handleKeyinput($event, ht.uuid)" v-bind:id="`editor-${ht.uuid}`" contentEditable=true v-html="ht.markdownedBody" class="h100"]
+      .editor.h100 [
+        v-for="ht in habitodos"
+        v-bind:key="ht.uuid"
+        v-show="ht.isCurrent"
+        v-on:keydown="handleKeyinput($event, ht.uuid)"
+        v-bind:id="`editor-${ht.uuid}`"
+        contentEditable=true
+        v-html="ht.markdownedBody"
+      ]
 
     .col-sm-2.bg-light.text-secondary[style="position:relative"]
       #mokujis.mt-3[style="position:absolute"]
@@ -51,6 +66,7 @@
         ul.right-sidebar
           li [
             v-for="m in mokuji"
+            v-bind:key="m['anchor']"
           ]
             a v-bind:href="'#' + m['anchor']" v-text="m['text']"
 
