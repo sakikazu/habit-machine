@@ -7,9 +7,12 @@ const vm = new Vue({
     searchWord: '',
     searchResult: [],
     searchBtnColor: '',
+    checkUnsavedFunc: undefined,
   },
   created: function () {
     console.log('created');
+
+    this.checkUnsavedFunc = this.debounce(this.checkUnsaved, 1000);
     this.getData()
       .then(res => {
         // NOTE: この中のthisはVueオブジェクトになっている
@@ -174,8 +177,19 @@ const vm = new Vue({
         newArray.pop();
       }
       newText = this.nl2br(newArray.join(''));
+      // todo ここで不思議なのは、一度contentEditableのテキストを変更後、showDocで切り替えて戻ってきたときに、
+      // 元のデータに置き換わってしまいそう（実際にnewTextは元のデータを示している）だが、実際には変更されたテキストがそのまま表示されている
+      // v-htmlだからかcontentEditableだからか、明らかにしておきたい
       found.data.markdownedBody = newText;
-      //Vue.set(this.habitodos, idx, habitodos[idx]);
+
+      Vue.nextTick().then(function() {
+        // DB保存されている内容でレンダリングしたtextContentを保持しておきたいので、最初だけ格納する
+        // そうしないと、contentEditableで内容変更して、showDocで切り替えて戻ったら変更した内容でtextContentが格納されてしまうのでOriginalにはならない
+        if (!found.data.originalTextContent) {
+          found.data.originalTextContent = document.getElementById(`editor-${uuid}`).textContent;
+          Vue.set(vm.habitodos, found.idx, found.data);
+        }
+      });
     },
     nl2br: function(str) {
       if (!str) { return ''; }
@@ -225,7 +239,7 @@ const vm = new Vue({
     },
     handleKeyinput: function(event, uuid) {
       this.markdownText(event, uuid);
-      this.checkUnsaved(event, uuid);
+      this.checkUnsavedFunc(event, uuid);
     },
     // 自然なのは、editor表示時に、箇条書き部分は<li>に変換すれば、insertUnorderedListだけで済むが、
     // 入れ子のliとかも、判定して変換するのは面倒くさいので、躊躇。あとtabで入れ子部分を制御しなきゃだしで、テキストのままいじる方が楽だな
@@ -306,16 +320,17 @@ const vm = new Vue({
       // const KEvent = new KeyboardEvent( "keydown", { keyCode: 37 });
       // document.getElementById(`editor-${id}`).dispatchEvent( KEvent );
     },
+    // 内容変更されたらフラグを立て、その変更がUndoなどでキャンセルされたらフラグを戻す
     checkUnsaved: function(event, uuid) {
       const found = this.findData(uuid);
       if (!found.data.body) {
-        if (event.target.textContent) {
-          found.data.unsaved = true;
-        } else {
-          found.data.unsaved = false;
-        }
+        found.data.unsaved = event.target.textContent ? true : false;
       // NOTE: textContentはタグも改行も除去したテキスト
-      } else if (found.data.body.replace(/\n/g, '') !== event.target.textContent) {
+      // found.data.bodyの方は、他からのコピペなどでaタグとか入っている可能性があるので、そのタグをすべて除去しなければ比較はできない
+      // スペースを入力したらなぜかnbspになって挿入されるのでスペースに変換する
+      // 変換が煩雑なので、変更前のtextContentを保持しておき、それを比較するようにした
+      //} else if (found.data.body.replace(/\n/g, '').replace(/&nbsp;/g, ' ') !== event.target.textContent) {
+      } else if (event.target.textContent !== found.data.originalTextContent) {
         found.data.unsaved = true;
       } else {
         found.data.unsaved = false;
@@ -429,6 +444,38 @@ const vm = new Vue({
       // TODO: なんでjson()の結果がPromiseオブジェクトになってるんだろう
       const json = await response.json();
       return json.data;
+    },
+    // todo mixinに移動する。lodashのメソッドの再現。そのものではないので動作の違いに注意
+    // イベントを呼び出し後、指定した時間が経過するまでは次のイベントを発生させない
+    // keydownやscrollなど頻発するイベントによって実行したい処理は、コストが高いので一定間隔で行うようにthrottleを使う
+    throttle: function(fn, interval) {
+      const context = this;
+      // クロージャ(Closure)の例。lastTimeが固定されている
+      let lastTime = Date.now() - interval;
+      return function() {
+        const args = arguments;
+        if ((lastTime + interval) < Date.now()) {
+          lastTime = Date.now();
+          fn.apply(context, args);
+        }
+      }
+    },
+    // todo mixinに移動する。lodashのメソッドの再現。そのものではないので動作の違いに注意
+    // イベントを呼び出し後、次のイベントまで指定した時間が経過するまではイベントを発生させない
+    // 待機中に再度イベント発生して実行されたら、タイマーをリセットしてまたそこから指定時間を待機する
+    // throttleと違って、イベントが頻発している最中は実行せず、それが落ち着いたときに実行するためのもの
+    debounce: function(fn, interval) {
+      // todo ここのthisはVueだけど、それでいいのか？thisを渡す理由を理解しないとわからんな
+      const context = this;
+      let timer;
+      return function() {
+        clearTimeout(timer);
+        const args = arguments;
+        timer = setTimeout(function() {
+          // todo bind, call, applyのどれを使えばいいかとかthisの意味とかアロー関数についてしっかり理解しなければ
+          fn.apply(context, args);
+        }, interval);
+      };
     }
   }
 });
