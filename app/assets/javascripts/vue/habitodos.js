@@ -130,6 +130,7 @@ const vm = new Vue({
     },
     // hタグは目次として抽出
     // todo これもcurrentData運用すればcomputedにできるなあ
+    // todo htmlで見なくとも、文字列で「#」を見れば、nextTickなしにいける、けどbodyは双方向じゃないので、最新のデータをどう取得するか
     buildMokuji: function(uuid) {
       // NOTE: DOMにアクセスする処理はすべてnextTick内で行うこと
       // また、これをやったからといって、この後の処理はDOM構築後というわけではないので、都度、囲む
@@ -160,14 +161,9 @@ const vm = new Vue({
       textArray = found.data.body.split(/\r\n|\n|\r/);
       newArray = [];
       textArray.forEach((t, idx) => {
-        if (t.match(/^#{4}/)) {
-          newArray.push('<h4 id="' + idx + '">' + t + '</h4>');
-        } else if (t.match(/^#{3}/)) {
-          newArray.push('<h3 id="' + idx + '">' + t + '</h3>');
-        } else if (t.match(/^#{2}/)) {
-          newArray.push('<h2 id="' + idx + '">' + t + '</h2>');
-        } else if (t.match(/^#{1}/)) {
-          newArray.push('<h1 id="' + idx + '">' + t + '</h1>');
+        if (matched = t.match(/^(#{1,5})/)) {
+          const hTag = 'h' + matched[1].length;
+          newArray.push('<' + hTag + ' id="' + idx + '">' + t + '</' + hTag + '>');
         } else {
           newArray.push(t + '\n');
         }
@@ -241,16 +237,40 @@ const vm = new Vue({
       this.markdownText(event, uuid);
       this.checkUnsavedFunc(event, uuid);
     },
-    // 自然なのは、editor表示時に、箇条書き部分は<li>に変換すれば、insertUnorderedListだけで済むが、
+    // 自然なのは、editor描画時に、箇条書き部分は<li>に変換すれば、insertUnorderedListだけで済むが、
     // 入れ子のliとかも、判定して変換するのは面倒くさいので、躊躇。あとtabで入れ子部分を制御しなきゃだしで、テキストのままいじる方が楽だな
+    // NOTE: ここでnode.removeChild()すると、Undoで戻せないので使わないこと
     markdownText: function(event, uuid) {
       if (![13, 9].includes(event.keyCode)) { return; }
+
+      // caret位置の行の文字列を取得。startContainerでも基本的には良いだろうけど
+      const currentLine = window.getSelection().getRangeAt(0).endContainer.data;
+      const caretPosition = window.getSelection().getRangeAt(0).startOffset;
+
+      if (!currentLine) { return; }
+
+      // Enter押下時
       if (event.keyCode === 13) {
-        // caret位置の行の文字列を取得。startContainerでも基本的には良いだろうけど
-        const currentLine = window.getSelection().getRangeAt(0).endContainer.data;
-        const caretPosition = window.getSelection().getRangeAt(0).startOffset;
-        // Caretが行の先頭の場合はスルーしてそのまま改行
-        if (caretPosition > 0 && currentLine && currentLine.match(/^\s*\-\s/)) {
+        // Caretが行末でなければスルーしてそのまま改行
+        if (caretPosition !== window.getSelection().getRangeAt(0).startContainer.length) { return; }
+
+        // リストのテキストが空の場合は、そのリストを削除して改行
+        if (currentLine.match(/^\s*\-\s*$/)) {
+          // todo removeChildが使えなくなったので頓挫した
+          //Vue.nextTick().then(function() {
+            //let currentNode = window.getSelection().getRangeAt(0).startContainer;
+            //const el = document.getElementById(`editor-${uuid}`);
+            //// ブロックタグで囲まれていないtextの場合は、parentNodeがeditorになるので、そのままtextとして削除
+            //if (currentNode.parentNode == el) {
+            //  currentNode.parentNode.removeChild(currentNode);
+            //} else {
+            //  // todo ここのCaretの制御とか難しい・・hタグ直前でここが実行されると、hタグがなぜかコピーされてしまうし・・
+            //  currentNode.parentNode.parentNode.removeChild(currentNode.parentNode);
+            //  document.execCommand('insertParagraph');
+            //}
+            //event.preventDefault();
+          //});
+        } else if (currentLine.match(/^\s*\-\s/)) {
           // Caretを行の先頭に移動し、formatblockで現在行をpタグで囲む
           // その後、Caretを行の末尾に移動し、insertParagraphで改行して「- 」を挿入する
           Vue.nextTick().then(function() {
@@ -264,22 +284,51 @@ const vm = new Vue({
           });
 
           // NOTE: contentEditableのdiv挿入が回避できる
+          // リストの時は「- 」挿入タイミングを制御したいため、自動div挿入をキャンセルして、insertParagraphで明示的にブロックを入れている
           event.preventDefault();
           // NOTE: keydownイベントの時（keyupでは不可）、falseを返すと入力文字をキャンセルできる
           // preventDefaultの方だけでもいいかも・・
-          return false;
+//          return false;
+        } else if (matched = currentLine.match(/^(#{1,5})\s/)) {
+          Vue.nextTick().then(function() {
+            const hTag = 'h' + matched[1].length;
+            vm.moveCaret(window.getSelection().getRangeAt(0).startContainer, 0);
+            document.execCommand('formatblock', false, hTag);
+            vm.moveCaret(window.getSelection().getRangeAt(0).startContainer, window.getSelection().getRangeAt(0).startContainer.length);
+          });
+
+        } else {
+          Vue.nextTick().then(function() {
+            vm.moveCaret(window.getSelection().getRangeAt(0).startContainer, 0);
+            document.execCommand('formatblock', false, 'p');
+            vm.moveCaret(window.getSelection().getRangeAt(0).startContainer, window.getSelection().getRangeAt(0).startContainer.length);
+            document.execCommand('insertParagraph');
+            event.preventDefault();
+          });
         }
       // tabキー
-      // todo shift+tabも対応
-      } else if (event.keyCode === 9) {
-        let currentLine = window.getSelection().getRangeAt(0).endContainer.data;
-        if (currentLine && currentLine.match(/^\s*\-\s/)) {
+      } else if (!event.shiftKey && event.keyCode === 9) {
+        if (currentLine.match(/^\s*\-\s/)) {
           Vue.nextTick().then(function() {
             vm.moveCaret(window.getSelection().getRangeAt(0).startContainer, 0);
             document.execCommand('insertText', false, '    ');
             // 行の右端にCaretを移動
             vm.moveCaret(window.getSelection().getRangeAt(0).startContainer, window.getSelection().getRangeAt(0).startContainer.length);
           });
+          // タブの動作である次要素へのフォーカスをキャンセル
+          event.preventDefault();
+        }
+      // shift+tabー、逆インデント
+      } else if (event.shiftKey && event.keyCode === 9) {
+        // ハイフン以前にスペースが4つ以上ある場合、その4つ分を削除する
+        if (currentLine.match(/^\s{4,}\-\s/)) {
+          // todo removeChildが使えなくなったため
+          // Vue.nextTick().then(function() {
+            // let currentNode = window.getSelection().getRangeAt(0).startContainer;
+            // const replaceText = currentNode.data.replace(/^\s{4}/, '');
+            // currentNode.parentNode.removeChild(currentNode);
+            // document.execCommand('insertText', false, replaceText);
+          // });
           event.preventDefault();
         }
       }
@@ -300,7 +349,8 @@ const vm = new Vue({
     },
     // 使ってない参考用
     markdownTextAnotherPattern: function() {
-      // これはブロック行の場合は「- 」のみ挿入して、そうでなければ改行など自分で挿入するパターン。何かダメだったけ？
+      // これはブロック行の場合は「- 」のみ挿入して、そうでなければ改行など自分で挿入するパターン
+      // このやり方だと「- 」が現在行に追加されてしまって下に空白行ができるだけになるはず
       if (window.getSelection().getRangeAt(0).endContainer.nodeType == 1) {
         document.execCommand('insertText', false, '- ');
       } else {
@@ -388,7 +438,10 @@ const vm = new Vue({
       // data = this.currentData.body
       // NOTE: innerTextは、h1やpなどタグが存在すると、間に改行の行を一つはさむようにして勝手に改行が挿入されたものが取得されてしまう。ので使えない
       // data = document.getElementById(`editor-${id}`).innerText;
+      // Nodeでいじった方が楽という可能性はある
       data = document.getElementById(`editor-${uuid}`).innerHTML
+        // contentEditableによってdivで囲まれたbrが入るので、先にそれを改行に変換
+        .replace(/\<div\>\<br\>\<\/div\>/g, '\n')
         // hとdivとpの開始タグを除去
         .replace(/\<h\d.*?\>|\<div\>|\<p\>/g, '')
         // spanを除去
