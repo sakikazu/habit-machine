@@ -16,6 +16,18 @@ html[lang="ja"]
     - #= favicon_link_tag 'images/apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png'
     = favicon_link_tag 'favicon.ico', :rel => 'shortcut icon'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+
+    / for PWA
+    link rel="manifest" href="/manifest.json"
+    / ServiceWorkerの登録
+    javascript:
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => {
+            console.log('Service worker registered.', reg);
+          });
+      }
+
     / NOTE: turbolinksでは、head内のscriptはページの初回表示時のみに実行されるので、重複実行させたくないものを置くこと。全てここに置いた方が事故がないか・・
     = yield :addjs_in_head
   body[class="#{controller.controller_name}_controller" data-turbolinks="#{'false' if @turbolinks_off}"]
