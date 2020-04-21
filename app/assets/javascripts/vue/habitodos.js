@@ -234,13 +234,13 @@ const vm = new Vue({
       });
     },
     handleKeyinput: function(event, uuid) {
-      this.markdownText(event, uuid);
+      this.makeMarkdownableEditor(event, uuid);
       this.checkUnsavedFunc(event, uuid);
     },
     // 自然なのは、editor描画時に、箇条書き部分は<li>に変換すれば、insertUnorderedListだけで済むが、
     // 入れ子のliとかも、判定して変換するのは面倒くさいので、躊躇。あとtabで入れ子部分を制御しなきゃだしで、テキストのままいじる方が楽だな
     // NOTE: ここでnode.removeChild()すると、Undoで戻せないので使わないこと
-    markdownText: function(event, uuid) {
+    makeMarkdownableEditor: function(event, uuid) {
       if (![13, 9].includes(event.keyCode)) { return; }
 
       // caret位置の行の文字列を取得。startContainerでも基本的には良いだろうけど
@@ -251,8 +251,13 @@ const vm = new Vue({
 
       // Enter押下時
       if (event.keyCode === 13) {
-        // Caretが行末でなければスルーしてそのまま改行
-        if (caretPosition !== window.getSelection().getRangeAt(0).startContainer.length) { return; }
+        // Caretが行末でなければ、<br>を挿入し、元々の改行時の動作であるパラグラフの追加は抑制する
+        // パラグラフの追加は改行のコントロールがしづらいため、極力避ける
+        if (caretPosition !== window.getSelection().getRangeAt(0).startContainer.length) {
+          document.execCommand('insertHTML', false, '<br>');
+          event.preventDefault();
+          return;
+        }
 
         // リストのテキストが空の場合は、そのリストを削除して改行
         if (currentLine.match(/^\s*\-\s*$/)) {
@@ -371,6 +376,7 @@ const vm = new Vue({
       // document.getElementById(`editor-${id}`).dispatchEvent( KEvent );
     },
     // 内容変更されたらフラグを立て、その変更がUndoなどでキャンセルされたらフラグを戻す
+    // todo: 改行の変更の無視するのでどうにかしたいなー。それか、ただ変更されたかどうかの表示用途のみにして、保存ボタンは常時表示すればこのチェックでもいいな
     checkUnsaved: function(event, uuid) {
       const found = this.findData(uuid);
       if (!found.data.body) {
