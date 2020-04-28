@@ -22,4 +22,13 @@ module DiariesHelper
     output += image_tag(diary.image(:small), class: "img-thumbnail") + "<br>".html_safe if diary.image.present?
     return output.html_safe
   end
+
+  # NOTE: content_tagではなくtagを使うこと
+  def diary_links_list(diaries)
+    tag.ul do |tag|
+      diaries.each do |diary|
+        concat tag.li(link_to(diary.title, diary_path(diary)) + " " + tags_link(diary))
+      end
+    end
+  end
 end

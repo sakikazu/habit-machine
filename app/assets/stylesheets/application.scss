@@ -251,7 +251,7 @@ td {
 /**********************************************
  common for flex
 **********************************************/
-// NOTE: flexを意識的に使いたいため、bootstrapの.d-flexなどではなく、なるべく自分で定義して使うようにする
+// NOTE: やっぱ基本bootstrapのクラスを使うのが良いわ
 
 // bootstrap's breakpoints
 // @media (min-width: 576px) {
@@ -259,26 +259,7 @@ td {
 // @media (min-width: 992px) {
 // @media (min-width: 1200px) {
 
-.flex-row-full-width {
-  display: flex;
-  flex-flow: row wrap;
-
-  .flex-item {
-    display: block;
-    position: relative;
-    max-width: 100%;
-  }
-}
-@media (min-width: 768px) {
-  .flex-row-full-width {
-    .flex-item {
-      display: flex;
-      flex: 1 0 auto;
-      margin-left: 5px;
-      margin-right: 5px;
-    }
-  }
-}
+.flex-basis-0 { flex-basis: 0; }
 
 
 /**********************************************

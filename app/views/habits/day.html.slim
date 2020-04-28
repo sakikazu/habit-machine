@@ -33,27 +33,27 @@
     shortcutOfPagingLink('prev-day', 'next-day');
 
 
-.row.justify-content-center
-  .col-sm-6
-    .form-actions.mb30
-      = link_to '戻る', :back, class: "btn btn-light"
-      =< link_to 'この日を週表示', root_path(one_day: @date), class: "btn btn-light"
-
+.row
+  .col
     .d-flex.justify-content-between
       = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
       .align-self-center
-        h2.text-secondary.font-weight-bold = dispdate(@date, true)
+        h2
+          span.mr-2.text-secondary.font-weight-bold = dispdate(@date, true)
+          = link_to fa_icon('calendar'), root_path(one_day: @date)
       = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
 
+.row.justify-content-center
+  .col-md-3
     .page-header
       h3 本日の記録
     - if @habits.blank?
       p 習慣が登録されていません。
     - else
-      .flex-row-full-width
+      .d-flex.flex-row.flex-wrap
         - @habits.each do |habit|
           - record = habit.record_at_date
-          .flex-item.card.mb20 class=('border-danger' unless record.new_record?)
+          .flex-grow-1.card.mb20.mr-2 class=('border-danger' unless record.new_record?)
             h5.card-header.p-2 = link_to habit.title, habit_path(habit)
             .card-body.p-2
               span.badge.badge-light
@@ -62,13 +62,19 @@
               .card-text.mt10
                 = best_in_place record, :memo, place_holder: "メモ入力", display_with: lambda { |v| sani_br(v) }, as: :textarea, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at), class: 'text-danger d-block'
 
-    .page-header.mt40
-      h3 本日の日記
+  .col-md-9
+    .page-header
+      h3
+        | 本日の日記
+        =< link_to @diaries.size, "javascript:void(0)", class: 'btn btn-primary', data: { toggle: 'popover', title: '日記リスト', content: diary_links_list(@diaries) }
     - if @diaries.blank?
       p 日記はありません。
     - else
-      - @diaries.each do |diary|
-        .diary-wrapper[id="diary-#{diary.id}"]
-          = render partial: 'diaries/index_detail', locals: { diary: diary, is_day_page: true }
+      .d-lg-flex.flex-row.flex-wrap
+        - @diaries.each do |diary|
+          / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
+          / 100%を要素数で割った値でも同じことができる。その場合はgrow-1は不要になるはず
+          .flex-grow-1.flex-basis-0.ml-2.diary-wrapper[id="diary-#{diary.id}"]
+            = render partial: 'diaries/index_detail', locals: { diary: diary, is_day_page: true }
     p = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-block btn-light ignore-checking-changes', id: 'new-diary-btn', remote: true
 
