@@ -6,6 +6,7 @@ class HabitodosController < ApplicationController
   def index
     # todo turbolinksとvue.jsの共存をしっかり理解して外せるようにしたい
     @turbolinks_off = true
+    @page_title = 'Habitodo'
   end
 
   def get_data

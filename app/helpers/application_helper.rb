@@ -3,15 +3,17 @@ module ApplicationHelper
   # <title>
   #
   def page_title
+    return @page_title if @page_title.present?
+
     action_name_h = @action_name || case controller.action_name
                     when "show"
-                      ""
+                      ''
                     when "edit"
-                      "編集 | "
+                      '編集'
                     when "index"
-                      "一覧 | "
+                      '一覧'
                     when "new"
-                      "新規作成 | "
+                      '新規作成'
                     end
     controller_name_h = case controller.controller_name
                         when "senses"
@@ -24,9 +26,16 @@ module ApplicationHelper
                           "習慣"
                         when "records"
                           "記録"
+                        when "habitodos"
+                          "Habitodo"
                         end
 
-    "#{action_name_h}#{@content_title}[#{controller_name_h}]"
+    result = ''
+    result += action_name_h.presence || ''
+    result += ' | ' if action_name_h.present? && @content_title.present?
+    result += @content_title.presence || ''
+    result += "[#{controller_name_h}]" if controller_name_h.present?
+    return result
   end
 
   #

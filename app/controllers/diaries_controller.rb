@@ -266,7 +266,7 @@ class DiariesController < ApplicationController
 
   private
   def set_content_title
-    @content_title = @diary.present? ? "#{@diary.record_at.strftime("%Y/%m/%d")}の日記「#{@diary.title}」" : ""
+    @content_title = @diary.present? ? "#{@diary.record_at.strftime("%Y/%m/%d")}の「#{@diary.title}」" : ""
   end
 
   # Use callbacks to share common setup or constraints between actions.

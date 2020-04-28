@@ -102,7 +102,7 @@ footer > p {
   color: #6C6767;
 }
 
-.habits_controller {
+.general_controller {
   table.hm_top {
     table-layout: auto;
   }
@@ -114,7 +114,9 @@ footer > p {
   table.hm_top td.record {
     cursor: pointer;
   }
+}
 
+.habits_controller {
   .record_value {
     font-size: 125%;
     font-weight: bold;

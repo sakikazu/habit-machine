@@ -13,9 +13,10 @@ Rails.application.routes.draw do
 
 
   ### for web
-  root to: 'habits#top'
-  get 'day/:date', to: 'habits#day', as: :day
-  get 'today', to: 'habits#day', as: :today
+  root to: 'general#top'
+  get 'day/:date', to: 'general#day', as: :day
+  get 'today', to: 'general#day', as: :today
+  get 'search', to: 'general#search', as: :search
 
   resources :habitodos, except: [:new, :show] do
     collection do
