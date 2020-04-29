@@ -19,12 +19,12 @@ html[lang="ja"]
 
     / for PWA
     link rel="manifest" href="/manifest.json"
-    / ServiceWorkerの登録
     javascript:
       if ('serviceWorker' in navigator) {
+        // ServiceWorkerの登録
         navigator.serviceWorker.register('/sw.js')
-          .then((reg) => {
-            console.log('Service worker registered.', reg);
+          .then(reg => {
+            console.log('Service worker registered.', reg)
           });
       }
 
@@ -65,6 +65,7 @@ html[lang="ja"]
             .dropdown-menu
               = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
               = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}
+              = link_to 'for ServiceWorker', '/frontend.html', class: 'dropdown-item'
       / 検索フォーム
       form.form-inline action='/search' method='get'
         input name="q" value="#{@g_search_word || ''}" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
