@@ -27,4 +27,6 @@ class Sense < ApplicationRecord
   scope :inactive, -> { where(is_inactive: true) }
   scope :current, -> { where("start_at <= :day AND end_at >= :day", day: Date.today) }
   scope :nocurrent, -> { where("start_at > :day OR end_at < :day", day: Date.today) }
+
+  scope :find_by_word, lambda { |word| where('title like :q OR description like :q OR content like :q', :q => "%#{word}%") }
 end

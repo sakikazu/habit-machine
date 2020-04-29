@@ -49,6 +49,9 @@ class Diary < ApplicationRecord
   belongs_to :user
 
   scope :hilight, lambda {where(is_hilight: true)}
+  scope :find_by_word, lambda { |word| where('title like :q OR content like :q', :q => "%#{word}%") }
+  scope :newer, lambda { order(["record_at DESC", "id ASC"]) }
+  scope :older, lambda { order(["record_at ASC", "id ASC"]) }
 
   after_save :update_tag_used_at
 

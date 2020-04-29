@@ -79,12 +79,12 @@ class DiariesController < ApplicationController
 
         if words.present?
           words.each do |word|
-            @diaries = @diaries.where('title like :q OR content like :q', :q => "%#{word}%")
+            @diaries = @diaries.find_by_word(word)
           end
         end
       end
     end
-    @diaries = @diaries.order(["record_at DESC", "id ASC"]).page(params[:page]).per(30)
+    @diaries = @diaries.newer.page(params[:page]).per(30)
 
     @tags = current_user.mytags.order("pinned DESC")
 
@@ -105,7 +105,7 @@ class DiariesController < ApplicationController
     @years_including_diaries_count = current_user.diaries.hilight.group("DATE_FORMAT(record_at, '%Y')").count
                                        .sort_by {|k, _v| k}.reverse
 
-    @diaries = current_user.diaries.hilight.order(["record_at ASC", "id ASC"])
+    @diaries = current_user.diaries.hilight.older
     return if params[:all].present?
 
     record_at_range = if params[:year].present?

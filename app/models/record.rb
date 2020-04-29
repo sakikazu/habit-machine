@@ -21,6 +21,10 @@ class Record < ApplicationRecord
   # NOTE: 空の選択肢の値がnilだと0がポストされてしまうので、空文字列にする必要がある
   SYMBOLIC_VALUE = [['', ''], [1.0, "1"], [2.0, "2"], [3.0, "3"], [4.0, "4"], [5.0, "5"]]
 
+  scope :user_by, lambda { |user| where(habit: user.habits) }
+  scope :has_data, lambda { where("value is not NULL OR memo is not NULL") }
+  scope :newer, lambda { order("record_at DESC") }
+
   # def self.find_or_new(habit_id, record_at)
     # record = self.where(habit_id: habit_id, record_at: record_at).first
     # record = self.new(habit_id: habit_id, record_at: record_at) if record.blank?
