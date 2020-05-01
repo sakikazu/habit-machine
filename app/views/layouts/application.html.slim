@@ -38,8 +38,8 @@ html[lang="ja"]
         li class="nav-item"
           = link_to "本日", today_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0
-        li class="nav-item"
-          = link_to "現意識", "javascript:showCurrentSenses();", class: 'nav-link'
+        li class="nav-item #{controller.controller_name == "habitodos" ? "active" : ""}"
+          = link_to "HabiTodo", habitodos_path, class: 'nav-link'
       button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
         span.navbar-toggler-icon
       #navbarSupportedContent.collapse.navbar-collapse
@@ -56,20 +56,23 @@ html[lang="ja"]
               = link_to "人生ハイライト", hilight_diaries_path, class: 'dropdown-item'
               = link_to "10年日記", years_diaries_path(Date.today.year), class: 'dropdown-item'
               = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
-          li class="nav-item #{controller.controller_name == "senses" ? "active" : ""}"
-            = link_to "意識付け", senses_path, class: 'nav-link'
-          li class="nav-item #{controller.controller_name == "habitodos" ? "active" : ""}"
-            = link_to "HabiTodo", habitodos_path, class: 'nav-link'
+          li class="dropdown nav-item #{controller.controller_name == "senses" ? "active" : ""}"
+            = link_to "意識付け", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+            .dropdown-menu
+              = link_to "意識付け一覧", senses_path, class: 'dropdown-item'
+              = link_to "現意識", "javascript:showCurrentSenses();", class: 'dropdown-item'
           li.nav-item.dropdown
             = link_to current_user.fullname, '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
               = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
               = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}
               = link_to 'for ServiceWorker', '/frontend.html', class: 'dropdown-item'
-      / 検索フォーム
-      form.form-inline action='/search' method='get'
-        input name="q" value="#{@g_search_word || ''}" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
-        button class="btn btn-outline-success my-2 my-sm-0" type="submit" 検索
+        ul.navbar-nav
+          li.nav-item
+            / 検索フォーム
+            form.form-inline action='/search' method='get'
+              input name="q" value="#{@g_search_word || ''}" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+              button class="btn btn-outline-success my-2 my-sm-0" type="submit" 検索
 
     .container-fluid
       - if notice.present?

@@ -8,6 +8,8 @@ role :app, %w{deploy@example.com}
 role :web, %w{deploy@example.com}
 role :db,  %w{deploy@example.com}
 
+ask(:branch, 'master')
+
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server

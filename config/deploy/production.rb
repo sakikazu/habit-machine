@@ -8,6 +8,8 @@ role :app, %W(#{ENV['DEPLOY_SERVER']})
 role :web, %W(#{ENV['DEPLOY_SERVER']})
 role :db,  %W(#{ENV['DEPLOY_SERVER']})
 
+set :branch, "master"
+
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server
