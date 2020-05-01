@@ -95,6 +95,11 @@ https://bitbucket.org/tutorials/markdowndemo/src/master/
 * エラー時はexception_notificationによって、sakikazuのGmailにExceptionメールが送信される
 * Exceptionメールが正しく動作しているかの確認は、「ActionController::InvalidAuthenticityToken」を出すのが手軽
 
+### webプッシュ通知
+* Firebase Cloud Messagingを使っている
+* Service Workerのこととか不明点が多く、一応は動作しているが、今後もっと簡潔になったらリファクタリングしたい
+* 柔軟にプッシュ通知を送るには（スケジュール機能作った場合にその期限日の通知など）、FCMのAPIにPOSTする仕組みを作ってやる必要あり
+* このためにpublic配下に置く必要があった静的ファイルがあり、それを本番で読み込めるようにNginx confに特定の設定がされている
 
 ## よく使うコマンド
 

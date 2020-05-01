@@ -1,0 +1,97 @@
+<html lang="ja">
+<head>
+  <meta charset="utf-8"/>
+  <link rel="manifest" href="/manifest.json"/>
+</head>
+<body>
+  <div>
+    <p>firebaseのCloud Messaging用のトークン</p>
+    <div id="token">loading...</div>
+  </div>
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-messaging.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBKrpWIhHnTTTqyDYVfqr3qaSb5fvob5Gg",
+  authDomain: "habitmachine-17858.firebaseapp.com",
+  databaseURL: "https://habitmachine-17858.firebaseio.com",
+  projectId: "habitmachine-17858",
+  storageBucket: "habitmachine-17858.appspot.com",
+  messagingSenderId: "504029042223",
+  appId: "1:504029042223:web:1d86b7e299b30934fe98da"
+};
+firebase.initializeApp(firebaseConfig);
+
+const messaging = firebase.messaging();
+console.log('messaging:', messaging)
+messaging.usePublicVapidKey('BG3cqh1hjqqRkmACESVErkyl5ZgFWdIfhGZ36naL9qS_6Vl6Db97ubP5srRh1-5uL_lY7nCdDl3gXQSXfaNpq5I');
+
+/* 3. 通知の受信許可を求める */
+messaging.requestPermission().then(function() {
+  // 通知が許可されたときの処理を書く
+  console.log('permit notification.')
+}).catch(function(err) {
+  // 通知が拒否されたときの処理を書く
+});
+
+messaging.getToken().then((currentToken) => {
+  if (currentToken) {
+    showToken(currentToken);
+    //sendTokenToServer(currentToken);
+    //updateUIForPushEnabled(currentToken);
+  } else {
+    // Show permission request.
+    console.log('No Instance ID token available. Request permission to generate one.');
+    // Show permission UI.
+    //updateUIForPushPermissionRequired();
+    //setTokenSentToServer(false);
+  }
+}).catch((err) => {
+  console.log('An error occurred while retrieving token. ', err);
+  showToken('Error retrieving Instance ID token. ', err);
+  //setTokenSentToServer(false);
+});
+
+// トークンが更新されているときのイベントハンドラ
+messaging.onTokenRefresh(function() {
+  /*  4. トークンを取得する */
+  messaging.getToken().then(function(refreshedToken) {
+    showToken(refreshedToken);
+  }).catch(function(err) {});
+});
+
+// todo: アプリがバックグラウンドのときもここが呼ばれた。バックグラウンド用の受信は別でやってるので無効
+/* 5. メッセージを受信する */
+// ページがフォアグラウンドの時にメッセージを受信する用のイベントハンドラ
+// firebase-messaging-sw.jsでハンドリングしているから、こっちは不要との話
+//messaging.onMessage(function(payload) {
+//  console.log('received!' + payload);
+//  var notificationTitle = payload.notification.title; // タイトル
+//  var notificationOptions = {
+//    body: payload.notification.body, // 本文
+//    icon: payload.notification.icon, // アイコン
+//  };
+//
+//  if (!("Notification" in window)) {
+//    // ブラウザが通知機能に対応しているかを判定
+//  } else if (Notification.permission === "granted") {
+//    // 通知許可されていたら通知する
+//    var notification = new Notification(notificationTitle,notificationOptions);
+//  }
+//});
+
+function showToken(currentToken) {
+  const tokenElement = document.querySelector('#token');
+  tokenElement.textContent = currentToken;
+}
+</script>
+</body>
+</html>
+

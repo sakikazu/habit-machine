@@ -12,6 +12,6 @@
     }],
   "start_url": "/habitodos",
   "display": "standalone",
-  "background_color": "#FFFFFF",
-  "theme_color": "#FFFFFF"
+  "background_color": "#E20008",
+  "theme_color": "#E20008"
 }
