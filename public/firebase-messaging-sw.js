@@ -24,22 +24,22 @@ firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 console.log('messaging 2:', messaging)
 
-// todo: 全然呼ばれない？？
+// todo: 呼ばれるかわからないが、他の情報にならって置いとく
 // これはオプショナルな気がする。が、この設定していても通知内容はFCMで設定したものだし、必要なのか？
 // ウェブアプリがバックグラウンドで動いている場合にメッセージを処理する
 // フォアグラウンドはfrontend.htmlの方だが、バックグラウンドはServiceWorkerで処理しなきゃなので、こちらに書く
 // TODO: ここで設定しているTitleとか使われているのを見たことない。サーバーで内容を設定するのが自然だろうけど、なぜここで設定できるようになってるんだ？
-//messaging.setBackgroundMessageHandler(function(payload) {
-//  console.log('[firebase-messaging-sw.js] Received background message ', payload);
-//  // Customize notification here
-//  const notificationTitle = 'Background Message Title';
-//  const notificationOptions = {
-//    body: 'Background Message body.',
-//    icon: '/firebase-logo.png'
-//  };
-//  return self.registration.showNotification(notificationTitle,
-//    notificationOptions);
-//});
+messaging.setBackgroundMessageHandler(function(payload) {
+  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  // Customize notification here
+  const notificationTitle = 'Background Message Title';
+  const notificationOptions = {
+    body: 'Background Message body.',
+    icon: '/firebase-logo.png'
+  };
+  return self.registration.showNotification(notificationTitle,
+    notificationOptions);
+});
 
 // todo: ここだけで良さそう。上のsetBackgroundMessageHandlerは不要かも
 // これもフォアグラウンド用らしい（https://qiita.com/sadnessOjisan/items/05bbca78bca3301d24b2）

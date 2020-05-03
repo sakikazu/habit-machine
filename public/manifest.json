@@ -1,6 +1,6 @@
 {
   "name":"HabitMachine",
-  "short_name":"HM",
+  "short_name":"HabitMachine",
   "icons": [{
       "src": "/dragonball-192.png",
       "sizes":"192x192",
