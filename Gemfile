@@ -32,7 +32,7 @@ gem 'redcarpet' # markdown
 gem 'faker'
 
 gem 'mini_racer'
-gem 'bootstrap', '~> 4.1.3' # twitter bootstrap4
+gem 'bootstrap', '>= 4.2', '< 5.0' # twitter bootstrap4
 
 gem 'uglifier', '>= 1.3.0'
 

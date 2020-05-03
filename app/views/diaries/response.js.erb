@@ -1,8 +1,7 @@
+// TODO: wrapperIdの扱いが複雑。Vue.js化するときにリファクタリングする
 <% action_name = controller.action_name.to_sym %>
+
 <% if action_name == :new %>
-    getTimestamp = function() {
-      return new Date().getTime();
-    }
     var wrapperId = "new-diary-" + getTimestamp();
     $("#new-diary-btn").before("<div class='diary-wrapper' id='" + wrapperId + "'>");
 
@@ -54,5 +53,32 @@
   $("#<%= @wrapper_id %>").html(
     "<%= j(render partial: 'index_detail', locals: { diary: @diary, is_day_page: true }) %>"
   );
+<% end %>
+
+<% if action_name == :append_memo %>
+  <% unless @is_error %>
+    <% if @diary.wrapper_dom_id.present? %>
+      var wrapperId = "<%= @diary.wrapper_dom_id %>";
+    <% else %>
+      var wrapperId = "new-diary-" + getTimestamp();
+      $("#new-diary-btn").before("<div class='diary-wrapper' id='" + wrapperId + "'>");
+    <% end %>
+    $("#" + wrapperId).html(
+      "<%= j(render partial: 'index_detail', locals: { diary: @diary, is_day_page: true }) %>"
+    );
+    $('.well').removeClass('highlight-border');
+    $("#" + wrapperId).find('.well').addClass('highlight-border');
+  <% end %>
+
+  // todo: やっぱVue.jsにしないと無理があるなー
+  $('.toast').remove();
+  $('body').append(
+    "<%= j(render partial: 'shared/toast', locals: { message: @message, is_error: @is_error }) %>"
+  );
+  $(function() {
+    $('.toast').toast('show');
+  });
+  $('#memo-form').find('select.form-control').val('');
+  $('#memo-form').find('input.form-control').val('');
 <% end %>
 

@@ -40,6 +40,8 @@ class Diary < ApplicationRecord
 
   ACTION_MEMO_LINE = "# ----- ACTION MEMO -----"
   CRLF = "\r\n"
+  # todo: これはやっぱフラグにしたいなぁ
+  TMP_BASE_TAG = "やったこと"
 
   validates_presence_of :record_at
   validate :exists_tags?

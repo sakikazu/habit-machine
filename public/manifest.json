@@ -10,7 +10,7 @@
       "sizes":"512x512",
       "type": "image/png"
     }],
-  "start_url": "/habitodos",
+  "start_url": "/today",
   "display": "standalone",
   "background_color": "#E20008",
   "theme_color": "#E20008"

@@ -212,6 +212,31 @@ class DiariesController < ApplicationController
     render 'response.js'
   end
 
+  def append_memo
+    @is_error = false
+    if params[:diary][:memo].blank?
+      @is_error = true
+      @message = 'メモの内容を入力してください'
+      render 'response.js'
+      return
+    end
+    found_diaries = current_user.diaries.where(record_at: params[:diary][:record_at]).tagged_with(Diary::TMP_BASE_TAG)
+    @diary = if found_diaries.present?
+               diary = found_diaries.first
+               diary.wrapper_dom_id = "diary-#{diary.id}"
+               diary
+             else
+               diary = current_user.diaries.build(record_at: params[:diary][:record_at])
+               diary.tag_list << Diary::TMP_BASE_TAG
+               diary.wrapper_dom_id = nil
+               diary
+             end
+    @diary.append_memo(memo_text(params[:diary]))
+    @diary.save
+    @message = 'メモを追加しました'
+    render 'response.js'
+  end
+
   # POST /diaries
   # POST /diaries.json
   def create
@@ -265,6 +290,14 @@ class DiariesController < ApplicationController
   end
 
   private
+
+  def memo_text(memo_params)
+    result = "- "
+    result += "[#{memo_params[:label_memo]}] " if memo_params[:label_memo].present?
+    result += memo_params[:memo]
+    result
+  end
+
   def set_content_title
     @content_title = @diary.present? ? "#{@diary.record_at.strftime("%Y/%m/%d")}の「#{@diary.title}」" : ""
   end

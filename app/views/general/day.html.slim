@@ -4,6 +4,8 @@
 
     var formWarningMessage = "登録・保存していない入力内容は破棄されますがよろしいですか？";
     $(document).on('turbolinks:load', function() {
+      $('nav.navbar').removeClass('mb20');
+
       // リンク押下時、いずれかのフォームのデータが変更されていたら確認メッセージを表示する
       $('a').on('click', function(e) {
         var unsaved = getUnsavedStatus();
@@ -29,16 +31,34 @@
       });
     })
 
+    showMemoForm = () => {
+      $('#memo-form').show()
+      $('#memo-form').modal('show')
+    }
+
     // ショートカットで日にち移動
     shortcutOfPagingLink('prev-day', 'next-day');
 
+.row.bg-dark.text-light.mb20
+  .col.text-center
+    = link_to fa_icon('plus', text: 'メモ'), 'javascript:showMemoForm()', class: 'btn btn-info btn-sm m-1'
+    #memo-form.modal.fade[tabindex="-1" style="display:none"]
+      .modal-dialog
+        .modal-content
+          = form_with model: Diary.new, url: append_memo_diaries_path, local: false, class: 'form form-inline' do |f|
+            .modal-body
+              = f.text_field :memo, class: 'form-control first-focus'
+              = f.select :label_memo, %w(体調 作業 メモ 休息 TODO), {include_blank: true}, class: 'form-control'
+              = f.hidden_field :record_at, value: @date
+            .modal-footer
+              = submit_tag "メモ追加", class: "btn btn-primary"
 
 .row
   .col
     .d-flex.justify-content-between
       = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
       .align-self-center
-        h2
+        h3
           span.mr-2.text-secondary.font-weight-bold = dispdate(@date, true)
           = link_to fa_icon('calendar'), root_path(one_day: @date)
       = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
@@ -46,7 +66,7 @@
 .row.justify-content-center
   .col-md-3
     .page-header
-      h3 本日の記録
+      h4 本日の記録
     - if @habits.blank?
       p 習慣が登録されていません。
     - else
@@ -64,7 +84,7 @@
 
   .col-md-9
     .page-header
-      h3
+      h4
         | 本日の日記
         =< link_to @diaries.size, "javascript:void(0)", class: 'btn btn-primary', data: { toggle: 'popover', title: '日記リスト', content: diary_links_list(@diaries) }
     - if @diaries.blank?

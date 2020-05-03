@@ -51,6 +51,7 @@ Rails.application.routes.draw do
     collection do
       get 'hilight'
       get 'years/:year', action: :years, as: :years
+      post 'append_memo'
     end
   end
 

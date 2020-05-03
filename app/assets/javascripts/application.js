@@ -45,6 +45,10 @@ $(document).on('turbolinks:load', function() {
     html: true,
   });
   $("a[rel=tooltip]").tooltip();
+  $('.toast').toast({});
+  $('.modal').on('shown.bs.modal', () => {
+    $(this).find('input.first-focus').focus();
+  });
   $('.best_in_place').best_in_place()
 
   //
@@ -112,3 +116,8 @@ nl2br = function(str) {
   str = str.replace(/(\n|\r)/g, "<br />");
   return str;
 }
+
+const getTimestamp = function() {
+  return new Date().getTime();
+}
+
