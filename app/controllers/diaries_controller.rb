@@ -293,6 +293,7 @@ class DiariesController < ApplicationController
 
   def memo_text(memo_params)
     result = "- "
+    result += "[#{memo_params[:time_memo]}]" if memo_params[:time_memo].present?
     result += "[#{memo_params[:label_memo]}] " if memo_params[:label_memo].present?
     result += memo_params[:memo]
     result

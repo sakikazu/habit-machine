@@ -16,6 +16,11 @@
 //= require turbolinks
 //= require popper
 //= require bootstrap-sprockets
+// used by tempusdominus-bootstrap-4.js
+//= require moment.js
+//= require moment-ja.js
+// timepicker for bootstrap
+//= require tempusdominus-bootstrap-4.js
 //= require jquery.selection
 //= require jquery.markdown-easily
 // todo replace production
@@ -48,6 +53,9 @@ $(document).on('turbolinks:load', function() {
   $('.toast').toast({});
   $('.modal').on('shown.bs.modal', () => {
     $(this).find('input.first-focus').focus();
+  });
+  $('.timepicker').datetimepicker({
+    format: 'LT'
   });
   $('.best_in_place').best_in_place()
 

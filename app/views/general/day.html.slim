@@ -39,16 +39,22 @@
     // ショートカットで日にち移動
     shortcutOfPagingLink('prev-day', 'next-day');
 
-.row.bg-dark.text-light.mb20
+.row.bg-dark.mb20
   .col.text-center
-    = link_to fa_icon('plus', text: 'メモ'), 'javascript:showMemoForm()', class: 'btn btn-info btn-sm m-1'
+    .text-light
+      = link_to fa_icon('plus', text: 'メモ'), 'javascript:showMemoForm()', class: 'btn btn-info btn-sm m-1'
     #memo-form.modal.fade[tabindex="-1" style="display:none"]
       .modal-dialog
         .modal-content
           = form_with model: Diary.new, url: append_memo_diaries_path, local: false, class: 'form form-inline' do |f|
-            .modal-body
-              = f.text_field :memo, class: 'form-control first-focus'
-              = f.select :label_memo, %w(体調 作業 メモ 休息 TODO), {include_blank: true}, class: 'form-control'
+            .modal-body.form-row
+              .col-4.timepicker.input-group[data-target-input="nearest"]
+                .input-group-prepend
+                  .input-group-text[data-target='.timepicker' data-toggle='datetimepicker']
+                    = fa_icon 'clock-o', class: 'fa-lg'
+                = f.text_field :time_memo, class: 'form-control datetimepicker-input', data: { target: '.timepicker' }
+              .col-6 = f.text_field :memo, class: 'form-control first-focus'
+              .col-2 = f.select :label_memo, %w(体調 作業 メモ 休息 TODO), {include_blank: true}, class: 'form-control'
               = f.hidden_field :record_at, value: @date
             .modal-footer
               = submit_tag "メモ追加", class: "btn btn-primary"
