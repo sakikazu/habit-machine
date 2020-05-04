@@ -20,13 +20,22 @@ html[lang="ja"]
     / for PWA
     link rel="manifest" href="/manifest.json"
     javascript:
-      if ('serviceWorker' in navigator) {
-        // ServiceWorkerの登録
-        navigator.serviceWorker.register('/sw.js')
-          .then(reg => {
-            console.log('Service worker registered.', reg)
-          });
-      }
+      $(function() {
+        if ('serviceWorker' in navigator) {
+          // ServiceWorkerの登録
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => {
+              console.log('Service worker registered.', reg)
+              // todo: これは何？
+              if (typeof registration.update == 'function') {
+                registration.update();
+              }
+            })
+            .catch(error => {
+              console.log("Error Log: " + error);
+            });
+        }
+      })
 
     / NOTE: turbolinksでは、head内のscriptはページの初回表示時のみに実行されるので、重複実行させたくないものを置くこと。全てここに置いた方が事故がないか・・
     = yield :addjs_in_head
