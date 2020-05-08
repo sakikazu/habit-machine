@@ -96,7 +96,7 @@ Rails.application.routes.draw do
   get 'today', to: 'general#day', as: :today
   get 'search', to: 'general#search', as: :search
 
-  resources :habitodos, except: [:new, :show] do
+  resources :habitodos, except: [:new, :show, :edit] do
     collection do
       get 'get_data'
     end

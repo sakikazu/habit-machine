@@ -12,8 +12,8 @@
     .col-sm-2.bg-secondary.text-light
       / データのリスト
       ul.sidebar.list-unstyled.mt-3
-        li.d-flex [
-          v-for="h in habitodos"
+        li.d-flex.p-0 [
+          v-for="(h, key) in sortedHabitodos"
           v-bind:key="h.uuid"
           v-bind:class="h.isCurrent ? 'selected-data' : ''"
           v-on:click="showDoc(h.uuid)"
@@ -23,10 +23,26 @@
           .flex-grow-1
             | {{ h.title }}
           .ml-2
-            / バブリングを止める
-            i.fa.fa-save v-show="h.unsaved" v-on:click.stop="saveData(h.uuid)"
-          .ml-2
-            i.fa.fa-trash v-on:click.stop="deleteData(h.uuid)"
+            / バブリングを止める（saveBodyの後にshowDocしてるので結局実行されてしまうが、意図として残す）
+            i.fa.fa-save v-show="h.unsaved" v-on:click.stop="saveBody(h.uuid)"
+          .ml-3.mr-2
+            .dropdown
+              a.dropdown-toggle data-toggle="dropdown"
+              .dropdown-menu.dropdown-menu-right.dropdown-menu-wide
+                .change-title-form.p-2
+                  .form-group
+                    label タイトル
+                    input type="text" class="form-control" v-model="sortedHabitodos[key].title"
+                  .form-group
+                    label 並び順（数値が大きい順）
+                    input type="text" class="form-control" v-model="sortedHabitodos[key].order_number"
+                  .text-center
+                    a.btn.btn-primary[href="javascript:void(0)" v-on:click="saveAttrs(h.uuid)"] 変更
+                .dropdown-divider
+                .p-2.text-danger.text-center v-on:click.stop="deleteData(h.uuid)"
+                  a.btn.btn-danger[href="javascript:void(0)"]
+                    i.fa.fa-trash.ml-1
+                    | 削除
 
       / 新規作成
       .create-doc-form.input-group.mt-3

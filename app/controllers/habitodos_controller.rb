@@ -1,5 +1,5 @@
 class HabitodosController < ApplicationController
-  before_action :set_habitodo, only: [:show, :edit, :update, :destroy]
+  before_action :set_habitodo, only: [:update, :destroy]
   before_action :authenticate_user!
 
   # GET /habitodos
@@ -10,16 +10,11 @@ class HabitodosController < ApplicationController
   end
 
   def get_data
-    habitodos = Habitodo.all.order('order_number DESC')
+    habitodos = Habitodo.all
     render json: {
       status: 200,
       data: habitodos
     }
-  end
-
-  # GET /habitodos/1/edit
-  def edit
-    # todo 現在、タイトル変更のために使っている
   end
 
   # POST /habitodos

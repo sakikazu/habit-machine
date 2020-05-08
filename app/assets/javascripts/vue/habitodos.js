@@ -48,6 +48,15 @@ const vm = new Vue({
   },
   // Vue: methodsでやる場合と違い、引数が取れないが、キャッシュしてくれるので、ReadOnlyならこっち使う
   computed: {
+    // todo: ここでsliceしてコピーしてるようなのに、フォームでv-modelでこの要素を指定しているのに、habitodosにうまく反映されているのが謎・・
+    // sliceはリアクティブだったけかな
+    // computedで並び替えのデータを作ってるのに、そのキーをv-forの中のv-modelで変更できるってのは、何か怪しくて、どうにかしたい。正しいデータが対象となっているか不安になる
+    sortedHabitodos: function() {
+      // todo: 何度も呼ばれてる。キャッシュしてたら呼ばれないんじゃないのかな
+      console.log('sorting')
+      // sliceしとかないと、データが重複する問題があった。this.habitodos自体を変更した時になにか問題が起きてるのかな・・
+      return this.habitodos.slice().sort((x, y) => x.order_number < y.order_number ? 1 : -1)
+    },
     // todo 削除
     filteredProjects: function () {
       const reg = new RegExp(this.filterWord);
@@ -439,7 +448,15 @@ const vm = new Vue({
         end: range.endOffset
       };
     },
-    saveData: function(uuid) {
+    saveAttrs: function(uuid) {
+      const found = this.findData(uuid);
+      const habitodo = {
+        'title' : found.data.title,
+        'order_number' : found.data.order_number,
+      }
+      this.saveData(uuid, habitodo)
+    },
+    saveBody: function(uuid) {
       // NOTE: これをやるには、bodyがv-modelである必要があるが、contentEditableとv-modelは特別なことをしなければ併用できないとのエラーが出る
       // data = this.currentData.body
       // NOTE: innerTextは、h1やpなどタグが存在すると、間に改行の行を一つはさむようにして勝手に改行が挿入されたものが取得されてしまう。ので使えない
@@ -454,10 +471,14 @@ const vm = new Vue({
         .replace(/\<\/?span.*?\>/g, '')
         // hとdivとpの終了タグと、brタグを改行に変換
         .replace(/\<\/h\d\>|\<\/div\>|\<\/p\>|\<br\>/g, '\n')
+      const habitodo = { 'body' : data }
+      this.saveData(uuid, habitodo)
+    },
+    saveData: function(uuid, habitodo) {
       $.ajax({
         type: 'PUT',
         url: '/habitodos/' + uuid,
-        data: { habitodo: { 'body' : data } },
+        data: { habitodo: habitodo },
         success: function(res) {
           console.log(res);
           // todo currentDataを変更するだけで配列内も変更されそうだが、Vue.setを使う必要があった。consoleからcurrentDataを変更すると配列も反映されるが、ナゾ
