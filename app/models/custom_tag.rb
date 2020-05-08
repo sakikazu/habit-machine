@@ -3,11 +3,17 @@
 # Table name: tags
 #
 #  id             :integer          not null, primary key
+#  color          :string(255)
+#  description    :text(65535)
+#  last_used_at   :datetime
 #  name           :string(255)
+#  pinned         :boolean          default(FALSE)
 #  taggings_count :integer          default(0)
 #  user_id        :integer
-#  last_used_at   :datetime
-#  description    :text(65535)
+#
+# Indexes
+#
+#  index_tags_on_name  (name) UNIQUE
 #
 
 class CustomTag < ActsAsTaggableOn::Tag

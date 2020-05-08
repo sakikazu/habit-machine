@@ -3,16 +3,17 @@
 # Table name: senses
 #
 #  id          :integer          not null, primary key
-#  user_id     :integer
-#  title       :string(255)
-#  description :text(65535)
 #  content     :text(65535)
-#  start_at    :date
+#  description :text(65535)
 #  end_at      :date
 #  is_inactive :boolean
 #  sort_order  :integer          default(1)
+#  start_at    :date
+#  title       :string(255)
 #  created_at  :datetime
 #  updated_at  :datetime
+#  parent_id   :integer
+#  user_id     :integer
 #
 
 # Read about factories at https://github.com/thoughtbot/factory_girl
