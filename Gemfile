@@ -73,6 +73,8 @@ gem 'config'
 # NOTE: View handlerの設定で使用されるのでどの環境でも必要
 gem 'slim'
 
+gem 'webpacker', '~> 5.x'
+
 group :development do
   gem 'rb-readline'
   gem 'listen'

@@ -38,3 +38,10 @@ config/environments/*.local.yml
 # database info
 .env
 config/mysqldump.ini
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity

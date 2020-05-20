@@ -17,5 +17,10 @@
   "author": "",
   "license": "ISC",
   "homepage": "https://bitbucket.org/sakikazu15/habit-machine#readme",
-  "dependencies": {}
+  "dependencies": {
+    "@rails/webpacker": "5.1.1"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^3.11.0"
+  }
 }
