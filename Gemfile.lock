@@ -256,6 +256,8 @@ GEM
     rack (2.2.2)
     rack-mini-profiler (1.0.1)
       rack (>= 1.2.0)
+    rack-proxy (0.6.5)
+      rack
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.2)
@@ -354,6 +356,7 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    semantic_range (2.3.0)
     simple_form (4.1.0)
       actionpack (>= 5.0)
       activemodel (>= 5.0)
@@ -398,6 +401,11 @@ GEM
       rails (>= 3.2)
     warden (1.2.8)
       rack (>= 2.0.6)
+    webpacker (5.1.1)
+      activesupport (>= 5.2)
+      rack-proxy (>= 0.6.1)
+      railties (>= 5.2)
+      semantic_range (>= 2.3.0)
     websocket-driver (0.7.0)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
@@ -464,6 +472,7 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   unicorn
   view_source_map
+  webpacker (~> 5.x)
 
 RUBY VERSION
    ruby 2.5.1p57

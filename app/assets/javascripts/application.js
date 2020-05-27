@@ -23,16 +23,7 @@
 //= require tempusdominus-bootstrap-4.js
 //= require jquery.selection
 //= require jquery.markdown-easily
-// todo replace production
-//= require vue
-// TODO: vue.js用のファイルはjavascript_include_tagでdeferをつけて読み込みたいので、「.」は使わずファイル指定で読み込むようにしている
-// うまいやり方あると思う
-//= require jquery.autopager-1.0.0.min.js
-//= require cable.js
-//= require_tree ./channels
-//= require jquery-ui-autocomplete-multiple.js
-//= require jquery.markdown-easily.js
-//= require day_page.js
+//= require_tree .
 
 // for best_in_place
 //= require best_in_place

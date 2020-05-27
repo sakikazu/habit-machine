@@ -1,3 +1,7 @@
+import Vue from 'vue/dist/vue.esm'
+//import App from '../app.vue'
+
+document.addEventListener('turbolinks:load', () => {
 const vm = new Vue({
   el: '#habitodo',
   data: {
@@ -73,7 +77,7 @@ const vm = new Vue({
         this.searchBtnColor = '';
         return;
       }
-      exists = this.habitodos.some(d => {
+      const exists = this.habitodos.some(d => {
         return d.title.match(new RegExp(this.searchWord)) || (d.body && d.body.match(new RegExp(this.searchWord)))
       });
       this.searchBtnColor = exists ? 'red' : '';
@@ -94,7 +98,7 @@ const vm = new Vue({
         }
         // bodyにマッチの場合は、行ごとに検索していく
         if (d.body.match(new RegExp(this.searchWord))) {
-          lines = d.body.split(/\r\n|\n|\r/);
+          const lines = d.body.split(/\r\n|\n|\r/);
           lines.forEach((line, idx) => {
             if (line.match(new RegExp(this.searchWord))) {
               this.searchResult.push({ 'docId': d.uuid, 'text': '[' + d.title + '] ' + line, 'rows': idx + 1 });
@@ -147,13 +151,15 @@ const vm = new Vue({
         // nextTick内のthisはWindowオブジェクトだった
         vm.mokuji = [];
         // htmlタグを評価するのでhtmlを取得する。改行は含まず1行で取得されるので注意
-        text = document.getElementById(`editor-${uuid}`).innerHTML;
+        const text = document.getElementById(`editor-${uuid}`).innerHTML;
         // まずはすべてのhタグ要素を取得して、それぞれからidとtextを取得する
         // 「g」オプションだとマッチしたものが配列になって返却されるが、カッコのキャプチャは使えなくなった
-        if (matched = text.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/g)) {
+        const matched = text.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/g)
+        if (matched) {
           //console.log(matched);
           matched.forEach(d => {
-            if (matched2 = d.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/)) {
+            const matched2 = d.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/)
+            if (matched2) {
               vm.mokuji.push({ text: matched2[2], anchor: matched2[1] });
             }
           });
@@ -167,10 +173,11 @@ const vm = new Vue({
       if (!found.data.body) {
         return;
       }
-      textArray = found.data.body.split(/\r\n|\n|\r/);
-      newArray = [];
+      const textArray = found.data.body.split(/\r\n|\n|\r/);
+      let newArray = [];
       textArray.forEach((t, idx) => {
-        if (matched = t.match(/^(#{1,5})/)) {
+        const matched = t.match(/^(#{1,5})/)
+        if (matched) {
           const hTag = 'h' + matched[1].length;
           newArray.push('<' + hTag + ' id="' + idx + '">' + t + '</' + hTag + '>');
         } else {
@@ -181,7 +188,7 @@ const vm = new Vue({
       if (newArray[newArray.length - 1] === '\n') {
         newArray.pop();
       }
-      newText = this.nl2br(newArray.join(''));
+      const newText = this.nl2br(newArray.join(''));
       // todo ここで不思議なのは、一度contentEditableのテキストを変更後、showDocで切り替えて戻ってきたときに、
       // 元のデータに置き換わってしまいそう（実際にnewTextは元のデータを示している）だが、実際には変更されたテキストがそのまま表示されている
       // v-htmlだからかcontentEditableだからか、明らかにしておきたい
@@ -212,6 +219,7 @@ const vm = new Vue({
       this.updateMarkdownedBody(uuid);
       this.buildMokuji(uuid);
     },
+    // todo CSSのhoverでできるのでは？
     addHilightOnList: function(event) {
       // NOTE: event.targetにしてしまうと、子要素が対象になりうるので、イベント登録されている要素を取得するためにevent.currentTargetを指定する
       // 通常はthisでそれが取得できるようだが、ここでのthisはVueオブジェクトになってしまっていた
@@ -303,7 +311,9 @@ const vm = new Vue({
           // NOTE: keydownイベントの時（keyupでは不可）、falseを返すと入力文字をキャンセルできる
           // preventDefaultの方だけでもいいかも・・
 //          return false;
-        } else if (matched = currentLine.match(/^(#{1,5})\s/)) {
+        } else if (currentLine.match(/^(#{1,5})\s/)) {
+          // TODO: 条件式の中でconstつけて変数代入が怒られるようになったけど、こういうケースのうまい書き方は？
+          const matched = currentLine.match(/^(#{1,5})\s/)
           Vue.nextTick().then(function() {
             const hTag = 'h' + matched[1].length;
             vm.moveCaret(window.getSelection().getRangeAt(0).startContainer, 0);
@@ -357,6 +367,10 @@ const vm = new Vue({
       sel.addRange(range);
       // これなくてもちゃんとフォーカスされるが？
       //el.focus();
+
+      // todo これでもいける？
+      // oContent = document.createRange();
+      // oContent.selectNodeContents(oDoc.firstChild);
 
       // この一行だけでも何とか選択はできるが、文頭だったり文末だったりCaretの位置になるのが理解できてない
       // document.getSelection().collapse(el, nodesCount);
@@ -462,7 +476,7 @@ const vm = new Vue({
       // NOTE: innerTextは、h1やpなどタグが存在すると、間に改行の行を一つはさむようにして勝手に改行が挿入されたものが取得されてしまう。ので使えない
       // data = document.getElementById(`editor-${id}`).innerText;
       // Nodeでいじった方が楽という可能性はある
-      data = document.getElementById(`editor-${uuid}`).innerHTML
+      const data = document.getElementById(`editor-${uuid}`).innerHTML
         // contentEditableによってdivで囲まれたbrが入るので、先にそれを改行に変換
         .replace(/\<div\>\<br\>\<\/div\>/g, '\n')
         // hとdivとpの開始タグを除去
@@ -560,3 +574,4 @@ const vm = new Vue({
   }
 });
 
+})
