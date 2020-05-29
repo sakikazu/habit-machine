@@ -40,8 +40,10 @@
       "<%= j(render partial: 'index_detail', locals: { diary: @diary, is_day_page: true }) %>"
     <% end %>
   );
-  $('.well').removeClass('highlight-border');
   $("#<%= @diary.wrapper_dom_id %>").find('.well').addClass('highlight-border');
+  setTimeout(() => {
+    $('.well').removeClass('highlight-border');
+  }, 10000)
 <% end %>
 
 <% if action_name == :create %>
@@ -66,8 +68,10 @@
     $("#" + wrapperId).html(
       "<%= j(render partial: 'index_detail', locals: { diary: @diary, is_day_page: true }) %>"
     );
-    $('.well').removeClass('highlight-border');
     $("#" + wrapperId).find('.well').addClass('highlight-border');
+    setTimeout(() => {
+      $('.well').removeClass('highlight-border');
+    }, 10000)
   <% end %>
 
   // todo: やっぱVue.jsにしないと無理があるなー
