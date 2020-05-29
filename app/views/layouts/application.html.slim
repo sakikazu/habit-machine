@@ -48,7 +48,8 @@ html[lang="ja"]
           = link_to "本日", today_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0
         li class="nav-item #{controller.controller_name == "habitodos" ? "active" : ""}"
-          = link_to "HabiTodo", habitodos_path, class: 'nav-link'
+          / turbolinksをfalseにすることで、何か一つ不具合が直った。bodyタグのだけじゃ足りなかった
+          = link_to "HabiTodo", habitodos_path, class: 'nav-link', data: { turbolinks: "false" }
       button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
         span.navbar-toggler-icon
       #navbarSupportedContent.collapse.navbar-collapse

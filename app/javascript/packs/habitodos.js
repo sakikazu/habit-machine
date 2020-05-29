@@ -1,6 +1,12 @@
+//import TurbolinksAdapter from 'vue-turbolinks'
 import Vue from 'vue/dist/vue.esm'
 //import App from '../app.vue'
 
+// todo: vue-turbolinksは期待どおりに動かず。よくわからん
+//Vue.use(TurbolinksAdapter)
+//Vue.use(TurbolinksAdapter, { turbolinksDestroyEvent: 'turbolinks:before-cache' })
+
+// TODO: habitodosのリンクはturbolinksをoffにしたのに、なぜこのイベントでやらないと動かないんだろう
 document.addEventListener('turbolinks:load', () => {
 const vm = new Vue({
   el: '#habitodo',

@@ -1,7 +1,9 @@
 / todo textareaでも、caretを駆使すればsetPosして目次は実現できそうだな
 / todo turbolinksとの共存をトライして
 /- content_for :addjs_in_head
-= javascript_pack_tag 'habitodos'
+/ NOTE: data-turbolinks-eval: falseにすることで、turbolinksによる遷移でも、このページの最初の表示時に一度だけScriptを実行するようにする（キャッシュされてるので）
+/ でも、今はHabitodoへのリンクにturbolinksをoffにしているので、毎回、最初の表示と同じ状態なので意味ないかもだが、Vue.jsへのtagには毎回付けたほうがいいはず
+= javascript_pack_tag 'habitodos', 'data-turbolinks-eval': 'false'
 
 #habitodo
   #habitodo-header.row.bg-dark.text-light

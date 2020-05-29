@@ -5,6 +5,9 @@ class HabitodosController < ApplicationController
   # GET /habitodos
   def index
     # todo turbolinksとvue.jsの共存をしっかり理解して外せるようにしたい
+    # これをやらないと（つまりbodyでturbolinks:falseにしないと）、他のページでもhabitodos.jsが実行されてしまう
+    # Vue.jsの実行を、特定要素がある場合のみ、と条件付けすれば問題はないが、良くはないのでtrueとしとく
+    # 理論はよくわかってない
     @turbolinks_off = true
     @page_title = 'Habitodo'
   end
