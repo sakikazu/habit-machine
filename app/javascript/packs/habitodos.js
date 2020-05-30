@@ -48,6 +48,7 @@ const vm = new Vue({
     this.setMinHeight();
     this.scrollableMokuji();
     this.setConfirmUnsavingEvent();
+    this.setShortcutOfSave()
 
     // NOTE: Enter押下時の挿入タグをbrに変更したかったが、デフォルトのdivになってしまう。pに変更はできるので、brがダメなんだろう
     //document.execCommand("DefaultParagraphSeparator", false, "br");
@@ -74,9 +75,28 @@ const vm = new Vue({
     }
   },
   methods: {
+    // 保存ボタンのショートカット。Macはcmd + s, Winはctrl + s
+    setShortcutOfSave: function() {
+      const S_KEY = 83
+      // TODO: Vue.jsではこういう全体のイベントハンドリングはどうするのがセオリー？
+      $(document).on('keydown', function(e) {
+        // Macのcmdはe.metaKey、Winのctrlはe.ctrlKey（でもこれはMacのcontrolも含むだろうからMacではそっちでもいける）
+        if ((e.ctrlKey || e.metaKey) && e.keyCode === S_KEY) {
+          // ブラウザの「ページを別名で保存」を抑制
+          e.preventDefault()
+          const current = vm.findCurrentData()
+          if (current.unsaved) {
+            vm.saveBody(current.uuid)
+          }
+        }
+      });
+    },
     findData: function(uuid) {
       const idx = this.habitodos.findIndex(h => h.uuid === uuid);
       return { idx: idx, data: this.habitodos[idx] };
+    },
+    findCurrentData: function() {
+      return this.habitodos.find(h => h.isCurrent === true)
     },
     preSearchData: function() {
       if (!this.searchWord) {
