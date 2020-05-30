@@ -19,6 +19,7 @@
   "homepage": "https://bitbucket.org/sakikazu15/habit-machine#readme",
   "dependencies": {
     "@rails/webpacker": "5.1.1",
+    "axios": "^0.19.2",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.2",
     "vue-template-compiler": "^2.6.11",

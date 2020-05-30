@@ -28,10 +28,7 @@ class HabitodosController < ApplicationController
     # title は必須でいいよな？エラー時はalert
 
     if @habitodo.save
-      render json: {
-        status: 200,
-        data: @habitodo
-      }
+      render json: @habitodo
     else
       # todo
       render :new
@@ -41,10 +38,7 @@ class HabitodosController < ApplicationController
   # PATCH/PUT /habitodos/1
   def update
     if @habitodo.update(habitodo_params)
-      render json: {
-        status: 200,
-        data: @habitodo
-      }
+      render json: @habitodo
     else
       # todo
       render :edit
@@ -54,9 +48,7 @@ class HabitodosController < ApplicationController
   # DELETE /habitodos/1
   def destroy
     @habitodo.destroy
-    render json: {
-      status: 200,
-    }
+    render json: ''
   end
 
   private

@@ -1,6 +1,7 @@
 //import TurbolinksAdapter from 'vue-turbolinks'
 import Vue from 'vue/dist/vue.esm'
 //import App from '../app.vue'
+import HmAxios from '../hm_axios.js'
 
 // todo: vue-turbolinksは期待どおりに動かず。よくわからん
 //Vue.use(TurbolinksAdapter)
@@ -515,48 +516,51 @@ const vm = new Vue({
       this.saveData(uuid, habitodo)
     },
     saveData: function(uuid, habitodo) {
-      $.ajax({
-        type: 'PUT',
-        url: '/habitodos/' + uuid,
-        data: { habitodo: habitodo },
-        success: function(res) {
-          console.log(res);
-          // todo currentDataを変更するだけで配列内も変更されそうだが、Vue.setを使う必要があった。consoleからcurrentDataを変更すると配列も反映されるが、ナゾ
-          // todo showDocはこの後に実行しなきゃという制限あるし、良い感じにしたい
-          const found = vm.findData(res.data.uuid);
-          Vue.set(vm.habitodos, found.idx, res.data);
-          vm.showDoc(res.data.uuid);
-        }
-      });
+      HmAxios.put('/habitodos/' + uuid, {
+        habitodo: habitodo
+      })
+      .then(res => {
+        console.log(res);
+        // todo currentDataを変更するだけで配列内も変更されそうだが、Vue.setを使う必要があった。consoleからcurrentDataを変更すると配列も反映されるが、ナゾ
+        // todo showDocはこの後に実行しなきゃという制限あるし、良い感じにしたい
+        const found = vm.findData(res.data.uuid);
+        Vue.set(vm.habitodos, found.idx, res.data);
+        vm.showDoc(res.data.uuid);
+      })
+      .catch(error => {
+        console.log(error)
+      })
     },
     createData: function () {
       if (!this.newTitle) {
         return;
       }
-      $.ajax({
-        type: 'POST',
-        url: '/habitodos',
-        data: { habitodo: { 'title' : this.newTitle } },
-        success: function(res) {
-          console.log(res);
-          vm.habitodos.push(res.data);
-          vm.newTitle = '';
-        }
-      });
+      HmAxios.post('/habitodos.json', {
+        habitodo: { 'title' : this.newTitle }
+      })
+      .then(res => {
+        console.log(res);
+        vm.habitodos.push(res.data);
+        vm.newTitle = '';
+      })
+      .catch(error => {
+        console.log(error)
+      })
     },
     deleteData: function(uuid) {
       if (!confirm('本当に削除してもよろしいですか？')) {
         return;
       }
-      $.ajax({
-        type: 'DELETE',
-        url: '/habitodos/' + uuid,
-        success: function(_res) {
+      HmAxios.delete('/habitodos/' + uuid)
+      .then(_res => {
           vm.habitodos = vm.habitodos.filter(d => d.uuid != uuid);
-        }
-      });
+      })
+      .catch(error => {
+        console.log(error)
+      })
     },
     getData: async function() {
+      // fetchの例として、Axiosに置き換えずに置いておこう
       const response = await fetch('/habitodos/get_data');
       if (response.status != 200) {
         throw new Error();
