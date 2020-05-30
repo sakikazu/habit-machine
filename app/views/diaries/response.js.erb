@@ -82,7 +82,10 @@
   $(function() {
     $('.toast').toast('show');
   });
+  // NOTE: val('')で値クリアしてしまうと、次の入力時に現在時刻が出なくなる
+  // ABOUT: https://tempusdominus.github.io/bootstrap-4/Functions/
+  $('.timepicker').datetimepicker('clear')
   $('#memo-form').find('select.form-control').val('');
-  $('#memo-form').find('input.form-control').val('');
+  $('#memo-form').find('textarea.form-control').val('');
 <% end %>
 
