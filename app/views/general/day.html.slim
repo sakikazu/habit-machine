@@ -39,6 +39,12 @@
     // ショートカットで日にち移動
     shortcutOfPagingLink('prev-day', 'next-day');
 
+    expandDependOnContents = () => {
+      const DIARY_WIDTH = 600
+      width = $('.diary-wrapper').length * DIARY_WIDTH
+      $('#diaries-wrapper').width(width)
+    }
+
 .row.bg-dark.mb20
   .col.text-center
     .text-light
@@ -88,15 +94,18 @@
               .card-text.mt10
                 = best_in_place record, :memo, place_holder: "メモ入力", display_with: lambda { |v| sani_br(v) }, as: :textarea, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at), class: 'text-danger d-block'
 
-  .col-md-9
-    .page-header
-      h4
+  / NOTE: .overflow-autoを付加すると、子要素の幅が限界を超えた時に、画面全体ではなく、この要素に対してスクロールバーが表示される
+  / 付加しないと、画面全体にスクロールバーが表示される
+  .col-md-9.overflow-auto
+    .page-header.d-flex
+      h4.flex-grow-1
         | 本日の日記
         =< link_to @diaries.size, "javascript:void(0)", class: 'btn btn-primary', data: { toggle: 'popover', title: '日記リスト', content: diary_links_list(@diaries) }
+      div = link_to '広げる', 'javascript:expandDependOnContents()', class: 'btn btn-light' unless browser.device.mobile?
     - if @diaries.blank?
       p 日記はありません。
     - else
-      .d-lg-flex.flex-row.flex-wrap
+      #diaries-wrapper.d-lg-flex.flex-row.flex-wrap
         - @diaries.each do |diary|
           / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
           / 100%を要素数で割った値でも同じことができる。その場合はgrow-1は不要になるはず
