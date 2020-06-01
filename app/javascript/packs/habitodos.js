@@ -1,7 +1,7 @@
 //import TurbolinksAdapter from 'vue-turbolinks'
 import Vue from 'vue/dist/vue.esm'
-//import App from '../app.vue'
 import HmAxios from '../hm_axios.js'
+import CreateForm from '../components/habitodos/CreateForm.vue'
 
 // todo: vue-turbolinksは期待どおりに動かず。よくわからん
 //Vue.use(TurbolinksAdapter)
@@ -11,10 +11,12 @@ import HmAxios from '../hm_axios.js'
 document.addEventListener('turbolinks:load', () => {
 const vm = new Vue({
   el: '#habitodo',
+  components: {
+    CreateForm,
+  },
   data: {
     habitodos: [],
     mokuji: [],
-    newTitle: '',
     searchWord: '',
     searchResult: [],
     searchBtnColor: '',
@@ -76,6 +78,9 @@ const vm = new Vue({
     }
   },
   methods: {
+    onCreatedData: function(e) {
+      this.habitodos.push(e)
+    },
     // 保存ボタンのショートカット。Macはcmd + s, Winはctrl + s
     setShortcutOfSave: function() {
       const S_KEY = 83
@@ -526,22 +531,6 @@ const vm = new Vue({
         const found = vm.findData(res.data.uuid);
         Vue.set(vm.habitodos, found.idx, res.data);
         vm.showDoc(res.data.uuid);
-      })
-      .catch(error => {
-        console.log(error)
-      })
-    },
-    createData: function () {
-      if (!this.newTitle) {
-        return;
-      }
-      HmAxios.post('/habitodos.json', {
-        habitodo: { 'title' : this.newTitle }
-      })
-      .then(res => {
-        console.log(res);
-        vm.habitodos.push(res.data);
-        vm.newTitle = '';
       })
       .catch(error => {
         console.log(error)

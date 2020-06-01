@@ -46,10 +46,7 @@
                     | 削除
 
       / 新規作成
-      .create-doc-form.input-group.mt-3
-        input type='text' class='form-control' v-model='newTitle' placeholder="タイトル"
-        .input-group-append
-          span.input-group-text[v-on:click="createData()"] 作成
+      create-form v-on:created-data='onCreatedData'
 
       / 検索
       .searchbox.input-group.mt-5.mb-3
