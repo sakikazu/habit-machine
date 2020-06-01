@@ -2,6 +2,7 @@
 import Vue from 'vue/dist/vue.esm'
 import HmAxios from '../hm_axios.js'
 import CreateForm from '../components/habitodos/CreateForm.vue'
+import { nl2br, throttle, debounce } from '../helper.js'
 
 // todo: vue-turbolinksは期待どおりに動かず。よくわからん
 //Vue.use(TurbolinksAdapter)
@@ -14,6 +15,8 @@ const vm = new Vue({
   components: {
     CreateForm,
   },
+  // TODO: ライフサイクルの共通処理があれば。ログインチェック処理とかに適しているかな？
+  mixins: [],
   data: {
     habitodos: [],
     mokuji: [],
@@ -25,7 +28,7 @@ const vm = new Vue({
   created: function () {
     console.log('created');
 
-    this.checkUnsavedFunc = this.debounce(this.checkUnsaved, 1000);
+    this.checkUnsavedFunc = debounce(this.checkUnsaved, 1000);
     this.getData()
       .then(res => {
         // NOTE: この中のthisはVueオブジェクトになっている
@@ -220,7 +223,7 @@ const vm = new Vue({
       if (newArray[newArray.length - 1] === '\n') {
         newArray.pop();
       }
-      const newText = this.nl2br(newArray.join(''));
+      const newText = nl2br(newArray.join(''));
       // todo ここで不思議なのは、一度contentEditableのテキストを変更後、showDocで切り替えて戻ってきたときに、
       // 元のデータに置き換わってしまいそう（実際にnewTextは元のデータを示している）だが、実際には変更されたテキストがそのまま表示されている
       // v-htmlだからかcontentEditableだからか、明らかにしておきたい
@@ -234,12 +237,6 @@ const vm = new Vue({
           Vue.set(vm.habitodos, found.idx, found.data);
         }
       });
-    },
-    nl2br: function(str) {
-      if (!str) { return ''; }
-      str = str.replace(/\r\n/g, "<br>");
-      str = str.replace(/(\n|\r)/g, "<br>");
-      return str;
     },
     showDoc: function(uuid) {
       this.habitodos = this.habitodos.map(ht => {
@@ -557,38 +554,6 @@ const vm = new Vue({
       // TODO: なんでjson()の結果がPromiseオブジェクトになってるんだろう
       const json = await response.json();
       return json.data;
-    },
-    // todo mixinに移動する。lodashのメソッドの再現。そのものではないので動作の違いに注意
-    // イベントを呼び出し後、指定した時間が経過するまでは次のイベントを発生させない
-    // keydownやscrollなど頻発するイベントによって実行したい処理は、コストが高いので一定間隔で行うようにthrottleを使う
-    throttle: function(fn, interval) {
-      const context = this;
-      // クロージャ(Closure)の例。lastTimeが固定されている
-      let lastTime = Date.now() - interval;
-      return function() {
-        const args = arguments;
-        if ((lastTime + interval) < Date.now()) {
-          lastTime = Date.now();
-          fn.apply(context, args);
-        }
-      }
-    },
-    // todo mixinに移動する。lodashのメソッドの再現。そのものではないので動作の違いに注意
-    // イベントを呼び出し後、次のイベントまで指定した時間が経過するまではイベントを発生させない
-    // 待機中に再度イベント発生して実行されたら、タイマーをリセットしてまたそこから指定時間を待機する
-    // throttleと違って、イベントが頻発している最中は実行せず、それが落ち着いたときに実行するためのもの
-    debounce: function(fn, interval) {
-      // todo ここのthisはVueだけど、それでいいのか？thisを渡す理由を理解しないとわからんな
-      const context = this;
-      let timer;
-      return function() {
-        clearTimeout(timer);
-        const args = arguments;
-        timer = setTimeout(function() {
-          // todo bind, call, applyのどれを使えばいいかとかthisの意味とかアロー関数についてしっかり理解しなければ
-          fn.apply(context, args);
-        }, interval);
-      };
     }
   }
 });
