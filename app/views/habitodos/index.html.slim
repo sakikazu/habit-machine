@@ -61,7 +61,7 @@
         ]
           | {{ d.text + '(' + d.rows + ')' }}
 
-    .col-sm-8
+    #middle-area.col-sm-8
       p v-show="habitodos.length == 0" データないです
       / NOTE: height:100%にしておくと、contentEditableの要素に何も存在しなくても、領域全部がクリッカブルになって編集可能
       .editor.h100 [
@@ -85,8 +85,12 @@
             a v-bind:href="'#' + m['anchor']" v-text="m['text']"
 
 scss:
+  #middle-area.col-sm-8 {
+      padding-left: 0;
+      padding-right: 0;
+  }
   .editor {
-    padding: 10px;
+    padding: 15px;
     font-size: 1.1em;
     line-height: 1.8em;
 
