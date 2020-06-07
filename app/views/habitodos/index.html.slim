@@ -7,12 +7,11 @@
 
 #habitodo
   #habitodo-header.row.bg-dark.text-light
-    .flex-grow-1 todo この領域は不要かな？スクロール固定にしてなにか情報を出すとか
-    .flex-grow-0 Chromeのみ対応
+    .flex-grow-1 todo何を表示？
+    .flex-grow-0 Chrome only
   #habitodo-body.row
-    .col-sm-2.bg-secondary.text-light
-      / データのリスト
-      ul.sidebar.list-unstyled.mt-3
+    #sidebar-left.overflow-y-scroll.col-sm-2.order-1.order-sm-1.bg-secondary.text-light
+      ul#doclist.list-unstyled.mt-3
         li.d-flex.p-0 [
           v-for="(h, key) in sortedHabitodos"
           v-bind:key="h.uuid"
@@ -61,9 +60,9 @@
         ]
           | {{ d.text + '(' + d.rows + ')' }}
 
-    #middle-area.col-sm-8
+    #middle-area.overflow-y-scroll.col-sm-8.order-3.order-sm-2
       p v-show="habitodos.length == 0" データないです
-      / NOTE: height:100%にしておくと、contentEditableの要素に何も存在しなくても、領域全部がクリッカブルになって編集可能
+      / NOTE: height:100%にしておくと、contentEditableの要素に値がなくても、領域全部がクリッカブルになって編集可能
       .editor.h100 [
         v-for="ht in habitodos"
         v-bind:key="ht.uuid"
@@ -74,8 +73,8 @@
         v-html="ht.markdownedBody"
       ]
 
-    .col-sm-2.bg-light.text-secondary[style="position:relative"]
-      #mokujis.mt-3[style="position:absolute"]
+    #sidebar-right.overflow-y-scroll.col-sm-2.order-2.order-sm-3.bg-light.text-secondary
+      #mokujis.mt-3
         h4.text-center 目次
         ul.right-sidebar
           li [
@@ -98,7 +97,7 @@ scss:
       margin-bottom: 0;
     }
   }
-  ul.sidebar {
+  ul#doclist {
     li {
       color: white;
       cursor: pointer;

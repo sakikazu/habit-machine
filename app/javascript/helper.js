@@ -1,3 +1,12 @@
+// bootstrapがビューポート幅で表示を切り替えているので、それに合わせUserAgentではなくメディアクエリ関数でスマホを判別する
+export function isSmartPhone() {
+  if (window.matchMedia && window.matchMedia('(max-device-width: 640px)').matches) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 export function nl2br(str) {
   if (!str) { return ''; }
   str = str.replace(/\r\n/g, "<br>");

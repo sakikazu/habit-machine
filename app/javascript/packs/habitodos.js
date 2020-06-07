@@ -2,7 +2,7 @@
 import Vue from 'vue/dist/vue.esm'
 import HmAxios from '../hm_axios.js'
 import CreateForm from '../components/habitodos/CreateForm.vue'
-import { nl2br, throttle, debounce } from '../helper.js'
+import { isSmartPhone, nl2br, throttle, debounce } from '../helper.js'
 
 // todo: vue-turbolinksは期待どおりに動かず。よくわからん
 //Vue.use(TurbolinksAdapter)
@@ -51,9 +51,8 @@ const vm = new Vue({
 
     $('nav.navbar').removeClass('mb20');
     $('footer').css('margin-top', 0);
-    this.setMinHeight();
-    this.scrollableMokuji();
-    this.setConfirmUnsavingEvent();
+    this.setHeightForScroll()
+    this.setConfirmUnsavingEvent()
     this.setShortcutOfSave()
 
     // NOTE: Enter押下時の挿入タグをbrに変更したかったが、デフォルトのdivになってしまう。pに変更はできるので、brがダメなんだろう
@@ -257,17 +256,32 @@ const vm = new Vue({
     removeHilightOnList: function(event) {
       $(event.currentTarget).removeClass('hilight')
     },
+    // habitodo-bodyより内部の高さを設定したことで、不要になった
     // コンテンツの最低の高さをWindowに合わせる
     setMinHeight: function() {
-      const otherHeight = document.getElementsByTagName('nav')[0].clientHeight
-        + document.getElementsByTagName('footer')[0].clientHeight
-        + document.getElementById('habitodo-header').clientHeight;
-      const editorMinHeight = window.innerHeight - otherHeight;
+      const editorMinHeight = this.getContentAreaHeight()
       // NOTE: heightではなく、minHeightを設定するのがコツ。コンテンツ長が足りないページのみ適用してくれるから。
       //       heightを変更するとコンテンツ長に応じたheightが取得できなくなり、うまくいかなかった
       // NOTE: '#editor'のheightをいじろうとすると、v-ifの要素となっているのでDOMが見つからない。nextTickを入れてもダメだった。間違えやすいので注意
       document.getElementById('habitodo-body').style.minHeight = editorMinHeight + 'px'
     },
+    // 長いコンテンツの場合はスクロールさせるようにする（overflow-y:scroll 適用済みであること）
+    setHeightForScroll: function() {
+      if (isSmartPhone()) {
+        document.getElementById('middle-area').style.maxHeight = '800px'
+        document.getElementById('sidebar-left').style.maxHeight = '150px'
+        document.getElementById('sidebar-right').style.maxHeight = '150px'
+      } else {
+        document.getElementById('middle-area').style.height = this.getContentAreaHeight() + 'px'
+      }
+    },
+    getContentAreaHeight: function() {
+      const otherHeight = document.getElementsByTagName('nav')[0].clientHeight
+        + document.getElementsByTagName('footer')[0].clientHeight
+        + document.getElementById('habitodo-header').clientHeight;
+      return window.innerHeight - otherHeight;
+    },
+    // 不要になった: 要素をスクロールに追従させる
     scrollableMokuji: function() {
       const headerHeight = document.getElementsByTagName('nav')[0].clientHeight
         + document.getElementById('habitodo-header').clientHeight;
