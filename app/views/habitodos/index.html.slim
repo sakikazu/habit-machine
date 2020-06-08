@@ -62,8 +62,8 @@
 
     #middle-area.overflow-y-scroll.col-sm-8.order-3.order-sm-2
       p v-show="habitodos.length == 0" データないです
-      / NOTE: height:100%にしておくと、contentEditableの要素に値がなくても、領域全部がクリッカブルになって編集可能
-      .editor.h100 [
+      / NOTE: min-height:100%にしておくと、contentEditableの要素に値がなくても、領域全部がクリッカブルになって編集可能
+      .editor.min-h100 [
         v-for="ht in habitodos"
         v-bind:key="ht.uuid"
         v-show="ht.isCurrent"
