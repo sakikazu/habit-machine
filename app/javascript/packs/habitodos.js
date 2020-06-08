@@ -54,6 +54,7 @@ const vm = new Vue({
     this.setHeightForScroll()
     this.setConfirmUnsavingEvent()
     this.setShortcutOfSave()
+    this.setFontSizeInEditor()
 
     // NOTE: Enter押下時の挿入タグをbrに変更したかったが、デフォルトのdivになってしまう。pに変更はできるので、brがダメなんだろう
     //document.execCommand("DefaultParagraphSeparator", false, "br");
@@ -98,6 +99,12 @@ const vm = new Vue({
           }
         }
       });
+    },
+    // BodyのFontSize基準を設定：スマホではBodyのテキストは相対的に小さくしたかったので、remで一律設定はできなかった
+    setFontSizeInEditor: function() {
+      if (isSmartPhone()) {
+        document.getElementById('middle-area').style.fontSize = '13px'
+      }
     },
     findData: function(uuid) {
       const idx = this.habitodos.findIndex(h => h.uuid === uuid);
@@ -268,9 +275,9 @@ const vm = new Vue({
     // 長いコンテンツの場合はスクロールさせるようにする（overflow-y:scroll 適用済みであること）
     setHeightForScroll: function() {
       if (isSmartPhone()) {
-        document.getElementById('middle-area').style.maxHeight = '800px'
-        document.getElementById('sidebar-left').style.maxHeight = '150px'
-        document.getElementById('sidebar-right').style.maxHeight = '150px'
+        document.getElementById('middle-area').style.maxHeight = '600px'
+        document.getElementById('sidebar-left').style.maxHeight = '140px'
+        document.getElementById('sidebar-right').style.maxHeight = '140px'
       } else {
         document.getElementById('middle-area').style.height = this.getContentAreaHeight() + 'px'
       }
