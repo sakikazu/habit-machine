@@ -39,8 +39,8 @@
     // ショートカットで日にち移動
     shortcutOfPagingLink('prev-day', 'next-day');
 
-    expandDependOnContents = () => {
-      const DIARY_WIDTH = 600
+    expandWidth = () => {
+      const DIARY_WIDTH = 700
       width = $('.diary-wrapper').length * DIARY_WIDTH
       $('#diaries-wrapper').width(width)
     }
@@ -102,7 +102,7 @@
       h4.flex-grow-1
         | 本日の日記
         =< link_to @diaries.size, "javascript:void(0)", class: 'btn btn-primary', data: { toggle: 'popover', title: '日記リスト', content: diary_links_list(@diaries) }
-      div = link_to '広げる', 'javascript:expandDependOnContents()', class: 'btn btn-light' unless browser.device.mobile?
+      div = link_to '広げる', 'javascript:expandWidth()', class: 'btn btn-light' unless browser.device.mobile?
     - if @diaries.blank?
       p 日記はありません。
     - else
