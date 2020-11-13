@@ -1,4 +1,4 @@
-class CreateSenses < ActiveRecord::Migration
+class CreateSenses < ActiveRecord::Migration[4.2]
   def change
     create_table :senses do |t|
       t.integer :user_id

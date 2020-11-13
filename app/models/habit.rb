@@ -3,18 +3,18 @@
 # Table name: habits
 #
 #  id          :integer          not null, primary key
-#  status      :integer
-#  title       :string(255)
-#  user_id     :integer
-#  result_type :integer
-#  value_type  :integer
-#  value_unit  :string(255)
-#  reminder    :boolean
+#  deleted_at  :datetime
 #  goal        :text(65535)
 #  memo        :text(65535)
-#  deleted_at  :datetime
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  reminder    :boolean
+#  result_type :integer
+#  status      :integer
+#  title       :string(255)
+#  value_type  :integer
+#  value_unit  :string(255)
+#  created_at  :datetime
+#  updated_at  :datetime
+#  user_id     :integer
 #
 
 class Habit < ApplicationRecord

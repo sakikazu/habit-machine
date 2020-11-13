@@ -3,20 +3,20 @@
 # Table name: diaries
 #
 #  id                 :integer          not null, primary key
-#  title              :string(255)
 #  content            :text(65535)
-#  user_id            :integer
-#  record_at          :date
-#  image_file_name    :string(255)
-#  image_content_type :string(255)
-#  image_file_size    :integer
-#  image_updated_at   :datetime
 #  deleted_at         :datetime
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  is_hilight         :boolean
+#  image_content_type :string(255)
+#  image_file_name    :string(255)
+#  image_file_size    :bigint
+#  image_updated_at   :datetime
 #  is_about_date      :boolean
+#  is_hilight         :boolean
 #  is_secret          :boolean
+#  record_at          :date
+#  title              :string(255)
+#  created_at         :datetime
+#  updated_at         :datetime
+#  user_id            :integer
 #
 
 class Diary < ApplicationRecord

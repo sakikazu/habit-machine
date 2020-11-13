@@ -3,13 +3,13 @@
 # Table name: records
 #
 #  id         :integer          not null, primary key
-#  habit_id   :integer
+#  deleted_at :datetime
+#  memo       :text(65535)
 #  record_at  :date
 #  value      :float(24)
-#  memo       :text(65535)
-#  deleted_at :datetime
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  created_at :datetime
+#  updated_at :datetime
+#  habit_id   :integer
 #
 
 class Record < ApplicationRecord

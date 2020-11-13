@@ -1,4 +1,4 @@
-class CreateDiaries < ActiveRecord::Migration
+class CreateDiaries < ActiveRecord::Migration[4.2]
   def change
     create_table :diaries do |t|
       t.string :title

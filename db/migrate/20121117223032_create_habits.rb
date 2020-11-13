@@ -1,4 +1,4 @@
-class CreateHabits < ActiveRecord::Migration
+class CreateHabits < ActiveRecord::Migration[4.2]
   def change
     create_table :habits do |t|
       t.integer :status
