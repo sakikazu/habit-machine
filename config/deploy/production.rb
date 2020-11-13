@@ -23,7 +23,7 @@ server ENV['DEPLOY_SERVER'], user: 'sakikazu', roles: %w{web app db}, my_propert
 # you can see them in [net/ssh documentation](http://net-ssh.github.io/net-ssh/classes/Net/SSH.html#method-c-start)
 # set it globally
  set :ssh_options, {
-   keys: %w(/Users/sakikazu/.ssh/id_rsa.my_sakura),
+   keys: %w(~/.ssh/id_rsa.my_sakura),
    auth_methods: %w(publickey),
    port: 30022
  }

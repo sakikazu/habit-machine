@@ -1,5 +1,4 @@
-# config valid only for Capistrano 3.2.1
-lock '3.11.0'
+lock '3.14.1'
 
 require 'dotenv/load'
 Dotenv.load
