@@ -199,7 +199,6 @@ GEM
     kgio (2.11.3)
     lazy_high_charts (1.6.1)
       hash-deep-merge
-    libv8 (8.4.255.0)
     listen (3.3.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
@@ -217,8 +216,6 @@ GEM
     mimemagic (0.3.5)
     mini_mime (1.0.2)
     mini_portile2 (2.4.0)
-    mini_racer (0.3.1)
-      libv8 (~> 8.4.255)
     minitest (5.14.2)
     moment-timezone-rails (1.0.0)
       momentjs-rails (>= 2.10.5, <= 3.0.0)
@@ -455,7 +452,6 @@ DEPENDENCIES
   kaminari
   lazy_high_charts
   listen
-  mini_racer
   mysql2
   paperclip
   paranoia (~> 2.0)

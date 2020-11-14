@@ -31,7 +31,6 @@ gem 'redcarpet' # markdown
 
 gem 'faker'
 
-gem 'mini_racer'
 gem 'bootstrap', '>= 4.2', '< 5.0' # twitter bootstrap4
 # TODO: moment.jsも含め、JSファイルサイズが大きいので、TimePickerだけができるライブラリに置き換えたい
 # https://github.com/Bialogs/bootstrap4-datetime-picker-rails
