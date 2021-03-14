@@ -75,7 +75,6 @@ gem 'slim'
 gem 'webpacker', '~> 5.x'
 
 group :development do
-  gem 'rb-readline'
   gem 'listen'
   gem 'slim-rails'                # generator時にslim対応可能になる
   gem 'view_source_map'           # webページ中に使用されているviewファイル名が見れる
