@@ -1,4 +1,4 @@
-require 'byebug'
+# require 'byebug'
 
 #
 # テキストファイルの日記からインポート
