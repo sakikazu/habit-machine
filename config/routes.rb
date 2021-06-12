@@ -94,7 +94,11 @@ Rails.application.routes.draw do
   root to: 'general#top'
   get 'day/:date', to: 'general#day', as: :day
   get 'today', to: 'general#day', as: :today
-  get 'search', to: 'general#search', as: :search
+
+  scope :search do
+    get '' => 'search#top', as: :search
+    get ':content_type' => 'search#content'
+  end
 
   resources :habitodos, except: [:new, :show, :edit] do
     collection do

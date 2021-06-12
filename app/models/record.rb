@@ -36,4 +36,14 @@ class Record < ApplicationRecord
     # record = self.create(habit_id: habit_id, record_at: record_at) if record.blank?
     # return record
   # end
+
+  def search_result_items
+    {
+      id: id,
+      title: "#{record_at.to_s} > #{habit.title}",
+      body: memo,
+      target_text: memo,
+      show_path: Rails.application.routes.url_helpers.day_path(record_at),
+    }
+  end
 end
