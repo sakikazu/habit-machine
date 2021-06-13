@@ -26,4 +26,14 @@ class Habitodo < ApplicationRecord
     require 'securerandom'
     self.uuid = SecureRandom.uuid
   end
+
+  def search_result_items
+    {
+      id: id,
+      title: title,
+      body: body,
+      target_text: "#{title} #{body}",
+      show_path: Rails.application.routes.url_helpers.habitodos_path,
+    }
+  end
 end

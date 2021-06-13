@@ -81,6 +81,15 @@ class Diary < ApplicationRecord
     end
   end
 
+  def search_result_items
+    {
+      id: id,
+      title: "#{record_at.to_s} > #{title_mod}",
+      body: content,
+      target_text: "#{title_mod} #{content}",
+      show_path: Rails.application.routes.url_helpers.day_path(record_at),
+    }
+  end
 
   private
 
