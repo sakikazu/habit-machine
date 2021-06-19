@@ -17,7 +17,7 @@ class GeneralController < ApplicationController
                end
     # 開始曜日を月曜固定にしない理由は、特定日に飛んだ際に、その日を画面の中心にしたいため
     @date_term = (@one_day - 3)..(@one_day + 3)
-    @habits = Habit.with_records_in_date_term(current_user.habits.enable, @date_term)
+    @habits = Habit.with_records_in_date_term(current_user.habits.status_enabled, @date_term)
     @diaries = Diary.group_by_record_at(current_user, @date_term)
 
     @page_title = "#{@one_day.to_s(:normal)}を含む週"
@@ -40,9 +40,13 @@ class GeneralController < ApplicationController
       end
     end
 
-    @habits = Habit.with_record_at_date(current_user.habits, @date)
     @diaries = current_user.diaries.where(record_at: @date)
 
     @page_title = "#{@date.to_s(:normal)}の記録"
+  end
+
+  def day_data
+    date = Date.parse(params[:date])
+    @habits = Habit.with_record_at_date(current_user.habits, date)
   end
 end

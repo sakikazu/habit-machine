@@ -24,14 +24,14 @@ class HabitsController < ApplicationController
     end
     @date_term = @target_month.beginning_of_month..@target_month.end_of_month
 
-    basic_habits = current_user.habits.enable
+    basic_habits = current_user.habits.status_enabled
 
     @habits_all= build_graph_data(basic_habits.all)
 
-    habit_results_for_oresen = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_ORESEN))
+    habit_results_for_oresen = build_graph_data(basic_habits.result_type_line_graph)
     @habits_for_oresen_graph = build_graph(habit_results_for_oresen)
 
-    habit_results_for_bou = build_graph_data(basic_habits.where(result_type: Habit::RESULT_TYPE_BOU))
+    habit_results_for_bou = build_graph_data(basic_habits.result_type_bar_graph)
     @habits_for_bou_graph = build_bou_graph(habit_results_for_bou)
 
     @diaries = Diary.group_by_record_at(current_user, @date_term)
@@ -40,9 +40,9 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
-    @enable_habits = current_user.habits.enable
-    @disable_habits = current_user.habits.disable
-    @close_habits = current_user.habits.close
+    @enable_habits = current_user.habits.status_enabled
+    @disable_habits = current_user.habits.status_disabled
+    @close_habits = current_user.habits.status_done
   end
 
   # GET /habits/1

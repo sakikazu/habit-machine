@@ -1,16 +1,33 @@
-= simple_form_for(@habit) do |f|
+= form_with(model: @habit, class: 'form') do |f|
   - if @habit.errors.any?
     .alert.alert-danger
-      p
-        | 入力エラーがあります。下記のエラー内容を確認してください。
-  .form-inputs
-    = f.input :title, label: "習慣のタイトル"
-    = f.input :status, label: "ステータス", collection: Habit::STATUS_TYPE
-    = f.input :goal, label: "目標", input_html: {rows: 3}
-    = f.input :result_type, label: "結果表示の仕方", collection: Habit::RESULT_TYPE
-    = f.input :value_type, label: "値のタイプ", collection: Habit::VALUE_TYPE
-    = f.input :value_unit, label: "値の単位 <span class='desc'>ex. kg, 点, 回, ..</span>".html_safe
-    = f.input :reminder, label: "リマインダ（未実装）"
-    = f.input :memo, input_html: {rows: 4}, label: "メモ"
-  .form-actions
-    = f.button :submit, class: "btn btn-primary"
+      ul
+        - @habit.errors.full_messages.each do |msg|
+          li = msg
+
+  .form-group
+    = f.label :title, "習慣のタイトル"
+    = f.text_field :title, class: 'form-control'
+  .form-group
+    = f.label :status, "ステータス"
+    = f.select :status, Habit.statuses.keys.map { |key| [Habit.statuses_i18n[key], key] }, { include_blank: true }, class: 'form-control'
+  .form-group
+    = f.label :goal, "目標"
+    = f.text_area :goal, rows: 3, class: 'form-control'
+  .form-group
+    = f.label :result_type, "結果表示の仕方"
+    = f.select :result_type, Habit.result_types.keys.map { |key| [Habit.result_types_i18n[key], key] }, { include_blank: true }, class: 'form-control'
+  .form-group
+    = f.label :value_type, "値のタイプ"
+    = f.select :value_type, Habit.value_types.keys.map { |key| [Habit.value_types_i18n[key], key] }, { include_blank: true }, class: 'form-control'
+  .form-group
+    = f.label :value_unit, "値の単位 <span class='desc'>ex. kg, 点, 回, ..</span>".html_safe
+    = f.text_field :value_unit, class: 'form-control'
+  .form-group
+    = f.label :reminder, "リマインダ（未実装）"
+    = f.check_box :reminder
+  .form-group
+    = f.label :memo, "メモ"
+    = f.text_area :memo, rows: 4, class: 'form-control'
+
+  = f.submit '登録する', class: "btn btn-primary"

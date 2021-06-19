@@ -21,13 +21,13 @@ gem 'acts-as-taggable-on', '~> 6.0'
 
 gem 'dotenv-rails'
 
+# todo deleteしたいがform_withより楽だなぁ
 gem 'simple_form'
-# TODO: best_in_placeはクセが強い(application.js参照)ので、いずれJSで置き換える
-gem 'best_in_place'
 gem 'font-awesome-rails'
 gem 'lazy_high_charts'
 gem 'browser'
 gem 'redcarpet' # markdown
+gem 'enum_help'
 
 gem 'faker'
 
@@ -57,8 +57,7 @@ gem 'turbolinks', '~> 5'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
+gem 'jbuilder'
 
 # Use unicorn as the app server
 gem 'unicorn'
