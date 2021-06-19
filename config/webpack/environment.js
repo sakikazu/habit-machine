@@ -9,4 +9,7 @@ environment.loaders.prepend('vue', vue)
 environment.loaders.prepend('pug', pug)
 environment.loaders.prepend('sass', sass)
 
+const fullBuildConfig = require('./fullBuild')
+environment.config.merge(fullBuildConfig)
+
 module.exports = environment
