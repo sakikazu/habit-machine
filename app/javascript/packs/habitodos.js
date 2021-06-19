@@ -195,13 +195,13 @@ const vm = new Vue({
         const text = document.getElementById(`editor-${uuid}`).innerHTML;
         // まずはすべてのhタグ要素を取得して、それぞれからidとtextを取得する
         // 「g」オプションだとマッチしたものが配列になって返却されるが、カッコのキャプチャは使えなくなった
-        const matched = text.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/g)
+        const matched = text.match(/\<h\d\ id="([a-z0-9-]+)"\>(.+?)\<\/h\d\>/g)
         if (matched) {
           //console.log(matched);
           matched.forEach(d => {
-            const matched2 = d.match(/\<h\d\ id="(\d+)"\>(.+?)\<\/h\d\>/)
+            const matched2 = d.match(/\<h(\d)\ id="([a-z0-9-]+)"\>#+(.+?)\<\/h\d\>/)
             if (matched2) {
-              vm.mokuji.push({ text: matched2[2], anchor: matched2[1] });
+              vm.mokuji.push({ text: matched2[3], anchor: matched2[2], style_class: `mokuji-h${matched2[1]}` });
             }
           });
         }
@@ -220,7 +220,7 @@ const vm = new Vue({
         const matched = t.match(/^(#{1,5})/)
         if (matched) {
           const hTag = 'h' + matched[1].length;
-          newArray.push('<' + hTag + ' id="' + idx + '">' + t + '</' + hTag + '>');
+          newArray.push(`<${hTag} id="${uuid}-${idx}">${t}</${hTag}>`);
         } else {
           newArray.push(t + '\n');
         }
@@ -284,7 +284,7 @@ const vm = new Vue({
     },
     getContentAreaHeight: function() {
       const otherHeight = document.getElementsByTagName('nav')[0].clientHeight
-        + document.getElementsByTagName('footer')[0].clientHeight
+        // + document.getElementsByTagName('footer')[0].clientHeight
         + document.getElementById('habitodo-header').clientHeight;
       return window.innerHeight - otherHeight;
     },
