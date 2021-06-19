@@ -81,7 +81,7 @@ group :development do
   gem 'annotate'
   gem 'bullet'                    # n+1検出
   gem 'rubocop', require: false
-  gem 'rack-mini-profiler'        # 処理時間を表示
+  gem 'rack-mini-profiler', require: false        # 処理時間を表示
 
   # Use Capistrano for deployment
   gem 'capistrano'
