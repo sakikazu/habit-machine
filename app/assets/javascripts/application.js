@@ -40,9 +40,6 @@ $(document).on('turbolinks:load', function() {
   $('.modal').on('shown.bs.modal', () => {
     $(this).find('input.first-focus').focus();
   });
-  $('.timepicker').datetimepicker({
-    format: 'LT'
-  });
 
   var shownPopoverElements = [];
   // セルをクリック時、recordのメモをポップアップ表示する
