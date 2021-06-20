@@ -17,11 +17,20 @@ document.addEventListener('turbolinks:load', () => {
     computed: {
     },
     mounted () {
+      this.setup()
       this.targetDate = this.$el.dataset.targetDate
       this.fetchData()
     },
     methods: {
       nl2br,
+      setup () {
+        this.setupTimepicker()
+      },
+      setupTimepicker () {
+        $('.timepicker').datetimepicker({
+          format: 'LT'
+        });
+      },
       fetchData () {
         HmAxios.get(`/day_data/${this.targetDate}.json`)
           .then(res => {

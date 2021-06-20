@@ -44,7 +44,7 @@ class Habit < ApplicationRecord
 
   # 対象期間分の習慣データを取得
   def self.with_records_in_date_term(habits, date_term)
-    records = Record.where(habit_id: habits.map {|h| h.id }, record_at: date_term).order(:record_at)
+    records = Record.includes(:habit).where(habit_id: habits.map {|h| h.id }, record_at: date_term).order(:record_at)
     records_grouped_by_habit = records.group_by {|r| r.habit_id }
 
     habits.each do |habit|
