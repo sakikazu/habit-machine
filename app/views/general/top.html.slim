@@ -25,7 +25,7 @@ table.table.table-bordered.table-hover.hm_top
           td.center.js-habit-data(role="button")
             span.popover-content data-toggle="popover" data-placement="top" title="#{habit.title}" data-content="#{nl2br(record.memo).html_safe}"
             span.text-danger
-              = record.formatted_value
+              = record.displaying_value
               | &nbsp;
               = content_tag('span', fa_icon('comment'), data: { content: record.memo }) if record.memo.present?
 

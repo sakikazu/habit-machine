@@ -24,7 +24,8 @@ class Record < ApplicationRecord
   validates_presence_of :habit_id, :record_at
   validate :value_or_memo
 
-  def formatted_value
+  def displaying_value
+    return "" if value.blank?
     habit.value_type_integer? ? value.to_i : value
   end
 
