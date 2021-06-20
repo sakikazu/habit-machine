@@ -46,7 +46,8 @@ class GeneralController < ApplicationController
   end
 
   def day_data
-    date = Date.parse(params[:date])
+    date = Date.parse(params[:date]) rescue nil
+    return head :bad_request if date.blank?
     @habits = Habit.with_record_at_date(current_user.habits, date)
   end
 end
