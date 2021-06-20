@@ -1,3 +1,4 @@
+# TODO: rails6に上げるタイミングで、下記整理する
 source 'https://rubygems.org'
 
 ruby '2.7.1'
@@ -32,6 +33,7 @@ gem 'enum_help'
 gem 'faker'
 
 gem 'bootstrap', '>= 4.2', '< 5.0' # twitter bootstrap4
+# todo 削除したいが、UIが結構良いので、できるだけ使い続ける
 # TODO: moment.jsも含め、JSファイルサイズが大きいので、TimePickerだけができるライブラリに置き換えたい
 # https://github.com/Bialogs/bootstrap4-datetime-picker-rails
 gem 'bootstrap4-datetime-picker-rails'

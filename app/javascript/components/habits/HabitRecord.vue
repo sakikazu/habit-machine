@@ -13,7 +13,7 @@
         input.form-control.mr-2(type="text" v-model="recordValue" ref="inputValue" v-else)
         span {{ habit.value_unit }}
       .card-text.mt10
-        textarea.form-control(placeholder="メモ入力" v-model="recordMemo")
+        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" rows="4")
     template(v-else-if="persisted")
       span.badge.badge-light
         // todo: valueないとき、（未入力）とか入れる？
