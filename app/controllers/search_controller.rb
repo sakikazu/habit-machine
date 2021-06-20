@@ -29,7 +29,6 @@ class SearchController < ApplicationController
                    when :habitodo
                      current_user.habitodos.find_by_word(@search_word)
                    when :diary
-                     # todo: 今回はタグ情報は不要だが、勝手にタグまで取得されてn+1が起こっている。タグをincludesでまとめて取得でも良いが、対処すること
                      current_user.diaries.find_by_word(@search_word).newer
                    when :record
                      records = Record.user_by(current_user).has_data.newer.includes(:habit)

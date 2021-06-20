@@ -75,7 +75,9 @@
 
     #sidebar-right.overflow-y-scroll.col-sm-2.order-2.order-sm-3.bg-light.text-secondary
       #mokujis.mt-3
-        h4.text-center 目次
+        h4.text-center.mb-0
+          i.fa.fa-list-ul.mr-2
+          |目次
         ul.mokuji-list
           li [
             v-for="m in mokuji"
@@ -130,7 +132,7 @@ scss:
       font-size: 1.3rem;
       font-weight: bold;
       color: #932674;
-      margin-top: 18px;
+      margin-top: 16px;
     }
     .mokuji-h1:before {
       content: '';
