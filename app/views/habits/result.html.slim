@@ -37,14 +37,13 @@ table class="table table-bordered" style="table-layout: #{@showable.present? ? '
           - found_record = habit[:records][date.to_s]
           - if found_record.present?
             .record_value
-              = found_record.value
+              = found_record.formatted_value
             - if found_record.memo.present?
               .record_memo
                 - if @showable.present?
                   = sani_br(found_record.memo)
                 - else
                   = found_record.memo.truncate(30)
-          - #= result_icon(found_record) if found_record.present?
   tr
     th
       = link_to "日記", diaries_path

@@ -25,11 +25,6 @@
 //= require jquery.markdown-easily
 //= require_tree .
 
-// for best_in_place
-//= require best_in_place
-// NOTE: jQuery UI datepickersを使用する場合
-// require best_in_place.jquery-ui
-
 // for lazy_high_charts
 // NOTE: highchartsはhighstock内でincludeされてるから不要。-moreの方はわからないが動作に異常はないので無効にしとく
 // require highcharts/highcharts
@@ -48,45 +43,14 @@ $(document).on('turbolinks:load', function() {
   $('.timepicker').datetimepicker({
     format: 'LT'
   });
-  $('.best_in_place').best_in_place()
 
-  //
-  // for best_in_place
-  //
   var shownPopoverElements = [];
   // セルをクリック時、recordのメモをポップアップ表示する
-  // bipの入力フォームの場合はポップアップはせず、現在表示されているポップアップを非表示にする
-  $('table.hm_top td.record').on('click', function(e) {
-    if($(e.target).hasClass('record')) {
-      var $ele = $(this).find('.habit-data');
-      hidePopover(shownPopoverElements, $ele);
-      $ele.popover('toggle');
-      shownPopoverElements.push($ele);
-    } else {
-      hidePopover(shownPopoverElements);
-    }
-  });
-
-  // bipがtextareaタイプの場合、turbolinksの遷移から戻った後に変更内容が失われる問題の対処
-  // NOTE: 理由：bipは変更確定時、変更後データをdata-bip-valueに保持する
-  //             でも、turbolinksで戻った時、textareaの値は、以前のデータであるdata-bip-original-content属性からセットされる仕様なので、
-  //             data-bip-valueの値をdata-bip-original-contentにセットすることで、正しくtextarea値をセットすることができる
-  // NOTE: この中ではdata-*属性はdata()メソッドで書き換えできなかった。毎度datasetを使った方が良さそう
-  $('.best_in_place').bind("ajax:success", function() {
-    if ($(this).data('bip-type') != 'textarea') { return }
-
-    // best_in_placeのtextarea編集を完了するには他の要素をクリックする必要があるが、
-    // その際にPopoverが表示されてしまうので、それをこのタイミングで非表示にする
-    hidePopover(shownPopoverElements);
-
-    var updatedValue = $(this).data('bip-value');
-    // 表示用の値を変更後のものにする（トップページのみ）
-    var display_data = $(this).parents('.record').children('.habit-data')[0];
-    if (display_data) {
-      display_data.dataset.content = nl2br(updatedValue);
-    }
-    // data-bip-original-contentを書き換えると、遷移後も値が正しいままとなる
-    this.dataset.bipOriginalContent = updatedValue;
+  $('table.hm_top .js-habit-data').on('click', function(e) {
+    var $ele = $(this).find('.popover-content');
+    hidePopover(shownPopoverElements, $ele);
+    $ele.popover('toggle');
+    shownPopoverElements.push($ele);
   });
 })
 

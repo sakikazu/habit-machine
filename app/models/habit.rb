@@ -26,42 +26,20 @@ class Habit < ApplicationRecord
   validates_presence_of :title, :status, :result_type, :value_type
   attr_accessor :search_word, :records_in_date_term, :record_at_date
 
-  scope :enable, lambda{ where(status: 1) }
-  scope :disable, lambda{ where(status: 2) }
-  scope :close, lambda{ where(status: 3) }
-
   # todo 非公開の設定はまた今後人に見せる機能を追加したときに対応しよう
-  STATUS_TYPE = [["有効", 1], ["無効", 2], ["完了", 3]]
-
-  VALUE_TYPE_COLLECTION = 1
-  VALUE_TYPE_INT = 2
-  VALUE_TYPE_FLOAT = 3
-  VALUE_TYPE = [["1/2/3/4/5", VALUE_TYPE_COLLECTION], ["整数", VALUE_TYPE_INT], ["小数込", VALUE_TYPE_FLOAT]]
-
-  RESULT_TYPE_TABLE = 1
-  RESULT_TYPE_ORESEN = 2
-  RESULT_TYPE_BOU = 3
-  RESULT_TYPE = [["テーブル表示", RESULT_TYPE_TABLE], ["折れ線グラフ", RESULT_TYPE_ORESEN], ["棒グラフ", RESULT_TYPE_BOU]]
-
+  enum status: { enabled: 1, disabled: 2, done: 3 }, _prefix: true
+  enum value_type: { collection: 1, integer: 2, float: 3 }, _prefix: true
+  enum result_type: { table: 1, line_graph: 2, bar_graph: 3 }, _prefix: true
 
   GRAPH_TYPE_ORESEN = 'spline'
   GRAPH_TYPE_BOU = 'column'
 
-  # TODO: enumを使って良い感じにやりたい
-  def enabled?
-    self.status == 1
-  end
+  # NOTE: valueはFloat型のためフォームには小数点を含む値がセットされており、optionsの値も合わせておかないと正しく表示されない
+  # NOTE: 空の選択肢の値がnilだと0がポストされてしまうので、空文字列にする必要がある
+  SYMBOLIC_VALUE = [['', ''], [1.0, "1"], [2.0, "2"], [3.0, "3"], [4.0, "4"], [5.0, "5"]]
 
-  def status_name
-    Hash[*STATUS_TYPE.flatten.reverse][self.status]
-  end
-
-  def value_name
-    Hash[*VALUE_TYPE.flatten.reverse][self.value_type]
-  end
-
-  def result_name
-    Hash[*RESULT_TYPE.flatten.reverse][self.result_type]
+  def value_select_options
+    value_type_collection? ? SYMBOLIC_VALUE : nil
   end
 
   # 対象期間分の習慣データを取得
@@ -108,7 +86,7 @@ class Habit < ApplicationRecord
       habit
     end
     # Habitが有効でなく、そのRecordも未登録なら除外する
-    habits = habits.delete_if { |h| !h.enabled? && h.record_at_date.new_record? }
+    habits = habits.delete_if { |h| !h.status_enabled? && h.record_at_date.new_record? }
     # Recordが登録されているHabitを前方に持ってくる
     habits.partition { |h| !h.record_at_date.new_record? }.flatten
   end

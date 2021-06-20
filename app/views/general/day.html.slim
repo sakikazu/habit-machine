@@ -1,3 +1,7 @@
+/ `data-turbolinks-eval: false` を入れないと、ページ読み込みした当ページとその前後ページはTurbolinksもVue.jsも動くが、それ以降のページはVue Componentが動かない(mountedは実行されてる)
+/ falseにすることで、共存できたようだ。問題起こったら、TurbolinksをOFFにして、Vue router入れるのが良さそう
+= javascript_pack_tag 'day_page', 'data-turbolinks-eval': 'false'
+
 - content_for :addjs_in_head
   javascript:
     var tabidx = 0;
@@ -45,72 +49,61 @@
       $('#diaries-wrapper').width(width)
     }
 
-.row.bg-dark.mb20
-  .col.text-center
-    .text-light
-      = link_to fa_icon('plus', text: 'メモ'), 'javascript:showMemoForm()', class: 'btn btn-info btn-sm m-1'
-    #memo-form.modal.fade[tabindex="-1" style="display:none"]
-      .modal-dialog
-        .modal-content
-          = form_with model: Diary.new, url: append_memo_diaries_path, local: false, class: 'form form-inline' do |f|
-            .modal-body
-              .form-row.mb-2
-                .col-6.timepicker.input-group[data-target-input="nearest"]
-                  .input-group-prepend
-                    .input-group-text[data-target='.timepicker' data-toggle='datetimepicker']
-                      = fa_icon 'clock-o', class: 'fa-lg'
-                  = f.text_field :time_memo, class: 'form-control datetimepicker-input', data: { target: '.timepicker' }
-                .col-4 = f.select :label_memo, %w(体調 作業 メモ 休息 TODO), {include_blank: true}, class: 'form-control w100'
-              div = f.text_area :memo, class: 'form-control first-focus w100'
-              = f.hidden_field :record_at, value: @date
-            .modal-footer
-              = submit_tag "メモ追加", class: "btn btn-primary"
+#dayPage(data-target-date="#{@date}")
+  .row.bg-dark.mb20
+    .col.text-center
+      .text-light
+        = link_to fa_icon('plus', text: 'メモ'), 'javascript:showMemoForm()', class: 'btn btn-info btn-sm m-1'
+      #memo-form.modal.fade[tabindex="-1" style="display:none"]
+        .modal-dialog
+          .modal-content
+            = form_with model: Diary.new, url: append_memo_diaries_path, local: false, class: 'form form-inline' do |f|
+              .modal-body
+                .form-row.mb-2
+                  .col-6.timepicker.input-group[data-target-input="nearest"]
+                    .input-group-prepend
+                      .input-group-text[data-target='.timepicker' data-toggle='datetimepicker']
+                        = fa_icon 'clock-o', class: 'fa-lg'
+                    = f.text_field :time_memo, class: 'form-control datetimepicker-input', data: { target: '.timepicker' }
+                  .col-4 = f.select :label_memo, %w(体調 作業 メモ 休息 TODO), {include_blank: true}, class: 'form-control w100'
+                div = f.text_area :memo, class: 'form-control first-focus w100'
+                = f.hidden_field :record_at, value: @date
+              .modal-footer
+                = submit_tag "メモ追加", class: "btn btn-primary"
 
-.row
-  .col
-    .d-flex.justify-content-between
-      = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
-      .align-self-center
-        h3
-          span.mr-2.text-secondary.font-weight-bold = dispdate(@date, true)
-          = link_to fa_icon('calendar'), root_path(one_day: @date)
-      = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
+  .row
+    .col
+      .d-flex.justify-content-between
+        = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
+        .align-self-center
+          h3
+            span.mr-2.text-secondary.font-weight-bold = dispdate(@date, true)
+            = link_to fa_icon('calendar'), root_path(one_day: @date)
+        = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
 
-.row.justify-content-center
-  .col-md-3
-    .page-header
-      h4 本日の記録
-    - if @habits.blank?
-      p 習慣が登録されていません。
-    - else
-      .d-flex.flex-row.flex-wrap
-        - @habits.each do |habit|
-          - record = habit.record_at_date
-          .flex-grow-1.card.mb20.mr-2 class=('border-danger' unless record.new_record?)
-            h5.card-header.p-2 = link_to habit.title, habit_path(habit)
-            .card-body.p-2
-              span.badge.badge-light
-                span.text-140 = best_in_place_wrapper(record, habit.value_type)
-                =< habit.value_unit if record.value.present?
-              .card-text.mt10
-                = best_in_place record, :memo, place_holder: "メモ入力", display_with: lambda { |v| sani_br(v) }, as: :textarea, url: url_for(controller: :records, action: :update_or_create, habit_id: record.habit_id, record_at: record.record_at), class: 'text-danger d-block'
+  .row.justify-content-center
+    .col-md-3
+      .page-header
+        h4 本日の記録
+      p(v-if="habit_records.length == 0") 習慣が登録されていません。
+      .habit-records(v-else)
+        habit-record(v-for="habit_record in habit_records" :habit="habit_record.habit" :record="habit_record.record" target-date="#{@date}" :key="habit_record.habit.id")
 
-  / NOTE: .overflow-autoを付加すると、子要素の幅が限界を超えた時に、画面全体ではなく、この要素に対してスクロールバーが表示される
-  / 付加しないと、画面全体にスクロールバーが表示される
-  .col-md-9.overflow-auto
-    .page-header.d-flex
-      h4.flex-grow-1
-        | 本日の日記
-        =< link_to @diaries.size, "javascript:void(0)", class: 'btn btn-primary', data: { toggle: 'popover', title: '日記リスト', content: diary_links_list(@diaries) }
-      div = link_to '広げる', 'javascript:expandWidth()', class: 'btn btn-light' unless browser.device.mobile?
-    - if @diaries.blank?
-      p 日記はありません。
-    - else
-      #diaries-wrapper.d-lg-flex.flex-row.flex-wrap
-        - @diaries.each do |diary|
-          / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
-          / 100%を要素数で割った値でも同じことができる。その場合はgrow-1は不要になるはず
-          .flex-grow-1.flex-basis-0.ml-2.diary-wrapper[id="diary-#{diary.id}"]
-            = render partial: 'diaries/index_detail', locals: { diary: diary, is_day_page: true }
-    p = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-block btn-light ignore-checking-changes', id: 'new-diary-btn', remote: true
-
+    / NOTE: .overflow-autoを付加すると、子要素の幅が限界を超えた時に、画面全体ではなく、この要素に対してスクロールバーが表示される
+    / 付加しないと、画面全体にスクロールバーが表示される
+    .col-md-9.overflow-auto
+      .page-header.d-flex
+        h4.flex-grow-1
+          | 本日の日記
+          =< link_to @diaries.size, "javascript:void(0)", class: 'btn btn-primary', data: { toggle: 'popover', title: '日記リスト', content: diary_links_list(@diaries) }
+        div = link_to '広げる', 'javascript:expandWidth()', class: 'btn btn-light' unless browser.device.mobile?
+      - if @diaries.blank?
+        p 日記はありません。
+      - else
+        #diaries-wrapper.d-lg-flex.flex-row.flex-wrap
+          - @diaries.each do |diary|
+            / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
+            / 100%を要素数で割った値でも同じことができる。その場合はgrow-1は不要になるはず
+            .flex-grow-1.flex-basis-0.ml-2.diary-wrapper[id="diary-#{diary.id}"]
+              = render partial: 'diaries/index_detail', locals: { diary: diary, is_day_page: true }
+      p = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-block btn-light ignore-checking-changes', id: 'new-diary-btn', remote: true

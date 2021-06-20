@@ -18,4 +18,3 @@
 console.log('Hello World from Webpacker')
 
 // TODO: assetsの方からこっちに移行するのが通例のようだ
-

@@ -93,6 +93,7 @@ Rails.application.routes.draw do
   ### for web
   root to: 'general#top'
   get 'day/:date', to: 'general#day', as: :day
+  get 'day_data/:date', to: 'general#day_data'
   get 'today', to: 'general#day', as: :today
 
   scope :search do
@@ -144,11 +145,5 @@ Rails.application.routes.draw do
 		end
 	end
 
-	resources :records, only: [] do
-		collection do
-			post 'update_or_create'
-			put 'update_or_create'
-		end
-	end
-
+	resources :records, only: [:create, :update]
 end

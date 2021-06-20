@@ -17,25 +17,16 @@ class Record < ApplicationRecord
 
   belongs_to :habit
 
-  # NOTE: valueはFloat型のためフォームには小数点を含む値がセットされており、optionsの値も合わせておかないと正しく表示されない
-  # NOTE: 空の選択肢の値がnilだと0がポストされてしまうので、空文字列にする必要がある
-  SYMBOLIC_VALUE = [['', ''], [1.0, "1"], [2.0, "2"], [3.0, "3"], [4.0, "4"], [5.0, "5"]]
-
   scope :user_by, lambda { |user| where(habit: user.habits) }
   scope :has_data, lambda { where("value is not NULL OR memo is not NULL") }
   scope :newer, lambda { order("record_at DESC") }
 
-  # def self.find_or_new(habit_id, record_at)
-    # record = self.where(habit_id: habit_id, record_at: record_at).first
-    # record = self.new(habit_id: habit_id, record_at: record_at) if record.blank?
-    # return record
-  # end
+  validates_presence_of :habit_id, :record_at
+  validate :value_or_memo
 
-  # def self.find_or_create(habit_id, record_at)
-    # record = self.where(habit_id: habit_id, record_at: record_at).first
-    # record = self.create(habit_id: habit_id, record_at: record_at) if record.blank?
-    # return record
-  # end
+  def formatted_value
+    habit.value_type_integer? ? value.to_i : value
+  end
 
   def search_result_items
     {
@@ -45,5 +36,11 @@ class Record < ApplicationRecord
       target_text: memo,
       show_path: Rails.application.routes.url_helpers.day_path(record_at),
     }
+  end
+
+  private
+
+  def value_or_memo
+    errors.add(:base, '値かメモのいずれかでも入力してください') if value.blank? && memo.blank?
   end
 end

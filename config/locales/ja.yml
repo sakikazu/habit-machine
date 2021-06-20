@@ -260,3 +260,19 @@ ja:
     actions:
       create: "登録する"
       update: "更新する"
+
+  enums:
+    habit:
+      status:
+        enabled: '有効'
+        disabled: '無効'
+        done: '完了'
+      value_type:
+        collection: '1/2/3/4/5'
+        integer: '整数'
+        float: '小数込'
+      result_type:
+        table: 'テーブル表示'
+        line_graph: '折れ線グラフ'
+        bar_graph: '棒グラフ'
+
