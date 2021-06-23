@@ -10,6 +10,7 @@ class HabitodosController < ApplicationController
     # 理論はよくわかってない
     @turbolinks_off = true
     @page_title = 'Habitodo'
+    @no_header_margin = true
   end
 
   def get_data

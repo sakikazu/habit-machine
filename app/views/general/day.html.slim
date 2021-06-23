@@ -2,75 +2,31 @@
 / falseにすることで、共存できたようだ。問題起こったら、TurbolinksをOFFにして、Vue router入れるのが良さそう
 = javascript_pack_tag 'day_page', 'data-turbolinks-eval': 'false'
 
-- content_for :addjs_in_head
-  javascript:
-    var tabidx = 0;
-
-    // TODO: turbolinks:loadの中は動いてない
-    var formWarningMessage = "登録・保存していない入力内容は破棄されますがよろしいですか？";
-    $(document).on('turbolinks:load', function() {
-      $('nav.navbar').removeClass('mb20');
-
-      // リンク押下時、いずれかのフォームのデータが変更されていたら確認メッセージを表示する
-      $('a').on('click', function(e) {
-        var unsaved = getUnsavedStatus();
-        var href = $(this).attr('href');
-        if (
-          typeof(href) === "undefined" ||
-          href == '#' ||
-          !unsaved ||
-          $(this).hasClass('ignore-checking-changes')
-        ) { return; }
-
-        if(confirm(formWarningMessage) == false) {
-          e.preventDefault();
-        }
-      });
-
-      // ブラウザのタブを閉じようとした時、またはturbolinks以外のリンクをクリックした時の警告
-      $(window).on('beforeunload', function() {
-        var unsaved = getUnsavedStatus();
-        if (unsaved) {
-          return formWarningMessage;
-        }
-      });
-    })
-
-    showMemoForm = () => {
-      $('#memo-form').show()
-      $('#memo-form').modal('show')
-    }
-
-    // ショートカットで日にち移動
-    shortcutOfPagingLink('prev-day', 'next-day');
-
-    expandWidth = () => {
-      const DIARY_WIDTH = 700
-      width = $('.diary-wrapper').length * DIARY_WIDTH
-      $('#diaries-wrapper').width(width)
-    }
-
 #dayPage(data-target-date="#{@date}")
+  toast(:showable="toastShowable" :is-error="toastError" :message="toastMessage" @toast-hidden="toastShowable = false")
   .row.bg-dark.mb20
     .col.text-center
-      .text-light
-        = link_to fa_icon('plus', text: 'メモ'), 'javascript:showMemoForm()', class: 'btn btn-info btn-sm m-1'
+      a.text-light.btn.btn-info.btn-sm.m-1(@click="showMemoForm")
+        i.fa.fa-plus &nbsp;メモ
       #memo-form.modal.fade[tabindex="-1" style="display:none"]
         .modal-dialog
           .modal-content
-            = form_with model: Diary.new, url: append_memo_diaries_path, local: false, class: 'form form-inline' do |f|
+            form.form.form-inline(ref="memoForm" @submit="submitAppendingMemo")
               .modal-body
                 .form-row.mb-2
                   .col-6.timepicker.input-group[data-target-input="nearest"]
                     .input-group-prepend
                       .input-group-text[data-target='.timepicker' data-toggle='datetimepicker']
                         = fa_icon 'clock-o', class: 'fa-lg'
-                    = f.text_field :time_memo, class: 'form-control datetimepicker-input', data: { target: '.timepicker' }
-                  .col-4 = f.select :label_memo, %w(体調 作業 メモ 休息 TODO), {include_blank: true}, class: 'form-control w100'
-                div = f.text_area :memo, class: 'form-control first-focus w100'
-                = f.hidden_field :record_at, value: @date
+                    input.form-control.datetimepicker-input(type="text" name="[diary]time_memo" data-target=".timepicker")
+                  .col-4
+                    select.form-control.w100(name="[diary]label_memo")
+                      option(v-for="cate in memoCategories" :value="cate" v-text="cate")
+                div
+                  textarea.form-control.first-focus.w100(name="[diary]memo" v-model="memoContent")
+                input(type="hidden" name="[diary]record_at" value="#{@date}")
               .modal-footer
-                = submit_tag "メモ追加", class: "btn btn-primary"
+                button.btn.btn-primary(type="submit") メモ追加
 
   .row
     .col
@@ -95,16 +51,26 @@
     .col-md-9.overflow-auto
       .page-header.d-flex
         h4.flex-grow-1
-          | 本日の日記
-          =< link_to @diaries.size, "javascript:void(0)", class: 'btn btn-primary', data: { toggle: 'popover', title: '日記リスト', content: diary_links_list(@diaries) }
-        div = link_to '広げる', 'javascript:expandWidth()', class: 'btn btn-light' unless browser.device.mobile?
-      - if @diaries.blank?
-        p 日記はありません。
-      - else
-        #diaries-wrapper.d-lg-flex.flex-row.flex-wrap
-          - @diaries.each do |diary|
-            / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
-            / 100%を要素数で割った値でも同じことができる。その場合はgrow-1は不要になるはず
-            .flex-grow-1.flex-basis-0.ml-2.diary-wrapper[id="diary-#{diary.id}"]
-              = render partial: 'diaries/index_detail', locals: { diary: diary, is_day_page: true }
-      p = link_to fa_icon('pencil', text: '日記を書く'), new_diary_path(record_at: @date), class: 'btn btn-block btn-light ignore-checking-changes', id: 'new-diary-btn', remote: true
+          | 本日の日記&nbsp;
+          / TODO: popoverが動かなくなっているが重要ではないので放置しようかな
+          a.btn.btn-primary(data-toggle="popover" data-title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
+        div
+          - unless browser.device.mobile?
+            a.btn.btn-light(@click="expandWidth") 広げる
+      .diaries(ref="diariesBody")
+        p(v-if="diariesWithOpsions.length == 0") 日記はありません。
+        #diaries-wrapper.d-lg-flex.flex-row.flex-wrap(v-else)
+          / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
+          / 100%を要素数で割った値でも同じことができる。その場合はgrow-1は不要になるはず
+          .flex-grow-1.flex-basis-0.ml-2.mb-3.diary-wrapper(v-for="obj in diariesWithOpsions")
+            diary(
+              :diary="obj.diary"
+              :target-date-for-edit-mode="obj.targetDateForEditMode"
+              :highlight-for-a-moment="obj.highlightForAMoment"
+              :key="`diary-${obj.diary.id}`"
+              @content-changed="onContentChanged"
+              @submitted="onSubmitted"
+            )
+      p
+        a.btn.btn-block.btn-light.ignore-checking-changes(@click="newDiary")
+          i.fa.fa-pencil &nbsp;日記を書く

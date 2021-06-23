@@ -129,7 +129,6 @@ Rails.application.routes.draw do
   resources :diaries do
     member do
       put :delete_image
-      get :cancel
     end
     collection do
       get 'hilight'

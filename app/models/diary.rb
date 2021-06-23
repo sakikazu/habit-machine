@@ -46,7 +46,7 @@ class Diary < ApplicationRecord
   validates_presence_of :record_at
   validate :exists_tags?
 
-  attr_accessor :search_word, :wrapper_dom_id
+  attr_accessor :search_word
 
   belongs_to :user
 

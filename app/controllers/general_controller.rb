@@ -40,14 +40,14 @@ class GeneralController < ApplicationController
       end
     end
 
-    @diaries = current_user.diaries.where(record_at: @date)
-
     @page_title = "#{@date.to_s(:normal)}の記録"
+    @no_header_margin = true
   end
 
   def day_data
     date = Date.parse(params[:date]) rescue nil
     return head :bad_request if date.blank?
     @habits = Habit.with_record_at_date(current_user.habits, date)
+    @diaries = current_user.diaries.where(record_at: date)
   end
 end
