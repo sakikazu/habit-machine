@@ -1,6 +1,5 @@
 class DiariesController < ApplicationController
-  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image, :cancel]
-  before_action :set_form_variables, only: [:new, :edit]
+  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image]
   before_action :set_content_title, only: [:show, :edit]
   before_action :authenticate_user!
 
@@ -147,13 +146,6 @@ class DiariesController < ApplicationController
     end
   end
 
-  def delete_image
-    @diary.image = nil
-    @diary.save
-    # todo Ajaxで削除するようにしたい
-    redirect_to day_path(@diary.record_at), notice: "画像を削除しました."
-  end
-
   # GET /diaries/1
   # GET /diaries/1.json
   def show
@@ -176,6 +168,7 @@ class DiariesController < ApplicationController
   # GET /diaries/new
   # GET /diaries/new.json
   def new
+    set_form_variables
     record_at = if params[:record_at].present?
                   params[:record_at]
                 elsif params[:days_ago].present?
@@ -187,15 +180,13 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.json { render json: @diary }
-      format.js   { render 'response.js' }
+      format.json { render 'form_data' }
     end
   end
 
   # GET /diaries/1/edit
-  #
-  # format html/js
   def edit
+    set_form_variables
     if @diary.user != current_user
       redirect_to diaries_path, notice: "この日記は存在しません."
       return
@@ -203,38 +194,8 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js   { render 'response.js' }
+      format.json { render 'form_data' }
     end
-  end
-
-  def cancel
-    @wrapper_id = params[:wrapperId]
-    render 'response.js'
-  end
-
-  def append_memo
-    @is_error = false
-    if params[:diary][:memo].blank?
-      @is_error = true
-      @message = 'メモの内容を入力してください'
-      render 'response.js'
-      return
-    end
-    found_diaries = current_user.diaries.where(record_at: params[:diary][:record_at]).tagged_with(Diary::TMP_BASE_TAG)
-    @diary = if found_diaries.present?
-               diary = found_diaries.first
-               diary.wrapper_dom_id = "diary-#{diary.id}"
-               diary
-             else
-               diary = current_user.diaries.build(record_at: params[:diary][:record_at])
-               diary.tag_list << Diary::TMP_BASE_TAG
-               diary.wrapper_dom_id = nil
-               diary
-             end
-    @diary.append_memo(memo_text(params[:diary]))
-    @diary.save
-    @message = 'メモを追加しました'
-    render 'response.js'
   end
 
   # POST /diaries
@@ -246,13 +207,12 @@ class DiariesController < ApplicationController
     respond_to do |format|
       if @diary.save
         format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
-        format.json { render json: @diary, status: :created, location: @diary }
-        format.js   { render 'response.js' }
+        format.json { render partial: 'show', locals: { diary: @diary }, status: :created }
       else
         set_form_variables
         format.html { render action: "new" }
-        format.json { render json: @diary.errors, status: :unprocessable_entity }
-        format.js   { render 'response.js' }
+        # NOTE: jsonに直接文字列を指定する場合は、それにto_jsonをつけないとAxiosのerror.response.dataがnullになる。ハッシュだと不要なのになぜ・・
+        format.json { render json: { message: @diary.errors.full_messages.join('\n') }, status: :unprocessable_entity }
       end
     end
   end
@@ -261,18 +221,16 @@ class DiariesController < ApplicationController
   # PUT /diaries/1.json
   def update
     respond_to do |format|
-      if @diary.update_attributes(diary_params)
+      if @diary.update(diary_params)
         # NOTE: rails5.1以降では、save後のカラム変更チェックはsaved_change_to_(column)?メソッドを使用すること
         @changed_record_at = @diary.saved_change_to_record_at? ? @diary.record_at : nil
 
         format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
-        format.json { head :no_content }
-        format.js   { render 'response.js' }
+        format.json { render 'update', status: :created }
       else
         set_form_variables
         format.html { render action: "edit" }
-        format.json { render json: @diary.errors, status: :unprocessable_entity }
-        format.js   { render 'response.js' }
+        format.json { render json: { message: @diary.errors.full_messages.join('\n') }, status: :unprocessable_entity }
       end
     end
   end
@@ -285,8 +243,29 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to day_path(day), notice: '日記を削除しました.' }
-      format.json { head :no_content }
+      format.json { head :ok }
     end
+  end
+
+  def append_memo
+    @after_created_by_memo = false
+    found_diaries = current_user.diaries.where(record_at: params[:diary][:record_at]).tagged_with(Diary::TMP_BASE_TAG)
+    if found_diaries.present?
+      @diary = found_diaries.first
+    else
+      @diary = current_user.diaries.build(record_at: params[:diary][:record_at])
+      @diary.tag_list << Diary::TMP_BASE_TAG
+      @after_created_by_memo = true
+    end
+    @diary.append_memo(memo_text(params[:diary]))
+    # TODO: 一応エラーハンドリングしたいところ
+    @diary.save
+  end
+
+  def delete_image
+    @diary.image = nil
+    @diary.save
+    render partial: 'show', locals: { diary: @diary }
   end
 
   private
@@ -311,11 +290,10 @@ class DiariesController < ApplicationController
   def set_form_variables
     @pinned_tags = current_user.mytags.only_pinned
     @latest_tags = current_user.mytags.without_pinned.last_used_order.limit(5)
-    @tagnames = current_user.mytags.order(:name).map{|t| t.name}.join(",")
+    @tagnames = current_user.mytags.order(:name).map{|t| t.name}
   end
 
-  # Never trust parameters from the scary internet, only allow the white list through.
   def diary_params
-    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :is_secret, :search_word, :wrapper_dom_id)
+    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :is_secret, :search_word)
   end
 end

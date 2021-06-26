@@ -36,10 +36,6 @@ $(document).on('turbolinks:load', function() {
     html: true,
   });
   $("a[rel=tooltip]").tooltip();
-  $('.toast').toast({});
-  $('.modal').on('shown.bs.modal', () => {
-    $(this).find('input.first-focus').focus();
-  });
 
   var shownPopoverElements = [];
   // セルをクリック時、recordのメモをポップアップ表示する
@@ -71,13 +67,6 @@ showCurrentSenses = function() {
   });
 }
 
-nl2br = function(str) {
-  str = str.replace(/\r\n/g, "<br />");
-  str = str.replace(/(\n|\r)/g, "<br />");
-  return str;
-}
-
 const getTimestamp = function() {
   return new Date().getTime();
 }
-

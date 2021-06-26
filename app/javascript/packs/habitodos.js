@@ -49,7 +49,6 @@ const vm = new Vue({
   mounted: function () {
     console.log('mounted');
 
-    $('nav.navbar').removeClass('mb20');
     $('footer').css('margin-top', 0);
     this.setHeightForScroll()
     this.setConfirmUnsavingEvent()

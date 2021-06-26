@@ -11,3 +11,11 @@ json.habit_records do
     json.partial! 'records/show', record: habit.record_at_date
   end
 end
+
+json.diaries do
+  json.array! @diaries do |diary|
+    json.partial! 'diaries/show', diary: diary
+  end
+end
+
+json.diary_links_list diary_links_list(@diaries)
