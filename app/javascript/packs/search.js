@@ -11,32 +11,15 @@ document.addEventListener('turbolinks:load', () => {
       resultHabitodos: [],
       resultDiaries: [],
       resultRecords: [],
-      initialArticleWidth: null,
-      articleView: null,
-      detailView: null,
       selectedDetailData: null,
     },
     computed: {
-      detailWidth () {
-        const minWidth = Number(this.detailView.dataset.minWidth)
-        const maxWidth = Number(this.detailView.dataset.maxWidth)
-        return window.innerWidth < 1400 ? minWidth : maxWidth
-      },
     },
     mounted () {
-      this.articleView = document.querySelector('#searchResult > article')
-      this.initialArticleWidth = this.articleView.clientWidth
-      this.detailView = document.querySelector('#detail')
-      this.setDetailViewHeight()
+      this.setStickyNav()
     },
     methods: {
       nl2br,
-      setDetailViewHeight () {
-        const currentVisibleHeight = window.innerHeight - document.querySelector('nav.navbar').clientHeight
-        document.querySelector('.detailInner').style.height = `${currentVisibleHeight}px`
-        const detailInnerMargin = document.querySelector('.detailHeader').clientHeight + 65
-        document.querySelector('.detailContent').style.height = `${currentVisibleHeight - detailInnerMargin}px`
-      },
       searchContent(contentType, searchWord) {
         HmAxios.get(`/search/${contentType}.json?q=${searchWord}`)
           .then(res => {
@@ -64,18 +47,27 @@ document.addEventListener('turbolinks:load', () => {
         })
         event.target.closest('li').classList.add('active')
 
-        // TODO: detailの部分にwidth/flex-basisをつけておいて、表示されたらarticleが自動でその部分縮小して欲しかったが、JSでやるしかないんだったけ？
-        if (!this.selectedDetailData) {
-          // NOTE: ここ、一回設定すれば、サイドバーを閉じて開いてもwidthは失われないかも。良い判定が知りたい
-          this.articleView.style.width = `${this.initialArticleWidth - this.detailWidth}px`
-          this.detailView.style.width = `${this.detailWidth}px`
-        }
         // NOTE: ベストは、contentTypeに応じたComponentを表示するのがいいかな
         this.selectedDetailData = data
       },
       closeDetail() {
         // NOTE: articleをflex-grow:1したら、ここでwidthをいじる必要なくなった。でもopenの時は必要。なぜかはわからない
         this.selectedDetailData = null
+      },
+      // ページメニューを上部に固定（ある程度スクロールしたら、最上部に張り付く挙動）
+      setStickyNav () {
+        const resultHeader = document.querySelector('.searchResult-header')
+        const globalHeaderHeight = document.querySelector('nav.navbar').clientHeight
+        $(window).on('scroll', () => {
+          if($(window).scrollTop() > globalHeaderHeight) {
+            resultHeader.classList.add('fixed')
+          } else {
+            resultHeader.classList.remove('fixed')
+          }
+        })
+        // 途中までスクロールしている状態でリロードされた時のために、スクロールイベントを発生させる
+        // 当ページについてはリロードで検索結果が消えるので不要だが
+        $(window).trigger('scroll')
       },
     }
   })

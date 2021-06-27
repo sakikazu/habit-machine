@@ -19,6 +19,7 @@ class SearchController < ApplicationController
 
     @turbolinks_off = true
     @page_title = 'サイト内検索'
+    @no_header_margin = true
   end
 
   def content

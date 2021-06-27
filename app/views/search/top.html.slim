@@ -1,132 +1,162 @@
 = javascript_pack_tag 'search'
 
+/ ### ページの仕様
+/ ページヘッダーは、日記など各コンテンツにページ内遷移するためのメニュー。下にスクロールしても上部固定にしている
+/ 検索結果はスクロール可能にして、その詳細はスクロール不可、検索結果をスクロールしても詳細は常に同じ位置を維持できるように
+/ 詳細は、PC画面だと右に表示、スマホ画面だと下に表示
 #searchResult
-  nav.sidebar.navbar.navbar-light.bg-light
+  .searchResult-header.bg-info
     ul
       li = link_to "日記 (#{@result_diaries_size})", '#diary'
       li = link_to "記録 (#{@result_records_size})", '#record'
       li = link_to "Habitodo (#{@result_habitodos_size})", '#habitodo'
 
-  / TODO: 右サイドバーが出ても選択行を見失わないようにできれば、タイトルの表示を一つにできるしスッキリ
-  article
-    / section.mb40.senses
-    /   h3 #{fa_icon('info-circle')} 意識付け
-    /   .result
-    /     - if @result_senses.blank?
-    /       p データなし
-    /     - else
-    /       = link_to "#{@result_senses.size}件を表示", root_path, class: 'btn btn-info'
+  .searchResult-body
+    / TODO: 右サイドバーが出ても選択行を見失わないようにできれば、タイトルの表示を一つにできるしスッキリ
+    article#article
+      / section.mb40.senses
+      /   h3 #{fa_icon('info-circle')} 意識付け
+      /   .result
+      /     - if @result_senses.blank?
+      /       p データなし
+      /     - else
+      /       = link_to "#{@result_senses.size}件を表示", root_path, class: 'btn btn-info'
 
-    section#diary.mb40
-      h3 #{fa_icon('book')} 日記
-      .result
-        - if @result_diaries_size.zero?
-          p データなし
-        - else
-          button.btn.btn-info(v-if="resultDiaries.length == 0" @click="searchContent('diary', '#{@search_word}')")
-            | 読み込み
-          ul(v-else)
-            li(v-for="data in resultDiaries" :key="data.id" @click="openDetail(data, $event)")
-              .title(v-text="data.title")
-              p(v-html="data.highlighted")
+      section#diary.mb40
+        h3 #{fa_icon('book')} 日記
+        .result
+          - if @result_diaries_size.zero?
+            p データなし
+          - else
+            button.btn.btn-info(v-if="resultDiaries.length == 0" @click="searchContent('diary', '#{@search_word}')")
+              | 読み込み
+            ul(v-else)
+              li(v-for="data in resultDiaries" :key="data.id" @click="openDetail(data, $event)")
+                .title(v-text="data.title")
+                p(v-html="data.highlighted")
 
-    section#record.mb40
-      h3 #{fa_icon('bar-chart')} 記録
-      .result
-        - if @result_records_size.zero?
-          p データなし
-        - else
-          button.btn.btn-info(v-if="resultRecords.length == 0" @click="searchContent('record', '#{@search_word}')")
-            | 読み込み
-          ul(v-else)
-            li(v-for="data in resultRecords" :key="data.id" @click="openDetail(data, $event)")
-              .title(v-text="data.title")
-              p(v-html="data.highlighted")
+      section#record.mb40
+        h3 #{fa_icon('bar-chart')} 記録
+        .result
+          - if @result_records_size.zero?
+            p データなし
+          - else
+            button.btn.btn-info(v-if="resultRecords.length == 0" @click="searchContent('record', '#{@search_word}')")
+              | 読み込み
+            ul(v-else)
+              li(v-for="data in resultRecords" :key="data.id" @click="openDetail(data, $event)")
+                .title(v-text="data.title")
+                p(v-html="data.highlighted")
 
-    section#habitodo.mb40
-      h3 #{fa_icon('file-text')} Habitodo
-      .result
-        - if @result_habitodos_size.zero?
-          p データなし
-        - else
-          / todo: 現状はURLで特定データを指定できない。Vue routerで対応しよう -> habitodos#showを作る？
-          button.btn.btn-info(v-if="resultHabitodos.length == 0" @click="searchContent('habitodo', '#{@search_word}')")
-            | 読み込み
-          ul(v-else)
-            li(v-for="data in resultHabitodos" :key="data.id" @click="openDetail(data, $event)")
-              .title(v-text="data.title")
-              p(v-html="data.highlighted")
+      section#habitodo.mb40
+        h3 #{fa_icon('file-text')} Habitodo
+        .result
+          - if @result_habitodos_size.zero?
+            p データなし
+          - else
+            / todo: 現状はURLで特定データを指定できない。Vue routerで対応しよう -> habitodos#showを作る？
+            button.btn.btn-info(v-if="resultHabitodos.length == 0" @click="searchContent('habitodo', '#{@search_word}')")
+              | 読み込み
+            ul(v-else)
+              li(v-for="data in resultHabitodos" :key="data.id" @click="openDetail(data, $event)")
+                .title(v-text="data.title")
+                p(v-html="data.highlighted")
 
-  #detail(v-show="selectedDetailData" :data-min-width="450" :data-max-width="700")
-    .detailInner.bg-light
-      .detailHeader
-        .detailLink
-          a(:href="selectedDetailData?.show_path" v-text="selectedDetailData?.title" target="_blank")
-        .closeButton
-          span(@click="closeDetail" role="button")
-            = fa_icon('times')
-      .detailContent
-        p(v-html="nl2br(selectedDetailData?.body)")
+    #detail(v-show="selectedDetailData")
+      .detailInner.bg-light
+        .detailHeader
+          .detailLink
+            a(:href="selectedDetailData?.show_path" v-text="selectedDetailData?.title" target="_blank")
+          .closeButton
+            span(@click="closeDetail" role="button")
+              = fa_icon('times')
+        .detailContent
+          p(v-html="nl2br(selectedDetailData?.body)")
 
 sass:
   #searchResult
-    display: flex
-
-    nav
-      align-items: flex-start
-      margin-right: 30px
-
-      ul
-        padding-left: 0
-        list-style: none
-        min-width: 110px
-
-        position: sticky
-        top: 20px
-      ul > li
-        border-bottom: 1px lightgray dotted
-        margin-bottom: 12px
-      ul > li > a
-        display: block
-        padding: 3px 7px
-        text-decoration: none
-      ul > li > a:hover
-        background-color: yellow
-
-    article
-      margin-right: 30px
-      flex-grow: 1
-    article  > h3
-      margin-bottom: 25px
-    .result
-    .result > ul
-      padding-left: 0
-      list-style: none
-    .result > ul > li
-      border-bottom: 1px solid gray
-      cursor: pointer
-    .result > ul > li.active
-      background-color: #d1ecf1
-    .result > ul > li:hover
-      background-color: #d1ecf1
-    .result > ul > li > .title
-      font-weight: bold
-    .highlight
-      background-color: yellow
-
-    #detail
-      .detailInner
-        position: sticky
-        top: 20px
-        padding: 5px 7px
-        border-radius: 7px
-
-      .detailHeader
+    @at-root
+      &
+      .searchResult-header
+        // これがなくても固定ヘッダーできるが、ないとコンテンツがちょっとガクッとなる
+        position: absolute
         display: flex
-      .closeButton
-        text-align: right
-        width: 50px
-      .detailLink
-        flex-grow: 1
-      .detailContent
-        overflow-y: scroll
+        width: 100%
+        justify-content: center
+        padding: 4px
+        margin-right: -15px
+        margin-left: -15px
+
+        &.fixed
+          position: fixed
+          top: 0
+
+        ul
+          list-style: none
+          margin: 0
+          display: flex
+          li
+            margin-right: 12px
+            a
+              color: #fff
+
+      .searchResult-body
+        display: flex
+        flex-flow: row
+        padding-top: 60px
+
+        #article
+          overflow-y: scroll
+          flex-grow: 1
+          height: 100vh
+        #article  > h3
+          margin-bottom: 25px
+        .result
+        .result > ul
+          padding-left: 0
+          list-style: none
+        .result > ul > li
+          border-bottom: 1px solid gray
+          cursor: pointer
+        .result > ul > li.active
+          background-color: #d1ecf1
+        .result > ul > li:hover
+          background-color: #d1ecf1
+        .result > ul > li > .title
+          font-weight: bold
+        .highlight
+          background-color: yellow
+
+        #detail
+          flex-basis: 700px
+          flex-shrink: 0
+          margin-left: 30px
+
+          .detailInner
+            padding: 5px 7px
+            border-radius: 7px
+
+          .detailHeader
+            display: flex
+          .closeButton
+            text-align: right
+            width: 50px
+          .detailLink
+            flex-grow: 1
+          .detailContent
+            overflow-y: scroll
+
+      @media screen and (max-width: 1400px)
+        .searchResult-body
+          #detail
+            flex-basis: 500px
+      @media screen and (max-width: 768px)
+        .searchResult-body
+          flex-flow: column
+
+          #article
+            height: 350px
+            margin-right: 0
+          #detail
+            margin-top: 20px
+            margin-left: 0
