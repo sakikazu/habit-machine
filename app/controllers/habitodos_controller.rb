@@ -14,11 +14,7 @@ class HabitodosController < ApplicationController
   end
 
   def get_data
-    habitodos = Habitodo.all
-    render json: {
-      status: 200,
-      data: habitodos
-    }
+    @habitodos = current_user.habitodos.select(:uuid, :title, :body, :order_number)
   end
 
   # POST /habitodos
@@ -29,7 +25,7 @@ class HabitodosController < ApplicationController
     # title は必須でいいよな？エラー時はalert
 
     if @habitodo.save
-      render json: @habitodo
+      render partial: 'show', locals: { habitodo: @habitodo }
     else
       # todo
       render :new
@@ -39,7 +35,7 @@ class HabitodosController < ApplicationController
   # PATCH/PUT /habitodos/1
   def update
     if @habitodo.update(habitodo_params)
-      render json: @habitodo
+      render partial: 'show', locals: { habitodo: @habitodo }
     else
       # todo
       render :edit
@@ -49,17 +45,16 @@ class HabitodosController < ApplicationController
   # DELETE /habitodos/1
   def destroy
     @habitodo.destroy
-    render json: ''
+    head :ok
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_habitodo
-      @habitodo = Habitodo.find_by_uuid(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def habitodo_params
-      params.require(:habitodo).permit(:title, :body, :order_number)
-    end
+  def set_habitodo
+    @habitodo = Habitodo.find_by_uuid(params[:id])
+  end
+
+  def habitodo_params
+    params.require(:habitodo).permit(:title, :body, :order_number)
+  end
 end
