@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import HmAxios from '../../hm_axios.js'
+import HmAxios from 'hm_axios.js'
 export default {
   // 非prop属性をルート要素に適用したくない場合
   inheritAttrs: false,

@@ -14,17 +14,15 @@
       ul#doclist.list-unstyled.mt-3
         li.d-flex.p-0 [
           v-for="(h, key) in sortedHabitodos"
-          v-bind:key="h.uuid"
-          v-bind:class="h.isCurrent ? 'selected-data' : ''"
-          v-on:click="showDoc(h.uuid)"
-          v-on:mouseover="addHilightOnList($event)"
-          v-on:mouseout="removeHilightOnList($event)"
+          :key="h.uuid"
+          :class="h.isCurrent ? 'selected-data' : ''"
+          @click="switchDoc(h.uuid)"
         ]
           .flex-grow-1
             | {{ h.title }}
           .ml-2
-            / バブリングを止める（saveBodyの後にshowDocしてるので結局実行されてしまうが、意図として残す）
-            i.fa.fa-save v-show="h.unsaved" v-on:click.stop="saveBody(h.uuid)"
+            / stopでバブリングを止める（saveBodyの後にswitchDocしてるので結局clickイベント実行されてしまうが、意図として残す）
+            i.fa.fa-save v-show="h.unsaved" @click.stop="saveBody(h.uuid)"
           .ml-3.mr-2
             / TODO: スマホでサイドバー領域の高さを低くしたために、dropdownメニューが全部表示されなくなってしまった
             .dropdown
@@ -37,41 +35,32 @@
                     label 並び順（数値が大きい順）
                     input type="text" class="form-control" v-model="sortedHabitodos[key].order_number"
                   .text-center
-                    a.btn.btn-primary[href="javascript:void(0)" v-on:click="saveAttrs(h.uuid)"] 変更
+                    a.btn.btn-primary[href="javascript:void(0)" @click="saveAttrs(h.uuid)"] 変更
                 .dropdown-divider
-                .p-2.text-danger.text-center v-on:click.stop="deleteData(h.uuid)"
+                .p-2.text-danger.text-center @click.stop="deleteData(h.uuid)"
                   a.btn.btn-danger[href="javascript:void(0)"]
                     i.fa.fa-trash.ml-1
                     | 削除
 
       / 新規作成
-      create-form v-on:created-data='onCreatedData'
+      create-form @created-data='onCreatedData'
 
       / 検索
       .searchbox.input-group.mt-5.mb-3
-        input type='text' class='form-control' v-model='searchWord' v-on:keyup="preSearchData()" placeholder="検索ワード"
+        input type='text' class='form-control' v-model='searchWord' @keyup="preSearchData()" placeholder="検索ワード"
         .input-group-append
-          span.input-group-text[v-on:click="searchData()" v-bind:style="{ color: searchBtnColor }"] 検索
+          span.input-group-text[@click="searchData()" :style="{ color: searchBtnColor }"] 検索
       ul.search-result.list-group.list-group-flush.list-unstyled.mt-3.mb-3(v-if="searchResult.length > 0")
         li.list-group-item.list-group-item-primary.cursor-pointer [
           v-for="d in searchResult"
-          v-bind:key="`${d.docId}-${d.rows}`"
-          v-on:click="selectFoundData(d.docId, d.rows)"
+          :key="`${d.docId}-${d.rows}`"
+          @click="selectFoundData(d.docId, d.rows)"
         ]
           | {{ d.text + '(' + d.rows + ')' }}
 
     #middle-area.overflow-y-scroll.col-sm-8.order-3.order-sm-2.middle-area
       p v-show="habitodos.length == 0" データないです
-      / NOTE: min-height:100%にしておくと、contentEditableの要素に値がなくても、領域全部がクリッカブルになって編集可能
-      .editor.min-h100 [
-        v-for="ht in habitodos"
-        v-bind:key="ht.uuid"
-        v-show="ht.isCurrent"
-        v-on:keydown="handleKeyinput($event, ht.uuid)"
-        v-bind:id="`editor-${ht.uuid}`"
-        contentEditable=true
-        v-html="ht.markdownedBody"
-      ]
+      content-editor(v-for="ht in habitodos" :habitodo="ht" :key="ht.uuid" v-show="ht.isCurrent" @updated="updateHabitodo")
 
     #sidebar-right.overflow-y-scroll.col-sm-2.order-2.order-sm-3.bg-light.text-secondary
       #mokujis.mt-3
@@ -81,9 +70,9 @@
         ul.mokuji-list
           li [
             v-for="m in mokuji"
-            v-bind:key="m['anchor']"
+            :key="m['anchor']"
           ]
-            a v-bind:href="'#' + m['anchor']" v-text="m['text']" :class="m['style_class']"
+            a(:href="`#${m['anchor']}`" v-text="m['text']" :class="m['style_class']")
 
 scss:
   .middle-area {
@@ -115,6 +104,10 @@ scss:
     li {
       color: white;
       cursor: pointer;
+
+      &:hover {
+        background-color: lightskyblue;
+      }
     }
     li.selected-data {
       background-color: cornflowerblue;

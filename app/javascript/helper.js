@@ -48,3 +48,22 @@ export function debounce(fn, interval) {
   };
 }
 
+// todo windowオブジェクトを扱うものは別のクラスにするとかしたい
+export function moveCaret(baseContainer, offset) {
+  const range = document.createRange();
+  const sel = window.getSelection();
+  range.setStart(baseContainer, offset);
+  // これなくてもうまくいく。なんのため？Endを指定せずに範囲をStartにまとめるってこと？
+  range.collapse(true);
+  sel.removeAllRanges();
+  sel.addRange(range);
+  // これなくてもちゃんとフォーカスされるが？
+  //el.focus();
+
+  // todo これでもいける？
+  // oContent = document.createRange();
+  // oContent.selectNodeContents(oDoc.firstChild);
+
+  // この一行だけでも何とか選択はできるが、文頭だったり文末だったりCaretの位置になるのが理解できてない
+  // document.getSelection().collapse(el, nodesCount);
+}
