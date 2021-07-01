@@ -83,7 +83,7 @@ class DiariesController < ApplicationController
         end
       end
     end
-    @diaries = @diaries.newer.page(params[:page]).per(30)
+    @diaries = @diaries.newer.page(params[:page]).per(20)
 
     @tags = current_user.mytags.order("pinned DESC")
 
