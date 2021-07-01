@@ -48,7 +48,7 @@
 
     / NOTE: .overflow-autoを付加すると、子要素の幅が限界を超えた時に、画面全体ではなく、この要素に対してスクロールバーが表示される
     / 付加しないと、画面全体にスクロールバーが表示される
-    .col-md-9.overflow-auto
+    .col-md-7.overflow-auto
       .page-header.d-flex
         h4.flex-grow-1
           | 本日の日記&nbsp;
@@ -59,10 +59,11 @@
             a.btn.btn-light(@click="expandWidth") 広げる
       .diaries(ref="diariesBody")
         p(v-if="diariesWithOpsions.length == 0") 日記はありません。
-        #diaries-wrapper.d-lg-flex.flex-row.flex-wrap(v-else)
+        #diaries-wrapper.d-flex.flex-row.flex-wrap(v-else)
           / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
-          / 100%を要素数で割った値でも同じことができる。その場合はgrow-1は不要になるはず
-          .flex-grow-1.flex-basis-0.ml-2.mb-3.diary-wrapper(v-for="obj in diariesWithOpsions")
+          / .flex-grow-1.flex-basis-0 / Diaryの幅を等分して並べる。100%を要素数で割っても同じことができる。この場合はgrow-1は不要になるはず
+          / flex-basis:650にすることで、diaries-wrapperが1300pxを越える場合はDiaryを横に2つ並べ、否なら1つ。いずれにしてもDiaryはめいっぱい広がる
+          .flex-grow-1.ml-2.mb-3.diary-wrapper(v-for="obj in diariesWithOpsions" style="flex-basis:650px")
             diary(
               :diary="obj.diary"
               :target-date-for-edit-mode="obj.targetDateForEditMode"
@@ -74,3 +75,16 @@
       p
         a.btn.btn-block.btn-light.ignore-checking-changes(@click="newDiary")
           i.fa.fa-pencil &nbsp;日記を書く
+
+    .col-md-2
+      .page-header
+        h4
+          | everyday
+          small.ml-3 = link_to '[all]', everyday_diaries_path
+      .diaries
+        - @everyday_diaries.each do |diary|
+          .mb-1
+            = link_to diary_path(diary) do
+              = fa_icon('asterisk')
+              | &nbsp;
+              = diary.title

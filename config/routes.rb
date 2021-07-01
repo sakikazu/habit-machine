@@ -134,6 +134,7 @@ Rails.application.routes.draw do
       get 'hilight'
       get 'years/:year', action: :years, as: :years
       post 'append_memo'
+      get 'everyday'
     end
   end
 

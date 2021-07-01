@@ -1,0 +1,25 @@
+.mb-3
+  - if @all.present?
+    = link_to '短縮表示', everyday_diaries_path, class: 'btn btn-info'
+  - else
+    = link_to '全文表示', everyday_diaries_path(all: '1'), class: 'btn btn-info'
+
+ul.mb-4
+  li = link_to 'すべてのタグ', everyday_diaries_path(all: '1')
+  - @tag_names.each do |tag_name|
+    li = link_to tag_name, everyday_diaries_path(all: '1', tag: tag_name)
+
+- @diaries.each do |diary|
+  .card.mb-3
+    h5.card-header.p-2
+      .d-flex.justify-content-end
+        .flex-grow-1
+          span.date.mr10 = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
+          span.title = link_to diary.title_mod, diary_path(diary)
+        small.tags.ml-3 = tags_link(diary)
+    .card-body.p-2
+      = image_tag(diary.image(:small), class: "w-50 img-thumbnail") if diary.image.present?
+      - if @all.present?
+        = markdown(diary.content)
+      - else
+        = diary.content.truncate(150)

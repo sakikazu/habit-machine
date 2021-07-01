@@ -39,6 +39,8 @@ class GeneralController < ApplicationController
         raise NotFound
       end
     end
+    # TODO: DB変更前に、POCでeverydayタグを対象とする
+    @everyday_diaries = current_user.diaries.tagged_with('everyday').order(id: :desc).limit(10)
 
     @page_title = "#{@date.to_s(:normal)}の記録"
     @no_header_margin = true

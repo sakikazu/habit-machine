@@ -146,6 +146,21 @@ class DiariesController < ApplicationController
     end
   end
 
+  #
+  # 毎日表示したいもの
+  #
+  def everyday
+    @all = params[:all].present?
+    @tag = params[:tag]
+    @diaries = current_user.diaries.tagged_with('everyday').order(id: :desc)
+    if @tag.present?
+      @diaries = @diaries.tagged_with(@tag)
+    end
+    tags = current_user.diaries.tagged_with('everyday').map { |d| d.tags }
+    names = tags.flatten.map { |tag| tag.name }
+    @tag_names = names.uniq.delete_if { |name| name == 'everyday' }
+  end
+
   # GET /diaries/1
   # GET /diaries/1.json
   def show
