@@ -3,7 +3,7 @@
 </comment>
 
 <template lang="pug">
-  .toast(v-show="showable" :class="{'toast-error': isError}" data-autohide="true" :data-delay="delaySecond" style="width: 300px; z-index: 2000; position: absolute; top: 30px; right: 30px;")
+  .toast(v-show="showable" :class="{'toast-error': isError}" data-autohide="true" :data-delay="delaySecond" style="width: 300px; z-index: 2000; position: fixed; top: 30px; right: 30px;")
     .toast-header
       strong.mr-auto 通知
       small たったいま
@@ -55,4 +55,11 @@ export default {
 </script>
 
 <style scoped lang="sass">
+  .toast
+    // NOTE: Bootstrapのcolorの使用方法
+    background-color: var(--primary)
+    color: #fff
+    &.toast-error
+      background-color: red
+      color: white
 </style>

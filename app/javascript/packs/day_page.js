@@ -4,6 +4,7 @@ import { nl2br } from 'helper.js'
 
 import HabitRecord from 'components/habits/HabitRecord'
 import Diary from 'components/diaries/Diary'
+import TaskDiary from 'components/diaries/TaskDiary'
 import Toast from 'components/shared/toast'
 
 document.addEventListener('turbolinks:load', () => {
@@ -13,6 +14,7 @@ document.addEventListener('turbolinks:load', () => {
     components: {
       HabitRecord,
       Diary,
+      TaskDiary,
       Toast,
     },
     data: {
@@ -27,6 +29,7 @@ document.addEventListener('turbolinks:load', () => {
       toastShowable: false,
       toastError: false,
       toastMessage: '',
+      everydayDiaries: [],
     },
     computed: {
       // ページ内のすべてのフォームからデータ変更をチェック
@@ -100,6 +103,7 @@ document.addEventListener('turbolinks:load', () => {
               return { diary: diary, targetDateForEditMode: null, highlightForAMoment: false }
             })
             this.diary_links_list = res.data.diary_links_list
+            this.everydayDiaries = res.data.everyday_diaries
           })
           .catch(error => {
             alert(error.message || error.response.data.message)
