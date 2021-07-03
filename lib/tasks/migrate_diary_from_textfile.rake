@@ -26,7 +26,7 @@ namespace :diary_from_textfile do
     user = User.find_by_email!('sakikazu15@gmail.com')
 
     square = '■'
-    filepath = "#{Rails.root}/db/migration_data/【日記】2006前半-20121125.txt"
+    filepath = "(deleted)"
     f = File.open(filepath, 'r')
 
     diaries = []
