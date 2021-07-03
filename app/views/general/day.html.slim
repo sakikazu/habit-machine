@@ -56,7 +56,7 @@
           a.btn.btn-primary(data-toggle="popover" data-title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
         div
           - unless browser.device.mobile?
-            a.btn.btn-light(@click="expandWidth") 広げる
+            a.btn.btn-light(@click="expandWidth") 横並び
       .diaries(ref="diariesBody")
         p(v-if="diariesWithOpsions.length == 0") 日記はありません。
         #diaries-wrapper.d-flex.flex-row.flex-wrap(v-else)

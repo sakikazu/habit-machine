@@ -3,8 +3,8 @@
   h5.card-header.p-2
     .habit-title
       a(:href="`/habits/${habit.id}`") {{ habit.title }}
-    i.saveButton.fa.fa-floppy-o(@click="save" v-if="dataChanged")
-    i.editButton.fa.fa-pencil(@click="toggleEdit" v-else)
+    i.button.saveButton.fa.fa-floppy-o(@click="save" v-if="dataChanged")
+    i.button.editButton.fa.fa-pencil(@click="toggleEdit" v-else)
   .card-body.p-2(v-if="editMode || persisted")
     template(v-if="editMode")
       .recordValueInput
@@ -133,7 +133,10 @@ export default {
 
     .habit-title
       flex-grow: 1
-    i
+      a
+        font-size: 1rem
+        font-weight: bold
+    i.button
       display: inline-block
       cursor: pointer
       padding: 5px 20px
