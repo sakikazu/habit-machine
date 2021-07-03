@@ -67,3 +67,9 @@ export function moveCaret(baseContainer, offset) {
   // この一行だけでも何とか選択はできるが、文頭だったり文末だったりCaretの位置になるのが理解できてない
   // document.getSelection().collapse(el, nodesCount);
 }
+
+export function truncate(text, length) {
+  if (!text || typeof text !== 'string') { return '' }
+  if (text.length <= length) { return text }
+  return text.substring(0, length) + '...'
+}

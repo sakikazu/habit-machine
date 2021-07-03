@@ -39,7 +39,7 @@
         = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
 
   .row.justify-content-center
-    .col-md-3
+    .col-md-2
       .page-header
         h4 本日の記録
       p(v-if="habit_records.length == 0") 習慣が登録されていません。
@@ -56,7 +56,7 @@
           a.btn.btn-primary(data-toggle="popover" data-title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
         div
           - unless browser.device.mobile?
-            a.btn.btn-light(@click="expandWidth") 広げる
+            a.btn.btn-light(@click="expandWidth") 横並び
       .diaries(ref="diariesBody")
         p(v-if="diariesWithOpsions.length == 0") 日記はありません。
         #diaries-wrapper.d-flex.flex-row.flex-wrap(v-else)
@@ -76,15 +76,11 @@
         a.btn.btn-block.btn-light.ignore-checking-changes(@click="newDiary")
           i.fa.fa-pencil &nbsp;日記を書く
 
-    .col-md-2
+    .col-md-3
       .page-header
         h4
           | everyday
           small.ml-3 = link_to '[all]', everyday_diaries_path
       .diaries
-        - @everyday_diaries.each do |diary|
-          .mb-1
-            = link_to diary_path(diary) do
-              = fa_icon('asterisk')
-              | &nbsp;
-              = diary.title
+        .mb-1(v-for="diary in everydayDiaries" :key="diary.id")
+          task-diary(:diary="diary" @updated="showToast")

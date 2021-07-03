@@ -104,6 +104,7 @@ const vm = new Vue({
         return;
       }
       const exists = this.habitodos.some(d => {
+        // RegExpは//と違って（？）文字列を指定できるので、変数を使いたい場合に必要になる感じかなー
         return d.title.match(new RegExp(this.searchWord)) || (d.body && d.body.match(new RegExp(this.searchWord)))
       });
       this.searchBtnColor = exists ? 'red' : '';
