@@ -46,14 +46,12 @@ html[lang="ja"]
       ul.navbar-nav.mr-3.mr-lg-0
         li class="nav-item #{controller.controller_name == "habitodos" ? "active" : ""}"
           / turbolinksをfalseにすることで、何か一つ不具合が直った。bodyタグのだけじゃ足りなかった
-          = link_to "HabiTodo", habitodos_path, class: 'nav-link', data: { turbolinks: "false" }
+          = link_to "メモ", habitodos_path, class: 'nav-link', data: { turbolinks: "false" }
       button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
         span.navbar-toggler-icon
       #navbarSupportedContent.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
-          li.nav-item = link_to '月間', this_month_path, class: 'nav-link'
-          li class="dropdown nav-item #{controller.controller_name == "habits" and controller.action_name != "day" and controller.action_name != "top" ? "active" : ""}"
-            = link_to "習慣", habits_path, class: 'nav-link'
+          li.nav-item = link_to '月間記録', this_month_path, class: 'nav-link'
           li class="dropdown nav-item #{controller.controller_name == "diaries" ? "active" : ""}"
             = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
@@ -61,9 +59,10 @@ html[lang="ja"]
               = link_to "人生ハイライト", hilight_diaries_path, class: 'dropdown-item'
               = link_to "10年日記", years_diaries_path(Date.today.year), class: 'dropdown-item'
               = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
-          li class="dropdown nav-item #{controller.controller_name == "senses" ? "active" : ""}"
-            = link_to "意識付け", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+          li class="dropdown nav-item"
+            = link_to "その他", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
+              = link_to "習慣と記録", habits_path, class: 'dropdown-item'
               = link_to "意識付け一覧", senses_path, class: 'dropdown-item'
               = link_to "現意識", "javascript:showCurrentSenses();", class: 'dropdown-item'
           li.nav-item.dropdown
