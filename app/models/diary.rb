@@ -26,7 +26,7 @@ class Diary < ApplicationRecord
   content_name = "diary"
   has_attached_file :image,
     :styles => {
-      :small => "80x80>",
+      :small => "180x180>",
       :large => "1600x1600>"
     },
     :convert_options => {
