@@ -1,10 +1,10 @@
 .d-flex.justify-content-between.mt10.mb15
-  = link_to fa_icon('caret-left', class: 'fa-lg', style: 'padding:0.6em 0.1em'), result_habits_path(a_month: @target_month - 1.month), class: "btn btn-light", data: { turbolinks: false }
-  = form_tag result_habits_path, method: :get, class: 'form-inline mr5 ml5' do
+  = link_to fa_icon('caret-left', class: 'fa-lg', style: 'padding:0.6em 0.1em'), month_path(month: (@target_month - 1.month).to_s(:ym)), class: "btn btn-light", data: { turbolinks: false }
+  = form_tag this_month_path, method: :get, class: 'form-inline mr5 ml5' do
     = date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true, start_year: Settings.start_year, end_year: Date.today.year + 1}, {class: "form-control mr5"}
     = submit_tag "移動", class: "btn btn-light pl-4 pr-4"
-    = link_to "今月(#{Date.today.strftime("%Y年%m月")})", result_habits_path, class: "btn btn-outline-danger ml20"
-  = link_to fa_icon('caret-right', class: 'fa-lg', style: 'padding:0.6em 0.1em'), result_habits_path(a_month: @target_month + 1.month), class: "btn btn-light"
+    = link_to "今月(#{Date.today.strftime("%Y年%m月")})", this_month_path, class: "btn btn-outline-danger ml20"
+  = link_to fa_icon('caret-right', class: 'fa-lg', style: 'padding:0.6em 0.1em'), month_path(month: (@target_month + 1.month).to_s(:ym)), class: "btn btn-light"
 
 
 table.table.table-bordered.table-hover.records-table(style="table-layout: fixed")

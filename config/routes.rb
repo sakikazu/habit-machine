@@ -94,6 +94,8 @@ Rails.application.routes.draw do
   root to: 'general#day'
   get 'day/:date', to: 'general#day', as: :day
   get 'day_data/:date', to: 'general#day_data'
+  get 'month', to: 'general#month', as: :this_month
+  get 'month/:month', to: 'general#month', as: :month
 
   scope :search do
     get '' => 'search#top', as: :search
@@ -137,12 +139,6 @@ Rails.application.routes.draw do
     end
   end
 
-	resources :habits do
-		collection do
-			get 'result'
-			get 'top'
-		end
-	end
-
+	resources :habits
 	resources :records, only: [:create, :update]
 end

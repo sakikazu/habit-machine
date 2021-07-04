@@ -51,7 +51,7 @@ html[lang="ja"]
         span.navbar-toggler-icon
       #navbarSupportedContent.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
-          li.nav-item = link_to '月間', result_habits_path, class: 'nav-link'
+          li.nav-item = link_to '月間', this_month_path, class: 'nav-link'
           li class="dropdown nav-item #{controller.controller_name == "habits" and controller.action_name != "day" and controller.action_name != "top" ? "active" : ""}"
             = link_to "習慣", habits_path, class: 'nav-link'
           li class="dropdown nav-item #{controller.controller_name == "diaries" ? "active" : ""}"
