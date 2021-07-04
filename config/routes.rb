@@ -91,10 +91,9 @@ Rails.application.routes.draw do
 
 
   ### for web
-  root to: 'general#top'
+  root to: 'general#day'
   get 'day/:date', to: 'general#day', as: :day
   get 'day_data/:date', to: 'general#day_data'
-  get 'today', to: 'general#day', as: :today
 
   scope :search do
     get '' => 'search#top', as: :search

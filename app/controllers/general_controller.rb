@@ -1,33 +1,6 @@
 class GeneralController < ApplicationController
   before_action :authenticate_user!
 
-  # TOPページ
-  def top
-    # 起点（ページの中心日）の前後＊日分のデータが対象
-    @one_day = if params[:one_day].present?
-                 Date.strptime(params[:one_day])
-               elsif params[:record_at].present? # from Date Form
-                 Date.new(
-                   params[:record_at]["one_day(1i)"].to_i,
-                   params[:record_at]["one_day(2i)"].to_i,
-                   params[:record_at]["one_day(3i)"].to_i
-                 )
-               else
-                 Date.today
-               end
-    # 開始曜日を月曜固定にしない理由は、特定日に飛んだ際に、その日を画面の中心にしたいため
-    @date_term = (@one_day - 3)..(@one_day + 3)
-    @habits = Habit.with_records_in_date_term(current_user.habits.status_enabled, @date_term)
-    @diaries = Diary.group_by_record_at(current_user, @date_term)
-
-    @page_title = "#{@one_day.to_s(:normal)}を含む週"
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @habits }
-    end
-  end
-
   # 一日分のデータを表示
   def day
     if params[:date].blank?

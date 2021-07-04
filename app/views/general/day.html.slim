@@ -35,7 +35,7 @@
         .align-self-center
           h3
             span.mr-2.text-secondary.font-weight-bold = dispdate(@date, true)
-            = link_to fa_icon('calendar'), root_path(one_day: @date), data: { turbolinks: false }
+            = link_to fa_icon('calendar'), result_habits_path(a_month: @date), data: { turbolinks: false }
         = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
 
   .row.justify-content-center
