@@ -7,26 +7,18 @@ class HabitsController < ApplicationController
   # 記録結果
   #
   def result
-    @action_name = "記録の結果"
+    @target_month = if params[:a_month].present?
+                      Date.strptime(params[:a_month])
+                    elsif params[:target].present? # from Date Form
+                      Date.new(params[:target]["month(1i)"].to_i, params[:target]["month(2i)"].to_i, 1)
+                    else
+                      Date.today
+                    end
 
-    @showable = params[:showable]
-
-    # 対象月
-    if params[:target].present? # from Date Form
-      target_month = Date.new(
-        params[:target]["month(1i)"].to_i,
-        params[:target]["month(2i)"].to_i,
-        params[:target]["month(3i)"].to_i
-      )
-      @target_month = target_month
-    else
-      @target_month = Date.today
-    end
     @date_term = @target_month.beginning_of_month..@target_month.end_of_month
 
+    # TODO: グラフ用データ取得は、別クラスにして、パフォーマンス改善する
     basic_habits = current_user.habits.status_enabled
-
-    @habits_all= build_graph_data(basic_habits.all)
 
     habit_results_for_oresen = build_graph_data(basic_habits.result_type_line_graph)
     @habits_for_oresen_graph = build_graph(habit_results_for_oresen)
@@ -34,7 +26,10 @@ class HabitsController < ApplicationController
     habit_results_for_bou = build_graph_data(basic_habits.result_type_bar_graph)
     @habits_for_bou_graph = build_bou_graph(habit_results_for_bou)
 
+    @habits = Habit.with_records_in_date_term(current_user.habits.status_enabled, @date_term)
     @diaries = Diary.group_by_record_at(current_user, @date_term)
+
+    @page_title = "#{@target_month.strftime('%Y年%m月')}の記録"
   end
 
   # GET /habits

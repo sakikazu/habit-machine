@@ -39,7 +39,7 @@ $(document).on('turbolinks:load', function() {
 
   var shownPopoverElements = [];
   // セルをクリック時、recordのメモをポップアップ表示する
-  $('table.hm_top .js-habit-data').on('click', function(e) {
+  $('table.records-table .js-habit-data').on('click', function(e) {
     var $ele = $(this).find('.popover-content');
     hidePopover(shownPopoverElements, $ele);
     $ele.popover('toggle');

@@ -112,17 +112,7 @@ footer > p {
   color: #6C6767;
 }
 
-.general_controller {
-  table.hm_top {
-    table-layout: auto;
-  }
-  @media (min-width: 992px) {
-    table.hm_top {
-      table-layout: fixed;
-    }
-  }
-}
-
+// todo
 .habits_controller {
   .record_value {
     font-size: 125%;
