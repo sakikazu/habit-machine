@@ -10,7 +10,8 @@
       .check-field.form-check(v-else-if="task.type === 'check'")
         input.form-check-input(type="checkbox" :id="`task-${diary.id}-${idx}`" v-model="tasks[idx].state")
         label.form-check-label(:for="`task-${diary.id}-${idx}`" v-text="task.label")
-    button.btn.btn-danger.btn-sm(@click="saveDiary") 更新
+    .saveButton
+      button.btn.btn-danger.btn-sm(@click="saveDiary" :disabled="!saveButtonEnabled") 更新
 </template>
 
 <script>
@@ -38,7 +39,13 @@ export default {
     hasTask () {
       // 対象：`- [ ]` or `- [x]`
       return !!this.diary.content.match(this.taskRegex)
-    }
+    },
+    // TODO: save後にまたdisabledにしたいところだけど、後でやる
+    saveButtonEnabled () {
+      return this.tasks.some((task) => {
+        return task.type === 'check' && task.state != task.orgState
+      })
+    },
   },
   mounted () {
     if (this.hasTask) { this.buildTasks() }
@@ -56,7 +63,7 @@ export default {
           const state = result[1] === 'x' ? true : false
           // truncate、thisをつけなくてもimportしたまんまで使えたのか
           const label = truncate(result[2], 25)
-          this.tasks.push({ type: 'check', label: label, state, orgText: line })
+          this.tasks.push({ type: 'check', label: label, state, orgState: state, orgText: line })
         } else {
           this.tasks.push({ type: 'ignored', orgText: line })
         }
@@ -99,6 +106,10 @@ export default {
       font-size: 1.2rem
       font-weight: bold
       margin-top: 10px
+    .saveButton
+      margin-top: 15px
+      button
+        width: 100px
   .check-field
     font-size: 0.9rem
     margin-bottom: 7px
