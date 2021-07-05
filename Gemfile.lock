@@ -366,6 +366,9 @@ GEM
       sprockets (> 3.0)
       sprockets-rails
       tilt
+    seed-fu (2.3.9)
+      activerecord (>= 3.1)
+      activesupport (>= 3.1)
     semantic_range (3.0.0)
     simple_form (5.0.3)
       actionpack (>= 5.0)
@@ -472,6 +475,7 @@ DEPENDENCIES
   rvm1-capistrano3
   sanitize
   sass-rails (~> 5.0)
+  seed-fu (~> 2.3)
   simple_form
   slim
   slim-rails

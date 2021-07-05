@@ -29,6 +29,7 @@ gem 'lazy_high_charts'
 gem 'browser'
 gem 'redcarpet' # markdown
 gem 'enum_help'
+gem 'seed-fu', '~> 2.3'
 
 gem 'faker'
 
