@@ -22,6 +22,6 @@ json.diary_links_list diary_links_list(@diaries)
 
 json.everyday_diaries do
   json.array! @everyday_diaries do |diary|
-    json.extract! diary, :id, :title, :content
+    json.extract! diary, :id, :title, :content, :record_at
   end
 end

@@ -1,6 +1,6 @@
 <template lang="pug">
 .TaskDiary
-  a(:href="`/diaries/${diary.id}`")
+  a(:href="`/day/${diary.record_at}`")
     i.fa.fa-asterisk
     | &nbsp;
     | {{ diary.title }}
