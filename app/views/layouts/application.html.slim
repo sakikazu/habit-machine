@@ -43,16 +43,17 @@ html[lang="ja"]
     nav.navbar.navbar-expand-lg.navbar-light.bg-light(class="#{@no_header_margin ? '' : 'mb20'}")
       a.navbar-brand[href="#{root_path}" data-turbolinks="false"]
         | HabitMachine
-      ul.navbar-nav.mr-3.mr-lg-0
-        li class="nav-item #{controller.controller_name == "habitodos" ? "active" : ""}"
+      ul.navbar-nav.ml-auto.mr-3.mr-lg-0
+        li.nav-item(class="#{active_class('habitodos')}")
           / turbolinksをfalseにすることで、何か一つ不具合が直った。bodyタグのだけじゃ足りなかった
           = link_to "メモ", habitodos_path, class: 'nav-link', data: { turbolinks: "false" }
+      ul.navbar-nav.mr-3.mr-lg-0
+        li.nav-item(class="#{active_class('general', 'month')}") = link_to '月間記録', this_month_path, class: 'nav-link'
       button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
         span.navbar-toggler-icon
       #navbarSupportedContent.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
-          li.nav-item = link_to '月間記録', this_month_path, class: 'nav-link'
-          li class="dropdown nav-item #{controller.controller_name == "diaries" ? "active" : ""}"
+          li class="dropdown nav-item #{active_class('diaries')}"
             = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
               = link_to '日記一覧', diaries_path, class: 'dropdown-item'

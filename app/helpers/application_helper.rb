@@ -183,4 +183,9 @@ module ApplicationHelper
   def markdown_help_link
     link_to "markdown記法", "https://qiita.com/tbpgr/items/989c6badefff69377da7", target: :blank
   end
+
+  def active_class(controller_name, action_name = '')
+    controller.controller_name == controller_name &&
+      (action_name.blank? || (action_name.present? && controller.action_name == action_name)) ? 'active' : ''
+  end
 end
