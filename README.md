@@ -37,10 +37,9 @@ HabitMachine
 ## Demo (heroku)
 https://hm-a-dan.herokuapp.com/
 
-テストユーザー
-| email            | password  |
-| ---------------- | --------- |
-| test@example.com | password  |
+|ユーザー| email            | password  |
+| ---------------- | ---------------- | --------- |
+|テストユーザー| test@example.com | password  |
 
 
 ## System dependencies
