@@ -1,0 +1,10 @@
+.card
+  h5.card-header = link_to habit.title, habit_path(habit.id)
+  .card-body
+    - if habit.goal.present?
+      .card-text
+        = sani_custom_br(habit.goal)
+    - if habit.memo.present?
+      p.text-muted.mt20
+        = fa_icon 'sticky-note', text: sani_custom_br(habit.memo)
+

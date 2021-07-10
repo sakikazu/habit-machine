@@ -1,0 +1,17 @@
+.mb30
+  = link_to "戻る", root_path, class: "btn btn-light"
+.page-header
+  h2 ユーザー情報更新
+- if resource.errors.any?
+  .alert.alert-danger
+    p
+      | 入力エラーがあります。下記のエラー内容を確認してください。
+= simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+  = f.input :email, :required => true, :autofocus => true, label: "メールアドレス"
+  = f.input :password, :autocomplete => "off", :hint => "※パスワードを変更しない場合は空にしてください", :required => false, label: "パスワード"
+  = f.input :password_confirmation, :required => false, label: "パスワード（確認用）"
+  = f.input :familyname, label: "名字", required: true
+  = f.input :givenname, label: "名前", required: true
+  = f.input :current_password, :hint => "※情報を変更するには現在のパスワードが必要です", :required => true, label: "現在のパスワード"
+  .form-actions
+    = f.button :submit, "更新する", class: "btn btn-primary"

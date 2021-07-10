@@ -1,0 +1,7 @@
+.row.justify-content-center
+  .col-sm-7
+    = link_to '戻る', tags_path, class: "btn btn-light"
+    =< link_to '詳細', tag_path(@tag), class: "btn btn-light"
+    .page-header
+      h2 タグを編集する
+    = render 'form'

@@ -1,0 +1,173 @@
+# ver: 0.8.0
+
+inherit_from:
+  - .rubocop_todo.yml
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - 'bin/**/*'
+    - 'db/schema.rb'
+    - 'db/migrate/*'
+    - 'db/fixtures/*'
+    - 'Rakefile'
+    - 'vendor/**/*'
+    - 'config/routes.rb'
+    - 'config/initializers/exception_notification.rb'
+  DisplayCopNames: true
+Rails:
+  Enabled: true
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/**/*.rb'
+    - '**/*.rake'
+    - '**/*.jbuilder'
+    - '**/concerns/**/*.rb'
+  Max: 30
+Metrics/LineLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'config/routes/*.rb'
+  Max: 160
+Metrics/MethodLength:
+  Max: 30
+Metrics/AbcSize:
+  Max: 30
+Metrics/PerceivedComplexity:
+  Max: 8
+Metrics/CyclomaticComplexity:
+  Max: 10
+# できれば100に戻したい
+Metrics/ClassLength:
+  Max: 150
+# できれば100に戻したい
+Metrics/ModuleLength:
+  Max: 150
+
+Style/GuardClause:
+  MinBodyLength: 3
+Style/StringLiterals:
+  Enabled: false
+Layout/AccessModifierIndentation:
+  EnforcedStyle: outdent
+Layout/AlignParameters:
+  EnforcedStyle: with_first_parameter
+Style/Documentation:
+  Enabled: false
+Layout/EmptyLinesAroundBlockBody:
+  Enabled: false
+
+# for the following case.
+#   validates :project , presence: true
+#   validates :title   , presence: true
+#   validates :status  , presence: true
+Layout/SpaceBeforeComma:
+  Enabled: false
+
+# for the following case.
+#   expect(json['title']).to    eq 'implement hoge'
+#   expect(json['status']).to   eq 'todo'
+#   expect(json['priority']).to eq 1
+#   expect(json['point']).to    eq 1
+Layout/SpaceBeforeFirstArg:
+ Enabled: false
+
+# for the following case.
+#   db       = ENV['db']       || 'apollo'
+#   user     = ENV['user']     || 'postgres'
+#   password = ENV['password'] || ''
+Layout/SpaceAroundOperators:
+  Enabled: false
+
+# for the following case.
+#   foo == 0
+#   0 > foo
+#   bar.baz > 0
+Style/NumericPredicate:
+  Enabled: false
+
+Style/TrailingCommaInArrayLiteral:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInHashLiteral:
+  EnforcedStyleForMultiline: comma
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+Layout/ExtraSpacing:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Style/AsciiComments:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Layout/CommentIndentation:
+  Enabled: false
+Style/RescueModifier:
+  Enabled: false
+Style/RaiseArgs:
+  Enabled: false
+Style/FormatStringToken:
+  Enabled: false
+Naming/VariableNumber:
+  Enabled: false
+
+# 短すぎる変数名は大量にあるので無効にする
+Naming/UncommunicativeMethodParamName:
+  Enabled: false
+
+# 可読性が勝ることもあるだろうから無効にする
+Style/IfUnlessModifier:
+  Enabled: false
+
+# 2個くらいまでなら気にすることもないので無効にする
+Style/MultipleComparison:
+  Enabled: false
+
+# rescue 節でクラスを省略できるようにする
+# デフォルトは `rescue StandardError` と書かないといけない
+Style/RescueStandardError:
+  EnforcedStyle: implicit
+
+# 演算子が入る場合は() で囲う
+# foo = bar? ? a : b
+# foo = (bar && baz) ? a : b
+Style/TernaryParentheses:
+  EnforcedStyle: require_parentheses_when_complex
+
+# ruby style guide に合わせる形で '[]' を使うように修正になったけど、 '()' で統一されているので今更変更しない
+# https://github.com/bbatsov/rubocop/issues/4039
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%i': '()'
+    '%I': '()'
+    '%w': '()'
+    '%W': '()'
+
+# 何が問題ないのかよくわからず
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+# 気になるほど実行時間に差はない
+Performance/TimesMap:
+  Enabled: false
+
+# そこまで重要ではないし大量にあるので無効にする
+Rails/FilePath:
+  Enabled: false
+
+# html_safeを使っている箇所は大量にあるので無効にする
+Rails/OutputSafety:
+  Enabled: false
+
+# TODO: 要確認
+Rails/TimeZone:
+  Enabled: false
+
+# TODO: 対応したほうがよいはず
+# https://sil.hatenablog.com/entry/rubocop-rails-inverse-of
+Rails/InverseOf:
+  Enabled: false
+
+# TODO: 対応したほうがよいはず
+Rails/HasManyOrHasOneDependent:
+  Enabled: false

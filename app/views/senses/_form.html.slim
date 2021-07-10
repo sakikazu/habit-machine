@@ -1,0 +1,19 @@
+- content_for :addjs
+  javascript:
+    $(function() {
+      $('#markdownable_textarea').markdownEasily();
+    })
+
+= simple_form_for(@sense) do |f|
+  = f.error_notification
+  = f.input :parent_id, collection: current_user.senses.options_order.map {|n| [n.title, n.id]}, label: '元になるデータ', as: :select
+  = f.input :title, label: 'タイトル'
+  = f.input :description, label: '説明'
+  = markdown_help_link
+  = f.input :content, label: '内容', input_html: {id: 'markdownable_textarea', rows: 10}
+  = f.input :start_at, label: '開始日', wrapper_html: {class: "form-group-inline"}
+  = f.input :end_at, label: '終了日', wrapper_html: {class: "form-group-inline"}
+  = f.input :is_inactive, label: "非アクティブ化（過去ページで見れます）"
+  = f.input :sort_order, label: "並び順（小さい数字ほど先に並びます）"
+  .form-actions
+    = f.button :submit, class: "btn btn-primary"

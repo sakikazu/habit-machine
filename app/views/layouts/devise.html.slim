@@ -1,0 +1,29 @@
+doctype html
+html[lang="ja"]
+  head
+    meta[charset="utf-8"]
+    meta[http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"]
+    meta[name="viewport" content="width=device-width, initial-scale=1.0"]
+    title
+      = content_for?(:title) ? yield(:title) : "HabitMachine"
+    = csrf_meta_tags
+    = stylesheet_link_tag "application", :media => "all"
+    - #= favicon_link_tag 'images/apple-touch-icon-144x144-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '144x144'
+    - #= favicon_link_tag 'images/apple-touch-icon-114x114-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '114x114'
+    - #= favicon_link_tag 'images/apple-touch-icon-72x72-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '72x72'
+    - #= favicon_link_tag 'images/apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png'
+    = favicon_link_tag 'favicon.ico', :rel => 'shortcut icon'
+  body
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb20
+      a.navbar-brand[href="/"]
+        | HabitMachine
+    .container-fluid
+      .row.justify-content-center
+        .col-sm-4.jumbotron
+          - if notice.present?
+            p.alert.alert-info
+              = notice
+          - if alert.present?
+            p.alert.alert-danger
+              = alert
+          = yield

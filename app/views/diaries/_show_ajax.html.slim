@@ -1,0 +1,16 @@
+.page-header
+  .d-flex.justify-content-end
+    .flex-grow-1
+      h5.diary-title
+        span.date = link_to fa_icon('calendar', text: dispdate(@diary.record_at, true)), day_path(@diary.record_at)
+        span.title.ml10 = @diary.title_mod
+    .tags.ml-3 = tags_link(@diary)
+
+= "<p class='btn btn-block btn-danger disabled'>シークレット日記</p>".html_safe if @diary.is_secret
+= "<p class='btn btn-block btn-warning disabled'>ハイライト日記</p>".html_safe if @diary.is_hilight
+.well
+  - if @diary.image.present?
+    .mb25
+      = image_tag(@diary.image(:large), width: "100%", class: "img-thumbnail")
+  .markdown
+    = markdown(@diary.content)
