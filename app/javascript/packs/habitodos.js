@@ -5,18 +5,12 @@
 // 内容の保存時、DOMの内容を保存していることから、想定しない内容を保存するリスクは普通の仕組みよりも高い。そこをうまい処理にしたいし、適切なコメントを書きたい
 //
 
-//import TurbolinksAdapter from 'vue-turbolinks'
 import Vue from 'vue/dist/vue.esm'
 import HmAxios from 'hm_axios.js'
 import ContentEditor from 'components/habitodos/ContentEditor.vue'
 import CreateForm from 'components/habitodos/CreateForm.vue'
 import { isSmartPhone, moveCaret } from 'helper.js'
 
-// todo: vue-turbolinksは期待どおりに動かず。よくわからん
-//Vue.use(TurbolinksAdapter)
-//Vue.use(TurbolinksAdapter, { turbolinksDestroyEvent: 'turbolinks:before-cache' })
-
-// TODO: habitodosのリンクはturbolinksをoffにしたのに、なぜこのイベントでやらないと動かないんだろう
 document.addEventListener('turbolinks:load', () => {
 const vm = new Vue({
   el: '#habitodo',

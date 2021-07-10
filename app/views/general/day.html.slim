@@ -1,6 +1,5 @@
-/ `data-turbolinks-eval: false` を入れないと、ページ読み込みした当ページとその前後ページはTurbolinksもVue.jsも動くが、それ以降のページはVue Componentが動かない(mountedは実行されてる)
-/ falseにすることで、共存できたようだ。問題起こったら、TurbolinksをOFFにして、Vue router入れるのが良さそう
-= javascript_pack_tag 'day_page', 'data-turbolinks-eval': 'false'
+- content_for :addjs_in_head
+  = javascript_pack_tag 'day_page', 'data-turbolinks-track': 'reload'
 
 #dayPage(data-target-date="#{@date}")
   toast(:showable="toastShowable" :is-error="toastError" :message="toastMessage" @toast-hidden="toastShowable = false")

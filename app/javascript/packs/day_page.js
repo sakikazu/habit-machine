@@ -7,8 +7,9 @@ import Diary from 'components/diaries/Diary'
 import TaskDiary from 'components/diaries/TaskDiary'
 import Toast from 'components/shared/toast'
 
+console.log('day_page.js')
 document.addEventListener('turbolinks:load', () => {
-  if ($('#dayPage').length == 0) return
+  console.log('day_page.js: turbolinks:load')
   const vm = new Vue({
     el: '#dayPage',
     components: {

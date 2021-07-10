@@ -17,7 +17,6 @@ class SearchController < ApplicationController
     @result_habitodos_size = current_user.habitodos.find_by_word(@search_word).size
     # @result_senses = current_user.senses.find_by_word(@search_word)
 
-    @turbolinks_off = true
     @page_title = 'サイト内検索'
     @no_header_margin = true
   end

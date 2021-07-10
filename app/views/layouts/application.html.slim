@@ -9,13 +9,13 @@ html[lang="ja"]
       = page_title
       |  - HabitMachine
     = csrf_meta_tags
-    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = stylesheet_link_tag 'application', media: 'all'
     - #= favicon_link_tag 'images/apple-touch-icon-144x144-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '144x144'
     - #= favicon_link_tag 'images/apple-touch-icon-114x114-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '114x114'
     - #= favicon_link_tag 'images/apple-touch-icon-72x72-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '72x72'
     - #= favicon_link_tag 'images/apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png'
     = favicon_link_tag 'favicon.ico', :rel => 'shortcut icon'
-    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application'
 
     / for PWA
     link rel="manifest" href="/manifest.json"
@@ -41,12 +41,11 @@ html[lang="ja"]
     = yield :addjs_in_head
   body[class="#{controller.controller_name}_controller" data-turbolinks="#{'false' if @turbolinks_off}"]
     nav.navbar.navbar-expand-lg.navbar-light.bg-light(class="#{@no_header_margin ? '' : 'mb20'}")
-      a.navbar-brand[href="#{root_path}" data-turbolinks="false"]
+      a.navbar-brand[href="#{root_path}"]
         | HabitMachine
       ul.navbar-nav.ml-auto.mr-3.mr-lg-0
         li.nav-item(class="#{active_class('habitodos')}")
-          / turbolinksをfalseにすることで、何か一つ不具合が直った。bodyタグのだけじゃ足りなかった
-          = link_to "メモ", habitodos_path, class: 'nav-link', data: { turbolinks: "false" }
+          = link_to "メモ", habitodos_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0
         li.nav-item(class="#{active_class('general', 'month')}") = link_to '月間記録', this_month_path, class: 'nav-link'
       button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
@@ -91,6 +90,5 @@ html[lang="ja"]
       p HabitMachine ( Sakikazu Company 2012-#{Date.today.year} )
     - #= javascript_include_tag "application"
 
-    / TODO: AdanHP同様にhead内に置き、各所でも対応、確認が必要（turbolinks関連で多重イベント登録を避けるため）
     / NOTE: ページごとのJS（現状はライブラリをHEADで読んでるから意味ないけど）
     = yield :addjs
