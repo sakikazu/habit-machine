@@ -69,7 +69,7 @@
             v-for="m in mokuji"
             :key="m['anchor']"
           ]
-            a(:href="`#${m['anchor']}`" v-text="m['text']" :class="m['style_class']")
+            a(:href="`#${m['anchor']}`" v-text="m['text']" :class="m['style_class']" data-turbolinks="false")
 
 scss:
   .middle-area {
