@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
-import { nl2br } from 'helper.js'
 
 import HabitRecord from 'components/habits/HabitRecord'
 import Diary from 'components/diaries/Diary'
@@ -44,7 +43,6 @@ document.addEventListener('turbolinks:load', () => {
       this.fetchData()
     },
     methods: {
-      nl2br,
       setup () {
         this.setupTimepicker()
         this.shortcutOfPagingLink('prev-day', 'next-day') // ショートカットで日にち移動
@@ -116,7 +114,9 @@ document.addEventListener('turbolinks:load', () => {
         const PREV_KEY = 188;
         const NEXT_KEY = 190;
 
-        $(document).on('keydown', function(e) {
+        // NOTE: イベントリスナの重複登録を防ぐためにoffしておく。他のkeydownイベントリスナを削除しないように名前をつけておく
+        $(document).off('keydown.movePage')
+        $(document).on('keydown.movePage', function(e) {
           if (!e.shiftKey) { return; }
           if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) { return; }
           switch (e.which || e.keyCode) {
