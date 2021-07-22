@@ -57,7 +57,7 @@ handleTabKey = function(e) {
   var currentLine, indentedText, newPos, pos, reindentedCount, reindentedText, text;
   currentLine = getCurrentLine(e);
   // 箇条書きスタイル以外の行の時には処理をスルー
-  if (!currentLine.text.match(/^ *- /)) {
+  if (!currentLine || !currentLine.text.match(/^ *- /)) {
     return;
   }
   e.preventDefault();
