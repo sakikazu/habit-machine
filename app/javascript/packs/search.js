@@ -2,16 +2,22 @@ import Vue from 'vue/dist/vue.esm'
 import HmAxios from '../hm_axios.js'
 import { nl2br } from '../helper.js'
 
+import Diary from 'components/diaries/Diary'
+import Modal from 'components/shared/Modal'
+
 document.addEventListener('turbolinks:load', () => {
   const vm = new Vue({
     el: '#searchResult',
     components: {
+      Diary,
+      Modal,
     },
     data: {
       resultHabitodos: [],
       resultDiaries: [],
       resultRecords: [],
       selectedDetailData: null,
+      modalableDiaryId: null,
     },
     computed: {
     },
@@ -68,6 +74,17 @@ document.addEventListener('turbolinks:load', () => {
         // 途中までスクロールしている状態でリロードされた時のために、スクロールイベントを発生させる
         // 当ページについてはリロードで検索結果が消えるので不要だが
         $(window).trigger('scroll')
+      },
+      showDiaryModal (diaryId) {
+        this.modalableDiaryId = diaryId
+      },
+      closeDiaryModal () {
+        this.modalableDiaryId = null
+      },
+      // TODO: 検索結果に反映するには、ハイライト処理した独自のデータを返す必要があったので、とりあえず後で
+      reflectResultDiaries (_formKey, updatedDiary) {
+        let foundIndex = this.resultDiaries.findIndex(diary => diary.id == updatedDiary.id)
+        Vue.set(this.resultDiaries, foundIndex, updatedDiary)
       },
     }
   })

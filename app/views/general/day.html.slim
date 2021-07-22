@@ -3,6 +3,15 @@
 
 #dayPage(data-target-date="#{@date}")
   toast(:showable="toastShowable" :is-error="toastError" :message="toastMessage" @toast-hidden="toastShowable = false")
+  .diaryDetailModal
+    modal(v-if="!!modalableDiaryId" :no-padding="true" @on-close="closeDiaryModal")
+      template(v-slot:content)
+        diary(
+          :diary-id="modalableDiaryId"
+          :modal-mode="true"
+          @submitted="reflectEverydayDiaries"
+        )
+
   .row.bg-dark.mb20
     .col.text-center
       a.text-light.btn.btn-info.btn-sm.m-1(@click="showMemoForm")
@@ -38,7 +47,7 @@
         = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
 
   .row.justify-content-center
-    .col-md-2
+    .sectionHabitRecords.col-md-2
       .page-header
         h4 本日の記録
       p(v-if="habit_records.length == 0") 習慣が登録されていません。
@@ -47,7 +56,7 @@
 
     / NOTE: .overflow-autoを付加すると、子要素の幅が限界を超えた時に、画面全体ではなく、この要素に対してスクロールバーが表示される
     / 付加しないと、画面全体にスクロールバーが表示される
-    .col-md-7.overflow-auto
+    .sectionDiaries.col-md-7.overflow-auto
       .page-header.d-flex
         h4.flex-grow-1
           | 本日の日記&nbsp;
@@ -70,16 +79,17 @@
               :key="`diary-${obj.diary.id}`"
               @content-changed="onContentChanged"
               @submitted="onSubmitted"
+              @show-diary-modal="showDiaryModal"
             )
       p
         a.btn.btn-block.btn-light.ignore-checking-changes(@click="newDiary")
           i.fa.fa-pencil &nbsp;日記を書く
 
-    .col-md-3
+    .sectionEverydayDiaries.col-md-3
       .page-header
         h4
-          | everyday
+          | Everyday
           small.ml-3 = link_to '[all]', everyday_diaries_path
       .diaries
         .mb-1(v-for="diary in everydayDiaries" :key="diary.id")
-          task-diary(:diary="diary" @updated="showToast")
+          task-diary(:diary="diary" @updated="showToast" @show-diary-modal="showDiaryModal")

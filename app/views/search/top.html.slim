@@ -6,6 +6,15 @@
 / 検索結果はスクロール可能にして、その詳細はスクロール不可、検索結果をスクロールしても詳細は常に同じ位置を維持できるように
 / 詳細は、PC画面だと右に表示、スマホ画面だと下に表示
 #searchResult
+  .diaryDetailModal
+    modal(v-if="!!modalableDiaryId" :no-padding="true" @on-close="closeDiaryModal")
+      template(v-slot:content)
+        diary(
+          :diary-id="modalableDiaryId"
+          :modal-mode="true"
+          @submitted="reflectResultDiaries"
+        )
+
   .searchResult-header.bg-info
     ul
       li = link_to "日記 (#{@result_diaries_size})", '#diary'
@@ -67,7 +76,11 @@
       .detailInner.bg-light
         .detailHeader
           .detailLink
-            a(:href="selectedDetailData?.show_path" v-text="selectedDetailData?.title" target="_blank")
+            a(v-if="selectedDetailData?.type === 'Diary'" @click="showDiaryModal(selectedDetailData?.id)" href="javascript:void(0)")
+              i.fa.fa-window-maximize
+              | &nbsp;
+              | {{ selectedDetailData?.title }}
+            a(v-else :href="selectedDetailData?.show_path" v-text="selectedDetailData?.title" target="_blank")
           .closeButton
             span(@click="closeDetail" role="button")
               = fa_icon('times')

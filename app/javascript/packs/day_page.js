@@ -5,6 +5,7 @@ import HabitRecord from 'components/habits/HabitRecord'
 import Diary from 'components/diaries/Diary'
 import TaskDiary from 'components/diaries/TaskDiary'
 import Toast from 'components/shared/toast'
+import Modal from 'components/shared/Modal'
 
 console.log('day_page.js')
 document.addEventListener('turbolinks:load', () => {
@@ -16,6 +17,7 @@ document.addEventListener('turbolinks:load', () => {
       Diary,
       TaskDiary,
       Toast,
+      Modal,
     },
     data: {
       targetDate: null,
@@ -30,6 +32,7 @@ document.addEventListener('turbolinks:load', () => {
       toastError: false,
       toastMessage: '',
       everydayDiaries: [],
+      modalableDiaryId: null,
     },
     computed: {
       // ページ内のすべてのフォームからデータ変更をチェック
@@ -133,8 +136,13 @@ document.addEventListener('turbolinks:load', () => {
       onContentChanged (formKey) {
         this.contentChanged.push(formKey)
       },
-      onSubmitted (formKey) {
+      onSubmitted (formKey, _updatedDiary) {
         this.contentChanged = this.contentChanged.filter(content => content !== formKey)
+      },
+      // this.diariesの方には反映する必要性はあまりない
+      reflectEverydayDiaries (_formKey, updatedDiary) {
+        let foundIndex = this.everydayDiaries.findIndex(diary => diary.id == updatedDiary.id)
+        Vue.set(this.everydayDiaries, foundIndex, updatedDiary)
       },
       submitAppendingMemo (event) {
         event.preventDefault()
@@ -152,6 +160,7 @@ document.addEventListener('turbolinks:load', () => {
               this.diariesWithOpsions.push({ diary: res.data.diary, targetDateForEditMode: null, highlightForAMoment: true })
             } else {
               const foundIdx = this.diariesWithOpsions.findIndex(obj => obj.diary.id === res.data.diary.id)
+              // TODO: Vue.setじゃないけど反映されてる？確認しておく
               this.diariesWithOpsions[foundIdx].diary = res.data.diary
               this.diariesWithOpsions[foundIdx].highlightForAMoment = true
             }
@@ -174,6 +183,12 @@ document.addEventListener('turbolinks:load', () => {
         this.toastShowable = true
         this.toastError = options.isError
         this.toastMessage = options.message
+      },
+      showDiaryModal (diaryId) {
+        this.modalableDiaryId = diaryId
+      },
+      closeDiaryModal () {
+        this.modalableDiaryId = null
       },
     },
   })
