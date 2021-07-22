@@ -1,6 +1,6 @@
 <comment>
-  フォームのデータはフォームを開いた時に毎回取得する。propsだと古いデータを渡す可能性があるから
-  値が変更されている時にページ遷移で確認を出したいため、フォームごとにランダムなキーを設けて、それを親で管理しているのが少し複雑
+  フォームのデータは、propsだと古いデータを渡す可能性があるので、フォームを開いた時に毎回取得する。
+  値が変更されている場合、ページ遷移で変更を破棄する確認を出したいため、フォームごとにランダムなキーを設けて、それを親で管理しているのが少し複雑
 </comment>
 
 <template lang="pug">
@@ -19,7 +19,7 @@
         input(type="hidden" name="[diary]record_at" :value="targetDate" v-else)
 
       .form-group
-        input.form-control(type="text" name="[diary]title" placeholder="タイトル（未入力可）" autofocus="true" :value="diary.title" :tabindex="tabidxBase + 1")
+        input.form-control(type="text" name="[diary]title" placeholder="タイトル（未入力可）" ref="diaryTitle" :value="diary.title" :tabindex="tabidxBase + 1")
 
       a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
       .form-group
@@ -83,10 +83,6 @@ export default {
       type: String,
       required: true,
     },
-    onFetchData: {
-      type: Boolean,
-      default: false,
-    }
   },
   data () {
     return {
@@ -100,28 +96,20 @@ export default {
       tabidxBase: Math.floor(Math.random() * 1000),
     }
   },
-  watch: {
-    // NOTE: editModeになる度にフォームのデータを取得するように
-    onFetchData(newVal) {
-      if (newVal) {
-        this.fetchFormData()
-      }
-    },
-  },
   computed: {
     persisted () {
       return !!this.diary?.id
     },
   },
+  // NOTE: 親でv-ifで表示可否を切り替えているからか、編集キャンセルして再編集時もcreatedが走る。この表示切り替え時に何かpropsで渡してwatchしても発動しないので、フォーム表示時の処理はcreated, mountedに書くべき
   created () {
-    if (this.onFetchData) {
-      this.fetchFormData()
-    }
+    this.fetchFormData()
   },
   mounted () {
     $('#markdownable_textarea').markdownEasily()
     this.setCheckUnsavedEvent()
     this.formKey = this.generateKey()
+    this.$refs.diaryTitle.focus()
   },
   methods: {
     generateKey () {
