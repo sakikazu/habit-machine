@@ -1,7 +1,7 @@
 <template lang="pug">
 .TaskDiary
-  a(:href="`/day/${diary.record_at}`")
-    i.fa.fa-asterisk
+  a(@click="showModal" href="javascript:void(0)")
+    i.fa.fa-window-maximize
     | &nbsp;
     | {{ diary.title }}
   .check-block(v-if="hasTask")
@@ -35,6 +35,11 @@ export default {
       headerRegex: /^#+\s*(.*)/,
     }
   },
+  watch: {
+    'diary.content': function(_newVal) {
+      this.buildTasks()
+    },
+  },
   computed: {
     hasTask () {
       // 対象：`- [ ]` or `- [x]`
@@ -51,7 +56,11 @@ export default {
     if (this.hasTask) { this.buildTasks() }
   },
   methods: {
+    showModal () {
+      this.$emit('show-diary-modal', this.diary.id)
+    },
     buildTasks () {
+      this.tasks = []
       const lines = this.diary.content.split(/\r\n|\n|\r/);
       lines.forEach((line) => {
         // ヘッダー行

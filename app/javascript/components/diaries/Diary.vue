@@ -1,14 +1,15 @@
 <template lang="pug">
-.diaryWrapper
+.diaryWrapper(v-if="localDiary")
   .well(v-if="!editMode" :class="{'highlight-border': highlight}")
     .page-header.mt0
       .d-flex.justify-content-end
         .flex-grow-1
           h5.diary-title
-            //- unless is_day_page TODO: dayページ以外でも使うようになったらこの処理復活
-              // span.date.mr10 = link_to fa_icon('calendar', text: dispdate(localDiary.record_at, true)), day_path(localDiary.record_at)
-            span.title
-              a(:href="`/diaries/${localDiary.id}`") {{ localDiary.title_mod }}
+            .noLinkTitle.text-secondary(v-if="modalMode")
+              span.date.mr10 {{ localDiary.disp_record_at }}
+              span.title {{ localDiary.title_mod }}
+            span.title(v-else)
+              a(@click="showModal" href="javascript:void(0)") {{ localDiary.title_mod }}
         .tags.ml-3(v-html="localDiary.tag_links")
     .diary-body(v-if="!changed_record_at")
       p(v-if="localDiary.is_secret" class='btn btn-block btn-danger disabled mb5') シークレット日記
@@ -36,7 +37,11 @@ export default {
   props: {
     diary: {
       type: Object,
-      required: true,
+      default: null,
+    },
+    diaryId: {
+      type: Number,
+      default: null,
     },
     targetDateForEditMode: {
       type: String,
@@ -46,10 +51,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    modalMode: {
+      type: Boolean,
+      default: false
+    },
   },
   data () {
     return {
-      localDiary: this.diary,
+      localDiary: null,
       editMode: (!!this.targetDateForEditMode ? true : false),
       highlight: this.highlightForAMoment,
       changed_record_at: null,
@@ -62,14 +71,30 @@ export default {
   },
   computed: {
     targetDate () {
-      return !!this.diary.id ? this.diary.record_at : this.targetDateForEditMode
+      return !!this.localDiary.id ? this.localDiary.record_at : this.targetDateForEditMode
     },
   },
   created () {
+    if (!this.diary && !this.diaryId) throw new Error('diary or diaryId props is required')
+    if (this.diary) {
+      this.localDiary = this.diary
+    } else {
+      // TODO: Diaryの取得を待つようにすれば(await)、templateで `v-if="localDiary"` する必要ないかも？
+      this.fetchDiary(this.diaryId)
+    }
   },
   mounted () {
   },
   methods: {
+    fetchDiary (diaryId) {
+      HmAxios.get(`/diaries/${diaryId}.json`)
+        .then(res => {
+          this.localDiary = res.data.diary
+        })
+        .catch(error => {
+          alert(error.message || error.response.data.message)
+        })
+    },
     edit () {
       this.editMode = true
     },
@@ -84,13 +109,16 @@ export default {
       this.$emit('content-changed', formKey)
     },
     onSubmitted (formKey, updatedDiary) {
-      this.$emit('submitted', formKey)
+      this.$emit('submitted', formKey, updatedDiary)
       this.editMode = false
       this.highlight = true
       this.localDiary = updatedDiary
     },
     onChangedRecordAt (changed_record_at) {
       this.changed_record_at = changed_record_at
+    },
+    showModal () {
+      this.$emit('show-diary-modal', this.localDiary.id)
     },
   }
 }
