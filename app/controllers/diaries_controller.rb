@@ -14,7 +14,7 @@ class DiariesController < ApplicationController
   def index
     # TODO: Searchクラスに切り出したいところだがまあいいや
     @q = Diary.new
-    @diaries = current_user.diaries
+    @diaries = current_user.diaries.includes(:tags)
 
     # タグのリンクからの遷移の場合
     if params[:tag].present?
@@ -104,7 +104,7 @@ class DiariesController < ApplicationController
     @years_including_diaries_count = current_user.diaries.hilight.group("DATE_FORMAT(record_at, '%Y')").count
                                        .sort_by {|k, _v| k}.reverse
 
-    @diaries = current_user.diaries.hilight.older
+    @diaries = current_user.diaries.includes(:tags).hilight.older
     return if params[:all].present?
 
     record_at_range = if params[:year].present?

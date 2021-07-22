@@ -1,7 +1,7 @@
 module DiariesHelper
   def tags_link(diary)
     output = ""
-    diary.tag_counts.each do |tag|
+    diary.tags.each do |tag|
       custom_tag = CustomTag.new(tag.attributes)
       output += link_to tag.name, diaries_path(tag: tag.name), class: "badge mr5", style: custom_tag.color_style
     end
