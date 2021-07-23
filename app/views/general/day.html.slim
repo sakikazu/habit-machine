@@ -35,15 +35,13 @@
               .modal-footer
                 button.btn.btn-primary(type="submit") メモ追加
 
-  .row
-    .col
-      .d-flex.justify-content-between
-        = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
-        .align-self-center
-          h3
-            span.mr-2.text-secondary.font-weight-bold = dispdate(@date, true)
-            = link_to fa_icon('calendar'), month_path(month: @date.to_s(:ym))
-        = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
+  .dayContentHeader
+    = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
+    .dayContentHeaderMiddle
+      .dayContentHeaderMiddleLink.mr5 = link_to fa_icon('home', class: "fa-2x"), root_path
+      h3.text-secondary.font-weight-bold = dispdate(@date, true)
+      .dayContentHeaderMiddleLink.ml5 = link_to fa_icon('calendar', class: "fa-2x"), month_path(month: @date.to_s(:ym))
+    = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
 
   .row.justify-content-center
     .sectionHabitRecords.col-md-2
@@ -92,3 +90,24 @@
       .diaries
         .mb-1(v-for="diary in everydayDiaries" :key="diary.id")
           task-diary(:diary="diary" @updated="showToast" @show-diary-modal="showDiaryModal")
+
+sass:
+  .dayContentHeader
+    display: flex
+    justify-content: space-between
+    align-items: center
+    width: 480px
+    margin: auto
+    .dayContentHeaderMiddle
+      display: flex
+    .dayContentHeaderMiddleLink
+    h3
+      margin: 0
+
+  @media screen and (max-width:  640px)
+    .dayContentHeader
+      width: 100%
+      font-size: 0.7rem
+
+      .dayContentHeaderMiddleLink
+        padding-top: 10px
