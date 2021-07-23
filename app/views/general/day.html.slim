@@ -3,14 +3,13 @@
 
 #dayPage(data-target-date="#{@date}")
   toast(:showable="toastShowable" :is-error="toastError" :message="toastMessage" @toast-hidden="toastShowable = false")
-  .diaryDetailModal
-    modal(v-if="!!modalableDiaryId" :no-padding="true" @on-close="closeDiaryModal")
-      template(v-slot:content)
-        diary(
-          :diary-id="modalableDiaryId"
-          :modal-mode="true"
-          @submitted="reflectEverydayDiaries"
-        )
+  modal(v-if="!!modalableDiaryId" :no-padding="true" @on-close="closeDiaryModal")
+    template(v-slot:content)
+      diary(
+        :diary-id="modalableDiaryId"
+        :modal-mode="true"
+        @submitted="reflectEverydayDiaries"
+      )
 
   .row.bg-dark.mb20
     .col.text-center

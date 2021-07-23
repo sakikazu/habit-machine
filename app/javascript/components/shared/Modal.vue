@@ -97,9 +97,8 @@ export default {
 
     @media screen and (max-width:  640px)
       .MemberModal_contentWrapper
-        width: calc( 100% - 40px)
-        height: calc( 100vh - 40px)
         overflow-y: auto
+        width: calc( 100% - 40px)
         &.-expand
           width: calc( 100% - 40px)
       .MemberModal_buttons
