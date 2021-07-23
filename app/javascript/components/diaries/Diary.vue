@@ -6,7 +6,7 @@
         .flex-grow-1
           h5.diary-title
             .noLinkTitle.text-secondary(v-if="modalMode")
-              span.date.mr10 {{ localDiary.disp_record_at }}
+              a.date.mr10(:href="`/day/${localDiary.record_at}`") {{ localDiary.disp_record_at }}
               span.title {{ localDiary.title_mod }}
             span.title(v-else)
               a(@click="showModal" href="javascript:void(0)") {{ localDiary.title_mod }}

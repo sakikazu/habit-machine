@@ -62,12 +62,17 @@ export default {
     buildTasks () {
       this.tasks = []
       const lines = this.diary.content.split(/\r\n|\n|\r/);
+      let bufHeader = null
       lines.forEach((line) => {
-        // ヘッダー行
+        // ヘッダー行: check行を含まないヘッダーは表示しない
         if (line.match(this.headerRegex)) {
           const result = line.match(this.headerRegex)
-          this.tasks.push({ type: 'header', label: result[1], orgText: line })
+          bufHeader = { type: 'header', label: result[1], orgText: line }
         } else if (line.match(this.taskRegex)) {
+          if (bufHeader) {
+            this.tasks.push(bufHeader)
+            bufHeader = null
+          }
           const result = line.match(this.taskRegex)
           const state = result[1] === 'x' ? true : false
           // truncate、thisをつけなくてもimportしたまんまで使えたのか
