@@ -23,8 +23,8 @@
             small.ml10
               = "#{record.value} #{@habit.value_unit}"
           - if record.memo.present?
-            .description.well.well-narrow.p-2
-              = sani_br(record.memo)
+            .markdown.description.well.well-narrow.p-2
+              = markdown(record.memo)
           hr
       .mt30
         = paginate @records, window: 3, outer_window: 2

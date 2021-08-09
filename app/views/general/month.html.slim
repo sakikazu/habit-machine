@@ -24,11 +24,12 @@ table.table.table-bordered.table-hover.records-table(style="table-layout: fixed"
               = habit.value_unit
         - habit.records_in_date_term.each do |record|
           td.center.js-habit-data(role="button")
-            span.popover-content data-toggle="popover" data-placement="top" title="#{habit.title}" data-content="#{nl2br(record.memo).html_safe}"
+            - if record.memo.present?
+              span.popover-content data-toggle="popover" data-placement="top" title="#{habit.title}" data-content="#{markdown(record.memo).html_safe}"
             span.text-danger
               = record.displaying_value
               | &nbsp;
-              = content_tag('span', fa_icon('comment'), data: { content: record.memo }) if record.memo.present?
+              = fa_icon('comment') if record.memo.present?
             / TODO: 以前の、メモ内容がそのまま表示されるのも捨てがたい
             / .record_value
               / = found_record.displaying_value

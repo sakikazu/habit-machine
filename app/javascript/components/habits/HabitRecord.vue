@@ -20,13 +20,12 @@
         span.text-140.mr-1 {{ initialRecord.value }}
         span {{ habit.value_unit }}
       .card-text.mt10
-        span.text-danger(v-html="nl2br(initialRecord.memo)")
+        span.text-danger.markdown(v-html="initialRecord.markdowned_memo")
 </template>
 
 <script>
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
-import { nl2br } from 'helper.js'
 
 export default {
   inheritAttrs: false, // 非prop属性をルート要素に適用したくない場合
@@ -74,7 +73,6 @@ export default {
   mounted () {
   },
   methods: {
-    nl2br,
     toggleEdit () {
       this.editMode = !this.editMode
       if (this.editMode) {
