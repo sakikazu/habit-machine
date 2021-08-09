@@ -23,12 +23,12 @@
 
       a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
       .form-group
-        textarea.form-control(name="[diary]content" id="markdownable_textarea" rows="15" placeholder="日記の内容" :value="diary.content" :tabindex="tabidxBase + 2")
+        textarea.form-control(name="[diary]content" ref="markdownable_textarea" rows="15" placeholder="日記の内容" :value="diary.content" :tabindex="tabidxBase + 2")
       .form-group
         label
           span.mr-1 タグ
           small.desc カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要
-        input.form-control(type="text" name="[diary]tag_list" id="taglist" ref="taglist" placeholder="矢印キーを押下すれば既存のタグリストが表示されます" :value="diary.tag_list" :tabindex="tabidxBase + 3")
+        input.form-control(type="text" name="[diary]tag_list" ref="taglist" placeholder="矢印キーを押下すれば既存のタグリストが表示されます" :value="diary.tag_list" :tabindex="tabidxBase + 3")
       .form-group
         | ピン留めタグ 
         span.badge.mr5.cursor-pointer(v-for="tag in pinned_tags" @click="toggleTag(tag.name)" :style="tag.color_style")
@@ -106,7 +106,7 @@ export default {
     this.fetchFormData()
   },
   mounted () {
-    $('#markdownable_textarea').markdownEasily()
+    $(this.$refs.markdownable_textarea).markdownEasily()
     this.setCheckUnsavedEvent()
     this.formKey = this.generateKey()
     this.$refs.diaryTitle.focus()
@@ -140,7 +140,7 @@ export default {
       this.pinned_tags = resData.pinned_tags
       this.latest_tags = resData.latest_tags
       this.tagnames = resData.tagnames
-      $('#taglist').autocompleteMultiple(this.tagnames);
+      $(this.$refs.taglist).autocompleteMultiple(this.tagnames);
     },
     setCheckUnsavedEvent () {
       $(this.$refs.form).find('input, textarea, select').on('change', () => {
