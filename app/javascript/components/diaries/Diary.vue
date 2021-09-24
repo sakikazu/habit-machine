@@ -8,7 +8,7 @@
             .noLinkTitle.text-secondary(v-if="modalMode")
               a.date.mr10(:href="`/day/${localDiary.record_at}`") {{ localDiary.disp_record_at }}
               span.title {{ localDiary.title_mod }}
-            span.title(v-else)
+            span.title(v-else :class="{'no-title-yet': !localDiary.title}")
               a(@click="showModal" href="javascript:void(0)") {{ localDiary.title_mod }}
         .tags.ml-3(v-html="localDiary.tag_links")
     .diary-body(v-if="!changed_record_at")
@@ -125,6 +125,9 @@ export default {
 </script>
 
 <style scoped lang="sass">
+.no-title-yet
+  background-color: yellow
+
 .highlight-border
   border: 1px solid #e3e3e3
   animation: BlinkBorder 1s 10
