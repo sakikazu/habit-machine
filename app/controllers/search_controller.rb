@@ -39,11 +39,8 @@ class SearchController < ApplicationController
                    end
 
     @results = source_data.map { |obj| obj.search_result_items }
-    @results.each_with_index do |result, idx|
-      # TODO: htmlサニタイズ?
-      @result_text = ''
-      recursive(result[:target_text].dup)
-      result['highlighted'] = @result_text
+    @results.each do |result|
+      result['highlighted'] = highlight_text(result[:target_text].dup)
     end
 
     render json: @results
@@ -51,9 +48,16 @@ class SearchController < ApplicationController
 
   private
 
+  def highlight_text(target_text)
+    # TODO: htmlサニタイズ?
+    @result_text = ''
+    recursive(target_text)
+    @result_text
+  end
+
   # TODO: class化、Rspec
   def recursive(target_text)
-    idx = target_text.index(@search_word)
+    idx = target_text.index(/#{@search_word}/i)
     return if idx.blank?
     prev_word = target_text.slice!(0, idx)
     prev_word = prev_word.reverse.truncate(WRAP_WORD_LENGTH).reverse
