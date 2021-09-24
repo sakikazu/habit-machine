@@ -1,7 +1,7 @@
 <template lang="pug">
 .MemberModal
   .MemberModal_background(@click="closeModal")
-  .MemberModal_wrapper(:style="{ 'width': wrapperWidth }")
+  .MemberModal_wrapper(ref="wrapper")
     .MemberModal_controls
       a(href="javascript:void(0)" @click="expandWidth")
         i.fa.fa-expand
@@ -27,11 +27,6 @@ export default {
       default: false
     },
   },
-  data () {
-    return {
-      wrapperWidth: '800px',
-    }
-  },
   computed: {
     hasButtonsSlot () {
       return !!this.$slots.buttons
@@ -39,7 +34,7 @@ export default {
   },
   methods: {
     expandWidth () {
-      this.wrapperWidth = '90%'
+      this.$refs.wrapper.style.width = "90%"
     },
     closeModal () {
       this.$emit('on-close')
@@ -75,6 +70,7 @@ export default {
 
     .MemberModal_wrapper
       position: relative
+      width: 800px
       max-width: 1400px
 
     .MemberModal_controls
@@ -115,9 +111,12 @@ export default {
         margin-left: auto
 
     @media screen and (max-width:  640px)
+      .MemberModal_wrapper
+        width: calc( 100% - 40px)
+      .MemberModal_controls
+        display: none
       .MemberModal_contentWrapper
         overflow-y: auto
-        width: calc( 100% - 40px)
       .MemberModal_buttons
         flex-direction: column
       .MemberModal_button
