@@ -281,6 +281,7 @@ const vm = new Vue({
       })
       .catch(error => {
         console.log(error)
+        alert(error.response.data.message)
       })
     },
     deleteData: function(uuid) {

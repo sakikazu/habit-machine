@@ -8,7 +8,7 @@ class RecordsController < ApplicationController
     if @record.save
       render partial: 'show', locals: { record: @record }
     else
-      render json: { message: @record.errors.full_messages.join('\n') }, status: :bad_request
+      render json: { message: @record.errors.full_messages.join("\n") }, status: :bad_request
     end
   end
 
@@ -18,7 +18,7 @@ class RecordsController < ApplicationController
     if @record.update(record_params)
       render partial: 'show', locals: { record: @record }
     else
-      render json: { message: @record.errors.full_messages.join('\n') }, status: :bad_request
+      render json: { message: @record.errors.full_messages.join("\n") }, status: :bad_request
     end
   end
 

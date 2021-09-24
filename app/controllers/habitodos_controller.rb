@@ -22,8 +22,7 @@ class HabitodosController < ApplicationController
     if @habitodo.save
       render partial: 'show', locals: { habitodo: @habitodo }
     else
-      # todo
-      render :new
+      render json: { message: '作成に失敗しました' }, status: :unprocessable_entity
     end
   end
 
@@ -32,8 +31,7 @@ class HabitodosController < ApplicationController
     if @habitodo.update(habitodo_params)
       render partial: 'show', locals: { habitodo: @habitodo }
     else
-      # todo
-      render :edit
+      render json: { message: @habitodo.errors.full_messages.join("\n") }, status: :unprocessable_entity
     end
   end
 

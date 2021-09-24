@@ -190,6 +190,7 @@ ja:
       messages:
         taken: "はすでに存在します。"
         record_invalid: "バリデーションに失敗しました。 %{errors}"
+        invalid_chars: "にサポートしていない文字が含まれています：%{error_chars}"
         <<: *errors_messages
 
       full_messages:

@@ -227,7 +227,7 @@ class DiariesController < ApplicationController
         set_form_variables
         format.html { render action: "new" }
         # NOTE: jsonに直接文字列を指定する場合は、それにto_jsonをつけないとAxiosのerror.response.dataがnullになる。ハッシュだと不要なのになぜ・・
-        format.json { render json: { message: @diary.errors.full_messages.join('\n') }, status: :unprocessable_entity }
+        format.json { render json: { message: @diary.errors.full_messages.join("\n") }, status: :unprocessable_entity }
       end
     end
   end
@@ -245,7 +245,7 @@ class DiariesController < ApplicationController
       else
         set_form_variables
         format.html { render action: "edit" }
-        format.json { render json: { message: @diary.errors.full_messages.join('\n') }, status: :unprocessable_entity }
+        format.json { render json: { message: @diary.errors.full_messages.join("\n") }, status: :unprocessable_entity }
       end
     end
   end
