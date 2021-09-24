@@ -11,9 +11,9 @@
         @submitted="reflectEverydayDiaries"
       )
 
-  .row.bg-dark.mb20
-    .col.text-center
-      a.text-light.btn.btn-info.btn-sm.m-1(@click="showMemoForm")
+  - append_memo_container = capture do
+    .append-memo-container
+      a.btn.btn-sm.btn-outline-danger(@click="showMemoForm")
         i.fa.fa-plus &nbsp;メモ
       #memo-form.modal.fade[tabindex="-1" style="display:none"]
         .modal-dialog
@@ -35,12 +35,15 @@
               .modal-footer
                 button.btn.btn-primary(type="submit") メモ追加
 
+
   .dayContentHeader
     = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
     .dayContentHeaderMiddle
-      .dayContentHeaderMiddleLink.mr5 = link_to fa_icon('home', class: "fa-2x"), root_path
       h3.text-secondary.font-weight-bold = dispdate(@date, true)
-      .dayContentHeaderMiddleLink.ml5 = link_to fa_icon('calendar', class: "fa-2x"), month_path(month: @date.to_s(:ym))
+      .dayContentHeaderMiddleBottom
+        .dayContentHeaderMiddleLink = link_to fa_icon('home', class: "fa-2x"), root_path
+        = append_memo_container
+        .dayContentHeaderMiddleLink = link_to fa_icon('calendar', class: "fa-2x"), month_path(month: @date.to_s(:ym))
     = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
 
   .row.justify-content-center
@@ -92,19 +95,20 @@ sass:
   .dayContentHeader
     display: flex
     justify-content: space-between
-    align-items: center
     width: 480px
-    margin: auto
+    margin: 10px auto
     .dayContentHeaderMiddle
+    .dayContentHeaderMiddleBottom
+      margin-top: 12px
       display: flex
+      justify-content: space-around
+      align-items: center
     .dayContentHeaderMiddleLink
     h3
       margin: 0
+      font-size: 1.9rem
 
   @media screen and (max-width:  640px)
     .dayContentHeader
       width: 100%
-      font-size: 0.7rem
-
-      .dayContentHeaderMiddleLink
-        padding-top: 10px
+      font-size: 0.8rem
