@@ -1,15 +1,21 @@
 <template lang="pug">
 .MemberModal
   .MemberModal_background(@click="closeModal")
-  .MemberModal_contentWrapper(:class="{ '-expand': isExpand}")
-    template(v-if="noPadding")
-      slot(name="content")
-    template(v-else)
-      .MemberModal_content
+  .MemberModal_wrapper(:style="{ 'width': wrapperWidth }")
+    .MemberModal_controls
+      a(href="javascript:void(0)" @click="expandWidth")
+        i.fa.fa-expand
+      // a(href="javascript:void(0)" @click="closeModal")
+        // i.fa.fa-times
+    .MemberModal_contentWrapper
+      template(v-if="noPadding")
         slot(name="content")
+      template(v-else)
+        .MemberModal_content
+          slot(name="content")
 
-    .MemberModal_buttons(v-if="hasButtonsSlot")
-      slot(name="buttons")
+      .MemberModal_buttons(v-if="hasButtonsSlot")
+        slot(name="buttons")
 </template>
 
 <script>
@@ -20,10 +26,11 @@ export default {
       type: Boolean,
       default: false
     },
-    isExpand: {
-      type: Boolean,
-      default: false
-    },
+  },
+  data () {
+    return {
+      wrapperWidth: '800px',
+    }
   },
   computed: {
     hasButtonsSlot () {
@@ -31,6 +38,9 @@ export default {
     }
   },
   methods: {
+    expandWidth () {
+      this.wrapperWidth = '90%'
+    },
     closeModal () {
       this.$emit('on-close')
     },
@@ -63,14 +73,23 @@ export default {
       left: 0
       right: 0
 
-    .MemberModal_contentWrapper
-      overflow-y: scroll
-      max-height: calc(100vh - 80px)
+    .MemberModal_wrapper
       position: relative
-      margin: auto
-      width: 800px
-      &.-expand
-        width: 75%
+      max-width: 1400px
+
+    .MemberModal_controls
+      text-align: right
+
+      a
+        display: inline-block
+        margin-left: 18px
+        color: #fff
+        font-size: 1.5rem
+
+    .MemberModal_contentWrapper
+      max-height: calc(100vh - 60px)
+      margin: 0 auto
+      overflow-y: scroll
 
     .MemberModal_content
       padding: 24px
@@ -99,8 +118,6 @@ export default {
       .MemberModal_contentWrapper
         overflow-y: auto
         width: calc( 100% - 40px)
-        &.-expand
-          width: calc( 100% - 40px)
       .MemberModal_buttons
         flex-direction: column
       .MemberModal_button
