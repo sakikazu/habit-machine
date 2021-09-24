@@ -174,7 +174,7 @@ module ApplicationHelper
       fenced_code_blocks: true, # ```で囲まれた部分をコードとして装飾
     }
 
-    renderer = Redcarpet::Render::HTML.new(options)
+    renderer = CustomRedcarpetRender.new(options)
     md = Redcarpet::Markdown.new(renderer, extensions)
 
     md.render(text).html_safe
