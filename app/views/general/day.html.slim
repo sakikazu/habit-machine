@@ -59,12 +59,9 @@
           | 本日の日記&nbsp;
           / TODO: popoverが動かなくなっているが重要ではないので放置しようかな
           a.btn.btn-primary(data-toggle="popover" data-title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
-        div
-          - unless browser.device.mobile?
-            a.btn.btn-light(@click="expandWidth") 横並び
       .diaries(ref="diariesBody")
         p(v-if="diariesWithOpsions.length == 0") 日記はありません。
-        #diaries-wrapper.d-flex.flex-row.flex-wrap(v-else)
+        .diaries-wrapper.d-flex.flex-row.flex-wrap(v-else)
           / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
           / .flex-grow-1.flex-basis-0 / Diaryの幅を等分して並べる。100%を要素数で割っても同じことができる。この場合はgrow-1は不要になるはず
           / flex-basis:650にすることで、diaries-wrapperが1300pxを越える場合はDiaryを横に2つ並べ、否なら1つ。いずれにしてもDiaryはめいっぱい広がる

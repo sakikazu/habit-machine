@@ -86,11 +86,6 @@ document.addEventListener('turbolinks:load', () => {
         $('#memo-form').show()
         $('#memo-form').modal('show')
       },
-      expandWidth () {
-        const DIARY_WIDTH = 800
-        const width = this.diariesWithOpsions.length * DIARY_WIDTH
-        $('#diaries-wrapper').width(width)
-      },
       setupTimepicker () {
         $('.timepicker').datetimepicker({
           format: 'LT'
