@@ -1,21 +1,19 @@
 HabitMachine
 ====
 
-日々の記録やTODO管理ができるプライベートなサービス。SNS要素なし。
-主に日記、習慣化のための記録、TODOリスト、markdownメモ、検索機能。
+日々の記録やTODO管理ができるプライベートなサービス。
+主に日記、習慣化のための記録、記録のグラフ、TODOリスト、目次付きノート、検索機能。
 スマホView対応、PWA対応
 
-
 ## Features
-
-* 日ごとのページに、日記、記録、TODOリストを設置
-* 日記はタグ付け可能、画像添付可能、markdown対応（JSによるmarkdown入力補助あり）
+* 日ごとのページに、日記、習慣の記録、TODOリストを設置
+* 日記はタグ付け、画像添付、markdown対応（JSによるmarkdown入力補助あり）
 * 日記は多面的な閲覧が可能（検索結果、「人生ハイライト」、「10年日記」）
 * 日記からTODOリストを作成可能
   * TODOも日々の記録という位置づけで、この時期にこんなTODOがあって、これだけ完了させたという情報を記録
   * 日ごとのページからTODOを更新可能
 * 習慣の記録データはグラフ表示可能
-* turbolinksとVue.jsを共存
+* turbolinksを使っているが、Vue.jsが入ったページではOFF
 * レスポンシブデザインによるスマホView対応
 * Vue.jsでSPA
 * 検索結果ページで検索ワードのハイライト
@@ -35,7 +33,9 @@ HabitMachine
 
 
 ## Demo (heroku)
-https://hm-a-dan.herokuapp.com/
+どなたでもどんな操作でも試用可能
+
+* https://hm-a-dan.herokuapp.com/
 
 テストユーザー
 | email            | password  |
