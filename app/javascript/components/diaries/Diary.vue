@@ -130,7 +130,7 @@ export default {
 
 <style scoped lang="sass">
 .no-title-yet
-  background-color: yellow
+  background-color: greenyellow
 
 .highlight-border
   border: 1px solid #e3e3e3
