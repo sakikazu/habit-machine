@@ -61,10 +61,6 @@
         input(type="hidden" name="[diary]is_about_date" value="0")
         input.form-check-input(type="checkbox" id="makeAmbiguousDate" name="[diary]is_about_date" value="1" :checked="diary.is_about_date")
         label.form-check-label(for="makeAmbiguousDate") 日付を曖昧にする
-      .form-group.form-check
-        input(type="hidden" name="[diary]is_secret" value="0")
-        input.form-check-input(type="checkbox" id="makeSecret" name="[diary]is_secret" value="1" :checked="diary.is_secret")
-        label.form-check-label(for="makeSecret") 他人に見られないようにする
 
     .card-footer
       .form-actions.d-flex.justify-content-between
