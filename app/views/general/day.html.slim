@@ -8,7 +8,7 @@
       diary(
         :diary-id="modalableDiaryId"
         :modal-mode="true"
-        @submitted="reflectEverydayDiaries"
+        @submitted="reflectPinnedDiaries"
       )
 
   - append_memo_container = capture do
@@ -82,13 +82,15 @@
         a.btn.btn-block.btn-light.ignore-checking-changes(@click="newDiary")
           i.fa.fa-pencil &nbsp;日記を書く
 
-    .sectionEverydayDiaries.col-md-3
+    .sectionPinnedDiaries.col-md-3
       .page-header
         h4
-          | Everyday
-          small.ml-3 = link_to '[all]', everyday_diaries_path
+          span.mr-2
+            i.fa.fa-thumb-tack
+          | 固定
+          small.ml-3 = link_to '[管理]', pinned_diaries_path
       .diaries
-        .mb-1(v-for="diary in everydayDiaries" :key="diary.id")
+        .mb-1(v-for="diary in pinnedDiaries" :key="diary.id")
           task-diary(:diary="diary" @updated="showToast" @show-diary-modal="showDiaryModal")
 
 sass:

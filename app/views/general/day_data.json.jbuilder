@@ -20,8 +20,8 @@ end
 
 json.diary_links_list diary_links_list(@diaries)
 
-json.everyday_diaries do
-  json.array! @everyday_diaries do |diary|
-    json.extract! diary, :id, :title, :content, :record_at
+json.pinned_diaries do
+  json.array! @pinned_diaries do |diary|
+    json.extract! diary, :id, :title, :content, :record_at, :pin_priority
   end
 end

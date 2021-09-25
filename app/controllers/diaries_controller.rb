@@ -147,18 +147,17 @@ class DiariesController < ApplicationController
   end
 
   #
-  # 毎日表示したいもの
+  # 固定（ピン留め）
   #
-  def everyday
+  def pinned
     @all = params[:all].present?
     @tag = params[:tag]
-    @diaries = current_user.diaries.tagged_with('everyday').order(id: :desc)
+    @diaries = current_user.diaries.pinned.order(id: :desc)
     if @tag.present?
       @diaries = @diaries.tagged_with(@tag)
     end
-    tags = current_user.diaries.tagged_with('everyday').map { |d| d.tags }
-    names = tags.flatten.map { |tag| tag.name }
-    @tag_names = names.uniq.delete_if { |name| name == 'everyday' }
+    tags = current_user.diaries.pinned.map { |d| d.tags }
+    @tag_names = tags.flatten.map { |tag| tag.name }.uniq
   end
 
   # GET /diaries/1
@@ -311,6 +310,6 @@ class DiariesController < ApplicationController
   end
 
   def diary_params
-    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :search_word, :main_in_day)
+    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :search_word, :main_in_day, :pinned, :pin_priority)
   end
 end
