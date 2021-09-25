@@ -1,0 +1,27 @@
+.row.justify-content-center
+  .col-sm-8
+    .page-header
+      h2 タグ一覧
+    table.table.table-bordered
+      tr
+        th タグ名
+        th 文字色、背景色
+        th ピン留め
+        th 説明
+        th 日記での使用数
+        th
+      - @tags.each do |tag|
+        tr
+          td = tag.name
+          td = content_tag('span', tag.color, class: 'badge badge-big', style: tag.color_style)
+          td.text-center = fa_icon('thumb-tack') if tag.pinned?
+          td = truncate_30_link(tag.description)
+          td = tag.taggings_count
+          td
+            = link_to '詳細', tag_path(tag)
+            |  / 
+            = link_to '編集', edit_tag_path(tag)
+            |  / 
+            = link_to '削除', tag_path(tag), method: :delete, data: { confirm: '本当に削除してもよろしいですか?' }
+    br
+    = link_to '新しいタグを作成', new_tag_path, class: "btn btn-light"

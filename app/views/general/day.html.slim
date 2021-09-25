@@ -1,0 +1,116 @@
+- content_for :addjs_in_head
+  = javascript_pack_tag 'day_page', 'data-turbolinks-track': 'reload'
+
+#dayPage(data-target-date="#{@date}")
+  toast(:showable="toastShowable" :is-error="toastError" :message="toastMessage" @toast-hidden="toastShowable = false")
+  modal(v-if="!!modalableDiaryId" :no-padding="true" @on-close="closeDiaryModal")
+    template(v-slot:content)
+      diary(
+        :diary-id="modalableDiaryId"
+        :modal-mode="true"
+        @submitted="reflectPinnedDiaries"
+      )
+
+  - append_memo_container = capture do
+    .append-memo-container
+      a.btn.btn-sm.btn-outline-danger(@click="showMemoForm")
+        i.fa.fa-plus &nbsp;メモ
+      #memo-form.modal.fade[tabindex="-1" style="display:none"]
+        .modal-dialog
+          .modal-content
+            form.form.form-inline(ref="memoForm" @submit="submitAppendingMemo")
+              .modal-body
+                .form-row.mb-2
+                  .col-6.timepicker.input-group[data-target-input="nearest"]
+                    .input-group-prepend
+                      .input-group-text[data-target='.timepicker' data-toggle='datetimepicker']
+                        = fa_icon 'clock-o', class: 'fa-lg'
+                    input.form-control.datetimepicker-input(type="text" name="[diary]time_memo" data-target=".timepicker")
+                  .col-4
+                    select.form-control.w100(name="[diary]label_memo")
+                      option(v-for="cate in memoCategories" :value="cate" v-text="cate")
+                div
+                  textarea.form-control.first-focus.w100(name="[diary]memo" v-model="memoContent")
+                input(type="hidden" name="[diary]record_at" value="#{@date}")
+              .modal-footer
+                button.btn.btn-primary(type="submit") メモ追加
+
+
+  .dayContentHeader
+    = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
+    .dayContentHeaderMiddle
+      h3.text-secondary.font-weight-bold = dispdate(@date, true)
+      .dayContentHeaderMiddleBottom
+        .dayContentHeaderMiddleLink = link_to fa_icon('home', class: "fa-2x"), root_path
+        = append_memo_container
+        .dayContentHeaderMiddleLink = link_to fa_icon('calendar', class: "fa-2x"), month_path(month: @date.to_s(:ym))
+    = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
+
+  .row.justify-content-center
+    .sectionHabitRecords.col-md-2
+      .page-header
+        h4 本日の記録
+      p(v-if="habit_records.length == 0") 習慣が登録されていません。
+      .habit-records(v-else)
+        habit-record(v-for="habit_record in habit_records" :habit="habit_record.habit" :record="habit_record.record" target-date="#{@date}" :key="habit_record.habit.id")
+
+    / NOTE: .overflow-autoを付加すると、子要素の幅が限界を超えた時に、画面全体ではなく、この要素に対してスクロールバーが表示される
+    / 付加しないと、画面全体にスクロールバーが表示される
+    .sectionDiaries.col-md-7.overflow-auto
+      .page-header.d-flex
+        h4.flex-grow-1
+          | 本日の日記&nbsp;
+          / TODO: popoverが動かなくなっているが重要ではないので放置しようかな
+          a.btn.btn-primary(data-toggle="popover" data-title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
+      .diaries(ref="diariesBody")
+        p(v-if="diariesWithOpsions.length == 0") 日記はありません。
+        .diaries-wrapper.d-flex.flex-row.flex-wrap(v-else)
+          / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
+          / .flex-grow-1.flex-basis-0 / Diaryの幅を等分して並べる。100%を要素数で割っても同じことができる。この場合はgrow-1は不要になるはず
+          / flex-basis:650にすることで、diaries-wrapperが1300pxを越える場合はDiaryを横に2つ並べ、否なら1つ。いずれにしてもDiaryはめいっぱい広がる
+          .flex-grow-1.ml-2.mb-3.diary-wrapper(v-for="obj in diariesWithOpsions" style="flex-basis:650px")
+            diary(
+              :diary="obj.diary"
+              :target-date-for-edit-mode="obj.targetDateForEditMode"
+              :highlight-for-a-moment="obj.highlightForAMoment"
+              :key="`diary-${obj.diary.id}`"
+              @content-changed="onContentChanged"
+              @submitted="onSubmitted"
+              @show-diary-modal="showDiaryModal"
+            )
+      p
+        a.btn.btn-block.btn-light.ignore-checking-changes(@click="newDiary")
+          i.fa.fa-pencil &nbsp;日記を書く
+
+    .sectionPinnedDiaries.col-md-3
+      .page-header
+        h4
+          span.mr-2
+            i.fa.fa-thumb-tack
+          | 固定
+          small.ml-3 = link_to '[管理]', pinned_diaries_path
+      .diaries
+        .mb-1(v-for="diary in pinnedDiaries" :key="diary.id")
+          task-diary(:diary="diary" @updated="showToast" @show-diary-modal="showDiaryModal")
+
+sass:
+  .dayContentHeader
+    display: flex
+    justify-content: space-between
+    width: 480px
+    margin: 10px auto
+    .dayContentHeaderMiddle
+    .dayContentHeaderMiddleBottom
+      margin-top: 12px
+      display: flex
+      justify-content: space-around
+      align-items: center
+    .dayContentHeaderMiddleLink
+    h3
+      margin: 0
+      font-size: 1.9rem
+
+  @media screen and (max-width:  640px)
+    .dayContentHeader
+      width: 100%
+      font-size: 0.8rem

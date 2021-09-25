@@ -1,0 +1,94 @@
+doctype html
+html[lang="ja"]
+  head
+    meta[charset="utf-8"]
+    meta[http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"]
+    meta[name="viewport" content="width=device-width, initial-scale=1.0"]
+    title
+      = "[dev]" unless Rails.env.production?
+      = page_title
+      |  - HabitMachine
+    = csrf_meta_tags
+    = stylesheet_link_tag 'application', media: 'all'
+    - #= favicon_link_tag 'images/apple-touch-icon-144x144-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '144x144'
+    - #= favicon_link_tag 'images/apple-touch-icon-114x114-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '114x114'
+    - #= favicon_link_tag 'images/apple-touch-icon-72x72-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '72x72'
+    - #= favicon_link_tag 'images/apple-touch-icon-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png'
+    = favicon_link_tag 'favicon.ico', :rel => 'shortcut icon'
+    = javascript_include_tag 'application'
+
+    / for PWA
+    link rel="manifest" href="/manifest.json"
+    javascript:
+      $(function() {
+        if ('serviceWorker' in navigator) {
+          // ServiceWorkerの登録
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => {
+              console.log('Service worker registered.', reg)
+              // todo: これは何？
+              if (typeof registration.update == 'function') {
+                registration.update();
+              }
+            })
+            .catch(error => {
+              console.log("Error Log: " + error);
+            });
+        }
+      })
+
+    / NOTE: turbolinksでは、head内のscriptはページの初回表示時のみに実行されるので、重複実行させたくないものを置くこと。全てここに置いた方が事故がないか・・
+    = yield :addjs_in_head
+  body[class="#{controller.controller_name}_controller" data-turbolinks="#{'false' if @turbolinks_off}"]
+    nav.navbar.navbar-expand-lg.navbar-light.bg-light(class="#{@no_header_margin ? '' : 'mb20'}")
+      a.navbar-brand[href="#{root_path}"]
+        | HabitMachine
+      ul.navbar-nav.ml-auto.mr-3.mr-lg-0
+        li.nav-item(class="#{active_class('habitodos')}")
+          = link_to "ノート", habitodos_path, class: 'nav-link'
+      ul.navbar-nav.mr-3.mr-lg-0
+        li.nav-item(class="#{active_class('general', 'month')}") = link_to '月間記録', this_month_path, class: 'nav-link'
+      button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
+        span.navbar-toggler-icon
+      #navbarSupportedContent.collapse.navbar-collapse
+        ul.navbar-nav.mr-auto
+          li class="dropdown nav-item #{active_class('diaries')}"
+            = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+            .dropdown-menu
+              = link_to '日記一覧', diaries_path, class: 'dropdown-item'
+              = link_to "人生ハイライト", hilight_diaries_path, class: 'dropdown-item'
+              = link_to "10年日記", years_diaries_path(Date.today.year), class: 'dropdown-item'
+              = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
+          li class="dropdown nav-item"
+            = link_to "その他", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+            .dropdown-menu
+              = link_to "習慣と記録", habits_path, class: 'dropdown-item'
+              = link_to "意識付け一覧", senses_path, class: 'dropdown-item'
+              = link_to "現意識", "javascript:showCurrentSenses();", class: 'dropdown-item'
+          li.nav-item.dropdown
+            = link_to current_user.fullname, '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
+            .dropdown-menu
+              = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
+              = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}
+              = link_to 'for ServiceWorker', '/frontend.html', class: 'dropdown-item'
+        ul.navbar-nav
+          li.nav-item
+            / 検索フォーム
+            form.form-inline action='/search' method='get'
+              input name="q" value="#{@g_search_word || ''}" class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+              button class="btn btn-outline-success my-2 my-sm-0" type="submit" 検索
+
+    .container-fluid
+      - if notice.present?
+        p.alert.alert-info
+          = notice
+      - if alert.present?
+        p.alert.alert-danger
+          = alert
+      = yield
+    footer
+      p HabitMachine ( Sakikazu Company 2012-#{Date.today.year} )
+    - #= javascript_include_tag "application"
+
+    / NOTE: ページごとのJS（現状はライブラリをHEADで読んでるから意味ないけど）
+    = yield :addjs

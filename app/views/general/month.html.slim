@@ -1,0 +1,65 @@
+.d-flex.justify-content-between.mt10.mb15
+  = link_to fa_icon('caret-left', class: 'fa-lg', style: 'padding:0.6em 0.1em'), month_path(month: (@target_month - 1.month).to_s(:ym)), class: "btn btn-light", data: { turbolinks: false }
+  = form_tag this_month_path, method: :get, class: 'form-inline mr5 ml5' do
+    = date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true, start_year: Settings.start_year, end_year: Date.today.year + 1}, {class: "form-control mr5"}
+    = submit_tag "移動", class: "btn btn-light pl-4 pr-4"
+    = link_to "今月(#{Date.today.strftime("%Y年%m月")})", this_month_path, class: "btn btn-outline-danger ml20"
+  = link_to fa_icon('caret-right', class: 'fa-lg', style: 'padding:0.6em 0.1em'), month_path(month: (@target_month + 1.month).to_s(:ym)), class: "btn btn-light"
+
+
+table.table.table-bordered.table-hover.records-table(style="table-layout: fixed")
+  thead
+    tr
+      th(style="width:160px")
+      - @date_term.each do |date|
+        th(class="center #{dateclass(date)}" style="width:140px")
+          = link_to dispdate(date), day_path(date), data: { turbolinks: false }
+  tbody
+    - @habits.each do |habit|
+      tr
+        th
+          = link_to habit.title, habit_path(habit)
+          - if habit.value_unit.present?
+            span.badge.badge-secondary<
+              = habit.value_unit
+        - habit.records_in_date_term.each do |record|
+          td.center.js-habit-data(role="button")
+            - if record.memo.present?
+              span.popover-content data-toggle="popover" data-placement="top" title="#{habit.title}" data-content="#{markdown(record.memo).html_safe}"
+            span.text-danger
+              = record.displaying_value
+              | &nbsp;
+              = fa_icon('comment') if record.memo.present?
+            / TODO: 以前の、メモ内容がそのまま表示されるのも捨てがたい
+            / .record_value
+              / = found_record.displaying_value
+            / - if found_record.memo.present?
+              / .record_memo
+                / - if @showable.present?
+                  / = sani_br(found_record.memo)
+                / - else
+                  / = found_record.memo.truncate(30)
+    tr.diary-row
+      th
+        = link_to "日記", diaries_path
+      - @date_term.each do |date|
+        td
+          - is_first_diary = true
+          - if @diaries[date].present?
+            - @diaries[date].each do |diary|
+              = "<hr>".html_safe unless is_first_diary
+              = show_diary_for_toppage(diary)
+              - is_first_diary = false
+
+div[style="width: 3000px"]
+  .page-header
+    h3 折れ線グラフ表示
+  = high_chart("chart1", @habits_for_oresen_graph)
+  .page-header
+    h3 棒グラフ表示
+  = high_chart("chart2", @habits_for_bou_graph)
+
+sass:
+  tr.diary-row
+    a.diary-title
+      font-size: 0.9rem

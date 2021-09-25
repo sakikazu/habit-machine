@@ -1,0 +1,35 @@
+{
+  "name": "habit-machine",
+  "version": "1.0.0",
+  "description": "HabitMachine ====",
+  "main": "index.js",
+  "directories": {
+    "doc": "doc",
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://sakikazu15@bitbucket.org/sakikazu15/habit-machine.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/sakikazu15/habit-machine#readme",
+  "dependencies": {
+    "@rails/webpacker": "5.4.0",
+    "axios": "^0.21.1",
+    "node-sass": "4.14.1",
+    "pug": "^3.0.2",
+    "pug-plain-loader": "^1.1.0",
+    "sass-loader": "7.3.1",
+    "vue": "^2.6.11",
+    "vue-loader": "^15.9.2",
+    "vue-template-compiler": "^2.6.11",
+    "vue-turbolinks": "^2.1.0"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "^3.11.2"
+  }
+}

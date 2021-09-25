@@ -1,0 +1,155 @@
+/ todo textareaでも、caretを駆使すればsetPosして目次は実現できそうだな
+- content_for :addjs_in_head
+  = javascript_pack_tag 'habitodos', 'data-turbolinks-track': 'reload'
+
+#habitodo
+  #habitodo-header.row.bg-dark.text-light
+    .flex-grow-1
+    .flex-grow-0 Chrome only
+  #habitodo-body.row
+    #sidebar-left.overflow-y-scroll.col-sm-2.order-1.order-sm-1.bg-secondary.text-light
+      ul#doclist.list-unstyled.mt-3
+        li.d-flex.p-0 [
+          v-for="(h, key) in sortedHabitodos"
+          :key="h.uuid"
+          :class="h.isCurrent ? 'selected-data' : ''"
+          @click="switchDoc(h.uuid)"
+        ]
+          .flex-grow-1
+            | {{ h.title }}
+          .ml-2
+            / stopでバブリングを止める（saveBodyの後にswitchDocしてるので結局clickイベント実行されてしまうが、意図として残す）
+            i.fa.fa-save v-show="h.unsaved" @click.stop="saveBody(h.uuid)"
+          .ml-3.mr-2
+            / TODO: スマホでサイドバー領域の高さを低くしたために、dropdownメニューが全部表示されなくなってしまった
+            .dropdown
+              a.dropdown-toggle.text-light data-toggle="dropdown"
+              .dropdown-menu.dropdown-menu-right.dropdown-menu-wide
+                .change-title-form.p-2
+                  .form-group
+                    input type="text" class="form-control" v-model="sortedHabitodos[key].title"
+                  .form-group
+                    label 並び順（数値が大きい順）
+                    input type="text" class="form-control" v-model="sortedHabitodos[key].order_number"
+                  .text-center
+                    a.btn.btn-primary[href="javascript:void(0)" @click="saveAttrs(h.uuid)"] 変更
+                .dropdown-divider
+                .p-2.text-danger.text-center @click.stop="deleteData(h.uuid)"
+                  a.btn.btn-danger[href="javascript:void(0)"]
+                    i.fa.fa-trash.ml-1
+                    | 削除
+
+      / 新規作成
+      create-form @created-data='onCreatedData'
+
+      / 検索
+      .searchbox.input-group.mt-5.mb-3
+        input type='text' class='form-control' v-model='searchWord' @keyup="preSearchData()" placeholder="検索ワード"
+        .input-group-append
+          span.input-group-text[@click="searchData()" :style="{ color: searchBtnColor }"] 検索
+      ul.search-result.list-group.list-group-flush.list-unstyled.mt-3.mb-3(v-if="searchResult.length > 0")
+        li.list-group-item.list-group-item-primary.cursor-pointer [
+          v-for="d in searchResult"
+          :key="`${d.docId}-${d.rows}`"
+          @click="selectFoundData(d.docId, d.rows)"
+        ]
+          | {{ d.text + '(' + d.rows + ')' }}
+
+    #middle-area.overflow-y-scroll.col-sm-8.order-3.order-sm-2.middle-area
+      p v-show="habitodos.length == 0" データないです
+      content-editor(v-for="ht in habitodos" :habitodo="ht" :key="ht.uuid" v-show="ht.isCurrent" @updated="updateHabitodo")
+
+    #sidebar-right.overflow-y-scroll.col-sm-2.order-2.order-sm-3.bg-light.text-secondary
+      #mokujis.mt-3
+        h4.text-center.mb-0
+          i.fa.fa-list-ul.mr-2
+          |目次
+        ul.mokuji-list
+          li [
+            v-for="m in mokuji"
+            :key="m['anchor']"
+          ]
+            a(:href="`#${m['anchor']}`" v-text="m['text']" :class="m['style_class']" data-turbolinks="false")
+
+scss:
+  .middle-area {
+    /* .editor内fontSize(em)の基準 */
+    font-size: 16px;
+
+    &.col-sm-8 {
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+  .editor {
+    padding: 15px;
+    font-size: 1.1em;
+    line-height: 1.8em;
+
+    p {
+      margin-bottom: 0;
+    }
+
+    h1 { font-size: 2.2em; }
+    h2 { font-size: 1.9em; }
+    h3 { font-size: 1.6em; }
+    h4 { font-size: 1.4em; }
+    h5 { font-size: 1.2em; }
+
+  }
+  ul#doclist {
+    li {
+      color: white;
+      cursor: pointer;
+
+      &:hover {
+        background-color: lightskyblue;
+      }
+    }
+    li.selected-data {
+      background-color: cornflowerblue;
+    }
+  }
+  ul.mokuji-list {
+    list-style-type: none;
+    padding-left: 0;
+
+    a {
+      display: inline-block;
+    }
+
+    .mokuji-h1 {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #932674;
+      margin-top: 16px;
+    }
+    .mokuji-h1:before {
+      content: '';
+      border-left: 5px solid #932674;
+      padding-left: 7px;
+    }
+    .mokuji-h2 {
+      font-size: 1.1rem;
+      color: #932674;
+      margin-top: 5px;
+    }
+    .mokuji-h2:before {
+      content: '◼';
+    }
+    .mokuji-h3 {
+      font-size: 1.0rem;
+      color: #B75C9D;
+    }
+    .mokuji-h3:before {
+      content: '◻';
+    }
+    .mokuji-h4, .mokuji-h5 {
+      font-size: 0.8rem;
+      color: #C97FB4;
+      padding-left: 5px;
+    }
+    .mokuji-h4:before, .mokuji-h5:before {
+      content: '◾';
+    }
+  }
