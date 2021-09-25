@@ -21,7 +21,7 @@ HabitMachine
 
 ## スクリーンキャプチャ
 ### 日ごとのページ
-![HM、dayページ、github用](https://user-images.githubusercontent.com/745130/124608007-54e40100-dea9-11eb-84e3-dd5dc405a416.jpg)
+![HM、dayページ、github用](https://user-images.githubusercontent.com/745130/134775827-d69ab686-5aeb-420b-a1ad-dd2293140546.jpg)
 
 
 ### メモページ
