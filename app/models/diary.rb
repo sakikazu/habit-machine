@@ -121,7 +121,7 @@ class Diary < ApplicationRecord
     return if exists_diaries.blank?
     if self.new_record? ||
         (self.persisted? && !exists_diaries.pluck(:id).include?(self.id))
-      self.errors.add(:main_in_day, "メイン日記は既に作成済みなので、チェックを外してください")
+      self.errors.add(:main_in_day, "メイン日記は1日に1つしか作成できません")
     end
   end
 
