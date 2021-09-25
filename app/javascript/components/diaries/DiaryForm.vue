@@ -54,6 +54,14 @@
         input.form-check-input(type="checkbox" id="mainInDay" name="[diary]main_in_day" value="1" :checked="diary.main_in_day")
         label.form-check-label(for="mainInDay") 1日のメイン日記
       .form-group.form-check
+        input(type="hidden" name="[diary]pinned" value="0")
+        input.form-check-input(type="checkbox" id="makePinned" name="[diary]pinned" value="1" :checked="diary.pinned")
+        label.form-check-label(for="makePinned") 固定表示にする
+      // TODO: とりあえずDiary.id降順のままでいいのでコメントアウト。やるならD&Dで順序変更できるUIかなぁ
+      // .form-group
+        // input.form-control(type="number" name="[diary]pin_priority" :value="diary.pin_priority")
+        // label 固定表示の順（降順）
+      .form-group.form-check
         input(type="hidden" name="[diary]is_hilight" value="0")
         input.form-check-input(type="checkbox" id="makeHighlight" name="[diary]is_hilight" value="1" :checked="diary.is_hilight")
         label.form-check-label(for="makeHighlight") 人生ハイライトにする

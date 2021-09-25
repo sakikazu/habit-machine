@@ -13,6 +13,8 @@
 #  is_hilight         :boolean
 #  is_secret          :boolean
 #  main_in_day        :boolean          default(FALSE), not null
+#  pin_priority       :integer          default(0), not null
+#  pinned             :boolean          default(FALSE), not null
 #  record_at          :date
 #  title              :string(255)
 #  created_at         :datetime         not null
@@ -51,6 +53,7 @@ class Diary < ApplicationRecord
   belongs_to :user
 
   scope :main_in, lambda { |day| where(main_in_day: true, record_at: day) }
+  scope :pinned, lambda { where(pinned: true) }
   scope :hilight, lambda { where(is_hilight: true) }
   scope :find_by_word, lambda { |word| where('title like :q OR content like :q', :q => "%#{word}%") }
   scope :newer, lambda { order(["record_at DESC", "id ASC"]) }

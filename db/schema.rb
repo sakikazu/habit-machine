@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_09_25_002058) do
+ActiveRecord::Schema.define(version: 2021_09_25_125531) do
 
   create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -45,6 +45,8 @@ ActiveRecord::Schema.define(version: 2021_09_25_002058) do
     t.boolean "is_about_date"
     t.boolean "is_secret"
     t.boolean "main_in_day", default: false, null: false
+    t.boolean "pinned", default: false, null: false
+    t.integer "pin_priority", default: 0, null: false
   end
 
   create_table "habitodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|

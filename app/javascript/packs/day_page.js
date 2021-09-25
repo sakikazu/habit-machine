@@ -31,7 +31,7 @@ document.addEventListener('turbolinks:load', () => {
       toastShowable: false,
       toastError: false,
       toastMessage: '',
-      everydayDiaries: [],
+      pinnedDiaries: [],
       modalableDiaryId: null,
     },
     computed: {
@@ -100,7 +100,7 @@ document.addEventListener('turbolinks:load', () => {
               return { diary: diary, targetDateForEditMode: null, highlightForAMoment: false }
             })
             this.diary_links_list = res.data.diary_links_list
-            this.everydayDiaries = res.data.everyday_diaries
+            this.pinnedDiaries = res.data.pinned_diaries
           })
           .catch(error => {
             alert(error.message || error.response.data.message)
@@ -135,9 +135,9 @@ document.addEventListener('turbolinks:load', () => {
         this.contentChanged = this.contentChanged.filter(content => content !== formKey)
       },
       // this.diariesの方には反映する必要性はあまりない
-      reflectEverydayDiaries (_formKey, updatedDiary) {
-        let foundIndex = this.everydayDiaries.findIndex(diary => diary.id == updatedDiary.id)
-        Vue.set(this.everydayDiaries, foundIndex, updatedDiary)
+      reflectPinnedDiaries (_formKey, updatedDiary) {
+        let foundIndex = this.pinnedDiaries.findIndex(diary => diary.id == updatedDiary.id)
+        Vue.set(this.pinnedDiaries, foundIndex, updatedDiary)
       },
       submitAppendingMemo (event) {
         event.preventDefault()
