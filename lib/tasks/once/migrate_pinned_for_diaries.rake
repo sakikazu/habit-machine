@@ -1,16 +1,16 @@
 namespace :migrate_tag_to_pinned do
-  TARGET_TAG = 'everyday'
+  TARGET_TAG_2 = 'everyday'
 
   desc "日記の固定表示をタグからpinnedカラムに変更"
   task execute: :environment do
     all_count = 0
     error_count = 0
-    Diary.tagged_with(TARGET_TAG).find_each do |diary|
+    Diary.tagged_with(TARGET_TAG_2).find_each do |diary|
       all_count += 1
       begin
         ActiveRecord::Base.transaction do
           diary.update!(pinned: true)
-          diary.tag_list.remove(TARGET_TAG)
+          diary.tag_list.remove(TARGET_TAG_2)
           diary.save!
         end
       rescue => e

@@ -4,6 +4,7 @@ base_day = Date.today
 diary = Diary.seed do |d|
   d.user_id = user_id
   d.record_at = base_day.ago(2.day)
+  d.pinned = true
   d.title = '夏休みにやること'
   d.content = <<~EOS
     - [ ] プール
@@ -12,15 +13,12 @@ diary = Diary.seed do |d|
     - [ ] ピアノ
     - [ ] 写真の整理
   EOS
-end.tap do |result|
-  obj = result.first
-  obj.tag_list << 'everyday'
-  obj.save!
 end
 
 Diary.seed do |d|
   d.user_id = user_id
   d.record_at = base_day.ago(1.day)
+  d.pinned = true
   d.title = '夏休み1日目'
   d.content = <<~EOS
     グルタミンを飲んだ
@@ -33,10 +31,6 @@ Diary.seed do |d|
     - [ ] カゴを買う
     - [ ] エサを買う
   EOS
-end.tap do |result|
-  obj = result.first
-  obj.tag_list << 'everyday'
-  obj.save!
 end
 
 Diary.seed do |d|
@@ -58,16 +52,13 @@ end
 Diary.seed do |d|
   d.user_id = user_id
   d.record_at = base_day
+  d.pinned = true
   d.title = 'Vue.jsの学習'
   d.content = <<~EOS
     - v-forするときは、keyをちゃんとつける！
     - 下位ComponentにCSSを反映したいときはv-deepを使う
     - propsの変化で何か実行したい場合はwatchで監視して行う
   EOS
-end.tap do |result|
-  obj = result.first
-  obj.tag_list << 'everyday'
-  obj.save!
 end
 
 Diary.seed do |d|
