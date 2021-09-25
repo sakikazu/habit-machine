@@ -1,5 +1,5 @@
 json.diary do
-  json.extract! @diary, :id, :title, :content, :is_hilight, :is_secret, :is_about_date
+  json.extract! @diary, :id, :title, :content, :main_in_day, :is_hilight, :is_secret, :is_about_date
   json.image_path @diary.image(:small) if @diary.image.present?
   json.tag_list @diary.tag_list.join(', ')
 end

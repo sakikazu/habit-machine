@@ -1,4 +1,4 @@
-json.extract! diary, :id, :title, :content, :record_at, :is_hilight, :is_secret, :is_about_date
+json.extract! diary, :id, :title, :content, :record_at, :main_in_day, :is_hilight, :is_secret, :is_about_date
 json.title_mod diary.title_mod
 json.disp_record_at dispdate(diary.record_at, true)
 json.markdowned_content markdown(diary.content)

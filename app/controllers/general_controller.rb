@@ -21,7 +21,7 @@ class GeneralController < ApplicationController
     date = Date.parse(params[:date]) rescue nil
     return head :bad_request if date.blank?
     @habits = Habit.with_record_at_date(current_user.habits, date)
-    @diaries = current_user.diaries.includes(:tags).where(record_at: date)
+    @diaries = current_user.diaries.includes(:tags).where(record_at: date).order(main_in_day: :desc)
     # TODO: DB変更前に、POCでeverydayタグを対象とする
     @everyday_diaries = current_user.diaries.includes(:tags).tagged_with('everyday').order(id: :desc).limit(10)
   end

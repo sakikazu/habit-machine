@@ -7,8 +7,12 @@
           h5.diary-title
             .noLinkTitle.text-secondary(v-if="modalMode")
               a.date.mr10(:href="`/day/${localDiary.record_at}`") {{ localDiary.disp_record_at }}
+              span.text-danger.mr-1(v-if="localDiary.main_in_day")
+                i.fa.fa-star
               span.title {{ localDiary.title_mod }}
             span.title(v-else :class="{'no-title-yet': !localDiary.title}")
+              span.text-danger.mr-1(v-if="localDiary.main_in_day")
+                i.fa.fa-star
               a(@click="showModal" href="javascript:void(0)") {{ localDiary.title_mod }}
         .tags.ml-3(v-html="localDiary.tag_links")
     .diary-body(v-if="!changed_record_at")

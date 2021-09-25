@@ -191,7 +191,9 @@ class DiariesController < ApplicationController
                 else
                   Date.today
                 end
-    @diary = Diary.new(record_at: record_at)
+
+    initial_main_in_day = !current_user.diaries.main_in(record_at).exists?
+    @diary = Diary.new(record_at: record_at, main_in_day: initial_main_in_day)
 
     respond_to do |format|
       format.html # new.html.erb
@@ -264,17 +266,17 @@ class DiariesController < ApplicationController
 
   def append_memo
     @after_created_by_memo = false
-    found_diaries = current_user.diaries.where(record_at: params[:diary][:record_at]).tagged_with(Diary::TMP_BASE_TAG)
-    if found_diaries.present?
-      @diary = found_diaries.first
+    found_main_diaries = current_user.diaries.main_in(params[:diary][:record_at])
+    if found_main_diaries.present?
+      @diary = found_main_diaries.first
     else
-      @diary = current_user.diaries.build(record_at: params[:diary][:record_at])
-      @diary.tag_list << Diary::TMP_BASE_TAG
+      @diary = current_user.diaries.build(record_at: params[:diary][:record_at], main_in_day: true)
       @after_created_by_memo = true
     end
     @diary.append_memo(memo_text(params[:diary]))
-    # TODO: 一応エラーハンドリングしたいところ
-    @diary.save
+    unless @diary.save
+      render json: { message: @diary.errors.full_messages.join("\n") }, status: :unprocessable_entity
+    end
   end
 
   def delete_image
@@ -309,6 +311,6 @@ class DiariesController < ApplicationController
   end
 
   def diary_params
-    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :is_secret, :search_word)
+    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :is_secret, :search_word, :main_in_day)
   end
 end

@@ -41,17 +41,17 @@ class Diary < ApplicationRecord
 
   ACTION_MEMO_LINE = "# ----- ACTION MEMO -----"
   CRLF = "\r\n"
-  # todo: これはやっぱフラグにしたいなぁ
-  TMP_BASE_TAG = "やったこと"
 
   validates_presence_of :record_at
   validate :exists_tags?
+  validate :unique_main_in_day?
 
   attr_accessor :search_word
 
   belongs_to :user
 
-  scope :hilight, lambda {where(is_hilight: true)}
+  scope :main_in, lambda { |day| where(main_in_day: true, record_at: day) }
+  scope :hilight, lambda { where(is_hilight: true) }
   scope :find_by_word, lambda { |word| where('title like :q OR content like :q', :q => "%#{word}%") }
   scope :newer, lambda { order(["record_at DESC", "id ASC"]) }
   scope :older, lambda { order(["record_at ASC", "id ASC"]) }
@@ -113,6 +113,16 @@ class Diary < ApplicationRecord
       end
     end
     appending_content
+  end
+
+  def unique_main_in_day?
+    return if self.main_in_day.blank?
+    exists_diaries = self.user.diaries.main_in(self.record_at)
+    return if exists_diaries.blank?
+    if self.new_record? ||
+        (self.persisted? && !exists_diaries.pluck(:id).include?(self.id))
+      self.errors.add(:main_in_day, "メイン日記は既に作成済みなので、チェックを外してください")
+    end
   end
 
   def exists_tags?
