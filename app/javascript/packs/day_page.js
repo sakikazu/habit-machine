@@ -161,7 +161,7 @@ document.addEventListener('turbolinks:load', () => {
             }
           })
           .catch(error => {
-            this.showToast({isError: true, message: (error.message || error.response.data.message)})
+            this.showToast({isError: true, message: (error?.response?.data?.message || `リロードしてください：${error.message}`)})
           })
           .finally(() => {
             // NOTE: val('')で値クリアしてしまうと、次の入力時に現在時刻が出なくなる

@@ -50,6 +50,10 @@
         input(type="file" name="[diary]image" id="diary_image")
 
       .form-group.form-check
+        input(type="hidden" name="[diary]main_in_day" value="0")
+        input.form-check-input(type="checkbox" id="mainInDay" name="[diary]main_in_day" value="1" :checked="diary.main_in_day")
+        label.form-check-label(for="mainInDay") 1日のメイン日記
+      .form-group.form-check
         input(type="hidden" name="[diary]is_hilight" value="0")
         input.form-check-input(type="checkbox" id="makeHighlight" name="[diary]is_hilight" value="1" :checked="diary.is_hilight")
         label.form-check-label(for="makeHighlight") 人生ハイライトにする
@@ -129,6 +133,7 @@ export default {
       } else {
         HmAxios.get(`/diaries/new.json?record_at=${this.targetDate}`)
           .then(res => {
+            this.diary = res.data.diary
             this.setFormData(res.data)
           })
           .catch(error => {
