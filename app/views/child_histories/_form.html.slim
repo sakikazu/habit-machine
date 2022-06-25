@@ -1,0 +1,31 @@
+- url = history.persisted? ? child_history_path(history) : child_child_histories_path(history.child)
+= form_with model: history, url: url, class: 'form' do |f|
+  - if history && history.errors.any?
+    .alert.alert-danger
+      ul
+        - history.errors.full_messages.each do |msg|
+          li = msg
+
+  .row.form-group
+    .col
+      = f.date_field :target_date, class: 'form-control', required: true
+    .col(style="align-self: center")
+      = f.check_box :about_date, class: 'form-check-input', id: 'about_date'
+      = f.label :about_date, 'だいたい', class: 'form-check-label', for: 'about_date'
+  .form-group
+    = f.text_field :title, class: 'form-control', placeholder: 'タイトル', required: true
+  .form-group
+    = f.text_area :content, class: 'form-control', placeholder: '内容', rows: 3
+  .custom-control.custom-checkbox.mb-2
+    = f.check_box :as_profile_image, class: 'custom-control-input', id: 'as_profile_image'
+    = f.label :as_profile_image, 'プロフィール画像にする', class: 'custom-control-label', for: 'as_profile_image'
+  .form-group
+    = f.file_field :image, class: 'form-control'
+    = image_tag history.image.url(:large), class: 'img-thumbnail' if history.image?
+  .row.mb-3
+    .col
+      = f.number_field :height, step: '0.1', class: 'form-control', placeholder: ChildHistory.human_attribute_name("data.height")
+    .col
+      = f.number_field :weight, step: '0.1', class: 'form-control', placeholder: ChildHistory.human_attribute_name("data.weight")
+  .form-group
+    = f.submit '送信', class: 'btn btn-primary'

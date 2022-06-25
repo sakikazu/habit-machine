@@ -1,0 +1,47 @@
+.row.justify-content-center.sticky-top.bg-warning.bg-gradient.text-dark.mb-5
+  .col-sm(style="max-width: 500px")
+    .row
+      - if @child.profile_image.present?
+        = image_tag @child.profile_image.url(:small), class: 'rounded-circle', width: '75px', height: '75px'
+      .flex-grow-1.align-self-center
+        h3.ml-2 = link_to @child.name, child_path(@child), class: 'text-dark'
+      .align-self-center
+        - prev_month = (@month - 1.month).strftime("%Y-%m")
+        - next_month = (@month + 1.month).strftime("%Y-%m")
+        h5
+          = "#{@month.year}年#{@month.month}月"
+          small.text-muted = "(#{@child.relative_age(@month)})"
+        .row.justify-content-between
+          .col
+            = link_to '<< 前の月', child_path(@child, month: prev_month), class: 'prev-day'
+            span.mr-2.ml-2
+              = '|'
+            = link_to '次の月 >>', child_path(@child, month: next_month), class: 'next-day'
+
+.row.justify-content-center
+  .col-sm(style="max-width: 500px")
+    = render partial: 'child_histories/form', locals: { history: @history }
+
+    - if @histories.blank?
+      p
+        | 今月の記録はありません。
+    - else
+      - @histories.each do |history|
+        .card.mb-3(id="history-#{history.target_date.to_s}")
+          .card-header
+            .row.justify-content-between
+              .col-sm-10
+                - if history.about_date
+                  span.mr-2.text-muted = "(だいたい)"
+                = dispdate(history.target_date, true)
+                .text-muted = "by #{history.author.fullname}"
+              .col-sm-2
+                = link_to '編集', edit_child_history_path(history)
+          .card-body
+            h5.card-title = history.title
+            - if history.content.present?
+              .card-text.text-muted = history.content
+            - if history.data.present?
+              - history.data.each do |key, value|
+                .card-text.text-muted = "#{ChildHistory.human_attribute_name("data.#{key}")}: #{value}"
+          = link_to image_tag(history.image.url(:small), class: 'card-img-bottom'), history.image.url(:large) if history.image?

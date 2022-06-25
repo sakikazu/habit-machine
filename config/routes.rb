@@ -141,4 +141,8 @@ Rails.application.routes.draw do
 
 	resources :habits
 	resources :records, only: [:create, :update]
+
+	resources :children do
+    resources :child_histories, shallow: true
+  end
 end
