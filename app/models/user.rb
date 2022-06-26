@@ -13,6 +13,7 @@
 #  givenname              :string(255)
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string(255)
+#  nickname               :string(255)
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string(255)
@@ -52,6 +53,10 @@ class User < ApplicationRecord
       user = self.create!(data)
     end
     return user
+  end
+
+  def dispname
+    nickname || fullname
   end
 
   def fullname

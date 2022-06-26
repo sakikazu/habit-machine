@@ -118,7 +118,8 @@ class DiariesController < ApplicationController
 
     # デフォルト時はシークレットがtrueのものは表示しない
     if params[:nosecret].blank?
-      @diaries = @diaries.where(is_secret: false)
+      # TODO: is_secretは初期値を設定すべき
+      @diaries = @diaries.where("is_secret = false OR is_secret IS NULL")
     end
   end
 
