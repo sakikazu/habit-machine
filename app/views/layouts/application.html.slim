@@ -44,16 +44,16 @@ html[lang="ja"]
       a.navbar-brand[href="#{root_path}"]
         | HabitMachine
       ul.navbar-nav.ml-auto.mr-3.mr-lg-0
+        li.nav-item(class="#{active_class('children')}") = link_to 'こども', children_path, class: 'nav-link'
+      ul.navbar-nav.mr-3.mr-lg-0
         li.nav-item(class="#{active_class('habitodos')}")
           = link_to "ノート", habitodos_path, class: 'nav-link'
-      ul.navbar-nav.mr-3.mr-lg-0
-        li.nav-item(class="#{active_class('general', 'month')}") = link_to '月間記録', this_month_path, class: 'nav-link'
-      ul.navbar-nav.mr-3.mr-lg-0
-        li.nav-item(class="#{active_class('children')}") = link_to 'こども', children_path, class: 'nav-link'
       button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
         span.navbar-toggler-icon
       #navbarSupportedContent.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
+          li class="nav-item #{active_class('general', 'month')}"
+            = link_to '月間記録', this_month_path, class: 'nav-link'
           li class="dropdown nav-item #{active_class('diaries')}"
             = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
