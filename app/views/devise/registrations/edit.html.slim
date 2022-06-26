@@ -12,6 +12,7 @@
   = f.input :password_confirmation, :required => false, label: "パスワード（確認用）"
   = f.input :familyname, label: "名字", required: true
   = f.input :givenname, label: "名前", required: true
+  = f.input :nickname, label: "ニックネーム"
   = f.input :current_password, :hint => "※情報を変更するには現在のパスワードが必要です", :required => true, label: "現在のパスワード"
   .form-actions
     = f.button :submit, "更新する", class: "btn btn-primary"

@@ -34,7 +34,7 @@
                 - if history.about_date
                   span.mr-2.text-muted = "(だいたい)"
                 = dispdate(history.target_date, true)
-                .text-muted = "by #{history.author.fullname}"
+                .text-muted = "by #{history.author.dispname}"
               .col-sm-2
                 = link_to '編集', edit_child_history_path(history)
           .card-body

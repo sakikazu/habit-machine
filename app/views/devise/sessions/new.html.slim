@@ -3,5 +3,5 @@ h2.mb30 ログイン
   = f.input :email, :required => false, :autofocus => true
   = f.input :password, :required => false
   = f.input :remember_me, :as => :boolean if devise_mapping.rememberable?
-  = f.button :submit, "ログイン"
+  = f.button :submit, "ログイン", class: 'btn btn-success'
 = render "devise/shared/links"
