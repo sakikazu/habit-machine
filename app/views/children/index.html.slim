@@ -1,0 +1,5 @@
+.row.justify-content-center
+  .col-sm-9
+    - @children.each do |child|
+      h3 = link_to child.name, child_path(child)
+      p.text-muted = child.relative_age(Date.today)

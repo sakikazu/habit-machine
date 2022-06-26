@@ -45,7 +45,6 @@ gem 'uglifier', '>= 1.3.0'
 # in production environments by default.
 group :assets do
   gem 'sass-rails', '~> 5.0'
-  gem 'coffee-rails', '~> 4.2'
 
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
@@ -130,4 +129,3 @@ group :development, :test do
 
   gem 'rails-erd'
 end
-
