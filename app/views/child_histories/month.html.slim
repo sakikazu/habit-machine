@@ -4,10 +4,10 @@
     small.text-muted = "(#{@child.relative_age(@month)})"
   .row.justify-content-between
     .col
-      = link_to '<< 前の月', month_histories_child_path(@child, @month.year, @month.month - 1), class: 'prev-day'
+      = link_to '<< 前の月', month_histories_child_path(*ChildHistory.month_path_params(@child, @month - 1.month)), class: 'prev-day'
       span.mr-3.ml-3
         = link_to fa_icon('calendar', text: '本年'), year_histories_child_path(@child, @month.year)
-      = link_to '次の月 >>', month_histories_child_path(@child, @month.year, @month.month + 1), class: 'next-day'
+      = link_to '次の月 >>', month_histories_child_path(*ChildHistory.month_path_params(@child, @month + 1.month)), class: 'next-day'
 
 .row.justify-content-center.sticky-top.bg-warning.bg-gradient.text-dark.mb-5(style="z-index:100;")
   .col-sm(style="max-width: 500px")

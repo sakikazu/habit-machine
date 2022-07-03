@@ -24,8 +24,8 @@
     = image_tag history.image.url(:large), class: 'img-thumbnail' if history.image?
   .row.mb-3
     .col
-      = f.number_field :height, step: '0.1', class: 'form-control', placeholder: ChildHistory.human_attribute_name("data.height")
+      = f.number_field :height, step: '0.1', class: 'form-control', placeholder: "#{ChildHistory.human_attribute_name("data.height")} (cm)"
     .col
-      = f.number_field :weight, step: '0.1', class: 'form-control', placeholder: ChildHistory.human_attribute_name("data.weight")
+      = f.number_field :weight, step: '0.1', class: 'form-control', placeholder: "#{ChildHistory.human_attribute_name("data.weight")} (kg)"
   .form-group
     = f.submit '送信', class: 'btn btn-primary'
