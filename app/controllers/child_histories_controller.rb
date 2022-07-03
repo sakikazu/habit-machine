@@ -31,7 +31,7 @@ class ChildHistoriesController < ApplicationController
       render 'children/show'
       return
     end
-    redirect_to month_histories_child_path(@child, @history.target_date.year, @history.target_date.month, anchor: "history-#{@history.target_date.strftime('%Y-%m-%d')}")
+    redirect_to month_histories_child_path(*ChildHistory.month_path_params(@child, @history.target_date, anchor: true))
   end
 
   def edit
@@ -49,14 +49,14 @@ class ChildHistoriesController < ApplicationController
       render 'children/show'
       return
     end
-    redirect_to month_histories_child_path(@history.child, @history.target_date.year, @history.target_date.month, anchor: "history-#{@history.target_date.strftime('%Y-%m-%d')}")
+    redirect_to month_histories_child_path(*ChildHistory.month_path_params(@history.child, @history.target_date, anchor: true))
   end
 
   def destroy
     target_date = @history.target_date
     child = @history.child
     @history.destroy
-    redirect_to month_histories_child_path(@history.child, target_date.year, target_date.month), notice: '削除しました'
+    redirect_to month_histories_child_path(*ChildHistory.month_path_params(@history.child, target_date)), notice: '削除しました'
   end
 
   private

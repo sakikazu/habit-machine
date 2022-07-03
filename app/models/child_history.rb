@@ -64,8 +64,16 @@ class ChildHistory < ApplicationRecord
       title: "#{target_date.to_s} > #{title}",
       body: content,
       target_text: "#{title} #{content}",
-      show_path: Rails.application.routes.url_helpers.month_histories_child_path(child, target_date.year, target_date.month, anchor: "history-#{target_date.strftime('%Y-%m-%d')}"),
+      show_path: Rails.application.routes.url_helpers.month_histories_child_path(*ChildHistory.month_path_params(child, target_date, anchor: true)),
     }
+  end
+
+  def self.month_path_params(child, target_date, anchor: false)
+    result = [child, target_date.year, target_date.month]
+    if anchor
+      result << { anchor: "history-#{target_date.strftime('%Y-%m-%d')}" }
+    end
+    result
   end
 
   private
