@@ -13,6 +13,7 @@ document.addEventListener('turbolinks:load', () => {
       Modal,
     },
     data: {
+      resultChildHistories: [],
       resultHabitodos: [],
       resultDiaries: [],
       resultRecords: [],
@@ -29,8 +30,11 @@ document.addEventListener('turbolinks:load', () => {
       searchContent(contentType, searchWord) {
         HmAxios.get(`/search/${contentType}.json?q=${searchWord}`)
           .then(res => {
-            console.log(res)
+            // console.log(res)
             switch(contentType) {
+              case 'child_history':
+                this.resultChildHistories = res.data
+                break
               case 'habitodo':
                 this.resultHabitodos = res.data
                 break

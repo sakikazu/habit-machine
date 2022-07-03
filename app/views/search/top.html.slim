@@ -33,6 +33,19 @@
       /       = link_to "#{@result_senses.size}件を表示", root_path, class: 'btn btn-info'
 
       section#diary.mb40
+        h3 #{fa_icon('child')} こども
+        .result
+          - if @result_child_histories_size.zero?
+            p データなし
+          - else
+            button.btn.btn-info(v-if="resultChildHistories.length == 0" @click="searchContent('child_history', '#{@search_word}')")
+              | 読み込み
+            ul(v-else)
+              li(v-for="data in resultChildHistories" :key="data.id" @click="openDetail(data, $event)")
+                .title(v-text="data.title")
+                p(v-html="data.highlighted")
+
+      section#diary.mb40
         h3 #{fa_icon('book')} 日記
         .result
           - if @result_diaries_size.zero?
