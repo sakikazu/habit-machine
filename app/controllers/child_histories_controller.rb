@@ -5,7 +5,8 @@ class ChildHistoriesController < ApplicationController
   def month
     @month = (Time.local(params[:year], params[:month]) rescue Time.current).to_date
     @histories = @child.child_histories.includes(:author).where(target_date: [@month.beginning_of_month..@month.end_of_month]).order(target_date: :asc)
-    @history = @child.child_histories.build(target_date: @month)
+    default_target_date = @month.year == Time.current.year && @month.month == Time.current.month ? Time.current : @month
+    @history = @child.child_histories.build(target_date: default_target_date)
 
     @no_header_margin = true
   end
