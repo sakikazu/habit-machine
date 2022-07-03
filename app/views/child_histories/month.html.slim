@@ -35,7 +35,7 @@
           .card-body
             h5.card-title = history.title
             - if history.content.present?
-              .card-text.text-muted = history.content
+              .card-text.text-muted = markdown(history.content)
             - if history.data.present?
               - history.data.each do |key, value|
                 .card-text.text-muted = "#{ChildHistory.human_attribute_name("data.#{key}")}: #{value}"
