@@ -5,5 +5,5 @@
         - if child.profile_image.present?
           = image_tag child.profile_image.url(:small), class: 'rounded-circle', width: '75px', height: '75px'
         .ml-3
-          h3 = link_to child.name, child_path(child)
+          h3 = link_to child.name, month_histories_child_path(child, Time.now.year, Time.now.month)
           p.text-muted = child.relative_age(Date.today)

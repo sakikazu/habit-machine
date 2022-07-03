@@ -49,6 +49,8 @@ HabitMachine
 * rails 5.2系
 * Vue.js 2.6系
 * JavaScript ES2015以降
+* Node 14.17.0
+  * v16にするとエラーになるので、 `sudo n 14.17.0` で切り替えてからyarnを実行すること(2022.7現在)
 
 ### 主なライブラリ
 * Twitter bootstrap 4

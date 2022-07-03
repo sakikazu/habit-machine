@@ -17,6 +17,8 @@ class Child < ApplicationRecord
   end
 
   def relative_age(base_date)
+    # TODO: 年だけ渡されたら、～歳だけ返すようにする
+    return '-歳' if base_date.to_s.size == 4
     return "-歳-ヶ月" if base_date < birthday
 
     diff = (base_date - birthday).to_i

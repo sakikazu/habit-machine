@@ -1,0 +1,8 @@
+.row.pt-1.pb-1
+  - if child.profile_image.present?
+    = image_tag child.profile_image.url(:small), class: 'rounded-circle', width: '65px', height: '65px'
+  .flex-grow-1.align-self-center
+    h3.ml-2 = link_to child.name, month_histories_child_path(child, Time.now.year, Time.now.month), class: 'text-dark'
+  .align-self-center
+    = yield :child_header_actions
+
