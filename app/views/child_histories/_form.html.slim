@@ -8,7 +8,7 @@
 
   .row.form-group
     .col
-      = f.date_field :target_date, class: 'form-control', required: true
+      = f.date_field :target_date, placeholder: '日付', class: 'form-control', required: true
     .col(style="align-self: center")
       = f.check_box :about_date, class: 'form-check-input', id: 'about_date'
       = f.label :about_date, 'だいたい', class: 'form-check-label', for: 'about_date'

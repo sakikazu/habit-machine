@@ -38,6 +38,9 @@ class ChildHistory < ApplicationRecord
   validates :target_date, presence: true
   validate :ensure_existing_profile_image
 
+  scope :find_by_word, lambda { |word| where('title like :q OR content like :q', :q => "%#{word}%") }
+  scope :newer, lambda { order(target_date: :desc) }
+
   content_name = "child_history"
   has_attached_file :image,
     :styles => {
@@ -53,6 +56,17 @@ class ChildHistory < ApplicationRecord
   validates_attachment :image,
     content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
 
+
+  def search_result_items
+    {
+      type: self.class.to_s,
+      id: id,
+      title: "#{target_date.to_s} > #{title}",
+      body: content,
+      target_text: "#{title} #{content}",
+      show_path: Rails.application.routes.url_helpers.month_histories_child_path(child, target_date.year, target_date.month, anchor: "history-#{target_date.strftime('%Y-%m-%d')}"),
+    }
+  end
 
   private
 
