@@ -1,22 +1,17 @@
+- content_for :child_header_actions do
+  h5
+    = "#{@month.year}年#{@month.month}月"
+    small.text-muted = "(#{@child.relative_age(@month)})"
+  .row.justify-content-between
+    .col
+      = link_to '<< 前の月', month_histories_child_path(@child, @month.year, @month.month - 1), class: 'prev-day'
+      span.mr-3.ml-3
+        = link_to fa_icon('calendar', text: '本年'), year_histories_child_path(@child, @month.year)
+      = link_to '次の月 >>', month_histories_child_path(@child, @month.year, @month.month + 1), class: 'next-day'
+
 .row.justify-content-center.sticky-top.bg-warning.bg-gradient.text-dark.mb-5(style="z-index:100;")
   .col-sm(style="max-width: 500px")
-    .row
-      - if @child.profile_image.present?
-        = image_tag @child.profile_image.url(:small), class: 'rounded-circle', width: '75px', height: '75px'
-      .flex-grow-1.align-self-center
-        h3.ml-2 = link_to @child.name, child_path(@child), class: 'text-dark'
-      .align-self-center
-        - prev_month = (@month - 1.month).strftime("%Y-%m")
-        - next_month = (@month + 1.month).strftime("%Y-%m")
-        h5
-          = "#{@month.year}年#{@month.month}月"
-          small.text-muted = "(#{@child.relative_age(@month)})"
-        .row.justify-content-between
-          .col
-            = link_to '<< 前の月', child_path(@child, month: prev_month), class: 'prev-day'
-            span.mr-2.ml-2
-              = '|'
-            = link_to '次の月 >>', child_path(@child, month: next_month), class: 'next-day'
+    = render partial: 'children/header', locals: { child: @child }
 
 .row.justify-content-center
   .col-sm(style="max-width: 500px")

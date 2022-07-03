@@ -1,9 +1,23 @@
 class ChildHistoriesController < ApplicationController
+  before_action :set_child, only: [:month, :year]
   before_action :set_child_history, only: [:edit, :update, :destroy]
 
-  def index
-    @child = Child.find(params[:child_id])
-    redirect_to child_path(@child)
+  def month
+    @month = (Time.local(params[:year], params[:month]) rescue Time.current).to_date
+    @histories = @child.child_histories.includes(:author).where(target_date: [@month.beginning_of_month..@month.end_of_month]).order(target_date: :asc)
+    @history = @child.child_histories.build(target_date: @month)
+
+    @no_header_margin = true
+  end
+
+  def year
+    @year = (params[:year] || Time.now.year).to_i
+    target_year = Time.local(@year ,1, 1)
+    histories = @child.child_histories.includes(:author).where(target_date: [target_year.beginning_of_year..target_year.end_of_year]).order(target_date: :asc)
+    @histories_grouped_by_month = histories.group_by { |h| h.target_date.month }
+    @months = 1..12
+
+    @no_header_margin = true
   end
 
   def create
@@ -16,7 +30,7 @@ class ChildHistoriesController < ApplicationController
       render 'children/show'
       return
     end
-    redirect_to child_path(@child, month: @history.target_date.strftime("%Y-%m"), anchor: "history-#{@history.target_date.strftime('%Y-%m-%d')}")
+    redirect_to month_histories_child_path(@child, @history.target_date.year, @history.target_date.month, anchor: "history-#{@history.target_date.strftime('%Y-%m-%d')}")
   end
 
   def edit
@@ -34,17 +48,22 @@ class ChildHistoriesController < ApplicationController
       render 'children/show'
       return
     end
-    redirect_to child_path(@history.child, month: @history.target_date.strftime("%Y-%m"), anchor: "history-#{@history.target_date.strftime('%Y-%m-%d')}")
+    redirect_to month_histories_child_path(@history.child, @history.target_date.year, @history.target_date.month, anchor: "history-#{@history.target_date.strftime('%Y-%m-%d')}")
   end
 
   def destroy
     target_date = @history.target_date
     child = @history.child
     @history.destroy
-    redirect_to child_path(@history.child, month: target_date.strftime("%Y-%m"))
+    redirect_to month_histories_child_path(@history.child, target_date.year, target_date.month), notice: '削除しました'
   end
 
   private
+
+  def set_child
+    # NOTE: routes的に `id` でchild_idが渡される
+    @child = Child.find(params[:id])
+  end
 
   def set_child_history
     @history = ChildHistory.find(params[:id])

@@ -142,7 +142,12 @@ Rails.application.routes.draw do
 	resources :habits
 	resources :records, only: [:create, :update]
 
-	resources :children do
-    resources :child_histories, shallow: true
+  resources :children, only: [:index] do
+    member do
+      # TODO: これをchild_histories配下に書くことはできないか？
+      get '/histories/:year', to: 'child_histories#year', as: :year_histories
+      get '/histories/:year/:month', to: 'child_histories#month', as: :month_histories
+    end
+    resources :child_histories, shallow: true, only: [:create, :edit, :update, :destroy]
   end
 end
