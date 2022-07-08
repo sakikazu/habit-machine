@@ -18,7 +18,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/sakikazu15/habit-machine#readme",
   "dependencies": {
-    "@rails/webpacker": "5.4.3",
+    "@rails/webpacker": "5.4.0",
     "axios": "^0.21.1",
     "node-sass": "4.14.1",
     "pug": "^3.0.2",
