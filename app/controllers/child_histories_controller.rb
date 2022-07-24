@@ -1,14 +1,13 @@
 class ChildHistoriesController < ApplicationController
   before_action :set_child, only: [:month, :year]
   before_action :set_child_history, only: [:edit, :update, :destroy]
+  before_action :set_view_setting
 
   def month
     @month = (Time.local(params[:year], params[:month]) rescue Time.current).to_date
     @histories = @child.child_histories.includes(:author).where(target_date: [@month.beginning_of_month..@month.end_of_month]).order(target_date: :asc)
     default_target_date = @month.year == Time.current.year && @month.month == Time.current.month ? Time.current : @month
     @history = @child.child_histories.build(target_date: default_target_date)
-
-    @no_header_margin = true
   end
 
   def year
@@ -17,8 +16,6 @@ class ChildHistoriesController < ApplicationController
     histories = @child.child_histories.includes(:author).where(target_date: [target_year.beginning_of_year..target_year.end_of_year]).order(target_date: :asc)
     @histories_grouped_by_month = histories.group_by { |h| h.target_date.month }
     @months = 1..12
-
-    @no_header_margin = true
   end
 
   def create
@@ -28,7 +25,7 @@ class ChildHistoriesController < ApplicationController
     @history.author = current_user
     unless @history.save
       @month = @history.target_date
-      render 'children/show'
+      render :month
       return
     end
     redirect_to month_histories_child_path(*ChildHistory.month_path_params(@child, @history.target_date, anchor: true))
@@ -46,7 +43,8 @@ class ChildHistoriesController < ApplicationController
     set_data_if_need
     unless @history.update(child_history_params)
       @month = @history.target_date
-      render 'children/show'
+      @child = @history.child
+      render :month
       return
     end
     redirect_to month_histories_child_path(*ChildHistory.month_path_params(@history.child, @history.target_date, anchor: true))
@@ -68,6 +66,10 @@ class ChildHistoriesController < ApplicationController
 
   def set_child_history
     @history = ChildHistory.find(params[:id])
+  end
+
+  def set_view_setting
+    @no_header_margin = true
   end
 
   def child_history_params
