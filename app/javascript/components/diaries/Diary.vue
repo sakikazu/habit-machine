@@ -21,7 +21,7 @@
       .text-center.mt20(v-if="!!localDiary.image_path")
         // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
         img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
-      .markdown(v-html="localDiary.markdowned_content")
+      .markdown.mb-4(v-html="localDiary.markdowned_content")
       .buttons
         a.btn.btn-light.ignore-checking-changes(@click="edit") 編集
     .diary-recordat-changed(v-else)
