@@ -7,7 +7,7 @@ html[lang="ja"]
     title
       = "[dev]" unless Rails.env.production?
       = page_title
-      |  - HabitMachine
+      |  - 日々の記録
     = csrf_meta_tags
     = stylesheet_link_tag 'application', media: 'all'
     - #= favicon_link_tag 'images/apple-touch-icon-144x144-precomposed.png', :rel => 'apple-touch-icon-precomposed', :type => 'image/png', :sizes => '144x144'
@@ -42,12 +42,15 @@ html[lang="ja"]
   body[class="#{controller.controller_name}_controller" data-turbolinks="#{'false' if @turbolinks_off}"]
     nav.navbar.navbar-expand-lg.navbar-light.bg-light(class="#{@no_header_margin ? '' : 'mb20'}")
       a.navbar-brand[href="#{root_path}"]
-        | HabitMachine
+        = fa_icon('coffee')
       ul.navbar-nav.ml-auto.mr-3.mr-lg-0
         li.nav-item(class="#{active_class('children')}") = link_to 'こども', children_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0
         li.nav-item(class="#{active_class('habitodos')}")
           = link_to "ノート", habitodos_path, class: 'nav-link'
+      ul.navbar-nav.mr-3.mr-lg-0.d-lg-none
+        li.nav-item
+          = text_field_tag '', '', { id: 'globalSearchWord', class: 'form-control', placeholder: '検索', style: 'width: 80px', readonly: true }
       button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
         span.navbar-toggler-icon
       #navbarSupportedContent.collapse.navbar-collapse
@@ -73,7 +76,7 @@ html[lang="ja"]
               = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
               = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}
               = link_to 'for ServiceWorker', '/frontend.html', class: 'dropdown-item'
-        ul.navbar-nav
+        ul.navbar-nav.d-none.d-lg-block
           li.nav-item
             / 検索フォーム
             form.form-inline action='/search' method='get'

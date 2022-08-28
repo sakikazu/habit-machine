@@ -1,7 +1,8 @@
 class ChildHistoriesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_child, only: [:month, :year]
   before_action :set_child_history, only: [:edit, :update, :destroy]
-  before_action :set_view_setting
+  before_action :set_view_setting, only: %i(month year)
 
   def month
     @month = (Time.local(params[:year], params[:month]) rescue Time.current).to_date
@@ -77,11 +78,13 @@ class ChildHistoriesController < ApplicationController
   end
 
   def set_data_if_need
-    if params[:child_history][:height].present? || params[:child_history][:weight].present?
-      @history.data = {
-        height: params[:child_history][:height],
-        weight: params[:child_history][:weight]
-      }
+    height = params[:child_history][:height]
+    weight = params[:child_history][:weight]
+    # 既に登録済み状態でブランク値を与えられた場合は、削除をする
+    if @history.data.present? && (height.blank? && weight.blank?)
+      @history.data = nil
+    elsif height.present? || weight.present?
+      @history.data = { height: height, weight: weight }
     end
   end
 end
