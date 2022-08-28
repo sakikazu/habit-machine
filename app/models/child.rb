@@ -12,6 +12,12 @@
 class Child < ApplicationRecord
   has_many :child_histories
 
+  validates :name, presence: true
+  validates :birthday, presence: true
+  validates :gender, presence: true
+
+  GENDER = [['男', 1], ['女', 2]].freeze
+
   def profile_image
     child_histories.where(as_profile_image: true).order(target_date: :desc).first&.image
   end

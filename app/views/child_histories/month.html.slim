@@ -25,12 +25,12 @@
         .card.mb-3(id="history-#{history.target_date.to_s}")
           .card-header
             .row.justify-content-between
-              .col-sm-11
+              .col-10
                 - if history.about_date
                   span.mr-1.text-muted = "(だいたい)"
                 = dispdate(history.target_date, true)
                 span.text-muted.ml-3 = "by #{history.author.dispname}"
-              .col-sm-1
+              .col-1.m-auto
                 = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_history_path(history)
           .card-body
             h5.card-title = history.title

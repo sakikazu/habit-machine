@@ -1,0 +1,20 @@
+= form_with(model: @child, class: 'form') do |f|
+  - if @child.errors.any?
+    .alert.alert-danger
+      ul
+        - @child.errors.full_messages.each do |msg|
+          li = msg
+
+  .form-group
+    = f.label :name, "名前"
+    = f.text_field :name, class: 'form-control'
+
+  .form-group
+    = f.label :birthday, "誕生日"
+    = f.date_field :birthday, class: 'form-control'
+
+  .form-group
+    = f.label :gender, "性別"
+    = f.select :gender, Child::GENDER, { include_blank: true }, class: 'form-control'
+
+  = f.submit '登録する', class: "btn btn-primary"

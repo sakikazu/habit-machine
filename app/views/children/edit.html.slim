@@ -1,0 +1,7 @@
+.row.justify-content-center
+  .col-sm
+    .mb-3 = link_to '戻る', :back, class: 'btn btn-light'
+    h2 編集
+    = render partial: 'form'
+    .mt-5
+      = link_to '削除する', child_path(@child), method: :delete, class: 'btn btn-danger', data: { confirm: "本当に削除しますか？ #{@child.name}のこれまでのデータがすべて削除されます" }

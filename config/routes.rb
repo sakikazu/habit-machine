@@ -142,7 +142,7 @@ Rails.application.routes.draw do
 	resources :habits
 	resources :records, only: [:create, :update]
 
-  resources :children, only: [:index] do
+  resources :children do
     member do
       # TODO: これをchild_histories配下に書くことはできないか？
       get '/histories/:year', to: 'child_histories#year', as: :year_histories

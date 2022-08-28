@@ -54,6 +54,7 @@ class GeneralController < ApplicationController
 
   private
 
+  # NOTE: 今後は Children::ChartBuilder を参考にして
   # 指定のHabitにひもづくRecordから、指定の期間分取得してグラフ用にデータ整形
   def build_graph_data(habits)
     habit_results = []
