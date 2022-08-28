@@ -147,6 +147,7 @@ Rails.application.routes.draw do
       # TODO: これをchild_histories配下に書くことはできないか？
       get '/histories/:year', to: 'child_histories#year', as: :year_histories
       get '/histories/:year/:month', to: 'child_histories#month', as: :month_histories
+      get :graph
     end
     resources :child_histories, shallow: true, only: [:create, :edit, :update, :destroy]
   end

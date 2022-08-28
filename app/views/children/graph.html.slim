@@ -1,0 +1,7 @@
+.row.justify-content-center.sticky-top.bg-warning.bg-gradient.text-dark.mb-5(style="z-index:100;")
+  .col-sm(style="max-width: 500px")
+    = render partial: 'children/header', locals: { child: @child }
+
+.row.justify-content-center
+  .col
+    = high_chart("chart1", @graph)
