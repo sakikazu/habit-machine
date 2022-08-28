@@ -1,6 +1,7 @@
 class ChildrenController < ApplicationController
   before_action :authenticate_user!
   before_action :set_child, only: %i[edit update destroy graph]
+  before_action :set_view_setting, only: %i(graph)
 
   def index
     @children = Child.all
@@ -56,5 +57,9 @@ class ChildrenController < ApplicationController
 
   def child_params
     params.require(:child).permit(:name, :birthday, :gender)
+  end
+
+  def set_view_setting
+    @no_header_margin = true
   end
 end

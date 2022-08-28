@@ -1,9 +1,9 @@
-.row
-  .col.mb-4.text-right
+.row.justify-content-center
+  .col-sm-2.mb-4.text-right
     = link_to 'こどもデータ作成', new_child_path, class: 'btn btn-light'
 
 .row.justify-content-center
-  .col-sm-9
+  .col-sm-2
     - @children.each do |child|
       .d-flex.justify-content-between.mb-4
         .d-flex.flex-grow-1
