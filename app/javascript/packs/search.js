@@ -24,6 +24,7 @@ document.addEventListener('turbolinks:load', () => {
     },
     mounted () {
       this.setStickyNav()
+      this.setFocus()
     },
     methods: {
       nl2br,
@@ -84,6 +85,11 @@ document.addEventListener('turbolinks:load', () => {
       },
       closeDiaryModal () {
         this.modalableDiaryId = null
+      },
+      setFocus () {
+        if (location.search === '') {
+          this.$refs.searchField.focus()
+        }
       },
       // TODO: 検索結果に反映するには、ハイライト処理した独自のデータを返す必要があったので、とりあえず後で
       reflectResultDiaries (_formKey, updatedDiary) {

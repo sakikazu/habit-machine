@@ -24,6 +24,12 @@
   .searchResult-body
     / TODO: 右サイドバーが出ても選択行を見失わないようにできれば、タイトルの表示を一つにできるしスッキリ
     article#article
+      .searcField.mb-5
+        = form_with model: nil, url: search_path, class: 'form', method: :get, html: { style: 'max-width: 300px' } do |f|
+          .d-flex
+            = text_field_tag 'q', @search_word, { placeholder: '検索ワード', class: 'form-control', ref: 'searchField' }
+            = f.submit '検索', class: 'btn btn-outline-success'
+
       / section.mb40.senses
       /   h3 #{fa_icon('info-circle')} 意識付け
       /   .result
@@ -35,7 +41,7 @@
       section#diary.mb40
         h3 #{fa_icon('child')} こども
         .result
-          - if @result_child_histories_size.zero?
+          - if @result_child_histories_size.to_i.zero?
             p データなし
           - else
             button.btn.btn-info(v-if="resultChildHistories.length == 0" @click="searchContent('child_history', '#{@search_word}')")
@@ -48,7 +54,7 @@
       section#diary.mb40
         h3 #{fa_icon('book')} 日記
         .result
-          - if @result_diaries_size.zero?
+          - if @result_diaries_size.to_i.zero?
             p データなし
           - else
             button.btn.btn-info(v-if="resultDiaries.length == 0" @click="searchContent('diary', '#{@search_word}')")
@@ -61,7 +67,7 @@
       section#record.mb40
         h3 #{fa_icon('bar-chart')} 記録
         .result
-          - if @result_records_size.zero?
+          - if @result_records_size.to_i.zero?
             p データなし
           - else
             button.btn.btn-info(v-if="resultRecords.length == 0" @click="searchContent('record', '#{@search_word}')")
@@ -74,7 +80,7 @@
       section#habitodo.mb40
         h3 #{fa_icon('file-text')} Habitodo
         .result
-          - if @result_habitodos_size.zero?
+          - if @result_habitodos_size.to_i.zero?
             p データなし
           - else
             / todo: 現状はURLで特定データを指定できない。Vue routerで対応しよう -> habitodos#showを作る？

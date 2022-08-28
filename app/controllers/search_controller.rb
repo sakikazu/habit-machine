@@ -4,10 +4,7 @@ class SearchController < ApplicationController
 
   def top
     @search_word = params[:q]
-    if @search_word.blank?
-      render plain: "検索ワードを入力してください"
-      return
-    end
+    return if @search_word.blank?
     @g_search_word = @search_word
 
     records = Record.user_by(current_user).has_data.newer
@@ -22,6 +19,7 @@ class SearchController < ApplicationController
     @no_header_margin = true
   end
 
+  # 日記、こどもデータなどコンテンツごとのデータ読み込み
   def content
     @content_type = params[:content_type]
     @search_word = params[:q]

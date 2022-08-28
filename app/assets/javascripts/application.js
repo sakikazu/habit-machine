@@ -45,6 +45,10 @@ $(document).on('turbolinks:load', function() {
     $ele.popover('toggle');
     shownPopoverElements.push($ele);
   });
+
+  $('#globalSearchWord').on('click', () => {
+    location.href = '/search';
+  })
 })
 
 hidePopover = function(elements, $withoutEle = null) {
