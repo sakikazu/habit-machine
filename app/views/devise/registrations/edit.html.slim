@@ -7,6 +7,7 @@
     p
       | 入力エラーがあります。下記のエラー内容を確認してください。
 = simple_form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put }) do |f|
+  = f.input :family_id, as: :string, disabled: true, label: "家族", input_html: { value: resource.family&.name }
   = f.input :email, :required => true, :autofocus => true, label: "メールアドレス"
   = f.input :password, :autocomplete => "off", :hint => "※パスワードを変更しない場合は空にしてください", :required => false, label: "パスワード"
   = f.input :password_confirmation, :required => false, label: "パスワード（確認用）"

@@ -43,8 +43,9 @@ html[lang="ja"]
     nav.navbar.navbar-expand-lg.navbar-light.bg-light(class="#{@no_header_margin ? '' : 'mb20'}")
       a.navbar-brand[href="#{root_path}"]
         = inline_svg_tag('logo/white-diary.svg', width: '35px', style: 'margin: -5px 0')
-      ul.navbar-nav.ml-auto.mr-3.mr-lg-0
-        li.nav-item(class="#{active_class('children')}") = link_to 'こども', children_path, class: 'nav-link'
+      - if current_family.present?
+        ul.navbar-nav.ml-auto.mr-3.mr-lg-0
+          li.nav-item(class="#{active_class('children')}") = link_to 'こども', children_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0
         li.nav-item(class="#{active_class('habitodos')}")
           = link_to "ノート", habitodos_path, class: 'nav-link'
