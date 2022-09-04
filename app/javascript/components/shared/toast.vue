@@ -41,9 +41,9 @@ export default {
     },
   },
   computed: {
-    // TODO: 効いてない。data属性をv-bindするには？
     delaySecond () {
-      return this.isError ? 3000 : 1500
+      // NOTE: エラー時だけ長い時間にしたかったが、多分toastの作りのせいで、初回表示時の設定が効いてしまって変わらないので、デフォルトで長い時間にしておく
+      return 4000 // this.isError ? 4000 : 2000
     }
   },
   mounted () {
