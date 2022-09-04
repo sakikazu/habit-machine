@@ -1,6 +1,6 @@
 class ChildrenController < ApplicationController
   before_action :authenticate_user!
-  before_action :ensure_has_family
+  before_action :ensure_to_have_family
   before_action :set_child, only: %i[edit update destroy graph]
   before_action :set_view_setting, only: %i(graph)
 
@@ -57,8 +57,8 @@ class ChildrenController < ApplicationController
     @child = current_family.children.find(params[:id])
   end
 
-  def ensure_has_family
-    redirect_to root_path, notice: '家族のひもづきが作られていません' if current_family.blank?
+  def ensure_to_have_family
+    redirect_to root_path, notice: '他の家族を有効にするフラグをONにしてください' unless current_family.has_others
   end
 
   def child_params

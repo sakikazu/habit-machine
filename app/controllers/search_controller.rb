@@ -13,7 +13,7 @@ class SearchController < ApplicationController
     @result_diaries_size = current_user.diaries.find_by_word(@search_word).size
     @result_habitodos_size = current_user.habitodos.find_by_word(@search_word).size
     # @result_senses = current_user.senses.find_by_word(@search_word)
-    @result_child_histories_size = current_family.present? ? current_family.child_histories.find_by_word(@search_word).size : 0
+    @result_child_histories_size = current_family.child_histories.find_by_word(@search_word).size
 
     @page_title = 'サイト内検索'
     @no_header_margin = true
