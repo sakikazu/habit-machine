@@ -20,7 +20,7 @@ class ChildHistoriesController < ApplicationController
   end
 
   def create
-    @child = Child.find(params[:child_id])
+    @child = current_family.children.find(params[:child_id])
     @history = @child.child_histories.build(child_history_params)
     set_data_if_need
     @history.author = current_user
@@ -62,11 +62,11 @@ class ChildHistoriesController < ApplicationController
 
   def set_child
     # NOTE: routes的に `id` でchild_idが渡される
-    @child = Child.find(params[:id])
+    @child = current_family.children.find(params[:id])
   end
 
   def set_child_history
-    @history = ChildHistory.find(params[:id])
+    @history = current_family.child_histories.find(params[:id])
   end
 
   def set_view_setting

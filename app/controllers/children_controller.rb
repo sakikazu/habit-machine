@@ -1,18 +1,20 @@
 class ChildrenController < ApplicationController
   before_action :authenticate_user!
+  before_action :ensure_to_have_family
   before_action :set_child, only: %i[edit update destroy graph]
   before_action :set_view_setting, only: %i(graph)
 
   def index
-    @children = Child.all
+    @children = current_family.children.all
   end
 
   def new
-    @child = Child.new
+    @child = current_family.children.build
   end
 
   def create
     @child = Child.new(child_params)
+    @child.family = current_family
 
     respond_to do |format|
       if @child.save
@@ -52,7 +54,11 @@ class ChildrenController < ApplicationController
   private
 
   def set_child
-    @child = Child.find(params[:id])
+    @child = current_family.children.find(params[:id])
+  end
+
+  def ensure_to_have_family
+    redirect_to root_path, notice: '他の家族を有効にするフラグをONにしてください' unless current_family.has_others
   end
 
   def child_params

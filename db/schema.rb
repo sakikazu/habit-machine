@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_26_121503) do
+ActiveRecord::Schema.define(version: 2022_09_04_223405) do
 
   create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -54,6 +54,8 @@ ActiveRecord::Schema.define(version: 2022_06_26_121503) do
     t.integer "gender"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "family_id"
+    t.index ["family_id"], name: "index_children_on_family_id"
   end
 
   create_table "diaries", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -74,6 +76,13 @@ ActiveRecord::Schema.define(version: 2022_06_26_121503) do
     t.boolean "main_in_day", default: false, null: false
     t.boolean "pinned", default: false, null: false
     t.integer "pin_priority", default: 0, null: false
+  end
+
+  create_table "families", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "has_others", default: false, null: false
   end
 
   create_table "habitodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -180,11 +189,15 @@ ActiveRecord::Schema.define(version: 2022_06_26_121503) do
     t.datetime "updated_at", null: false
     t.string "auth_token"
     t.string "nickname"
+    t.bigint "family_id"
     t.index ["auth_token"], name: "index_users_on_auth_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["family_id"], name: "index_users_on_family_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "child_histories", "children"
   add_foreign_key "child_histories", "users", column: "author_id"
+  add_foreign_key "children", "families"
+  add_foreign_key "users", "families"
 end

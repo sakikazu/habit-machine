@@ -20,12 +20,18 @@
 #  sign_in_count          :integer          default(0)
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
+#  family_id              :bigint
 #
 # Indexes
 #
 #  index_users_on_auth_token            (auth_token) UNIQUE
 #  index_users_on_email                 (email) UNIQUE
+#  index_users_on_family_id             (family_id)
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
+#
+# Foreign Keys
+#
+#  fk_rails_...  (family_id => families.id)
 #
 
 class User < ApplicationRecord
@@ -41,6 +47,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  belongs_to :family
   has_many :habits
   has_many :diaries
   has_many :senses
