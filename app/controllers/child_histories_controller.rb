@@ -1,6 +1,7 @@
 class ChildHistoriesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_child, only: [:month, :year]
+  before_action :set_content_title
   before_action :set_child_history, only: [:edit, :update, :destroy]
   before_action :set_view_setting, only: %i(month year)
 
@@ -63,6 +64,10 @@ class ChildHistoriesController < ApplicationController
   def set_child
     # NOTE: routes的に `id` でchild_idが渡される
     @child = current_family.children.find(params[:id])
+  end
+
+  def set_content_title
+    @content_title = @child.present? ? @child.name : 'こども'
   end
 
   def set_child_history
