@@ -42,7 +42,7 @@ html[lang="ja"]
   body[class="#{controller.controller_name}_controller" data-turbolinks="#{'false' if @turbolinks_off}"]
     nav.navbar.navbar-expand-lg.navbar-light.bg-light(class="#{@no_header_margin ? '' : 'mb20'}")
       a.navbar-brand[href="#{root_path}"]
-        = fa_icon('coffee')
+        = fa_icon('home')
       ul.navbar-nav.ml-auto.mr-3.mr-lg-0
         li.nav-item(class="#{active_class('children')}") = link_to 'こども', children_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0
