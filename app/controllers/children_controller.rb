@@ -49,6 +49,7 @@ class ChildrenController < ApplicationController
 
   def graph
     @graph = Children::ChartBuilder.new(@child).run
+    @month = Time.zone.today
   end
 
   private
