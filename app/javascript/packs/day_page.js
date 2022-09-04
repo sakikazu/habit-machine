@@ -151,6 +151,7 @@ document.addEventListener('turbolinks:load', () => {
         HmAxios.post('/diaries/append_memo.json', formObject)
           .then(res => {
             this.showToast({isError: false, message: 'メモを追加しました'})
+            // 当「メモ追加」操作でメイン日記が作成された場合は、その日記をその日の日記配列に追加
             if (!!res.data.after_created_by_memo) {
               this.diariesWithOpsions.push({ diary: res.data.diary, targetDateForEditMode: null, highlightForAMoment: true })
             } else {
@@ -159,16 +160,15 @@ document.addEventListener('turbolinks:load', () => {
               this.diariesWithOpsions[foundIdx].diary = res.data.diary
               this.diariesWithOpsions[foundIdx].highlightForAMoment = true
             }
-          })
-          .catch(error => {
-            this.showToast({isError: true, message: (error?.response?.data?.message || `リロードしてください：${error.message}`)})
-          })
-          .finally(() => {
+
             // NOTE: val('')で値クリアしてしまうと、次の入力時に現在時刻が出なくなる
             // ABOUT: https://tempusdominus.github.io/bootstrap-4/Functions/
             $('.timepicker').datetimepicker('clear')
             $('#memo-form').find('select.form-control').val('')
             this.memoContent = ''
+          })
+          .catch(error => {
+            this.showToast({isError: true, message: (error?.response?.data?.message || `書いた内容をコピーしてから、リロードして、再度実行してください：${error.message}`)})
           })
       },
       newDiary () {
