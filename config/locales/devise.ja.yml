@@ -26,6 +26,8 @@ ja:
       signed_out: 'ログアウトしました.'
     passwords:
       updated: 'パスワードが更新されました.'
+      user:
+        send_instructions: 'リセットメールを送信したので確認してください.'
     registrations:
       signed_up: '登録しました.'
       updated: '情報が更新されました.'
