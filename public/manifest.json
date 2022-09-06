@@ -1,12 +1,23 @@
 {
   "name": "日々の記録",
   "short_name": "日々の記録",
-  "icons": [{
-    "src": "/logo/white-diary.svg",
-    "sizes": "48x48 72x72 96x96 128x128 256x256 512x512",
-    "type": "image/svg+xml",
-    "purpose": "any"
-  }],
+  "icons": [
+    {
+      "src": "/logo/android-chrome-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo/android-chrome-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo/android-chrome-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ],
   "start_url": "/",
   "display": "standalone",
   "background_color": "#E20008",
