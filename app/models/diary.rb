@@ -7,7 +7,7 @@
 #  deleted_at         :datetime
 #  image_content_type :string(255)
 #  image_file_name    :string(255)
-#  image_file_size    :integer
+#  image_file_size    :bigint
 #  image_updated_at   :datetime
 #  is_about_date      :boolean
 #  is_hilight         :boolean
@@ -17,8 +17,8 @@
 #  pinned             :boolean          default(FALSE), not null
 #  record_at          :date
 #  title              :string(255)
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
+#  created_at         :datetime
+#  updated_at         :datetime
 #  user_id            :integer
 #
 
