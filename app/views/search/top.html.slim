@@ -19,7 +19,7 @@
     ul
       li = link_to "日記 (#{@result_diaries_size})", '#diary'
       li = link_to "記録 (#{@result_records_size})", '#record'
-      li = link_to "Habitodo (#{@result_habitodos_size})", '#habitodo'
+      li = link_to "ノート (#{@result_habitodos_size})", '#habitodo'
 
   .searchResult-body
     / TODO: 右サイドバーが出ても選択行を見失わないようにできれば、タイトルの表示を一つにできるしスッキリ
@@ -78,7 +78,7 @@
                 p(v-html="data.highlighted")
 
       section#habitodo.mb40
-        h3 #{fa_icon('file-text')} Habitodo
+        h3 #{fa_icon('file-text')} ノート
         .result
           - if @result_habitodos_size.to_i.zero?
             p データなし
