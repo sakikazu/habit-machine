@@ -84,6 +84,7 @@ group :development do
   gem 'bullet'                    # n+1検出
   gem 'rubocop', require: false
   gem 'rack-mini-profiler', require: false        # 処理時間を表示
+  gem 'letter_opener_web', '~> 2.0'
 
   # Use Capistrano for deployment
   gem 'capistrano'
