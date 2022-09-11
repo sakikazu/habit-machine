@@ -2,13 +2,21 @@
   .card-header
     h2 パスワードの変更
   .card-body
-    = simple_form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put }) do |f|
+    = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
       = f.error_notification
       = f.input :reset_password_token, :as => :hidden
       = f.full_error :reset_password_token
       .form-inputs
-        = f.input :password, :label => "新しいパスワード", :required => true
-        = f.input :password_confirmation, :label => "新しいパスワードの確認", :required => true
+        = f.input :password,
+          label: "新しいパスワード",
+          required: true,
+          autofocus: true,
+          hint: ("最低 #{@minimum_password_length} 文字以上" if @minimum_password_length),
+          input_html: { autocomplete: "new-password" }
+        = f.input :password_confirmation,
+          label: "新しいパスワードの確認",
+          required: true,
+          input_html: { autocomplete: "new-password" }
       .form-actions.mb-3
         = f.button :submit, "更新する", class: 'btn btn-primary'
     = render "devise/shared/links"

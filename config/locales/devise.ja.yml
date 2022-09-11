@@ -31,3 +31,15 @@ ja:
     registrations:
       signed_up: '登録しました.'
       updated: '情報が更新されました.'
+
+    mailer:
+      confirmation_instructions:
+        subject: "メールアドレス確認"
+      reset_password_instructions:
+        subject: "パスワード再設定"
+      unlock_instructions:
+        subject: "Unlock instructions"
+      email_changed:
+        subject: "メールアドレスが変更されました"
+      password_change:
+        subject: "パスワードが変更されました"
