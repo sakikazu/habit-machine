@@ -15,7 +15,7 @@
   .form-group
     = f.text_field :title, class: 'form-control', placeholder: 'タイトル', required: true
   .form-group
-    = f.text_area :content, class: 'form-control', placeholder: 'この時のパパ、ママの想いも書いてみて', rows: 5
+    = f.text_area :content, id: 'content-field', class: 'form-control', placeholder: 'この時のパパ、ママの想いも書いてみて', rows: 5
   .form-group.mb-4
     = f.file_field :image, class: 'form-control'
     = image_tag history.image.url(:large), class: 'img-thumbnail' if history.image?
@@ -31,3 +31,5 @@
       = f.number_field :weight, step: '0.1', class: 'form-control', placeholder: "#{ChildHistory.human_attribute_name("data.weight")} (kg)"
   .form-group
     = f.submit '送信', class: 'btn btn-primary'
+
+= javascript_tag "$('#content-field').markdownEasily()"
