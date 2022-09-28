@@ -23,7 +23,7 @@ class ChildHistoriesController < ApplicationController
   def create
     @child = current_family.children.find(params[:child_id])
     @history = @child.child_histories.build(child_history_params)
-    set_data_if_need
+    @history.set_data_by_keys(params[:child_history], %i[height weight])
     @history.author = current_user
     unless @history.save
       @month = @history.target_date
@@ -34,15 +34,10 @@ class ChildHistoriesController < ApplicationController
   end
 
   def edit
-    if @history.data.present?
-      history_data = @history.data.with_indifferent_access
-      @history.height = history_data[:height]
-      @history.weight = history_data[:weight]
-    end
   end
 
   def update
-    set_data_if_need
+    @history.set_data_by_keys(params[:child_history], %i[height weight])
     unless @history.update(child_history_params)
       @month = @history.target_date
       @child = @history.child
@@ -80,16 +75,5 @@ class ChildHistoriesController < ApplicationController
 
   def child_history_params
     params.require(:child_history).permit(:title, :content, :image, :as_profile_image, :target_date, :about_date)
-  end
-
-  def set_data_if_need
-    height = params[:child_history][:height]
-    weight = params[:child_history][:weight]
-    # 既に登録済み状態でブランク値を与えられた場合は、削除をする
-    if @history.data.present? && (height.blank? && weight.blank?)
-      @history.data = nil
-    elsif height.present? || weight.present?
-      @history.data = { height: height, weight: weight }
-    end
   end
 end

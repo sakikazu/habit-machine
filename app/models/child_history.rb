@@ -32,7 +32,8 @@ class ChildHistory < ApplicationRecord
   belongs_to :child
   belongs_to :author, class_name: "User", foreign_key: :author_id
 
-  attr_accessor :height, :weight
+  # TODO: メタプロ
+  # attr_accessor :height, :weight
 
   validates :title, presence: true
   validates :target_date, presence: true
@@ -66,6 +67,26 @@ class ChildHistory < ApplicationRecord
       target_text: "#{title} #{content}",
       show_path: Rails.application.routes.url_helpers.month_histories_child_path(*ChildHistory.month_path_params(child, target_date, anchor: true)),
     }
+  end
+
+  # NOTE: jsonカラムにセットするために煩雑な処理になってしまってるが、良い方法ありそうな気はする。keyを文字列とシンボルで合わせるあたりが面倒
+  def set_data_by_keys(params, keys)
+    target_params = params.slice(*keys).permit!
+    result_data = self.data || {}
+    result_data = result_data.with_indifferent_access
+    result_data.merge!(target_params)
+    result_data.delete_if { |k, v| v.blank? }
+    result_data = nil if result_data.blank?
+    self.data = result_data
+  end
+
+  # TODO: メタプロ? そもそも、form fieldにvalue与えてJSON型のまま扱うのが良かったかも
+  def height
+    self.data&.dig('height')
+  end
+
+  def weight
+    self.data&.dig('weight')
   end
 
   def self.month_path_params(child, target_date, anchor: false)
