@@ -41,7 +41,7 @@ class ChildrenController < ApplicationController
   end
 
   def destroy
-    @child.child_histories.destroy_all
+    @child.histories.destroy_all
     @child.destroy
 
     respond_to do |format|

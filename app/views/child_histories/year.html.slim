@@ -34,5 +34,5 @@
                 p まだ写真がアップされてないよ！
             .card-body
               - histories.each do |history|
-                span = link_to history.title, month_histories_child_path(*ChildHistory.month_path_params(@child, history.target_date, anchor: true))
+                span = link_to history.title, month_histories_child_path(*History.month_path_params(@child, history.target_date, anchor: true))
                 span.mr-1.ml-1 = '/'

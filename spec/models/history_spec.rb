@@ -30,11 +30,11 @@
 #
 require 'rails_helper'
 
-RSpec.describe ChildHistory, type: :model do
+RSpec.describe History, type: :model do
   describe '#set_data_by_keys' do
-    subject { child_history.set_data_by_keys(ActionController::Parameters.new(params), keys) }
+    subject { history.set_data_by_keys(ActionController::Parameters.new(params), keys) }
 
-    let(:child_history) { build(:child_history, data: data) }
+    let(:history) { build(:history, data: data) }
     let(:keys) { %i[height weight] }
 
     context 'dataがnilのとき' do
@@ -43,7 +43,7 @@ RSpec.describe ChildHistory, type: :model do
 
       it 'dataは、paramsの指定されたkeysのみの値で設定されること' do
         subject
-        expect(child_history.data).to eq ({ height: '30', weight: '15' }.deep_stringify_keys)
+        expect(history.data).to eq ({ height: '30', weight: '15' }.deep_stringify_keys)
       end
     end
 
@@ -53,7 +53,7 @@ RSpec.describe ChildHistory, type: :model do
 
       it 'dataはnilになること' do
         subject
-        expect(child_history.data).to eq nil
+        expect(history.data).to eq nil
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe ChildHistory, type: :model do
 
       it 'dataは、paramsの指定されたkeysのみの値で上書き、追加されること' do
         subject
-        expect(child_history.data).to eq ({ height: '33', weight: '2.4', other_key: 'aaa' }.deep_stringify_keys)
+        expect(history.data).to eq ({ height: '33', weight: '2.4', other_key: 'aaa' }.deep_stringify_keys)
       end
     end
   end

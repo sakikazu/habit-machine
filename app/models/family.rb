@@ -11,5 +11,5 @@
 class Family < ApplicationRecord
   has_many :users
   has_many :children
-  has_many :child_histories, through: :children
+  has_many :histories, as: :source
 end

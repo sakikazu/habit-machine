@@ -200,11 +200,11 @@ ja:
       course: " 権利消化"
 
     attributes:
-      child_history:
+      history:
         title: タイトル
         content: 内容
         target_date: 対象日
-      child_history/data:
+      history/data:
         height: 身長
         weight: 体重
       user:

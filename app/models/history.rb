@@ -28,8 +28,8 @@
 #  fk_rails_...  (author_id => users.id)
 #  fk_rails_...  (child_id => children.id)
 #
-class ChildHistory < ApplicationRecord
-  belongs_to :child
+class History < ApplicationRecord
+  belongs_to :source, polymorphic: true
   belongs_to :author, class_name: "User", foreign_key: :author_id
 
   # TODO: メタプロ
@@ -42,7 +42,7 @@ class ChildHistory < ApplicationRecord
   scope :find_by_word, lambda { |word| where('title like :q OR content like :q', :q => "%#{word}%") }
   scope :newer, lambda { order(target_date: :desc) }
 
-  content_name = "child_history"
+  content_name = "history"
   has_attached_file :image,
     :styles => {
       :small => "350x350>",
@@ -65,7 +65,7 @@ class ChildHistory < ApplicationRecord
       title: "#{target_date.to_s} > #{title}",
       body: content,
       target_text: "#{title} #{content}",
-      show_path: Rails.application.routes.url_helpers.month_histories_child_path(*ChildHistory.month_path_params(child, target_date, anchor: true)),
+      show_path: Rails.application.routes.url_helpers.month_histories_child_path(*History.month_path_params(child, target_date, anchor: true)),
     }
   end
 
