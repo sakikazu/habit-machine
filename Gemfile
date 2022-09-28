@@ -118,9 +118,7 @@ group :development, :test do
 
   # Rspec
   gem 'rspec-rails'
-
-  # fixtureの代わり
-  gem "factory_bot"
+  gem 'factory_bot_rails'
 
   # テスト環境のテーブルをきれいにする
   gem 'database_rewinder'
