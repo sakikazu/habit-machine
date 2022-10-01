@@ -5,12 +5,6 @@ class ChildrenController < ApplicationController
   before_action :set_content_title, only: [:edit, :graph]
   before_action :set_view_setting, only: %i(graph)
 
-  def index
-    @users = current_family.users
-    @children = current_family.children.all
-    @content_title = 'こども一覧'
-  end
-
   def new
     @child = current_family.children.build
   end
@@ -66,7 +60,7 @@ class ChildrenController < ApplicationController
   end
 
   def ensure_to_have_family
-    redirect_to root_path, notice: '他の家族を有効にするフラグをONにしてください' unless current_family.has_others
+    redirect_to root_path, notice: '家族にひもづけてください' if current_family.blank?
   end
 
   def child_params

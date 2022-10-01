@@ -18,5 +18,14 @@ module HabitMachine
 
     config.i18n.default_locale = :ja
     config.time_zone = 'Tokyo'
+
+    config.generators do |g|
+      g.view_specs false
+      g.request_specs false
+      g.controller_specs false
+      g.helper false
+      g.stylesheets false
+      g.javascripts false
+    end
   end
 end

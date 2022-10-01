@@ -1,0 +1,9 @@
+.row.pt-1.pb-1
+  - home_path = month_family_family_histories_path(Time.now.year, Time.now.month)
+  - if defined?(family.profile_image) && family.profile_image.present?
+    = link_to image_tag(family.profile_image.url(:small), class: 'rounded-circle', width: '65px', height: '65px'), home_path
+  .flex-grow-1.align-self-center
+    h3.ml-2
+      = link_to family.name_with_suffix, home_path, class: 'text-light'
+  .align-self-center
+    = yield :family_header_actions

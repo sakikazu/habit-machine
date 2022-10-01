@@ -1,0 +1,42 @@
+- content_for :user_header_actions do
+  h5
+    = "#{@month.year}年#{@month.month}月"
+  .row.justify-content-between
+    .col
+      = link_to '<< 前の月', month_user_user_histories_path(*History.month_path_params(@user, @month - 1.month)), class: 'prev-day text-light'
+      span.mr-3.ml-3
+        = link_to fa_icon('calendar', text: '本年'), year_user_user_histories_path(@user, @month.year), class: 'text-light'
+      = link_to '次の月 >>', month_user_user_histories_path(*History.month_path_params(@user, @month + 1.month)), class: 'next-day text-light'
+
+.row.justify-content-center.sticky-top.bg-gradient.text-light.mb-5(style="background-color: #1d4e89; z-index:100;")
+  .col-sm(style="max-width: 500px")
+    = render partial: 'user_histories/header', locals: { user: @user }
+
+.row.justify-content-center
+  .col-sm(style="max-width: 500px")
+    = render partial: 'user_histories/form', locals: { history: @history }
+
+    - if @histories.blank?
+      p
+        | 今月の記録はありません。
+    - else
+      - @histories.each do |history|
+        .card.mb-3(id="history-#{history.target_date.to_s}")
+          .card-header
+            .row.justify-content-between
+              .col-10
+                - if history.about_date
+                  span.mr-1.text-muted = "(だいたい)"
+                = dispdate(history.target_date, true)
+                span.text-muted.ml-3 = "by #{history.author.dispname}"
+              .col-1.m-auto
+                = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_user_user_history_path(@user, history)
+          .card-body
+            h5.card-title = history.title
+            - if history.content.present?
+              .card-text.text-muted.markdown = markdown(history.content)
+          - if history.data.present?
+            ul.list-group.list-group-flush
+              - history.data.each do |key, value|
+                li.list-group-item.text-muted = "#{History.human_attribute_name("data.#{key}")}: #{value}"
+          = link_to image_tag(history.image.url(:small), class: 'card-img-bottom'), history.image.url(:large) if history.image?

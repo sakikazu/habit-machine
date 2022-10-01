@@ -53,6 +53,7 @@ class User < ApplicationRecord
   has_many :senses
   has_many :mytags, class_name: 'CustomTag'
   has_many :habitodos
+  has_many :histories, as: :source
 
   def self.find_or_create(data)
     user = self.find_by_email(data[:email])

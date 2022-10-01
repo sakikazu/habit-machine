@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: child_histories
+# Table name: histories
 #
 #  id                 :bigint           not null, primary key
 #  about_date         :boolean
@@ -11,22 +11,23 @@
 #  image_file_name    :string(255)
 #  image_file_size    :bigint
 #  image_updated_at   :datetime
+#  source_type        :string(255)      not null
 #  target_date        :date
 #  title              :string(255)
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  author_id          :integer
-#  child_id           :bigint
+#  source_id          :bigint           not null
 #
 # Indexes
 #
-#  index_child_histories_on_author_id  (author_id)
-#  index_child_histories_on_child_id   (child_id)
+#  index_histories_on_author_id  (author_id)
+#  index_histories_on_source_id  (source_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (author_id => users.id)
-#  fk_rails_...  (child_id => children.id)
+#  fk_rails_...  (source_id => children.id)
 #
 FactoryBot.define do
   factory :history do

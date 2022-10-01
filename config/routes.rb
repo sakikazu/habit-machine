@@ -143,7 +143,7 @@ Rails.application.routes.draw do
 	resources :habits
 	resources :records, only: [:create, :update]
 
-  resources :children do
+  resources :children, except: %i[index show] do
     member do
       get :graph
     end
@@ -156,10 +156,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :families, only: %i[show edit] do
+  resource :family, only: %i[show edit update] do
     resources :family_histories, path: :histories, only: [:create, :edit, :update, :destroy] do
       collection do
         get 'y/:year', action: :year, as: :year
+        get 'm/:year/:month', action: :month, as: :month
       end
     end
   end
@@ -169,6 +170,7 @@ Rails.application.routes.draw do
     resources :user_histories, path: :histories, only: [:create, :edit, :update, :destroy] do
       collection do
         get 'y/:year', action: :year, as: :year
+        get 'm/:year/:month', action: :month, as: :month
       end
     end
   end

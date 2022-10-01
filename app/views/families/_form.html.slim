@@ -1,0 +1,12 @@
+= form_with(model: current_family, class: 'form') do |f|
+  - if current_family.errors.any?
+    .alert.alert-danger
+      ul
+        - current_family.errors.full_messages.each do |msg|
+          li = msg
+
+  .form-group
+    = f.label :name, "表示名"
+    = f.text_field :name, class: 'form-control'
+
+  = f.submit '登録する', class: "btn btn-primary"
