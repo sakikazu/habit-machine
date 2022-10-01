@@ -65,7 +65,7 @@ class History < ApplicationRecord
       title: "#{target_date.to_s} > #{title}",
       body: content,
       target_text: "#{title} #{content}",
-      show_path: Rails.application.routes.url_helpers.month_histories_child_path(*History.month_path_params(child, target_date, anchor: true)),
+      show_path: Rails.application.routes.url_helpers.month_child_child_histories_path(*History.month_path_params(child, target_date, anchor: true)),
     }
   end
 

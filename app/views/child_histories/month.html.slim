@@ -4,10 +4,10 @@
     small.text-muted = "(#{@child.relative_age(@month)})"
   .row.justify-content-between
     .col
-      = link_to '<< 前の月', month_histories_child_path(*History.month_path_params(@child, @month - 1.month)), class: 'prev-day'
+      = link_to '<< 前の月', month_child_child_histories_path(*History.month_path_params(@child, @month - 1.month)), class: 'prev-day'
       span.mr-3.ml-3
-        = link_to fa_icon('calendar', text: '本年'), year_histories_child_path(@child, @month.year)
-      = link_to '次の月 >>', month_histories_child_path(*History.month_path_params(@child, @month + 1.month)), class: 'next-day'
+        = link_to fa_icon('calendar', text: '本年'), year_child_child_histories_path(@child, @month.year)
+      = link_to '次の月 >>', month_child_child_histories_path(*History.month_path_params(@child, @month + 1.month)), class: 'next-day'
 
 .row.justify-content-center.sticky-top.bg-warning.bg-gradient.text-dark.mb-5(style="z-index:100;")
   .col-sm(style="max-width: 500px")
@@ -31,7 +31,7 @@
                 = dispdate(history.target_date, true)
                 span.text-muted.ml-3 = "by #{history.author.dispname}"
               .col-1.m-auto
-                = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_history_path(history)
+                = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_child_history_path(history.source, history)
           .card-body
             h5.card-title = history.title
             - if history.content.present?

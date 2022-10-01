@@ -4,4 +4,4 @@
     h2 編集
     = render partial: 'form', locals: { history: @history }
     .mt-5
-      = link_to '削除する', child_history_path(@history), method: :delete, class: 'btn btn-danger', data: { confirm: '本当に削除しますか？' }
+      = link_to '削除する', child_child_history_path(@history.source, @history), method: :delete, class: 'btn btn-danger', data: { confirm: '本当に削除しますか？' }

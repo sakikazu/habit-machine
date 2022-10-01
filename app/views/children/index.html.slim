@@ -10,7 +10,16 @@
           - if child.profile_image.present?
             = image_tag child.profile_image.url(:small), class: 'rounded-circle', width: '75px', height: '75px'
           .ml-3
-            h3 = link_to child.name, month_histories_child_path(child, Time.now.year, Time.now.month)
+            h3 = link_to child.name, month_child_child_histories_path(child, Time.now.year, Time.now.month)
             p.text-muted = child.relative_age(Date.today)
         .edit
           = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_path(child)
+    hr.mb-3
+
+    p.text-muted.font-weight-bold 他の家族
+    - @users.each do |user|
+      h3 = link_to user.dispname, year_user_user_histories_path(user, Time.now.year)
+    hr.mb-3
+
+    p.text-muted.font-weight-bold 家族事
+    h3 = link_to "#{current_family.name}家", year_family_family_histories_path(current_family, Time.now.year)

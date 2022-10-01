@@ -1,6 +1,6 @@
 class ChildHistoriesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_child, only: [:month, :year]
+  before_action :set_child
   before_action :set_content_title
   before_action :set_history, only: [:edit, :update, :destroy]
   before_action :set_view_setting, only: %i(month year)
@@ -21,7 +21,6 @@ class ChildHistoriesController < ApplicationController
   end
 
   def create
-    @child = current_family.children.find(params[:child_id])
     @history = @child.histories.build(history_params)
     @history.set_data_by_keys(params[:history], %i[height weight])
     @history.author = current_user
@@ -30,7 +29,7 @@ class ChildHistoriesController < ApplicationController
       render :month
       return
     end
-    redirect_to month_histories_child_path(*History.month_path_params(@child, @history.target_date, anchor: true))
+    redirect_to month_child_child_histories_path(*History.month_path_params(@child, @history.target_date, anchor: true))
   end
 
   def edit
@@ -44,21 +43,20 @@ class ChildHistoriesController < ApplicationController
       render :month
       return
     end
-    redirect_to month_histories_child_path(*History.month_path_params(@history.source, @history.target_date, anchor: true))
+    redirect_to month_child_child_histories_path(*History.month_path_params(@history.source, @history.target_date, anchor: true))
   end
 
   def destroy
     target_date = @history.target_date
     child = @history.source
     @history.destroy
-    redirect_to month_histories_child_path(*History.month_path_params(@history.source, target_date)), notice: '削除しました'
+    redirect_to month_child_child_histories_path(*History.month_path_params(@history.source, target_date)), notice: '削除しました'
   end
 
   private
 
   def set_child
-    # NOTE: routes的に `id` でchild_idが渡される
-    @child = current_family.children.find(params[:id])
+    @child = current_family.children.find(params[:child_id])
   end
 
   def set_content_title

@@ -1,4 +1,4 @@
-- url = history.persisted? ? child_history_path(history) : child_child_histories_path(history.source)
+- url = history.persisted? ? child_child_history_path(history.source, history) : child_child_histories_path(history.source)
 = form_with model: history, url: url, class: 'form' do |f|
   - if history && history.errors.any?
     .alert.alert-danger

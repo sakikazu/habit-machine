@@ -4,10 +4,10 @@
     small.text-muted = "(#{@child.relative_age(@year)})"
   .row.justify-content-between
     .col
-      = link_to '<< 前の年', year_histories_child_path(@child, @year - 1), class: 'prev-day'
+      = link_to '<< 前の年', year_child_child_histories_path(@child, @year - 1), class: 'prev-day'
       span.mr-3.ml-3
-        = link_to fa_icon('calendar', text: '今年'), year_histories_child_path(@child, Time.now.year)
-      = link_to '次の年 >>', year_histories_child_path(@child, @year + 1), class: 'next-day'
+        = link_to fa_icon('calendar', text: '今年'), year_child_child_histories_path(@child, Time.now.year)
+      = link_to '次の年 >>', year_child_child_histories_path(@child, @year + 1), class: 'next-day'
 
 .row.justify-content-center.sticky-top.bg-warning.bg-gradient.text-dark.mb-5(style="z-index:100;")
   .col-sm(style="max-width: 500px")
@@ -19,7 +19,7 @@
       h3.mb-5 = "#{@year}年の記録はありません"
     - @months.each do |month|
       .month.mb-4
-        h4 = link_to "#{month}月", month_histories_child_path(@child, @year, month)
+        h4 = link_to "#{month}月", month_child_child_histories_path(@child, @year, month)
         - histories = @histories_grouped_by_month[month]
         - if histories.blank?
           p.text-muted 記録がありません
@@ -34,5 +34,5 @@
                 p まだ写真がアップされてないよ！
             .card-body
               - histories.each do |history|
-                span = link_to history.title, month_histories_child_path(*History.month_path_params(@child, history.target_date, anchor: true))
+                span = link_to history.title, month_child_child_histories_path(*History.month_path_params(@child, history.target_date, anchor: true))
                 span.mr-1.ml-1 = '/'

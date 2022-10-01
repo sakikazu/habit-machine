@@ -6,6 +6,7 @@ class ChildrenController < ApplicationController
   before_action :set_view_setting, only: %i(graph)
 
   def index
+    @users = current_family.users
     @children = current_family.children.all
     @content_title = 'こども一覧'
   end
