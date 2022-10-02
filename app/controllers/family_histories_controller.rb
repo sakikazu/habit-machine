@@ -23,6 +23,7 @@ class FamilyHistoriesController < ApplicationController
   def create
     @history = current_family.histories.build(history_params)
     @history.author = current_user
+    @history.family = current_family
     unless @history.save
       @month = @history.target_date
       render :month

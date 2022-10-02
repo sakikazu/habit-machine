@@ -19,7 +19,7 @@
     p.text-muted.font-weight-bold
       = fa_icon 'user', text: '他の家族'
     - @users.each do |user|
-      h4.mb-4 = link_to user.dispname, year_user_user_histories_path(user, Time.now.year)
+      h4.mb-4 = link_to user.dispname, month_user_user_histories_path(user, Time.now.year, Time.now.month)
     hr.mb-3
 
     p.text-muted.font-weight-bold

@@ -17,16 +17,19 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  author_id          :integer
+#  family_id          :bigint
 #  source_id          :bigint           not null
 #
 # Indexes
 #
 #  index_histories_on_author_id  (author_id)
+#  index_histories_on_family_id  (family_id)
 #  index_histories_on_source_id  (source_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (author_id => users.id)
+#  fk_rails_...  (family_id => families.id)
 #  fk_rails_...  (source_id => children.id)
 #
 FactoryBot.define do

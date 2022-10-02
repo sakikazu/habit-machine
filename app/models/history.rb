@@ -17,21 +17,25 @@
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  author_id          :integer
+#  family_id          :bigint
 #  source_id          :bigint           not null
 #
 # Indexes
 #
 #  index_histories_on_author_id  (author_id)
+#  index_histories_on_family_id  (family_id)
 #  index_histories_on_source_id  (source_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (author_id => users.id)
+#  fk_rails_...  (family_id => families.id)
 #  fk_rails_...  (source_id => children.id)
 #
 class History < ApplicationRecord
   belongs_to :source, polymorphic: true
   belongs_to :author, class_name: "User", foreign_key: :author_id
+  belongs_to :family
 
   # TODO: メタプロ
   # attr_accessor :height, :weight
@@ -40,6 +44,9 @@ class History < ApplicationRecord
   validates :target_date, presence: true
   validate :ensure_existing_profile_image
 
+  # NOTE: 使ってないけどポリモーフィック関連先のテーブルを条件で絞る方法としてコメントアウトで残している
+  # CHILD_JOIN_SQL = "JOIN children ON children.id = histories.source_id AND histories.source_type = 'Child'"
+  # scope :with_child_in_family, lambda { |family| History.joins(CHILD_JOIN_SQL).where(children: { family_id: family.id }) }
   scope :find_by_word, lambda { |word| where('title like :q OR content like :q', :q => "%#{word}%") }
   scope :newer, lambda { order(target_date: :desc) }
 
@@ -60,13 +67,31 @@ class History < ApplicationRecord
 
 
   def search_result_items
+    path, name = case source
+           when Child
+             [
+              Rails.application.routes.url_helpers.month_child_child_histories_path(*History.month_path_params(source, target_date, anchor: true)),
+              source.name
+             ]
+           when User
+             [
+              Rails.application.routes.url_helpers.month_user_user_histories_path(*History.month_path_params(source, target_date, anchor: true)),
+              source.dispname
+             ]
+           when Family
+             [
+              Rails.application.routes.url_helpers.month_family_family_histories_path(*History.month_path_params(nil, target_date, anchor: true)),
+              source.name_with_suffix
+             ]
+           end
+
     {
       type: self.class.to_s,
       id: id,
-      title: "#{target_date.to_s} > #{title}",
+      title: "#{target_date.to_s} > #{title} [#{name}]",
       body: content,
       target_text: "#{title} #{content}",
-      show_path: Rails.application.routes.url_helpers.month_child_child_histories_path(*History.month_path_params(child, target_date, anchor: true)),
+      show_path: path
     }
   end
 
@@ -90,9 +115,9 @@ class History < ApplicationRecord
     self.data&.dig('weight')
   end
 
-  def self.month_path_params(child = nil, target_date, anchor: false)
+  def self.month_path_params(member = nil, target_date, anchor: false)
     result = [target_date.year, target_date.month]
-    result.unshift(child) if child.present?
+    result.unshift(member) if member.present?
     if anchor
       result << { anchor: "history-#{target_date.strftime('%Y-%m-%d')}" }
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_01_224701) do
+ActiveRecord::Schema.define(version: 2022_10_09_025235) do
 
   create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(version: 2022_10_01_224701) do
   create_table "histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.bigint "source_id", null: false
     t.string "source_type", null: false
+    t.bigint "family_id"
     t.integer "author_id"
     t.string "title"
     t.text "content"
@@ -110,6 +111,7 @@ ActiveRecord::Schema.define(version: 2022_10_01_224701) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_histories_on_author_id"
+    t.index ["family_id"], name: "index_histories_on_family_id"
     t.index ["source_id"], name: "index_histories_on_source_id"
   end
 
@@ -199,6 +201,7 @@ ActiveRecord::Schema.define(version: 2022_10_01_224701) do
 
   add_foreign_key "children", "families"
   add_foreign_key "histories", "children", column: "source_id"
+  add_foreign_key "histories", "families"
   add_foreign_key "histories", "users", column: "author_id"
   add_foreign_key "users", "families"
 end

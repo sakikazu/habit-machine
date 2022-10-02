@@ -24,6 +24,7 @@ class ChildHistoriesController < ApplicationController
     @history = @child.histories.build(history_params)
     @history.set_data_by_keys(params[:history], %i[height weight])
     @history.author = current_user
+    @history.family = current_family
     unless @history.save
       @month = @history.target_date
       render :month
