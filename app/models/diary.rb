@@ -21,6 +21,11 @@
 #  updated_at         :datetime         not null
 #  user_id            :integer
 #
+# Indexes
+#
+#  index_diaries_on_record_at  (record_at)
+#  index_diaries_on_user_id    (user_id)
+#
 
 class Diary < ApplicationRecord
   acts_as_paranoid

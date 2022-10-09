@@ -22,9 +22,10 @@
 #
 # Indexes
 #
-#  index_histories_on_author_id  (author_id)
-#  index_histories_on_family_id  (family_id)
-#  index_histories_on_source_id  (source_id)
+#  index_histories_on_author_id                  (author_id)
+#  index_histories_on_family_id                  (family_id)
+#  index_histories_on_source_id_and_source_type  (source_id,source_type)
+#  index_histories_on_target_date                (target_date)
 #
 # Foreign Keys
 #

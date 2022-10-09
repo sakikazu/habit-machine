@@ -11,6 +11,11 @@
 #  updated_at :datetime         not null
 #  habit_id   :integer
 #
+# Indexes
+#
+#  index_records_on_habit_id   (habit_id)
+#  index_records_on_record_at  (record_at)
+#
 
 class Record < ApplicationRecord
   acts_as_paranoid

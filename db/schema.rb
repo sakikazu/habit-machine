@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_09_025235) do
+ActiveRecord::Schema.define(version: 2022_10_09_083833) do
 
   create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -57,6 +57,8 @@ ActiveRecord::Schema.define(version: 2022_10_09_025235) do
     t.boolean "main_in_day", default: false, null: false
     t.boolean "pinned", default: false, null: false
     t.integer "pin_priority", default: 0, null: false
+    t.index ["record_at"], name: "index_diaries_on_record_at"
+    t.index ["user_id"], name: "index_diaries_on_user_id"
   end
 
   create_table "families", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
@@ -91,6 +93,7 @@ ActiveRecord::Schema.define(version: 2022_10_09_025235) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_habits_on_user_id"
   end
 
   create_table "histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
@@ -112,7 +115,8 @@ ActiveRecord::Schema.define(version: 2022_10_09_025235) do
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_histories_on_author_id"
     t.index ["family_id"], name: "index_histories_on_family_id"
-    t.index ["source_id"], name: "index_histories_on_source_id"
+    t.index ["source_id", "source_type"], name: "index_histories_on_source_id_and_source_type"
+    t.index ["target_date"], name: "index_histories_on_target_date"
   end
 
   create_table "rails_admin_histories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
@@ -135,6 +139,8 @@ ActiveRecord::Schema.define(version: 2022_10_09_025235) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["habit_id"], name: "index_records_on_habit_id"
+    t.index ["record_at"], name: "index_records_on_record_at"
   end
 
   create_table "senses", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
