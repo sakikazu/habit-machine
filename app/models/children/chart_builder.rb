@@ -4,7 +4,7 @@ module Children
     TYPE = 'spline'.freeze
 
     def initialize(child)
-      @target_child_histories = child.child_histories.where.not(data: nil).order(target_date: :asc)
+      @target_child_histories = child.histories.where.not(data: nil).order(target_date: :asc)
       @date_range = child.birthday.yesterday.to_time..Time.zone.now.tomorrow
     end
 

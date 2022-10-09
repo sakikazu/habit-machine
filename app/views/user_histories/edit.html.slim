@@ -1,0 +1,7 @@
+.row.justify-content-center
+  .col-sm(style="max-width: 500px")
+    .mb-3 = link_to '戻る', :back, class: 'btn btn-light'
+    h2 編集
+    = render partial: 'form', locals: { history: @history }
+    .mt-5
+      = link_to '削除する', user_user_history_path(@user, @history), method: :delete, class: 'btn btn-danger', data: { confirm: '本当に削除しますか？' }

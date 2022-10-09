@@ -1,4 +1,4 @@
-- url = history.persisted? ? child_history_path(history) : child_child_histories_path(history.child)
+- url = history.persisted? ? child_child_history_path(history.source, history) : child_child_histories_path(history.source)
 = form_with model: history, url: url, class: 'form' do |f|
   - if history && history.errors.any?
     .alert.alert-danger
@@ -26,9 +26,9 @@
       | 一番最近プロフィール画像にしたものが使用されます
   .row.mb-3
     .col
-      = f.number_field :height, step: '0.1', class: 'form-control', placeholder: "#{ChildHistory.human_attribute_name("data.height")} (cm)"
+      = f.number_field :height, step: '0.1', class: 'form-control', placeholder: "#{History.human_attribute_name("data.height")} (cm)"
     .col
-      = f.number_field :weight, step: '0.1', class: 'form-control', placeholder: "#{ChildHistory.human_attribute_name("data.weight")} (kg)"
+      = f.number_field :weight, step: '0.1', class: 'form-control', placeholder: "#{History.human_attribute_name("data.weight")} (kg)"
   .form-group
     = f.submit '送信', class: 'btn btn-primary'
 

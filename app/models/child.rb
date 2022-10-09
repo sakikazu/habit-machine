@@ -20,7 +20,7 @@
 #
 class Child < ApplicationRecord
   belongs_to :family
-  has_many :child_histories
+  has_many :histories, as: :source
 
   validates :name, presence: true
   validates :birthday, presence: true
@@ -29,7 +29,7 @@ class Child < ApplicationRecord
   GENDER = [['男', 1], ['女', 2]].freeze
 
   def profile_image
-    child_histories.where(as_profile_image: true).order(target_date: :desc).first&.image
+    histories.where(as_profile_image: true).order(target_date: :desc).first&.image
   end
 
   def relative_age(base_date)

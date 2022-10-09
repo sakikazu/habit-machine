@@ -1,0 +1,37 @@
+- content_for :user_header_actions do
+  h5
+    = "#{@year}年"
+  .row.justify-content-between
+    .col
+      = link_to '<< 前の年', year_user_user_histories_path(@user, @year - 1), class: 'prev-day text-light'
+      span.mr-3.ml-3
+        = link_to fa_icon('calendar', text: '今年'), year_user_user_histories_path(@user, Time.now.year), class: 'text-light'
+      = link_to '次の年 >>', year_user_user_histories_path(@user, @year + 1), class: 'next-day text-light'
+
+.row.justify-content-center.sticky-top.bg-gradient.text-light.mb-5(style="background-color: #1d4e89; z-index:100;")
+  .col-sm(style="max-width: 500px")
+    = render partial: 'user_histories/header', locals: { user: @user }
+
+.row.justify-content-center
+  .col-sm(style="max-width: 500px")
+    - if @histories_grouped_by_month.blank?
+      h3.mb-5 = "#{@year}年の記録はありません"
+    - @months.each do |month|
+      .month.mb-4
+        h4 = link_to "#{month}月", month_user_user_histories_path(@user, @year, month)
+        - histories = @histories_grouped_by_month[month]
+        - if histories.blank?
+          p.text-muted 記録がありません
+        - else
+          .card
+            .card-header
+              -# `image.present?` でカラムに保存されているかのチェック。ファイルの存在チェックまではされない
+              - if histories.any? { |his| his.image.present? }
+                - histories.each do |history|
+                  span.mr-1 = link_to image_tag(history.image.url(:small), width: '50px'), history.image.url(:large) if history.image?
+              - else
+                p まだ写真がアップされてないよ！
+            .card-body
+              - histories.each do |history|
+                span = link_to history.title, month_user_user_histories_path(*History.month_path_params(@user, history.target_date, anchor: true))
+                span.mr-1.ml-1 = '/'

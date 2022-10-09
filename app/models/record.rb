@@ -7,8 +7,8 @@
 #  memo       :text(65535)
 #  record_at  :date
 #  value      :float(24)
-#  created_at :datetime
-#  updated_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #  habit_id   :integer
 #
 

@@ -3,7 +3,7 @@
     = "#{@month.year}年#{@month.month}月"
     small.text-muted = "(#{@child.relative_age(@month)})"
   .text-left
-    = link_to '戻る', month_histories_child_path(@child, Time.now.year, Time.now.month)
+    = link_to '戻る', month_child_child_histories_path(@child, Time.now.year, Time.now.month)
 
 .row.justify-content-center.sticky-top.bg-warning.bg-gradient.text-dark.mb-5(style="z-index:100;")
   .col-sm(style="max-width: 500px")

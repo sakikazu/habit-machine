@@ -18,8 +18,8 @@
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string(255)
 #  sign_in_count          :integer          default(0)
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  family_id              :bigint
 #
 # Indexes
@@ -53,6 +53,7 @@ class User < ApplicationRecord
   has_many :senses
   has_many :mytags, class_name: 'CustomTag'
   has_many :habitodos
+  has_many :histories, as: :source
 
   def self.find_or_create(data)
     user = self.find_by_email(data[:email])

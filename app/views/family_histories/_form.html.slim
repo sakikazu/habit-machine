@@ -1,0 +1,30 @@
+- url = history.persisted? ? family_family_history_path(history) : family_family_histories_path
+= form_with model: history, url: url, class: 'form' do |f|
+  - if history && history.errors.any?
+    .alert.alert-danger
+      ul
+        - history.errors.full_messages.each do |msg|
+          li = msg
+
+  .row.form-group
+    .col
+      = f.date_field :target_date, placeholder: '日付', class: 'form-control', required: true
+    .col(style="align-self: center")
+      = f.check_box :about_date, class: 'form-check-input', id: 'about_date'
+      = f.label :about_date, 'だいたい', class: 'form-check-label', for: 'about_date'
+  .form-group
+    = f.text_field :title, class: 'form-control', placeholder: 'タイトル', required: true
+  .form-group
+    = f.text_area :content, id: 'content-field', class: 'form-control', placeholder: '', rows: 5
+  / .form-group.mb-4
+    / = f.file_field :image, class: 'form-control'
+    / = image_tag history.image.url(:large), class: 'img-thumbnail' if history.image?
+    / .custom-control.custom-checkbox
+      / = f.check_box :as_profile_image, class: 'custom-control-input', id: 'as_profile_image'
+      / = f.label :as_profile_image, 'プロフィール画像にする', class: 'custom-control-label', for: 'as_profile_image'
+    / small.desc
+      / | 一番最近プロフィール画像にしたものが使用されます
+  .form-group
+    = f.submit '送信', class: 'btn btn-primary'
+
+= javascript_tag "$('#content-field').markdownEasily()"

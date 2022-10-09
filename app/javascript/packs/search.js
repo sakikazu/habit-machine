@@ -13,7 +13,7 @@ document.addEventListener('turbolinks:load', () => {
       Modal,
     },
     data: {
-      resultChildHistories: [],
+      resultHistories: [],
       resultHabitodos: [],
       resultDiaries: [],
       resultRecords: [],
@@ -33,8 +33,8 @@ document.addEventListener('turbolinks:load', () => {
           .then(res => {
             // console.log(res)
             switch(contentType) {
-              case 'child_history':
-                this.resultChildHistories = res.data
+              case 'history':
+                this.resultHistories = res.data
                 break
               case 'habitodo':
                 this.resultHabitodos = res.data
