@@ -13,7 +13,7 @@
         input.form-control.mr-2(type="text" v-model="recordValue" ref="inputValue" v-else)
         span {{ habit.value_unit }}
       .card-text.mt10
-        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" rows="4")
+        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" ref="markdownable_textarea" rows="4")
     template(v-else-if="persisted")
       span.badge.badge-light
         // todo: valueないとき、（未入力）とか入れる？
@@ -79,6 +79,7 @@ export default {
         const vm = this
         Vue.nextTick().then(function() {
           vm.$refs.inputValue.focus()
+          $(vm.$refs.markdownable_textarea).markdownEasily()
         })
       }
     },
