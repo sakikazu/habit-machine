@@ -6,9 +6,9 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
-    @enable_habits = current_user.habits.status_enabled
-    @disable_habits = current_user.habits.status_disabled
-    @close_habits = current_user.habits.status_done
+    @enable_habits = current_user.habits.status_enabled + current_family.habits.status_enabled
+    @disable_habits = current_user.habits.status_disabled + current_family.habits.status_disabled
+    @close_habits = current_user.habits.status_done + current_family.habits.status_done
   end
 
   # GET /habits/1
@@ -45,8 +45,8 @@ class HabitsController < ApplicationController
   # POST /habits
   # POST /habits.json
   def create
-    params[:habit][:user_id] = current_user.id
     @habit = Habit.new(habit_params)
+    @habit.source = params[:for_family].to_i == 1 ? current_family : current_user
 
     respond_to do |format|
       if @habit.save
@@ -97,6 +97,6 @@ class HabitsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def habit_params
-    params.require(:habit).permit(:value_type, :value_unit, :result_type, :reminder, :title, :user_id, :goal, :status, :memo)
+    params.require(:habit).permit(:value_type, :value_unit, :result_type, :reminder, :title, :goal, :status, :memo)
   end
 end

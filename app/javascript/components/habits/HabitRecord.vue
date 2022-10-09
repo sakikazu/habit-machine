@@ -1,8 +1,10 @@
 <template lang="pug">
 .card.mb15
-  h5.card-header.p-2
+  h5.card-header.p-2(:class="{ 'text-dark bg-warning': habit.for_family }")
     .habit-title
-      a(:href="`/habits/${habit.id}`") {{ habit.title }}
+      a(:href="`/habits/${habit.id}`")
+        i.fa.fa-users.mr-1(v-if="habit.for_family")
+        | {{ habit.title }}
     i.button.saveButton.fa.fa-floppy-o(@click="save" v-if="dataChanged")
     i.button.editButton.fa.fa-pencil(@click="toggleEdit" v-else)
   .card-body.p-2(v-if="editMode || persisted")

@@ -20,7 +20,7 @@ class GeneralController < ApplicationController
   def day_data
     date = Date.parse(params[:date]) rescue nil
     return head :bad_request if date.blank?
-    @habits = Habit.with_record_at_date(current_user.habits, date)
+    @habits = Habit.with_record_at_date(current_user.habits + current_family.habits, date)
     @diaries = current_user.diaries.includes(:tags).where(record_at: date).order(main_in_day: :desc)
     @pinned_diaries = current_user.diaries.pinned.includes(:tags).order(id: :desc).limit(15)
   end

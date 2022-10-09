@@ -48,7 +48,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable
 
   belongs_to :family
-  has_many :habits
+  has_many :habits, as: :source
   has_many :diaries
   has_many :senses
   has_many :mytags, class_name: 'CustomTag'

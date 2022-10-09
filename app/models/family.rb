@@ -14,6 +14,7 @@ class Family < ApplicationRecord
   has_many :children
   has_many :histories, as: :source
   has_many :all_histories, class_name: 'History'
+  has_many :habits, as: :source
 
   def name_with_suffix
     "#{name}家"
