@@ -5,7 +5,7 @@
         = fa_icon 'child', text: 'こども'
       = link_to '作成', new_child_path
     - @children.each do |child|
-      .d-flex.justify-content-between.mb-4
+      .d-flex.justify-content-between.mb-2
         .d-flex.flex-grow-1
           - if child.profile_image.present?
             = image_tag child.profile_image.url(:small), class: 'rounded-circle', width: '75px', height: '75px'
@@ -14,13 +14,13 @@
             p.text-muted = child.relative_age(Date.today)
         .edit
           = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_path(child)
-    hr.mb-3
+      hr.mb-3
 
     p.text-muted.font-weight-bold
       = fa_icon 'user', text: '他の家族'
     - @users.each do |user|
-      h4.mb-4 = link_to user.dispname, month_user_user_histories_path(user, Time.now.year, Time.now.month)
-    hr.mb-3
+      h4.mb-3 = link_to user.dispname, month_user_user_histories_path(user, Time.now.year, Time.now.month)
+      hr.mb-3
 
     p.text-muted.font-weight-bold
       = fa_icon 'home', text: '家族事'
