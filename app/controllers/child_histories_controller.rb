@@ -49,7 +49,6 @@ class ChildHistoriesController < ApplicationController
 
   def destroy
     target_date = @history.target_date
-    child = @history.source
     @history.destroy
     redirect_to month_child_child_histories_path(*History.month_path_params(@history.source, target_date)), notice: '削除しました'
   end
@@ -64,10 +63,9 @@ class ChildHistoriesController < ApplicationController
     @content_title = @child.present? ? @child.name : 'こども'
   end
 
-  # TODO: 認可ライブラリで置き換える
+  # TODO: 現状でも問題ないが、認可ライブラリも導入したいところ
   def set_history
-    @history = History.find(params[:id])
-    head :not_found unless current_family.children.include?(@history.source)
+    @history = current_family.all_histories.find(params[:id])
   end
 
   def set_view_setting

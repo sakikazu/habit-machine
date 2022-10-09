@@ -1,6 +1,5 @@
 class ChildrenController < ApplicationController
   before_action :authenticate_user!
-  before_action :ensure_to_have_family
   before_action :set_child, only: %i[edit update destroy graph]
   before_action :set_content_title, only: [:edit, :graph]
   before_action :set_view_setting, only: %i(graph)
@@ -57,10 +56,6 @@ class ChildrenController < ApplicationController
 
   def set_content_title
     @content_title = @child.present? ? @child.name : 'こども'
-  end
-
-  def ensure_to_have_family
-    redirect_to root_path, notice: '家族にひもづけてください' if current_family.blank?
   end
 
   def child_params

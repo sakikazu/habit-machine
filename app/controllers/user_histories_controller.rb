@@ -47,7 +47,6 @@ class UserHistoriesController < ApplicationController
 
   def destroy
     target_date = @history.target_date
-    family = @history.source
     @history.destroy
     redirect_to month_user_user_histories_path(*History.month_path_params(@user, target_date)), notice: '削除しました'
   end
@@ -63,10 +62,8 @@ class UserHistoriesController < ApplicationController
     @content_title = "#{title}ヒストリー"
   end
 
-  # TODO: 認可ライブラリで置き換える
   def set_history
-    @history = History.find(params[:id])
-    head :not_found unless current_family.users.include?(@history.source)
+    @history = current_family.all_histories.find(params[:id])
   end
 
   def set_view_setting
