@@ -6,9 +6,9 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
-    @enable_habits = current_user.habits.status_enabled + current_family.habits.status_enabled
-    @disable_habits = current_user.habits.status_disabled + current_family.habits.status_disabled
-    @close_habits = current_user.habits.status_done + current_family.habits.status_done
+    @enable_habits = Habit.available_by_user(current_user).status_enabled
+    @disable_habits = Habit.available_by_user(current_user).status_disabled
+    @close_habits = Habit.available_by_user(current_user).status_done
   end
 
   # GET /habits/1

@@ -1,7 +1,7 @@
-.card(class="#{'text-dark bg-warning' if habit.by_family?}")
+.card(class="#{'text-dark bg-warning' if habit.for_family?}")
   h5.card-header
     = link_to habit_path(habit.id) do
-      => fa_icon 'users' if habit.by_family?
+      => fa_icon 'users' if habit.for_family?
       = habit.title
   .card-body
     - if habit.goal.present?

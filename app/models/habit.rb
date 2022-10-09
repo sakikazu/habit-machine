@@ -28,6 +28,8 @@ class Habit < ApplicationRecord
   belongs_to :source, polymorphic: true
   has_many :records
 
+  scope :available_by_user, lambda { |user| joins("LEFT JOIN users ON habits.source_id = users.id AND habits.source_type = 'User' LEFT JOIN families ON habits.source_id = families.id AND habits.source_type = 'Family'").where("users.id = ? OR families.id = ?", user.id, user.family&.id) }
+
   validates_presence_of :title, :status, :result_type, :value_type
   attr_accessor :search_word, :records_in_date_term, :record_at_date
 
@@ -47,8 +49,8 @@ class Habit < ApplicationRecord
     value_type_collection? ? SYMBOLIC_VALUE : nil
   end
 
-  def by_family?
-    source&.is_a?(Family)
+  def for_family?
+    source_type == 'Family'
   end
 
   # 対象期間分の習慣データを取得
