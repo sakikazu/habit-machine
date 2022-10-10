@@ -20,7 +20,7 @@ class GeneralController < ApplicationController
   def day_data
     date = Date.parse(params[:date]) rescue nil
     return head :bad_request if date.blank?
-    @habits = Habit.with_record_at_date(current_user.habits, date)
+    @habits = Habit.with_record_at_date(Habit.available_by_user(current_user), date)
     @diaries = current_user.diaries.includes(:tags).where(record_at: date).order(main_in_day: :desc)
     @pinned_diaries = current_user.diaries.pinned.includes(:tags).order(id: :desc).limit(15)
   end
@@ -37,7 +37,7 @@ class GeneralController < ApplicationController
     @date_term = @target_month.beginning_of_month..@target_month.end_of_month
 
     # TODO: グラフ用データ取得は、別クラスにして、パフォーマンス改善する
-    basic_habits = current_user.habits.status_enabled
+    basic_habits = Habit.available_by_user(current_user).status_enabled
 
     habit_results_for_oresen = build_graph_data(basic_habits.result_type_line_graph)
     @habits_for_oresen_graph = build_graph(habit_results_for_oresen)
@@ -45,7 +45,7 @@ class GeneralController < ApplicationController
     habit_results_for_bou = build_graph_data(basic_habits.result_type_bar_graph)
     @habits_for_bou_graph = build_bou_graph(habit_results_for_bou)
 
-    @habits = Habit.with_records_in_date_term(current_user.habits.status_enabled, @date_term)
+    @habits = Habit.with_records_in_date_term(Habit.available_by_user(current_user).status_enabled, @date_term)
     @diaries = Diary.group_by_record_at(current_user, @date_term)
 
     @page_title = "#{@target_month.strftime('%Y年%m月')}の記録"

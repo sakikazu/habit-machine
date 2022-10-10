@@ -1,3 +1,7 @@
+- if @habit.for_family?
+  .row
+    .col.alert.alert-warning 家族で共有
+
 .row.justify-content-center
   / スマホではHabit情報テーブルが上になるようにする
   .col-sm-5.order-2.order-sm-1
@@ -32,6 +36,9 @@
     .form-actions.mb30
       = link_to "編集する", edit_habit_path, class: "btn btn-info"
     table.table.table-striped.table-bordered.table-hover.mt30
+      tr
+        th 所有者
+        td = @habit.for_family? ? @habit.source.name_with_suffix : @habit.source.fullname
       tr
         th タイトル
         td = @habit.title

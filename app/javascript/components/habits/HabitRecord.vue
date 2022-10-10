@@ -1,8 +1,10 @@
 <template lang="pug">
 .card.mb15
-  h5.card-header.p-2
+  h5.card-header.p-2(:class="{ 'text-dark bg-warning': habit.for_family }")
     .habit-title
-      a(:href="`/habits/${habit.id}`") {{ habit.title }}
+      a(:href="`/habits/${habit.id}`")
+        i.fa.fa-users.mr-1(v-if="habit.for_family")
+        | {{ habit.title }}
     i.button.saveButton.fa.fa-floppy-o(@click="save" v-if="dataChanged")
     i.button.editButton.fa.fa-pencil(@click="toggleEdit" v-else)
   .card-body.p-2(v-if="editMode || persisted")
@@ -13,7 +15,7 @@
         input.form-control.mr-2(type="text" v-model="recordValue" ref="inputValue" v-else)
         span {{ habit.value_unit }}
       .card-text.mt10
-        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" rows="4")
+        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" ref="markdownable_textarea" rows="4")
     template(v-else-if="persisted")
       span.badge.badge-light
         // todo: valueないとき、（未入力）とか入れる？
@@ -79,6 +81,7 @@ export default {
         const vm = this
         Vue.nextTick().then(function() {
           vm.$refs.inputValue.focus()
+          $(vm.$refs.markdownable_textarea).markdownEasily()
         })
       }
     },

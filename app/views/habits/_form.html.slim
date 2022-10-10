@@ -5,6 +5,9 @@
         - @habit.errors.full_messages.each do |msg|
           li = msg
 
+  .form-group.form-check
+    = check_box_tag "for_family", '1', @habit.for_family?, { class: 'form-check-input', disabled: @habit.persisted? }
+    = label_tag "for_family", "家族の習慣にする#{'（変更できません）' if @habit.persisted?}", class: 'form-check-label'
   .form-group
     = f.label :title, "習慣のタイトル"
     = f.text_field :title, class: 'form-control'

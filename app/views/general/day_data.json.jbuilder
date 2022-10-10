@@ -2,6 +2,7 @@ json.habit_records do
   json.array! @habits do |habit|
     json.habit do
       json.id habit.id
+      json.for_family habit.for_family?
       json.title habit.title
       json.value_type habit.value_type
       json.value_unit habit.value_unit

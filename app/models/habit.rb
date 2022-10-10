@@ -8,24 +8,27 @@
 #  memo        :text(65535)
 #  reminder    :boolean
 #  result_type :integer
+#  source_type :string(255)      not null
 #  status      :integer
 #  title       :string(255)
 #  value_type  :integer
 #  value_unit  :string(255)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  user_id     :integer
+#  source_id   :integer          not null
 #
 # Indexes
 #
-#  index_habits_on_user_id  (user_id)
+#  index_habits_on_source_id_and_source_type  (source_id,source_type)
 #
 
 class Habit < ApplicationRecord
   acts_as_paranoid
 
-  belongs_to :user
+  belongs_to :source, polymorphic: true
   has_many :records
+
+  scope :available_by_user, lambda { |user| joins("LEFT JOIN users ON habits.source_id = users.id AND habits.source_type = 'User' LEFT JOIN families ON habits.source_id = families.id AND habits.source_type = 'Family'").where("users.id = ? OR families.id = ?", user.id, user.family&.id) }
 
   validates_presence_of :title, :status, :result_type, :value_type
   attr_accessor :search_word, :records_in_date_term, :record_at_date
@@ -44,6 +47,10 @@ class Habit < ApplicationRecord
 
   def value_select_options
     value_type_collection? ? SYMBOLIC_VALUE : nil
+  end
+
+  def for_family?
+    source_type == 'Family'
   end
 
   # 対象期間分の習慣データを取得
@@ -95,4 +102,3 @@ class Habit < ApplicationRecord
     habits.partition { |h| !h.record_at_date.new_record? }.flatten
   end
 end
-
