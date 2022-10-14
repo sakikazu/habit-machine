@@ -128,6 +128,8 @@ Rails.application.routes.draw do
     put 'users' => 'devise/registrations#update', :as => 'user_registration'
   end
 
+  resources :todos
+
   resources :diaries do
     member do
       put :delete_image
