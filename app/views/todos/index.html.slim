@@ -37,6 +37,10 @@ p.alert.alert-danger
   br
   | 家族のスケジュールを取得するには、calendarId を設定する必要ある？
 
+button id="aaaa" onclick="handleCalenderEventClick()"
+  | カレンダー取得
+button id="bb" onclick="handleCodeGettingClick()"
+  | code取得
 button id="authorize_button" onclick="handleAuthClick()"
   | Authorize
 button id="signout_button" onclick="handleSignoutClick()"
@@ -64,6 +68,8 @@ javascript:
   const SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 
   let tokenClient;
+  let codeClient;
+  let code;
   let gapiInited = false;
   let gisInited = false;
 
@@ -99,6 +105,32 @@ javascript:
       scope: SCOPES,
       callback: '', // defined later
     });
+
+    codeClient = google.accounts.oauth2.initCodeClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      //redirect_uri: 'http://localhost:3000/gcp-oauth-callback', // callback が来ない。localhostだから？
+      //redirect_uri: 'https://hm.a-dan.com/gcp-oauth-callback',
+      callback: (codeResponse) => {
+        console.log(codeResponse);
+        code = codeResponse.code;
+
+        var code_receiver_uri = 'http://localhost:3000/gcp-oauth-callback';
+          // Send auth code to your backend platform
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', code_receiver_uri, true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function() {
+              console.log('Signed in as: ' + xhr.responseText);
+            };
+            xhr.send('code=' + code);
+            // After receipt, the code is exchanged for an access token and
+            // refresh token, and the platform then updates this web app
+            // running in user's browser with the requested calendar info.
+      },
+    });
+
     gisInited = true;
     maybeEnableButtons();
   }
@@ -120,12 +152,12 @@ javascript:
       if (resp.error !== undefined) {
         throw (resp);
       }
-      // NOTE: リフレッシュトークンは入ってこない？
       console.log(resp);
+
       document.getElementById('signout_button').style.visibility = 'visible';
       document.getElementById('authorize_button').innerText = 'Refresh';
       console.log(gapi.client.getToken());
-      await listUpcomingEvents();
+      // await listUpcomingEvents();
     };
 
     if (gapi.client.getToken() === null) {
@@ -138,6 +170,15 @@ javascript:
       // Skip display of account chooser and consent dialog for an existing session.
       tokenClient.requestAccessToken({prompt: ''});
     }
+  }
+
+  async function handleCalenderEventClick() {
+    await listUpcomingEvents();
+  }
+
+  function handleCodeGettingClick() {
+    var result = codeClient.requestCode();
+    console.log(result);
   }
 
   /**
