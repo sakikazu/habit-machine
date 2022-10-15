@@ -129,6 +129,7 @@ Rails.application.routes.draw do
   end
 
   resources :todos
+  get 'gcp-oauth-callback', to: 'todos#google_callback', as: :google_callback
 
   resources :diaries do
     member do

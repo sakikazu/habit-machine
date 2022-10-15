@@ -14,6 +14,7 @@
 #  last_sign_in_at        :datetime
 #  last_sign_in_ip        :string(255)
 #  nickname               :string(255)
+#  preferences            :json
 #  remember_created_at    :datetime
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string(255)

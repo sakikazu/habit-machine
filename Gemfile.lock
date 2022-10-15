@@ -108,6 +108,8 @@ GEM
       responders
       warden (~> 1.2.3)
     diff-lcs (1.5.0)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
     dotenv (2.7.6)
     dotenv-rails (2.7.6)
       dotenv (= 2.7.6)
@@ -173,6 +175,9 @@ GEM
       activesupport (>= 5.0)
     hash-deep-merge (0.1.1)
     hirb (0.7.3)
+    http-accept (1.7.0)
+    http-cookie (1.0.5)
+      domain_name (~> 0.5)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     inline_svg (1.8.0)
@@ -238,6 +243,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (7.0.1)
+    netrc (0.11.0)
     nio4r (2.5.8)
     nokogiri (1.13.8)
       mini_portile2 (~> 2.8.0)
@@ -317,6 +323,11 @@ GEM
     responders (3.0.1)
       actionpack (>= 5.0)
       railties (>= 5.0)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rexml (3.2.5)
     rspec-core (3.11.0)
       rspec-support (~> 3.11.0)
@@ -412,6 +423,9 @@ GEM
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.8.2)
     unicode-display_width (1.7.0)
     unicorn (5.7.0)
       kgio (~> 2.6)
@@ -479,6 +493,7 @@ DEPENDENCIES
   rails-erd
   rails_autolink
   redcarpet
+  rest-client
   rspec-rails
   rubocop
   rvm1-capistrano3

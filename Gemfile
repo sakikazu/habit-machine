@@ -19,6 +19,7 @@ gem 'exifr'
 gem "rails_autolink"
 gem 'kaminari'
 gem 'acts-as-taggable-on', '~> 6.0'
+gem 'rest-client'
 
 gem 'dotenv-rails'
 
