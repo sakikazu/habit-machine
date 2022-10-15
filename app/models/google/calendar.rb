@@ -1,4 +1,13 @@
 module Google
+  # ref:
+  #   - GoogleAPIの認可処理についてわかりやすい https://qiita.com/chenglin/items/f2382898a8cf85bec8dd
+  #   - rubyライブラリがあるみたいだが未使用 https://developers.google.com/identity/protocols/oauth2/web-server
+  #   - 実際のAPIのRequest/Responseが見れる https://developers.google.com/oauthplayground/
+  #
+  # NOTE: Google OAuthで必要な情報とその結果
+  #   - [クライアントID] + [スコープ] = Authorization code
+  #   - [クライアントID] + [クライアントシークレット] + [Authorization code] = アクセストークン、リフレッシュトークン
+  #   - [クライアントID] + [クライアントシークレット] + [リフレッシュトークン] = アクセストークン
   class Calendar
     class RefreshTokenExpiredError < StandardError; end
 
