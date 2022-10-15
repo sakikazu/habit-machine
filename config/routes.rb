@@ -128,6 +128,9 @@ Rails.application.routes.draw do
     put 'users' => 'devise/registrations#update', :as => 'user_registration'
   end
 
+  resources :todos
+  get 'gcp-oauth-callback', to: 'todos#google_callback', as: :google_callback
+
   resources :diaries do
     member do
       put :delete_image

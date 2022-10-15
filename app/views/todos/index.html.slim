@@ -1,0 +1,37 @@
+h1 Listing todos
+
+table
+  thead
+    tr
+      th Title
+      th Content
+      th State
+      th
+      th
+      th
+
+  tbody
+    - @todos.each do |todo|
+      tr
+        td = todo.title
+        td = todo.content
+        td = todo.state
+        td = link_to 'Show', todo
+        td = link_to 'Edit', edit_todo_path(todo)
+        td = link_to 'Destroy', todo, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Todo', new_todo_path
+
+
+h1 Google calendar test
+p.alert.alert-danger
+  | 自分ののみで、家族のスケジュールは取得していない
+
+= link_to 'auth', @auth_uri if @auth_uri.present?
+
+- if @calendar_events.present?
+  - @calendar_events.each do |event|
+    = "#{event[:title]}(#{I18n.l(event[:start_time])})"
+    hr
