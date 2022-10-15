@@ -1,7 +1,29 @@
 module Google
   class Calendar
-    def initialize
-      RestClient.log = STDOUT
+    class RefreshTokenExpiredError < StandardError; end
+
+    # TODO: sessionをモデルで使ったり、sessionに保存処理や、一つのメソッドで色々やってたりと、良くない設計 リファクタリングしたい
+    # TODO: ジョブに任せた方が良い気もする。consoleからAPI実行できるような作りに
+    def initialize(session = nil)
+      RestClient.log = STDOUT if Rails.env.development?
+      @session = session
+    end
+
+    # TODO: block使ってもっとわかりやすくできる気がする。データ取得とアクセストークンの再取得をやってるのでよくない
+    def fetch_recent_events_with_refreshing_token(refresh_token)
+      return [] if @session[:gcp_access_token].blank?
+      fetch_recent_events(access_token: @session[:gcp_access_token])
+    rescue RestClient::ExceptionWithResponse => e
+      # アクセストークンの有効期限切れ
+      if e.http_code == 401
+        logger.error '[Google Calendar] access_token is expired!'
+        if refresh_token.present?
+          refresh_access_token(refresh_token: refresh_token)
+          retry
+        end
+      else
+        raise e
+      end
     end
 
     def auth_uri
@@ -16,9 +38,8 @@ module Google
       'https://accounts.google.com/o/oauth2/v2/auth?' + query_params.to_query
     end
 
-    # TODO: ここでsessionに保存する。
     # code: 認可コード
-    def fetch_access_token(code)
+    def fetch_access_token(code:)
       host = 'https://oauth2.googleapis.com/token'
       params = {
         code: code,
@@ -29,10 +50,10 @@ module Google
       }
       res = RestClient.post(host, params, base_headers)
       body = JSON.parse(res.body)
-      [body["access_token"], body["refresh_token"]]
+      @session[:gcp_access_token] = body["access_token"]
+      body["refresh_token"]
     end
 
-    # TODO: ここでsessionに保存する。
     def refresh_access_token(refresh_token:)
       host = 'https://oauth2.googleapis.com/token'
       params = {
@@ -43,11 +64,20 @@ module Google
       }
       res = RestClient.post(host, params, base_headers)
       body = JSON.parse(res.body)
-      body["access_token"]
+      @session[:gcp_access_token] = body["access_token"]
+      @session[:gcp_access_token]
+    rescue RestClient::ExceptionWithResponse => e
+      # リフレッシュトークンの有効期限切れ
+      if e.http_code == 401
+        logger.error '[Google Calendar] refresh_token is expired!'
+        raise RefreshTokenExpiredError, 'リフレッシュトークンの有効期限切れ'
+      end
     end
 
     def fetch_recent_events(access_token:)
-      calendar_url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events'
+      # NOTE: fetch_calendar_list で取得したカレンダーのidを指定すれば任意のカレンダーのものが取得できる
+      calendar_id = 'primary'
+      calendar_url = "https://www.googleapis.com/calendar/v3/calendars/#{calendar_id}/events"
       query_params = {
         maxResults: 10,
         orderBy: 'startTime',
@@ -55,7 +85,23 @@ module Google
         showDeleted: false,
         timeMin: Time.zone.today.to_time.in_time_zone('UTC').strftime('%Y-%m-%dT%H:%M:%SZ')
       }
-      params = base_headers.merge(authorization: "Bearer #{access_token}").merge(params: query_params)
+      params = headers_with_token(access_token).merge(params: query_params)
+      res = RestClient.get(calendar_url, params)
+      body = JSON.parse(res.body)
+      body["items"].map do |item|
+        {
+          title: item['summary'],
+          start_time: Time.zone.parse(item['start']['dateTime'])
+        }
+      end
+    end
+
+    def fetch_calendar_list(access_token:)
+      calendar_url = 'https://www.googleapis.com/calendar/v3/users/me/calendarList'
+      query_params = {
+        maxResults: 100
+      }
+      params = headers_with_token(access_token).merge(params: query_params)
       res = RestClient.get(calendar_url, params)
       body = JSON.parse(res.body)
       body["items"]
@@ -83,6 +129,10 @@ module Google
       {
         content_type: 'application/x-www-form-urlencoded'
       }
+    end
+
+    def headers_with_token(access_token)
+      base_headers.merge(authorization: "Bearer #{access_token}")
     end
   end
 end

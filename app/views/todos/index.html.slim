@@ -27,11 +27,11 @@ br
 
 h1 Google calendar test
 p.alert.alert-danger
-  | 家族のスケジュールを取得するには、calendarId を設定する必要ある？
+  | 自分ののみで、家族のスケジュールは取得していない
 
 = link_to 'auth', @auth_uri if @auth_uri.present?
 
 - if @calendar_events.present?
   - @calendar_events.each do |event|
-    = "#{event["summary"]} #{event["start"]["dateTime"]}"
+    = "#{event[:title]}(#{I18n.l(event[:start_time])})"
     hr

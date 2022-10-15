@@ -3,32 +3,18 @@ class TodosController < ApplicationController
   skip_before_action :verify_authenticity_token, only: %i[google_callback]
 
   def google_callback
-    access_token, refresh_token = Google::Calendar.new.fetch_access_token(params[:code])
+    refresh_token = Google::Calendar.new(session).fetch_access_token(code: params[:code])
     current_user.update(preferences: { google_refresh_token: refresh_token })
-    session[:gcp_access_token] = access_token
     redirect_to action: :index
   end
 
   # GET /todos or /todos.json
   def index
-    # session.delete(:gcp_access_token) # TODO
     @todos = Todo.all
-    if session[:gcp_access_token].present?
-      @calendar_events = Google::Calendar.new.fetch_recent_events(access_token: session[:gcp_access_token])
-    else
-      @auth_uri = Google::Calendar.new.auth_uri
-    end
-  rescue RestClient::ExceptionWithResponse => e
-    # アクセストークンの有効期限切れ
-    if e.http_code == 401
-      p 'access_token is expired!'
-      refresh_token = current_user.preferences["google_refresh_token"]
-      access_token = Google::Calendar.new.refresh_access_token(refresh_token: refresh_token)
-      session[:gcp_access_token] = access_token
-      @calendar_events = Google::Calendar.new.fetch_recent_events(access_token: session[:gcp_access_token])
-    else
-      raise e
-    end
+    @calendar_events = Google::Calendar.new(session).fetch_recent_events_with_refreshing_token(current_user.preferences["google_refresh_token"])
+    @auth_uri = Google::Calendar.new.auth_uri if session[:gcp_access_token].blank?
+  rescue Google::Calendar::RefreshTokenExpiredError
+    @auth_uri = Google::Calendar.new.auth_uri
   end
 
   # GET /todos/1 or /todos/1.json
