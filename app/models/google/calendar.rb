@@ -25,7 +25,7 @@ module Google
     rescue RestClient::ExceptionWithResponse => e
       # アクセストークンの有効期限切れ
       if e.http_code == 401
-        logger.error '[Google Calendar] access_token is expired!'
+        Rails.logger.error '[Google Calendar] access_token is expired!'
         if refresh_token.present?
           refresh_access_token(refresh_token: refresh_token)
           retry
@@ -78,7 +78,7 @@ module Google
     rescue RestClient::ExceptionWithResponse => e
       # リフレッシュトークンの有効期限切れ
       if e.http_code == 401
-        logger.error '[Google Calendar] refresh_token is expired!'
+        Rails.logger.error '[Google Calendar] refresh_token is expired!'
         raise RefreshTokenExpiredError, 'リフレッシュトークンの有効期限切れ'
       end
     end
