@@ -1,0 +1,62 @@
+NOTE: rails6にバージョンアップした時に生成されてオーバーライドされたファイル。
+逆にされなかったファイルは、不要かも？という判断のために一応残している
+
+$ bin/rails app:update
+   identical  config/boot.rb
+       exist  config
+    conflict  config/routes.rb
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/routes.rb? (enter "h" for help) [Ynaqdhm] Y
+       force  config/routes.rb
+    conflict  config/application.rb
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/application.rb? (enter "h" for help) [Ynaqdhm] Y
+       force  config/application.rb
+   identical  config/environment.rb
+    conflict  config/cable.yml
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/cable.yml? (enter "h" for help) [Ynaqdhm] Y
+       force  config/cable.yml
+    conflict  config/spring.rb
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/spring.rb? (enter "h" for help) [Ynaqdhm] Y
+       force  config/spring.rb
+   identical  config/storage.yml
+       exist  config/environments
+    conflict  config/environments/development.rb
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/environments/development.rb? (enter "h" for help) [Ynaqdhm] Y
+       force  config/environments/development.rb
+    conflict  config/environments/production.rb
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/environments/production.rb? (enter "h" for help) [Ynaqdhm] Y
+       force  config/environments/production.rb
+    conflict  config/environments/test.rb
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/environments/test.rb? (enter "h" for help) [Ynaqdhm] Y
+       force  config/environments/test.rb
+       exist  config/initializers
+   identical  config/initializers/application_controller_renderer.rb
+   identical  config/initializers/assets.rb
+   identical  config/initializers/backtrace_silencers.rb
+    conflict  config/initializers/content_security_policy.rb
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/initializers/content_security_policy.rb? (enter "h" for help) [Ynaqdhm] Y
+       force  config/initializers/content_security_policy.rb
+    conflict  config/initializers/cookies_serializer.rb
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/initializers/cookies_serializer.rb? (enter "h" for help) [Ynaqdhm] Y
+       force  config/initializers/cookies_serializer.rb
+      create  config/initializers/cors.rb
+   identical  config/initializers/filter_parameter_logging.rb
+   identical  config/initializers/inflections.rb
+   identical  config/initializers/mime_types.rb
+      create  config/initializers/new_framework_defaults_6_0.rb
+   identical  config/initializers/wrap_parameters.rb
+       exist  config/locales
+    conflict  config/locales/en.yml
+Overwrite /home/sakikazu/dev/rails/habit-machine/config/locales/en.yml? (enter "h" for help) [Ynaqdhm] Y
+       force  config/locales/en.yml
+      remove  config/initializers/cors.rb
+       exist  bin
+   identical  bin/rails
+   identical  bin/rake
+    conflict  bin/setup
+Overwrite /home/sakikazu/dev/rails/habit-machine/bin/setup? (enter "h" for help) [Ynaqdhm] Y
+       force  bin/setup
+   identical  bin/yarn
+       rails  active_storage:update
+Copied migration 20221016091739_add_foreign_key_constraint_to_active_storage_attachments_for_blob_id.active_storage.rb from active_storage
+
+After this, check Rails upgrade guide at https://guides.rubyonrails.org/upgrading_ruby_on_rails.html for more details about upgrading your app.

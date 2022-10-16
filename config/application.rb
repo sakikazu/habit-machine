@@ -9,7 +9,7 @@ Bundler.require(*Rails.groups)
 module HabitMachine
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.0
+    config.load_defaults 6.0
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -17,7 +17,7 @@ module HabitMachine
     # the framework and any gems in your application.
 
     config.i18n.default_locale = :ja
-    config.time_zone = 'Tokyo'
+    config.time_zone = 'Asia/Tokyo'
 
     config.generators do |g|
       g.view_specs false

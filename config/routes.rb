@@ -90,7 +90,6 @@ Rails.application.routes.draw do
     end
   end
 
-
   ### for web
   root to: 'general#day'
   get 'day/:date', to: 'general#day', as: :day
@@ -116,11 +115,11 @@ Rails.application.routes.draw do
     end
   end
 
-	resources :tags
+  resources :tags
 
-	# mount RailsAdmin::Engine => '/adamin', :as => 'rails_admin'
+  # mount RailsAdmin::Engine => '/adamin', :as => 'rails_admin'
 
-	# devise_for :admins
+  # devise_for :admins
 
   devise_for :users, skip: [:registrations]
   as :user do
@@ -148,8 +147,8 @@ Rails.application.routes.draw do
     end
   end
 
-	resources :habits
-	resources :records, only: [:create, :update]
+  resources :habits
+  resources :records, only: [:create, :update]
 
   resources :children, except: %i[index show] do
     member do
