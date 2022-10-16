@@ -1,3 +1,15 @@
+- content_for :addjs_in_head
+  = javascript_pack_tag 'todo_page', 'data-turbolinks-track': 'reload'
+
+#todoPage
+  draggable(tag="ul" :options="{group: 'ITEMS'}" @end="onEnd")
+    li(v-for="item, index in items" :key="item.id")
+      | {{ item.name }}
+
+  draggable(tag="ul" :options="{group: 'ITEMS'}" @end="onEnd")
+    li(v-for="item, index in items2" :key="item.id")
+      | {{ item.name }}
+
 h1 Listing todos
 
 table
@@ -35,3 +47,12 @@ p.alert.alert-danger
   - @calendar_events.each do |event|
     = "#{event[:title]}(#{I18n.l(event[:start_time])})"
     hr
+
+sass:
+  #todoPage
+    ul
+      list-style-type: none
+    li
+      cursor: pointer
+      padding: 10px
+      border: solid #ddd 1px
