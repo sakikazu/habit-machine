@@ -13,6 +13,9 @@
     = f.label :content
     = f.text_area :content
   .field
-    = f.label :state
-    = f.number_field :state
+    = f.label :priority
+    = f.number_field :priority
+  .field
+    = f.label :project_id
+    = f.select :project_id, current_user.todo_projects.map { |project| [project.title, project.id] }, include_blank: true
   .actions = f.submit

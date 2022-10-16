@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_14_231957) do
+ActiveRecord::Schema.define(version: 2022_10_16_015255) do
 
   create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -181,12 +181,27 @@ ActiveRecord::Schema.define(version: 2022_10_14_231957) do
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
-  create_table "todos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
-    t.string "title"
+  create_table "todo_projects", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.string "title", null: false
     t.text "content"
-    t.integer "state"
+    t.integer "source_id", null: false
+    t.string "source_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "todos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+    t.integer "project_id"
+    t.integer "source_id", null: false
+    t.string "source_type", null: false
+    t.string "title", null: false
+    t.text "content"
+    t.integer "priority", default: 0, null: false
+    t.integer "sort_order", default: 0, null: false
+    t.datetime "done_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["source_id", "source_type"], name: "index_todos_on_source_id_and_source_type"
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|

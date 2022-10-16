@@ -1,3 +1,24 @@
+- content_for :addjs_in_head
+  = javascript_pack_tag 'todo_page', 'data-turbolinks-track': 'reload'
+
+#todoPage
+  .row
+    .col
+      h3 直近
+      draggable(tag="ul" class="todo-block" v-model="todos_p0" @change="bulkUpdate" :group="{ name: 'ITEMS' }" @end="onEnd")
+        li(v-for="todo, index in todos_p0" :key="todo.id")
+          | {{ todo.title }}
+    .col
+      h3 P1
+      draggable(tag="ul" class="todo-block" v-model="todos_p1" @change="bulkUpdate1" :group="{ name: 'ITEMS' }" @end="onEnd")
+        li(v-for="todo, index in todos_p1" :key="todo.id")
+          | {{ todo.title }}
+    .col
+      h3 P2
+      draggable(tag="ul" class="todo-block" v-model="todos_p2" @change="bulkUpdate2" :group="{ name: 'ITEMS' }" @end="onEnd")
+        li(v-for="todo, index in todos_p2" :key="todo.id")
+          | {{ todo.title }}
+
 h1 Listing todos
 
 table
@@ -5,7 +26,7 @@ table
     tr
       th Title
       th Content
-      th State
+      th Pri
       th
       th
       th
@@ -15,14 +36,15 @@ table
       tr
         td = todo.title
         td = todo.content
-        td = todo.state
+        td = todo.priority
         td = link_to 'Show', todo
         td = link_to 'Edit', edit_todo_path(todo)
         td = link_to 'Destroy', todo, data: { confirm: 'Are you sure?' }, method: :delete
 
 br
-
 = link_to 'New Todo', new_todo_path
+br
+= link_to 'Todo Project', todo_projects_path
 
 
 h1 Google calendar test
@@ -35,3 +57,17 @@ p.alert.alert-danger
   - @calendar_events.each do |event|
     = "#{event[:title]}(#{I18n.l(event[:start_time])})"
     hr
+
+sass:
+  #todoPage
+    ul.todo-block
+      background-color: #fcf0bf
+      list-style-type: none
+      min-height: 100px
+      max-height: 300px
+      padding: 0
+      overflow: scroll
+    li
+      cursor: pointer
+      padding: 10px
+      border: solid #ddd 1px
