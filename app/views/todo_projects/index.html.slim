@@ -1,0 +1,24 @@
+h1 Listing todo_projects
+
+table
+  thead
+    tr
+      th Title
+      th Content
+      th Source
+      th
+      th
+      th
+
+  tbody
+    - @todo_projects.each do |todo_project|
+      tr
+        td = todo_project.title
+        td = todo_project.content
+        td = todo_project.source_type
+        td = link_to 'Edit', edit_todo_project_path(todo_project)
+        td = link_to 'Destroy', todo_project, data: { confirm: 'Are you sure?' }, method: :delete
+
+br
+
+= link_to 'New Todo project', new_todo_project_path

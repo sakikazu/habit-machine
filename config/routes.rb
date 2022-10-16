@@ -129,6 +129,7 @@ Rails.application.routes.draw do
   end
 
   resources :todos
+  resources :todo_projects, except: %i[show]
   get 'gcp-oauth-callback', to: 'todos#google_callback', as: :google_callback
 
   resources :diaries do
