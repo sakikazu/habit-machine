@@ -17,7 +17,7 @@ module HabitMachine
     # the framework and any gems in your application.
 
     config.i18n.default_locale = :ja
-    config.time_zone = 'Tokyo'
+    config.time_zone = 'Asia/Tokyo'
 
     config.generators do |g|
       g.view_specs false

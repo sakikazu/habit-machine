@@ -1,8 +1,8 @@
-# TODO: rails6に上げるタイミングで、下記整理する
+# TODO: rails6.1以上にすると、font-awesome-railsなど対応していないgemが出てくるのでその調査の時間があるときにする
 source 'https://rubygems.org'
 
 ruby '2.7.1'
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 6.0'
 gem 'bootsnap' # railsの起動を速くする
 
 # Bundle edge Rails instead:
