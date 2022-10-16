@@ -1,3 +1,6 @@
+NOTE: rails6にバージョンアップした時に生成されてオーバーライドされたファイル。
+逆にされなかったファイルは、不要かも？という判断のために一応残している
+
 $ bin/rails app:update
    identical  config/boot.rb
        exist  config
