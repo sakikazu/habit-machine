@@ -1,4 +1,5 @@
 class TodosController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_todo, only: %i[ show edit update destroy ]
   skip_before_action :verify_authenticity_token, only: %i[google_callback]
 
@@ -10,7 +11,7 @@ class TodosController < ApplicationController
 
   # GET /todos or /todos.json
   def index
-    @todos = Todo.all
+    @todos = current_user.todos.order(sort_order: :asc)
     @calendar_events = Google::Calendar.new(session).fetch_recent_events_with_refreshing_token(current_user.preferences["google_refresh_token"])
     @auth_uri = Google::Calendar.new.auth_uri if session[:gcp_access_token].blank?
   rescue Google::Calendar::RefreshTokenExpiredError
@@ -33,6 +34,7 @@ class TodosController < ApplicationController
   # POST /todos or /todos.json
   def create
     @todo = Todo.new(todo_params)
+    @todo.source = current_user
 
     respond_to do |format|
       if @todo.save
@@ -43,6 +45,18 @@ class TodosController < ApplicationController
         format.json { render json: @todo.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  # TODO: これだとupdateが多すぎる。rails6にしてupsert_allを使いたい
+  def bulk_update
+    items = params[:items]
+    items.each do |item|
+      todo = current_user.todos.find(item[:id])
+      todo.update(priority: item[:priority], sort_order: item[:sort_order])
+    end
+    # TODO: 成功かどうかを返せばいいだけ
+    @todos = current_user.todos.order(sort_order: :asc)
+    render :index
   end
 
   # PATCH/PUT /todos/1 or /todos/1.json
@@ -75,6 +89,6 @@ class TodosController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def todo_params
-      params.require(:todo).permit(:title, :content, :state)
+      params.require(:todo).permit(:title, :content, :priority, :project_id)
     end
 end

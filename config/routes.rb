@@ -128,7 +128,11 @@ Rails.application.routes.draw do
     put 'users' => 'devise/registrations#update', :as => 'user_registration'
   end
 
-  resources :todos
+  resources :todos do
+    collection do
+      put :bulk_update
+    end
+  end
   resources :todo_projects, except: %i[show]
   get 'gcp-oauth-callback', to: 'todos#google_callback', as: :google_callback
 
