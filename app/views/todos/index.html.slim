@@ -2,6 +2,8 @@
   = javascript_pack_tag 'todo_page', 'data-turbolinks-track': 'reload'
 
 ul.alert.alert-danger
+  li.ml-2 2022/11/06現在、deploy時に todo_projects のmigrationが失敗するので、8a54883467480837bade6e402f3affecf3d46d94 にてrevertしている。そのため、タスクの追加などはできない
+  li.ml-2 2022/11/06現在、本番では、Google認証時に「エラー 400: redirect_uri_mismatch」が出て認証できない。GCPの「承認済みの JavaScript 生成元」は正しいはずだが・・
   li.ml-2 Todoistでタスク管理をするようにしたので使わない
   li.ml-2 いつかは、Todoistからこちらに移行できたら良いなとは思う（タスクの履歴をHMに残したいため）
   li.ml-2 技術的な学びは、OAuthでGoogleカレンダー取得しているのと、vuedraggableを使ってドラッグアンドドロップを実現しているところ
