@@ -1,9 +1,17 @@
 .d-flex.justify-content-between.mt10.mb15
   = link_to fa_icon('caret-left', class: 'fa-lg', style: 'padding:0.6em 0.1em'), month_path(month: (@target_month - 1.month).to_s(:ym)), class: "btn btn-light", data: { turbolinks: false }
   = form_tag this_month_path, method: :get, class: 'form-inline mr5 ml5' do
-    = date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true, start_year: Settings.start_year, end_year: Date.today.year + 1}, {class: "form-control mr5"}
+    .from_date.mr-3
+      span.mr-2 From:
+      = date_select :target, :from_date, {default: @date_term.first, use_month_numbers: true, start_year: Settings.start_year, end_year: Date.today.year + 1}, {class: "form-control mr5"}
+    .to_date.mr-2
+      span.mr-2 To:
+      = date_select :target, :to_date, {default: @date_term.last, use_month_numbers: true, start_year: Settings.start_year, end_year: Date.today.year + 1}, {class: "form-control mr5"}
+    -# .specified_month.mr-3
+    -#   span 月:
+    -#   = date_select :target, :month, {default: @target_month, discard_day: true, use_month_numbers: true, start_year: Settings.start_year, end_year: Date.today.year + 1}, {class: "form-control mr5"}
     = submit_tag "移動", class: "btn btn-light pl-4 pr-4"
-    = link_to "今月(#{Date.today.strftime("%Y年%m月")})", this_month_path, class: "btn btn-outline-danger ml20"
+    = link_to "今月(#{Date.today.strftime("%Y年%m月")})", month_path(month: Date.today.to_s(:ym)), class: "btn btn-outline-danger ml20"
   = link_to fa_icon('caret-right', class: 'fa-lg', style: 'padding:0.6em 0.1em'), month_path(month: (@target_month + 1.month).to_s(:ym)), class: "btn btn-light"
 
 
@@ -58,6 +66,16 @@ div[style="width: 3000px"]
   .page-header
     h3 棒グラフ表示
   = high_chart("chart2", @habits_for_bou_graph)
+
+.page-header
+  h3 棒グラフタイプの合計
+  table.table.table-bordered.table-hover
+    tbody
+      - @summary_for_bou_type.each do |summary|
+        tr
+          td = summary[:title]
+          td = summary[:sum]
+          td = summary[:value_unit]
 
 sass:
   tr.diary-row
