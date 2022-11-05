@@ -12,7 +12,9 @@ class TodosController < ApplicationController
   # GET /todos or /todos.json
   def index
     @todos = current_user.todos.order(sort_order: :asc)
-    @calendar_events = Google::Calendar.new(session).fetch_recent_events_with_refreshing_token(current_user.preferences["google_refresh_token"])
+    if current_user.preferences.present? && current_user.preferences["google_refresh_token"].present?
+      @calendar_events = Google::Calendar.new(session).fetch_recent_events_with_refreshing_token(current_user.preferences["google_refresh_token"])
+    end
     @auth_uri = Google::Calendar.new.auth_uri if session[:gcp_access_token].blank?
   rescue Google::Calendar::RefreshTokenExpiredError
     @auth_uri = Google::Calendar.new.auth_uri
