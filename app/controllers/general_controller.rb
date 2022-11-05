@@ -26,15 +26,30 @@ class GeneralController < ApplicationController
   end
 
   def month
-    @target_month = if params[:month].present? && params[:month].to_s =~ /^\d{4}-\d{1,2}$/
-                      Date.strptime("#{params[:month]}-1")
-                    elsif params[:target].present? # from Date Form
-                      Date.new(params[:target]["month(1i)"].to_i, params[:target]["month(2i)"].to_i, 1)
-                    else
-                      Date.today
-                    end
+    if params[:target].present?
+      @date_term = Date.new(
+        params[:target]["from_date(1i)"].to_i,
+        params[:target]["from_date(2i)"].to_i,
+        params[:target]["from_date(3i)"].to_i
+      )..
+      Date.new(
+        params[:target]["to_date(1i)"].to_i,
+        params[:target]["to_date(2i)"].to_i,
+        params[:target]["to_date(3i)"].to_i
+      )
+    elsif params[:month].present? && params[:month].to_s =~ /^\d{4}-\d{1,2}$/
+      month = Date.strptime("#{params[:month]}-1")
+      @date_term = month.beginning_of_month..month.end_of_month
+    else
+      today = Time.zone.today
+      @date_term = 6.days.ago(today)..today
+    end
+    @target_month = @date_term.first.beginning_of_month
 
-    @date_term = @target_month.beginning_of_month..@target_month.end_of_month
+    # TODO: 以前の月指定フィールドは復活させるか検討
+    # @target_month = if params[:target].present? # from Date Form
+                      # Date.new(params[:target]["month(1i)"].to_i, params[:target]["month(2i)"].to_i, 1)
+
 
     # TODO: グラフ用データ取得は、別クラスにして、パフォーマンス改善する
     basic_habits = Habit.available_by_user(current_user).status_enabled
