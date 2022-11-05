@@ -44,9 +44,6 @@ html[lang="ja"]
         ul.navbar-nav.ml-auto.mr-3.mr-lg-0
           li.nav-item(class="#{active_class('children')}") = link_to '家族', family_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0
-        li.nav-item(class="#{active_class('todos')}")
-          = link_to "TODO", todos_path, class: 'nav-link'
-      ul.navbar-nav.mr-3.mr-lg-0
         li.nav-item(class="#{active_class('habitodos')}")
           = link_to "ノート", habitodos_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0.d-lg-none
@@ -71,6 +68,8 @@ html[lang="ja"]
               = link_to "習慣と記録", habits_path, class: 'dropdown-item'
               = link_to "意識付け一覧", senses_path, class: 'dropdown-item'
               = link_to "現意識", "javascript:showCurrentSenses();", class: 'dropdown-item'
+              = link_to "TODO（未完成）", todos_path, class: 'dropdown-item'
+
           li.nav-item.dropdown
             = link_to current_user.dispname, '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
