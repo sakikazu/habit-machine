@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_16_091739) do
+ActiveRecord::Schema.define(version: 2022_11_05_104306) do
 
   create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(version: 2022_10_16_091739) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "template"
     t.index ["source_id", "source_type"], name: "index_habits_on_source_id_and_source_type"
   end
 

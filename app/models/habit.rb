@@ -10,6 +10,7 @@
 #  result_type :integer
 #  source_type :string(255)      not null
 #  status      :integer
+#  template    :text(65535)
 #  title       :string(255)
 #  value_type  :integer
 #  value_unit  :string(255)

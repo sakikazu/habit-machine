@@ -30,6 +30,9 @@
     = f.label :reminder, "リマインダ（未実装）"
     = f.check_box :reminder
   .form-group
+    = f.label :memo, "テンプレート文"
+    = f.text_area :template, rows: 3, class: 'form-control'
+  .form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, rows: 4, class: 'form-control'
 

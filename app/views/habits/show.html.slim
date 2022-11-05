@@ -64,6 +64,10 @@
           | (未実装)
         td = @habit.reminder
       tr
+        th テンプレート文
+        td
+          p = sani_custom_br(@habit.template)
+      tr
         th メモ
         td
           p = sani_custom_br(@habit.memo)
