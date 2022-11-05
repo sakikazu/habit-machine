@@ -11,7 +11,6 @@
 #  title       :string(255)      not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
-#  project_id  :integer
 #  source_id   :integer          not null
 #
 # Indexes
@@ -20,5 +19,4 @@
 #
 class Todo < ApplicationRecord
   belongs_to :source, polymorphic: true
-  belongs_to :project, class_name: 'TodoProject', foreign_key: :project_id, optional: true
 end

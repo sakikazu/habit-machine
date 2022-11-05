@@ -1,7 +1,6 @@
 class CreateTodos < ActiveRecord::Migration[5.2]
   def change
     create_table :todos do |t|
-      t.integer :project_id
       t.integer :source_id, null: false
       t.string :source_type, null: false
       t.string :title, null: false
