@@ -59,6 +59,16 @@ div[style="width: 3000px"]
     h3 棒グラフ表示
   = high_chart("chart2", @habits_for_bou_graph)
 
+.page-header
+  h3 棒グラフタイプの合計
+  table.table.table-bordered.table-hover
+    tbody
+      - @summary_for_bou_type.each do |summary|
+        tr
+          td = summary[:title]
+          td = summary[:sum]
+          td = summary[:value_unit]
+
 sass:
   tr.diary-row
     a.diary-title

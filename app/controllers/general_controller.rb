@@ -45,6 +45,8 @@ class GeneralController < ApplicationController
     habit_results_for_bou = build_graph_data(basic_habits.result_type_bar_graph)
     @habits_for_bou_graph = build_bou_graph(habit_results_for_bou)
 
+    @summary_for_bou_type = summary_for_bou_type(habit_results_for_bou)
+
     @habits = Habit.with_records_in_date_term(Habit.available_by_user(current_user).status_enabled, @date_term)
     @diaries = Diary.group_by_record_at(current_user, @date_term)
 
@@ -141,6 +143,16 @@ class GeneralController < ApplicationController
         {title: {text: "値が大きいやつ", margin: 20} },
         {title: {text: "値が小さいやつ"}, margin: 20, opposite: true},
       ]
+    end
+  end
+
+  def summary_for_bou_type(results_for_bou)
+    results_for_bou.map do |result|
+      {
+        title: result[:title],
+        value_unit: result[:value_unit],
+        sum: result[:records].values.map(&:value).sum
+      }
     end
   end
 end
