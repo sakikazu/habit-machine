@@ -98,9 +98,10 @@ module Google
       res = RestClient.get(calendar_url, params)
       body = JSON.parse(res.body)
       body["items"].map do |item|
+        start_time = item['start']['dateTime'] || item['start']['date']
         {
           title: item['summary'],
-          start_time: Time.zone.parse(item['start']['dateTime'])
+          start_time: Time.zone.parse(start_time)
         }
       end
     end

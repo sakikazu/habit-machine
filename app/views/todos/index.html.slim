@@ -1,6 +1,11 @@
 - content_for :addjs_in_head
   = javascript_pack_tag 'todo_page', 'data-turbolinks-track': 'reload'
 
+ul.alert.alert-danger
+  li.ml-2 Todoistでタスク管理をするようにしたので使わない
+  li.ml-2 いつかは、Todoistからこちらに移行できたら良いなとは思う（タスクの履歴をHMに残したいため）
+  li.ml-2 技術的な学びは、OAuthでGoogleカレンダー取得しているのと、vuedraggableを使ってドラッグアンドドロップを実現しているところ
+
 #todoPage
   .row
     .col
@@ -19,24 +24,24 @@
         li(v-for="todo, index in todos_p2" :key="todo.id")
           | {{ todo.title }}
 
-h1 Listing todos
-
+h1.mt-5 Listing todos
 table
   thead
     tr
       th Title
       th Content
       th Pri
+      th Sort Order
       th
       th
       th
-
   tbody
     - @todos.each do |todo|
       tr
         td = todo.title
         td = todo.content
         td = todo.priority
+        td = todo.sort_order
         td = link_to 'Show', todo
         td = link_to 'Edit', edit_todo_path(todo)
         td = link_to 'Destroy', todo, data: { confirm: 'Are you sure?' }, method: :delete
@@ -47,16 +52,17 @@ br
 = link_to 'Todo Project', todo_projects_path
 
 
-h1 Google calendar test
+h1.mt-5 Google calendar test (OAuth)
 p.alert.alert-danger
-  | 自分ののみで、家族のスケジュールは取得していない
+  | 自分のカレンダーのみで、祝日や家族のスケジュールは取得できていない
 
 = link_to 'auth', @auth_uri if @auth_uri.present?
 
 - if @calendar_events.present?
-  - @calendar_events.each do |event|
-    = "#{event[:title]}(#{I18n.l(event[:start_time])})"
-    hr
+  ul
+    - @calendar_events.each do |event|
+      li = "#{event[:title]}(#{I18n.l(event[:start_time])})"
+      hr
 
 sass:
   #todoPage
