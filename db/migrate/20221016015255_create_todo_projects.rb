@@ -8,6 +8,6 @@ class CreateTodoProjects < ActiveRecord::Migration[5.2]
 
       t.timestamps
     end
-    add_index :todos, %i[source_id source_type]
+    add_index :todo_projects, %i[source_id source_type]
   end
 end

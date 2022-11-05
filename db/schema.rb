@@ -188,6 +188,7 @@ ActiveRecord::Schema.define(version: 2022_10_16_091739) do
     t.string "source_type", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["source_id", "source_type"], name: "index_todo_projects_on_source_id_and_source_type"
   end
 
   create_table "todos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
