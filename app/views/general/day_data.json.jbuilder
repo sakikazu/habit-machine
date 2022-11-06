@@ -7,6 +7,7 @@ json.habit_records do
       json.value_type habit.value_type
       json.value_unit habit.value_unit
       json.value_collection habit.value_select_options
+      json.template habit.template
     end
 
     json.partial! 'records/show', record: habit.record_at_date

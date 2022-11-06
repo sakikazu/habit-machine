@@ -10,12 +10,15 @@
   .card-body.p-2(v-if="editMode || persisted")
     template(v-if="editMode")
       .recordValueInput
-        select.form-control.mr-2(v-model="recordValue" ref="inputValue" v-if="habit.value_type === 'collection'")
-          option(v-for="opt in habit.value_collection" v-text="opt[0]" :value="opt[1]")
-        input.form-control.mr-2(type="text" v-model="recordValue" ref="inputValue" v-else)
-        span {{ habit.value_unit }}
+        .recordValueInputLeft
+          select.form-control.mr-2(v-model="recordValue" ref="inputValue" v-if="habit.value_type === 'collection'")
+            option(v-for="opt in habit.value_collection" v-text="opt[0]" :value="opt[1]")
+          input.form-control.mr-2(type="text" v-model="recordValue" ref="inputValue" v-else)
+          span {{ habit.value_unit }}
+        .recordValueInputRight
+          i.button.addTemplate.fa.fa-plus-circle.fa-1_5x(@click="addTemplate" v-if="habit.template !== null")
       .card-text.mt10
-        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" ref="markdownable_textarea" rows="4")
+        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" @input="onInputRecordMemo" ref="markdownable_textarea" rows="4")
     template(v-else-if="persisted")
       span.badge.badge-light
         // todo: valueないとき、（未入力）とか入れる？
@@ -85,6 +88,30 @@ export default {
         })
       }
     },
+    addTemplate () {
+      if (this.recordMemo === null) {
+        this.recordMemo = ''
+      }
+      if (this.recordMemo !== '' && this.recordMemo.slice(-1) !== "\n") {
+        this.recordMemo = this.recordMemo + "\n"
+      }
+      this.recordMemo = this.recordMemo + this.habit.template
+    },
+    // TODO: JS的にリファクタリングしたいな
+    onInputRecordMemo () {
+      // TODO: recordMemo から一発で値の配列を取り出せるリファクタリングをしたいが、JSで改行ごとに分割する正規表現できる？
+      let summary = 0
+      const rows = this.recordMemo.split(/\r\n|\n/)
+      rows.forEach(row => {
+        // TODO: 円、のところを変数にする
+        let val = row.match(/^- .*：(\d+)\s*円$/)
+        if (val !== null) {
+          val = val[1]
+        }
+        summary = summary + Number(val)
+      })
+      this.recordValue = summary
+    },
     save () {
       if (this.persisted) {
         // TODO: Axiosの設定で、json形式のリクエストにすれば、拡張子不要な気がする
@@ -129,6 +156,28 @@ export default {
 </script>
 
 <style scoped lang="sass">
+  i.button
+    display: inline-block
+    cursor: pointer
+    padding: 5px 20px
+    text-align: center
+    border-radius: 5px
+
+    &.editButton
+      color: #17a2b8
+      border: 1px solid #17a2b8
+      &:hover
+        color: white
+        background-color: #17a2b8
+    &.saveButton
+      color: #dc3545
+      border: 1px solid #dc3545
+      &:hover
+        color: white
+        background-color: #dc3545
+    &.addTemplate
+      padding: 0
+
   .card-header
     display: flex
 
@@ -137,28 +186,10 @@ export default {
       a
         font-size: 1rem
         font-weight: bold
-    i.button
-      display: inline-block
-      cursor: pointer
-      padding: 5px 20px
-      text-align: center
-      border-radius: 5px
-
-      &.editButton
-        color: #17a2b8
-        border: 1px solid #17a2b8
-        &:hover
-          color: white
-          background-color: #17a2b8
-      &.saveButton
-        color: #dc3545
-        border: 1px solid #dc3545
-        &:hover
-          color: white
-          background-color: #dc3545
 
   .recordValueInput
     display: flex
+    justify-content: space-between
     align-items: center
     color: #212529
     background-color: #f8f9fa
@@ -167,4 +198,8 @@ export default {
 
     .form-control
       width: 100px
+
+    .recordValueInputLeft
+      display: flex
+      align-items: center
 </style>

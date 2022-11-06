@@ -97,6 +97,6 @@ class HabitsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def habit_params
-    params.require(:habit).permit(:value_type, :value_unit, :result_type, :reminder, :title, :goal, :status, :memo)
+    params.require(:habit).permit(:value_type, :value_unit, :result_type, :reminder, :title, :goal, :status, :memo, :template)
   end
 end
