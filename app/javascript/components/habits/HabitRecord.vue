@@ -18,7 +18,7 @@
         .recordValueInputRight
           i.button.addTemplate.fa.fa-plus-circle.fa-1_5x(@click="addTemplate" v-if="habit.template !== null")
       .card-text.mt10
-        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" @input="onInputRecordMemo" ref="markdownable_textarea" rows="4")
+        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" @input="onInputRecordMemo($event)" ref="markdownable_textarea" rows="4")
     template(v-else-if="persisted")
       span.badge.badge-light
         // todo: valueないとき、（未入力）とか入れる？
@@ -98,19 +98,24 @@ export default {
       this.recordMemo = this.recordMemo + this.habit.template
     },
     // TODO: JS的にリファクタリングしたいな
-    onInputRecordMemo () {
+    onInputRecordMemo (event) {
+      if (this.habit.template === null) { return }
+      // 数値以外の入力時はスルー
+      if (event.data === null || event.data.match(/\d/) === null) { return }
+
       // TODO: recordMemo から一発で値の配列を取り出せるリファクタリングをしたいが、JSで改行ごとに分割する正規表現できる？
-      let summary = 0
+      let summary = null
       const rows = this.recordMemo.split(/\r\n|\n/)
       rows.forEach(row => {
         // TODO: 円、のところを変数にする
         let val = row.match(/^- .*：(\d+)\s*円$/)
         if (val !== null) {
-          val = val[1]
+          summary += Number(val[1])
         }
-        summary = summary + Number(val)
       })
-      this.recordValue = summary
+      if (summary !== null) {
+        this.recordValue = summary
+      }
     },
     save () {
       if (this.persisted) {
