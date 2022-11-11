@@ -100,8 +100,10 @@ export default {
     // TODO: JS的にリファクタリングしたいな
     onInputRecordMemo (event) {
       if (this.habit.template === null) { return }
+      // NOTE: Android Chrome の場合、数字を入力時でもこのreturnにひっかかってしまったのでコメントアウト
+      // この処理を復活させるなら Backspace の時もreturnしないようにしないと
       // 数値以外の入力時はスルー
-      if (event.data === null || event.data.match(/\d/) === null) { return }
+      // if (event.data === null || event.data.match(/\d/) === null) { return }
 
       // TODO: recordMemo から一発で値の配列を取り出せるリファクタリングをしたいが、JSで改行ごとに分割する正規表現できる？
       let summary = null
