@@ -58,7 +58,7 @@ class TodosController < ApplicationController
       updating_attrs = items.find { |item| item[:id] == todo.id }
       todo.attributes.merge(updating_attrs).merge(updated_at: Time.zone.now)
     end
-    Todo.upsert_all(todos_attributes)
+    Todo.upsert_all(todos_attributes) if todos_attributes.present?
     # TODO: 成功かどうかを返せばいいだけ
     @todos = current_user.todos.order(sort_order: :asc)
     render :index
