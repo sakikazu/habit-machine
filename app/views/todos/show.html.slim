@@ -1,15 +1,17 @@
-p#notice = notice
-
-p
-  strong Title:
-  = @todo.title
-p
-  strong Content:
-  = @todo.content
-p
-  strong Priority:
-  = @todo.priority
-
-=> link_to 'Edit', edit_todo_path(@todo)
-'|
-=< link_to 'Back', todos_path
+.row.justify-content-center
+  .col-sm-9
+    .form_actions
+      = link_to '戻る', todos_path, class: "btn btn-info"
+    .page-header
+      h2 TODO
+    .content
+      p
+        strong Title:
+        = @todo.title
+      p
+        strong Content:
+        = @todo.content
+      p
+        strong Priority:
+        = @todo.priority
+      => link_to 'Edit', edit_todo_path(@todo)
