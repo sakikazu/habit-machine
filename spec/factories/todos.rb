@@ -11,6 +11,7 @@
 #  title       :string(255)      not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  project_id  :integer
 #  source_id   :integer          not null
 #
 # Indexes
