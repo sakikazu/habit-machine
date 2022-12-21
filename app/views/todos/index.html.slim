@@ -2,7 +2,6 @@
   = javascript_pack_tag 'todo_page', 'data-turbolinks-track': 'reload'
 
 ul.alert.alert-danger
-  li.ml-2 2022/11/06現在、deploy時に todo_projects のmigrationが失敗するので、8a54883467480837bade6e402f3affecf3d46d94 にてrevertしている。そのため、タスクの追加などはできない
   li.ml-2 Todoistでタスク管理をするようにしたので使わない
   li.ml-2 いつかは、Todoistからこちらに移行できたら良いなとは思う（タスクの履歴をHMに残したいため）
   li.ml-2 技術的な学びは、OAuthでGoogleカレンダー取得しているのと、vuedraggableを使ってドラッグアンドドロップを実現しているところ
@@ -25,37 +24,38 @@ ul.alert.alert-danger
         li(v-for="todo, index in todos_p2" :key="todo.id")
           | {{ todo.title }}
 
-h1.mt-5 Listing todos
-table
-  thead
-    tr
-      th Title
-      th Content
-      th Pri
-      th Sort Order
-      th
-      th
-      th
-  tbody
-    - @todos.each do |todo|
+.alert.alert-dark.mt-5
+  h3 TODO管理
+  table
+    thead
       tr
-        td = todo.title
-        td = todo.content
-        td = todo.priority
-        td = todo.sort_order
-        td = link_to 'Show', todo
-        td = link_to 'Edit', edit_todo_path(todo)
-        td = link_to 'Destroy', todo, data: { confirm: 'Are you sure?' }, method: :delete
-
-br
-= link_to 'New Todo', new_todo_path
-br
-= link_to 'Todo Project', todo_projects_path
+        th Title
+        th Content
+        th Pri
+        th Sort Order
+        th
+        th
+        th
+    tbody
+      - @todos.each do |todo|
+        tr
+          td = todo.title
+          td = todo.content
+          td = todo.priority
+          td = todo.sort_order
+          td = link_to 'Show', todo
+          td = link_to 'Edit', edit_todo_path(todo)
+          td = link_to 'Destroy', todo, data: { confirm: 'Are you sure?' }, method: :delete
+  br
+  = link_to 'New Todo', new_todo_path
+  br
+  = link_to 'Todo Project', todo_projects_path
 
 
 h1.mt-5 Google calendar test (OAuth)
-p.alert.alert-danger
-  | 自分のカレンダーのみで、祝日や家族のスケジュールは取得できていない
+ul.alert.alert-danger
+  li.ml-2 自分のカレンダーのみで、祝日や家族のスケジュールは取得できていない
+  li.ml-2 開発環境と本番環境で、GCPの共通のアプリケーションを使っているからか、どちらかで認証すると、片方のデータが取得できなくなるっぽい。再認証は、Googleアカウントの「アカウントにアクセスできるアプリ」にて「日々の記録」を削除すると行える
 
 = link_to 'auth', @auth_uri if @auth_uri.present?
 

@@ -1,8 +1,7 @@
-h1 Editing todo_project
-
-== render 'form'
-
-=> link_to 'Show', @todo_project
-'|
-=< link_to 'Back', todo_projects_path
-
+.row.justify-content-center
+  .col-sm-9
+    .form_actions
+      = link_to '戻る', todo_projects_path, class: "btn btn-info"
+    .page-header
+      h2 TODOのプロジェクトの編集
+    == render 'form'
