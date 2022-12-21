@@ -54,8 +54,9 @@ br
 
 
 h1.mt-5 Google calendar test (OAuth)
-p.alert.alert-danger
-  | 自分のカレンダーのみで、祝日や家族のスケジュールは取得できていない
+ul.alert.alert-danger
+  li.ml-2 自分のカレンダーのみで、祝日や家族のスケジュールは取得できていない
+  li.ml-2 開発環境と本番環境で、GCPの共通のアプリケーションを使っているからか、どちらかで認証すると、片方のデータが取得できなくなるっぽい。再認証は、Googleアカウントの「アカウントにアクセスできるアプリ」にて「日々の記録」を削除すると行える
 
 = link_to 'auth', @auth_uri if @auth_uri.present?
 
