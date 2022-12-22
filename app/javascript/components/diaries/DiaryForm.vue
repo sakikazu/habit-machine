@@ -23,7 +23,7 @@
 
       a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
       .form-group
-        textarea.form-control(name="[diary]content" ref="markdownable_textarea" rows="15" placeholder="日記の内容" :value="diary.content" :tabindex="tabidxBase + 2")
+        textarea.form-control(name="[diary]content" ref="markdownable_textarea" rows="20" placeholder="日記の内容" :value="diary.content" :tabindex="tabidxBase + 2")
       .form-group
         label
           span.mr-1 タグ

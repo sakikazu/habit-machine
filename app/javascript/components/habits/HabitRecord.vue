@@ -18,7 +18,7 @@
         .recordValueInputRight
           i.button.addTemplate.fa.fa-plus-circle.fa-1_5x(@click="addTemplate" v-if="habit.template !== null")
       .card-text.mt10
-        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" @input="onInputRecordMemo($event)" ref="markdownable_textarea" rows="4")
+        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" @input="onInputRecordMemo($event)" ref="markdownable_textarea" rows="5")
     template(v-else-if="persisted")
       span.badge.badge-light
         // todo: valueないとき、（未入力）とか入れる？
