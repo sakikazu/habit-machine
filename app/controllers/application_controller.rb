@@ -5,10 +5,6 @@ class ApplicationController < ActionController::Base
 
   include ApplicationHelper
 
-  class Forbidden < ActionController::ActionControllerError; end
-  class NotFound < ActionController::ActionControllerError; end
-  include ErrorHandlers if Rails.env.production?
-
   layout :select_layout
   before_action :configure_permitted_parameters, if: :devise_controller?
 
