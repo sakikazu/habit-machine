@@ -17,19 +17,19 @@ HabitMachine
 * レスポンシブデザインによるスマホView対応
 * Vue.jsでSPA
 * 検索結果ページで検索ワードのハイライト
-* メモページはContentEditableを使ってhタグをリアルタイム反映、markdown入力補助、hタグから目次生成
+* ノートページはContentEditableを使ってhタグをリアルタイム反映、markdown入力補助、hタグから目次生成
 
 ## スクリーンキャプチャ
 ### 日ごとのページ
-![HM、dayページ、github用](https://user-images.githubusercontent.com/745130/124608007-54e40100-dea9-11eb-84e3-dd5dc405a416.jpg)
+<img width="1175" alt="2023-02-19_HMキャプチャ（Github用）" src="https://user-images.githubusercontent.com/745130/219923097-3249e197-d0cd-41a3-8c36-ec5ce7182e90.png">
 
 
-### メモページ
-![HM、メモページ、github用](https://user-images.githubusercontent.com/745130/124608034-59a8b500-dea9-11eb-94a2-b4b01b5614bb.jpg)
+### ノートページ
+<img width="1172" alt="image" src="https://user-images.githubusercontent.com/745130/219923297-419e8bd1-fd56-4c41-9a00-6d59faa08363.png">
 
 
 ### 検索結果ページ
-![HM、検索結果ページ、github用](https://user-images.githubusercontent.com/745130/124608070-5f9e9600-dea9-11eb-8392-44af41d9f329.jpg)
+<img width="1168" alt="image" src="https://user-images.githubusercontent.com/745130/219923506-d67a507c-8b8f-4205-9cf2-69bf6e56384d.png">
 
 
 ## Demo (heroku)
@@ -97,6 +97,11 @@ https://bitbucket.org/tutorials/markdowndemo/src/master/
 * このためにpublic配下に置く必要があった静的ファイルがあり、それを本番で読み込めるようにNginx confに特定の設定がされている
 
 ## よく使うコマンド
+
+### デモデータ投入
+```
+$ bin/rake db:seed_fu
+```
 
 ### unicorn再起動
 ```
