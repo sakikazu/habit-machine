@@ -1,7 +1,7 @@
 # TODO: rails6.1以上にすると、font-awesome-railsなど対応していないgemが出てくるのでその調査の時間があるときにする
 source 'https://rubygems.org'
 
-ruby '2.7.1'
+ruby '2.7.7'
 gem 'rails', '~> 6.0'
 gem 'bootsnap' # railsの起動を速くする
 
