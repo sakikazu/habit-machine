@@ -92,7 +92,7 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'capistrano3-unicorn'
-  gem 'rvm1-capistrano3', require: false
+  gem 'capistrano-asdf'
 
   # エラー画面をわかりやすく整形してくれる
   gem 'better_errors'

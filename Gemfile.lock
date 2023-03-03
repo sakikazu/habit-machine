@@ -96,6 +96,9 @@ GEM
       i18n
       rake (>= 10.0.0)
       sshkit (>= 1.9.0)
+    capistrano-asdf (1.0.0)
+      capistrano (~> 3.0)
+      sshkit (~> 1.2)
     capistrano-bundler (2.0.1)
       capistrano (~> 3.1)
     capistrano-rails (1.6.1)
@@ -391,9 +394,6 @@ GEM
     ruby-graphviz (1.2.5)
       rexml
     ruby-progressbar (1.11.0)
-    rvm1-capistrano3 (1.4.0)
-      capistrano (~> 3.0)
-      sshkit (>= 1.2)
     sanitize (6.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -494,6 +494,7 @@ DEPENDENCIES
   browser
   bullet
   capistrano
+  capistrano-asdf
   capistrano-bundler
   capistrano-rails
   capistrano3-unicorn
@@ -531,7 +532,6 @@ DEPENDENCIES
   rest-client
   rspec-rails
   rubocop
-  rvm1-capistrano3
   sanitize
   sass-rails (~> 5.0)
   seed-fu (~> 2.3)
