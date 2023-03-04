@@ -74,6 +74,8 @@ gem 'config'
 
 # NOTE: View handlerの設定で使用されるのでどの環境でも必要
 gem 'slim'
+# for scss; NOTE: 2.4にすると、VPSでbundle installが終わらなくなる
+gem 'sassc', '2.1.0'
 
 gem 'webpacker', '~> 5.x'
 
