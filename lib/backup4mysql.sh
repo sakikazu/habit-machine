@@ -2,12 +2,12 @@
 
 db='habitm'
 user='root'
-password_file='/usr/local/site/habit-machine/current/config/mysqldump.ini'
+password_file="$HOME/web/habit-machine/shared/mysqldump.ini"
 
 # バックアップファイルを何日分残しておくか
 period=7
 # バックアップファイルを保存するディレクトリ
-dirpath='/home/sakikazu/bak'
+dirpath="$HOME/bak"
 
 # ファイル名を定義(※ファイル名で日付がわかるようにしておきます))
 filename="$db"_`date +%y%m%d`
@@ -23,5 +23,5 @@ mysqldump --defaults-extra-file=$password_file -u $user $db | gzip -c > $dirpath
 oldfile="$db"_`date --date "$period days ago" +%y%m%d`
 rm -f $dirpath/$oldfile.sql.gz
 
-# このシェルを実行したプログラムでバックアップファイル名を取得したい時のために、標準出力する
+# 本シェルの呼び出し元で使えるようにバックアップファイル名を出力
 echo $dirpath/$filename.sql.gz
