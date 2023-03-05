@@ -30,6 +30,7 @@ set :linked_dirs, %w{log tmp/cache tmp/sockets tmp/pids bundle public/upload}
 append :linked_dirs, '.bundle'
 
 # Default value for default_env is {}
+# NOTE: asdf global 設定にしたrubyを使わない場合は、これだとダメかも
 set :default_env, { path: "/home/ubuntu/.asdf/shims:$PATH" }
 
 # Default value for keep_releases is 5
