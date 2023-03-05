@@ -25,27 +25,21 @@ set :deploy_to, '/home/ubuntu/web/habit-machine'
 set :linked_files, %w{.env}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{log tmp/cache tmp/sockets tmp/pids vendor/bundle public/upload}
+set :linked_dirs, %w{log tmp/cache tmp/sockets tmp/pids bundle public/upload}
+# NOTE: for capistrano-bundler config file (see: https://github.com/capistrano/bundler)
+append :linked_dirs, '.bundle'
 
 # Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :default_env, { path: "/home/ubuntu/.asdf/shims:$PATH" }
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
-
-# asdf
-# set :asdf_custom_path, '~/.my_asdf_installation_path'  # only needed if not '~/.asdf'
-set :asdf_tools, %w{ ruby }                            # defaults to %{ ruby nodejs }
-# set :asdf_map_ruby_bins, %w{ bundle gem }              # defaults to %w{ rake gem bundle ruby rails }
-# set :asdf_map_nodejs_bins, %w{ node npm }              # defaults to %w{ node npm yarn }
 
 # unicorn
 set :unicorn_config_path, "#{current_path}/config/unicorn.conf.rb"
 # set :unicorn_pid, 'default'
 
-
 namespace :deploy do
-
   desc 'Restart application'
   task :restart do
     invoke 'unicorn:restart'
@@ -61,5 +55,4 @@ namespace :deploy do
       # end
     end
   end
-
 end
