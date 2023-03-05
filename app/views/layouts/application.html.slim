@@ -71,7 +71,7 @@ html[lang="ja"]
               = link_to "TODO（学習用）", todos_path, class: 'dropdown-item'
 
           li.nav-item.dropdown
-            = link_to current_user.dispname, '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
+            = link_to current_user&.dispname || '', '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
               = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
               = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}

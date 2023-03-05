@@ -5,6 +5,7 @@ class ErrorsController < ActionController::Base
 
     case error
     when ActionController::RoutingError, ActiveRecord::RecordNotFound
+      # TODO: application layoutでは current_userを使っているので、非ログイン状態でもページが表示できるよう、シンプルなレイアウトを指定すべき
       render template: "errors/404", status: 404, layout: 'application'
     when StandardError
       render template: "errors/500", status: 500, layout: 'application'
