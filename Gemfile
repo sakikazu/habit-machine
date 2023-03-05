@@ -94,7 +94,6 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
   gem 'capistrano3-unicorn'
-  gem 'capistrano-asdf'
 
   # エラー画面をわかりやすく整形してくれる
   gem 'better_errors'
