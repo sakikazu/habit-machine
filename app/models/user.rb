@@ -66,6 +66,13 @@ class User < ApplicationRecord
     return user
   end
 
+  # NOTE: has_many の whereオプションでやれそうだが、めんどそう
+  def habits_including_familys
+    return habits if family.blank?
+
+    habits + family.habits
+  end
+
   def dispname
     nickname || fullname
   end
