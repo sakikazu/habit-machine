@@ -21,7 +21,7 @@
       .text-center.mt20(v-if="!!localDiary.image_path")
         // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
         img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
-      .markdown.mb-4(v-html="localDiary.markdowned_content")
+      .markdown.mb-4(v-html="markdownedContent")
       .buttons
         a.btn.btn-light.ignore-checking-changes(@click="edit") 編集
     .diary-recordat-changed(v-else)
@@ -60,6 +60,10 @@ export default {
       type: Boolean,
       default: false
     },
+    highlightWord: {
+      type: String,
+      default: null,
+    },
   },
   data () {
     return {
@@ -77,6 +81,13 @@ export default {
   computed: {
     targetDate () {
       return !!this.localDiary.id ? this.localDiary.record_at : this.targetDateForEditMode
+    },
+    markdownedContent () {
+      if (this.highlightWord && this.highlightWord.length > 0) {
+        return this.localDiary.markdowned_content.replaceAll(this.highlightWord, "<span class='highlight'>" + this.highlightWord + "</span>")
+      } else {
+        return this.localDiary.markdowned_content
+      }
     },
   },
   created () {
@@ -137,6 +148,9 @@ export default {
   border: 1px solid #bbdfff
   animation: BlinkBorder 1s 10
   animation-timing-function: linear
+
+.highlight-word
+  background-color: orangered
 
 @keyframes BlinkBorder
   0%
