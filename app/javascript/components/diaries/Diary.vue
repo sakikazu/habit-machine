@@ -6,7 +6,9 @@
         .flex-grow-1
           h5.diary-title
             .noLinkTitle.text-secondary(v-if="modalMode")
-              a.date.mr10(:href="`/day/${localDiary.record_at}`") {{ localDiary.disp_record_at }}
+              a.date.mr10(:href="`/day/${localDiary.record_at}`" :target="linkWithTargetBlankValue")
+                i.fa.fa-window-restore.mr-1(v-if="linkWithTargetBlank")
+                | {{ localDiary.disp_record_at }}
               span.text-danger.mr-1(v-if="localDiary.main_in_day")
                 i.fa.fa-star
               span.title {{ localDiary.title_mod }}
@@ -21,7 +23,7 @@
       .text-center.mt20(v-if="!!localDiary.image_path")
         // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
         img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
-      .markdown.mb-4(v-html="localDiary.markdowned_content")
+      .markdown.mb-4(v-html="markdownedContent")
       .buttons
         a.btn.btn-light.ignore-checking-changes(@click="edit") 編集
     .diary-recordat-changed(v-else)
@@ -60,6 +62,14 @@ export default {
       type: Boolean,
       default: false
     },
+    highlightWord: {
+      type: String,
+      default: null,
+    },
+    linkWithTargetBlank: {
+      type: Boolean,
+      default: false,
+    },
   },
   data () {
     return {
@@ -78,6 +88,16 @@ export default {
     targetDate () {
       return !!this.localDiary.id ? this.localDiary.record_at : this.targetDateForEditMode
     },
+    markdownedContent () {
+      if (this.highlightWord && this.highlightWord.length > 0) {
+        return this.localDiary.markdowned_content.replaceAll(this.highlightWord, "<span class='highlight'>" + this.highlightWord + "</span>")
+      } else {
+        return this.localDiary.markdowned_content
+      }
+    },
+    linkWithTargetBlankValue () {
+      return this.linkWithTargetBlank ? '_blank' : '_self'
+    }
   },
   created () {
     if (!this.diary && !this.diaryId) throw new Error('diary or diaryId props is required')
@@ -137,6 +157,9 @@ export default {
   border: 1px solid #bbdfff
   animation: BlinkBorder 1s 10
   animation-timing-function: linear
+
+.highlight-word
+  background-color: orangered
 
 @keyframes BlinkBorder
   0%

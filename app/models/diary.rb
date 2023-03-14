@@ -93,6 +93,7 @@ class Diary < ApplicationRecord
   def search_result_items
     {
       type: self.class.to_s,
+      self_data: self,
       id: id,
       title: "#{record_at.to_s} > #{title_mod}",
       body: content,

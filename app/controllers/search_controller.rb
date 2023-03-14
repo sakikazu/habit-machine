@@ -42,12 +42,22 @@ class SearchController < ApplicationController
     @results = source_data.map { |obj| obj.search_result_items }
     @results.each do |result|
       result['highlighted'] = highlight_text(result[:target_text].dup)
+      # TODO: 無理やりデータを詰めてる感じ。リファクタリングしたい
+      result['diary_data'] = render_json(
+        partial: 'diaries/show.json.jbuilder',
+        locals: { diary: result[:self_data] }
+      ) if @content_type.to_sym == :diary
     end
 
     render json: @results
   end
 
   private
+
+  def render_json(attributes)
+    # NOTE: view_source_map が有効だとJSON parse不可能な文字列が挿入されてしまうため、無効にする
+    JSON.parse(ApplicationController.render(attributes.merge(view_source_map: false)))
+  end
 
   def highlight_text(target_text)
     # TODO: htmlサニタイズ?
