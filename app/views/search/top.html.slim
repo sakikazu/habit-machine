@@ -99,7 +99,7 @@
               span(@click="closeDetail" role="button")
                 = fa_icon('times')
           .detailContent
-            p(v-html="nl2br(selectedDetailData?.highlighted)")
+            p(v-html="nl2br(selectedDetailData?.body)")
 
 sass:
   #searchResult
