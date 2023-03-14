@@ -6,7 +6,9 @@
         .flex-grow-1
           h5.diary-title
             .noLinkTitle.text-secondary(v-if="modalMode")
-              a.date.mr10(:href="`/day/${localDiary.record_at}`") {{ localDiary.disp_record_at }}
+              a.date.mr10(:href="`/day/${localDiary.record_at}`" :target="linkWithTargetBlankValue")
+                i.fa.fa-window-restore.mr-1(v-if="linkWithTargetBlank")
+                | {{ localDiary.disp_record_at }}
               span.text-danger.mr-1(v-if="localDiary.main_in_day")
                 i.fa.fa-star
               span.title {{ localDiary.title_mod }}
@@ -64,6 +66,10 @@ export default {
       type: String,
       default: null,
     },
+    linkWithTargetBlank: {
+      type: Boolean,
+      default: false,
+    },
   },
   data () {
     return {
@@ -89,6 +95,9 @@ export default {
         return this.localDiary.markdowned_content
       }
     },
+    linkWithTargetBlankValue () {
+      return this.linkWithTargetBlank ? '_blank' : '_self'
+    }
   },
   created () {
     if (!this.diary && !this.diaryId) throw new Error('diary or diaryId props is required')
