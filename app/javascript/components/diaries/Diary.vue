@@ -90,7 +90,8 @@ export default {
     },
     markdownedContent () {
       if (this.highlightWord && this.highlightWord.length > 0) {
-        return this.localDiary.markdowned_content.replaceAll(this.highlightWord, "<span class='highlight'>" + this.highlightWord + "</span>")
+        const pattern = new RegExp(this.highlightWord, 'gi') // 大文字小文字を区別しない
+        return this.localDiary.markdowned_content.replaceAll(pattern, "<span class='highlight'>" + this.highlightWord + "</span>")
       } else {
         return this.localDiary.markdowned_content
       }
