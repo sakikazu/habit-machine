@@ -12,7 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2022_11_05_104306) do
 
-  create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "admins", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 
-  create_table "children", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "children", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.date "birthday"
     t.integer "gender"
@@ -39,9 +39,9 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["family_id"], name: "index_children_on_family_id"
   end
 
-  create_table "diaries", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "diaries", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
-    t.text "content"
+    t.text "content", size: :medium
     t.integer "user_id"
     t.date "record_at"
     t.string "image_file_name"
@@ -61,16 +61,16 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["user_id"], name: "index_diaries_on_user_id"
   end
 
-  create_table "families", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "families", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "enabled", default: false, null: false
   end
 
-  create_table "habitodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "habitodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
-    t.text "body"
+    t.text "body", size: :medium
     t.bigint "user_id"
     t.string "uuid"
     t.integer "order_number", default: 0
@@ -80,7 +80,7 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["user_id"], name: "index_habitodos_on_user_id"
   end
 
-  create_table "habits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "habits", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "status"
     t.string "title"
     t.integer "source_id", null: false
@@ -89,22 +89,22 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.integer "value_type"
     t.string "value_unit"
     t.boolean "reminder"
-    t.text "goal"
-    t.text "memo"
+    t.text "goal", size: :medium
+    t.text "memo", size: :medium
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "template"
+    t.text "template", size: :medium
     t.index ["source_id", "source_type"], name: "index_habits_on_source_id_and_source_type"
   end
 
-  create_table "histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "source_id", null: false
     t.string "source_type", null: false
     t.bigint "family_id"
     t.integer "author_id"
     t.string "title"
-    t.text "content"
+    t.text "content", size: :medium
     t.date "target_date"
     t.boolean "about_date"
     t.string "image_file_name"
@@ -121,8 +121,8 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["target_date"], name: "index_histories_on_target_date"
   end
 
-  create_table "rails_admin_histories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
-    t.text "message"
+  create_table "rails_admin_histories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.text "message", size: :medium
     t.string "username"
     t.integer "item"
     t.string "table"
@@ -133,11 +133,11 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
-  create_table "records", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "records", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "habit_id"
     t.date "record_at"
     t.float "value"
-    t.text "memo"
+    t.text "memo", size: :medium
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -145,11 +145,11 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["record_at"], name: "index_records_on_record_at"
   end
 
-  create_table "senses", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "senses", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "user_id"
     t.string "title"
-    t.text "description"
-    t.text "content"
+    t.text "description", size: :medium
+    t.text "content", size: :medium
     t.date "start_at"
     t.date "end_at"
     t.boolean "is_inactive"
@@ -159,7 +159,7 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.integer "parent_id"
   end
 
-  create_table "taggings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "taggings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "taggable_id"
     t.string "taggable_type"
@@ -171,20 +171,20 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
   end
 
-  create_table "tags", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "tags", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.integer "taggings_count", default: 0
     t.integer "user_id"
     t.datetime "last_used_at"
-    t.text "description"
+    t.text "description", size: :medium
     t.string "color"
     t.boolean "pinned", default: false
     t.index ["name"], name: "index_tags_on_name", unique: true
   end
 
-  create_table "todo_projects", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "todo_projects", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title", null: false
-    t.text "content"
+    t.text "content", size: :medium
     t.integer "source_id", null: false
     t.string "source_type", null: false
     t.datetime "created_at", null: false
@@ -192,12 +192,12 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["source_id", "source_type"], name: "index_todo_projects_on_source_id_and_source_type"
   end
 
-  create_table "todos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
+  create_table "todos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "project_id"
     t.integer "source_id", null: false
     t.string "source_type", null: false
     t.string "title", null: false
-    t.text "content"
+    t.text "content", size: :medium
     t.integer "priority", default: 0, null: false
     t.integer "sort_order", default: 0, null: false
     t.datetime "done_at"
@@ -206,7 +206,7 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.index ["source_id", "source_type"], name: "index_todos_on_source_id_and_source_type"
   end
 
-  create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci", force: :cascade do |t|
+  create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "familyname"
     t.string "givenname"
     t.datetime "deleted_at"

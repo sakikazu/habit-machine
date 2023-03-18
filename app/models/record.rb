@@ -4,7 +4,7 @@
 #
 #  id         :integer          not null, primary key
 #  deleted_at :datetime
-#  memo       :text(65535)
+#  memo       :text(16777215)
 #  record_at  :date
 #  value      :float(24)
 #  created_at :datetime         not null

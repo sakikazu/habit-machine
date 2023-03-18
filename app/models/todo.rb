@@ -3,7 +3,7 @@
 # Table name: todos
 #
 #  id          :bigint           not null, primary key
-#  content     :text(65535)
+#  content     :text(16777215)
 #  done_at     :datetime
 #  priority    :integer          default(0), not null
 #  sort_order  :integer          default(0), not null

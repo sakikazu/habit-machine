@@ -4,13 +4,13 @@
 #
 #  id          :integer          not null, primary key
 #  deleted_at  :datetime
-#  goal        :text(65535)
-#  memo        :text(65535)
+#  goal        :text(16777215)
+#  memo        :text(16777215)
 #  reminder    :boolean
 #  result_type :integer
 #  source_type :string(255)      not null
 #  status      :integer
-#  template    :text(65535)
+#  template    :text(16777215)
 #  title       :string(255)
 #  value_type  :integer
 #  value_unit  :string(255)

@@ -3,7 +3,7 @@
 # Table name: diaries
 #
 #  id                 :integer          not null, primary key
-#  content            :text(65535)
+#  content            :text(16777215)
 #  deleted_at         :datetime
 #  image_content_type :string(255)
 #  image_file_name    :string(255)
