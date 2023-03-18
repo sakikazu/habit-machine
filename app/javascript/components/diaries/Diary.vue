@@ -91,7 +91,7 @@ export default {
     markdownedContent () {
       if (this.highlightWord && this.highlightWord.length > 0) {
         const pattern = new RegExp(this.highlightWord, 'gi') // 大文字小文字を区別しない
-        return this.localDiary.markdowned_content.replaceAll(pattern, "<span class='highlight'>" + this.highlightWord + "</span>")
+        return this.localDiary.markdowned_content.replaceAll(pattern, "<span class='highlight-word'>" + this.highlightWord + "</span>")
       } else {
         return this.localDiary.markdowned_content
       }
@@ -159,8 +159,9 @@ export default {
   animation: BlinkBorder 1s 10
   animation-timing-function: linear
 
-.highlight-word
-  background-color: orangered
+::v-deep
+  .highlight-word
+    background-color: orangered
 
 @keyframes BlinkBorder
   0%
