@@ -44,6 +44,12 @@ class GeneralController < ApplicationController
       today = Time.zone.today
       @date_term = 6.days.ago(today)..today
     end
+
+    if @date_term.count > 100
+      redirect_back fallback_location: this_month_path, alert: '日付の範囲は100日以下にしてください。'
+      return
+    end
+
     @target_month = @date_term.first.beginning_of_month
 
     # TODO: 以前の月指定フィールドは復活させるか検討

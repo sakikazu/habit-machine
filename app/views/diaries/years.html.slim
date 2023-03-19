@@ -8,7 +8,7 @@
         = link_to year, years_diaries_path(year), class: 'dropdown-item'
   = link_to fa_icon('caret-right', class: 'fa-lg', style: 'padding:0.6em 0.1em'), years_diaries_path(@year + 1), class: "btn btn-light"
 
-table.table.table-bordered.table-hover.ten-years-diaries
+table.table.table-bordered.ten-years-diaries
   thead
     tr
       th.day
@@ -23,9 +23,9 @@ table.table.table-bordered.table-hover.ten-years-diaries
           - if date.present?
             td
               = link_to day_path("#{@year}-#{month}-#{day}") do
-                span.badge.badge-info = @diaries_by_date[month][day].size
+                .badge.badge-light.w100.p-1 = "#{month}/#{day} (#{@diaries_by_date[month][day].size})"
               - @diaries_by_date[month][day].each do |diary|
-                .text-underline = fa_icon 'square', text: diary.title.truncate(40) if diary.title.present?
+                .text-underline = fa_icon 'square', text: diary.title if diary.title.present?
           - else
             td.bg-secondary
 
