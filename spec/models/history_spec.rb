@@ -5,7 +5,7 @@
 #  id                 :bigint           not null, primary key
 #  about_date         :boolean
 #  as_profile_image   :boolean
-#  content            :text(16777215)
+#  content            :text(65535)
 #  data               :json
 #  image_content_type :string(255)
 #  image_file_name    :string(255)

@@ -3,7 +3,7 @@
 # Table name: habitodos
 #
 #  id           :bigint           not null, primary key
-#  body         :text(16777215)
+#  body         :text(65535)
 #  deleted_at   :datetime
 #  order_number :integer          default(0)
 #  title        :string(255)

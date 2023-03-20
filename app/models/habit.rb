@@ -4,18 +4,18 @@
 #
 #  id          :integer          not null, primary key
 #  deleted_at  :datetime
-#  goal        :text(16777215)
-#  memo        :text(16777215)
+#  goal        :text(65535)
+#  memo        :text(65535)
 #  reminder    :boolean
 #  result_type :integer
 #  source_type :string(255)      not null
 #  status      :integer
-#  template    :text(16777215)
+#  template    :text(65535)
 #  title       :string(255)
 #  value_type  :integer
 #  value_unit  :string(255)
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  created_at  :datetime
+#  updated_at  :datetime
 #  source_id   :integer          not null
 #
 # Indexes

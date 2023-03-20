@@ -4,7 +4,7 @@
 #
 #  id             :integer          not null, primary key
 #  color          :string(255)
-#  description    :text(16777215)
+#  description    :text(65535)
 #  last_used_at   :datetime
 #  name           :string(255)
 #  pinned         :boolean          default(FALSE)
