@@ -14,13 +14,21 @@ default: &default
   encoding: utf8mb4
   collation: utf8mb4_0900_ai_ci
   pool: 5
-  username: sakikazu
-  password: <%= ENV['DATABASE_PASSWORD'] %>
-  socket: /var/run/mysqld/mysqld.sock
+  username: root
+  password: password
+  host: db
 
 development:
   <<: *default
   database: habitm_dev
+
+# NOTE: ECSで作る前提のデモ環境
+staging:
+  <<: *default
+  database: <%= ENV.fetch("DATABASE_NAME") { 'habitm_staging' } %>
+  username: <%= ENV.fetch("DATABASE_USERNAME") { 'root' } %>
+  password: <%= ENV.fetch("DATABASE_PASSWORD") { 'password' } %>
+  host: <%= ENV.fetch("DATABASE_HOST") { 'db' } %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -54,4 +62,3 @@ production:
   username: root
   password: <%= ENV['DATABASE_PASSWORD'] %>
   socket: <%= ENV['DATABASE_SOCKET'] %>
-

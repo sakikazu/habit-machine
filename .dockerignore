@@ -1,0 +1,12 @@
+node_modules
+bundle
+dockerfiles
+tmp/
+log/
+.env
+.envrc
+.git/
+.github
+docs
+storage/
+public/upload/

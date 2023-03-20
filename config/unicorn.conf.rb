@@ -1,4 +1,5 @@
-listen '/tmp/unicorn_habit-machine.sock', :backlog => 1024
+app_root = File.expand_path("../..", __FILE__)
+listen "#{app_root}/tmp/sockets/unicorn.sock", :backlog => 1024
 pid "tmp/pids/unicorn.pid"
 
 # worker_processes 2
