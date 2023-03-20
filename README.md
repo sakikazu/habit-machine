@@ -1,18 +1,17 @@
 HabitMachine
 ====
 
-日々の記録やTODO管理ができるプライベートなサービス。
-主に日記、習慣化のための記録、記録のグラフ、TODOリスト、目次付きノート、検索機能。
-スマホView対応、PWA対応
+日々のいろんな記録ができるサービス。
+基本プライベートで、特定機能は家族と共有できる。
+主な機能は、日記、登録した項目の記録、目次付きノート、家族の記録、検索。
+スマホView、PWA対応
 
-## Features
-* 日ごとのページに、日記、習慣の記録、TODOリストを設置
-* 日記はタグ付け、画像添付、markdown対応（JSによるmarkdown入力補助あり）
-* 日記は多面的な閲覧が可能（検索結果、「人生ハイライト」、「10年日記」）
-* 日記からTODOリストを作成可能
-  * TODOも日々の記録という位置づけで、この時期にこんなTODOがあって、これだけ完了させたという情報を記録
-  * 日ごとのページからTODOを更新可能
-* 習慣の記録データはグラフ表示可能
+## 機能の詳細（技術についてを含む）
+* 日ごとのページに、日記、記録を設置して、日々の記録をやりやすく
+* 日記はタグ付け、画像添付、markdown対応（markdown入力補助あり）
+* 日記は多面的な閲覧が可能（「人生ハイライト」、「10年日記」、検索結果）
+* 日記を固定表示にすることで、簡易的なTODOリストを作成可能
+* 記録データはグラフ表示可能
 * turbolinksを使っているが、Vue.jsが入ったページではOFF
 * レスポンシブデザインによるスマホView対応
 * Vue.jsでSPA
@@ -32,10 +31,27 @@ HabitMachine
 <img width="1168" alt="image" src="https://user-images.githubusercontent.com/745130/219923506-d67a507c-8b8f-4205-9cf2-69bf6e56384d.png">
 
 
-## Demo (heroku)
-どなたでもどんな操作でも試用可能
+## 開発
+```
+$ docker compose up
+$ bin/webpack-dev-server
+```
 
-* https://hm-a-dan.herokuapp.com/
+## 本番デプロイ
+```
+$ cap production deploy
+```
+
+### unicorn再起動
+* capistranoの unicorn:restart では再起動できないときに
+
+```
+$ cap production unicorn:stop
+$ cap production unicorn:start
+```
+
+## デモ環境
+* ※現在は、必要なときにterraformでAWS ECSにデプロイしている
 
 テストユーザー
 | email            | password  |
@@ -50,7 +66,7 @@ HabitMachine
 * Vue.js 2.6系
 * JavaScript ES2015以降
 * Node 14.17.0
-  * v16にするとエラーになるので、 `sudo n 14.17.0` で切り替えてからyarnを実行すること(2022.7現在)
+  * v16にするとエラーになる
 
 ### 主なライブラリ
 * Twitter bootstrap 4
@@ -101,23 +117,5 @@ https://bitbucket.org/tutorials/markdowndemo/src/master/
 ### デモデータ投入
 ```
 $ bin/rake db:seed_fu
-```
-
-### unicorn再起動
-```
-# 本番サーバーのRVMの問題か、unicorn:restartでは再起動できない場合がある
-$ cap production unicorn:stop
-$ cap production unicorn:start
-```
-
-### herokuデプロイ
-```
-$ git push heroku master
-$ heroku run rake db:migrate
-$ heroku open
-# 必要なら
-$ heroku restart
-# エラー時はlog --tailで調査
-$ heroku logs --tail
 ```
 
