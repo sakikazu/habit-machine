@@ -62,3 +62,4 @@ production:
   username: root
   password: <%= ENV['DATABASE_PASSWORD'] %>
   socket: <%= ENV['DATABASE_SOCKET'] %>
+  host: <%= ENV.fetch("DATABASE_HOST") { 'localhost' } %>
