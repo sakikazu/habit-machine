@@ -21,7 +21,7 @@
     - if @habit.result_type_bar_graph?
       .alert.alert-info.mb-5
         | 結果タイプが「棒グラフ」の場合は、検索結果の合計を算出：
-        strong #{@records.sum(&:value).to_i.to_s(:delimited)} #{@habit.value_unit}
+        strong #{@records.sum { _1.value.to_i }.to_s(:delimited)} #{@habit.value_unit}
 
     .records
       = paginate @records, window: 3, outer_window: 2
