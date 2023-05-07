@@ -14,9 +14,8 @@ default: &default
   encoding: utf8mb4
   collation: utf8mb4_0900_ai_ci
   pool: 5
-  username: root
-  password: password
-  host: db
+  username: sakikazu
+  password: <%= ENV['DATABASE_PASSWORD'] %>
 
 development:
   <<: *default
