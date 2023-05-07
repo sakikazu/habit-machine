@@ -23,8 +23,8 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
@@ -41,16 +41,16 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
 
   create_table "diaries", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
-    t.text "content"
+    t.text "content", size: :medium
     t.integer "user_id"
     t.date "record_at"
     t.string "image_file_name"
     t.string "image_content_type"
-    t.bigint "image_file_size"
+    t.integer "image_file_size"
     t.datetime "image_updated_at"
     t.datetime "deleted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.boolean "is_hilight"
     t.boolean "is_about_date"
     t.boolean "is_secret"
@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
 
   create_table "habitodos", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
-    t.text "body"
+    t.text "body", size: :medium
     t.bigint "user_id"
     t.string "uuid"
     t.integer "order_number", default: 0
@@ -89,12 +89,12 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.integer "value_type"
     t.string "value_unit"
     t.boolean "reminder"
-    t.text "goal"
-    t.text "memo"
+    t.text "goal", size: :medium
+    t.text "memo", size: :medium
     t.datetime "deleted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text "template"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "template", size: :medium
     t.index ["source_id", "source_type"], name: "index_habits_on_source_id_and_source_type"
   end
 
@@ -104,7 +104,7 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.bigint "family_id"
     t.integer "author_id"
     t.string "title"
-    t.text "content"
+    t.text "content", size: :medium
     t.date "target_date"
     t.boolean "about_date"
     t.string "image_file_name"
@@ -122,14 +122,14 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
   end
 
   create_table "rails_admin_histories", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.text "message"
+    t.text "message", size: :medium
     t.string "username"
     t.integer "item"
     t.string "table"
     t.integer "month", limit: 2
     t.bigint "year"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
@@ -137,10 +137,10 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.integer "habit_id"
     t.date "record_at"
     t.float "value"
-    t.text "memo"
+    t.text "memo", size: :medium
     t.datetime "deleted_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["habit_id"], name: "index_records_on_habit_id"
     t.index ["record_at"], name: "index_records_on_record_at"
   end
@@ -148,8 +148,8 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
   create_table "senses", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "user_id"
     t.string "title"
-    t.text "description"
-    t.text "content"
+    t.text "description", size: :medium
+    t.text "content", size: :medium
     t.date "start_at"
     t.date "end_at"
     t.boolean "is_inactive"
@@ -161,10 +161,10 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
 
   create_table "taggings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "tag_id"
-    t.string "taggable_type"
     t.integer "taggable_id"
-    t.string "tagger_type"
+    t.string "taggable_type"
     t.integer "tagger_id"
+    t.string "tagger_type"
     t.string "context", limit: 128
     t.datetime "created_at"
     t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
@@ -176,7 +176,7 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.integer "taggings_count", default: 0
     t.integer "user_id"
     t.datetime "last_used_at"
-    t.text "description"
+    t.text "description", size: :medium
     t.string "color"
     t.boolean "pinned", default: false
     t.index ["name"], name: "index_tags_on_name", unique: true
@@ -184,7 +184,7 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
 
   create_table "todo_projects", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title", null: false
-    t.text "content"
+    t.text "content", size: :medium
     t.integer "source_id", null: false
     t.string "source_type", null: false
     t.datetime "created_at", null: false
@@ -197,7 +197,7 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.integer "source_id", null: false
     t.string "source_type", null: false
     t.string "title", null: false
-    t.text "content"
+    t.text "content", size: :medium
     t.integer "priority", default: 0, null: false
     t.integer "sort_order", default: 0, null: false
     t.datetime "done_at"
@@ -220,8 +220,8 @@ ActiveRecord::Schema.define(version: 2022_11_05_104306) do
     t.datetime "last_sign_in_at"
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.string "auth_token"
     t.string "nickname"
     t.bigint "family_id"

@@ -4,11 +4,11 @@
 #
 #  id         :integer          not null, primary key
 #  deleted_at :datetime
-#  memo       :text(65535)
+#  memo       :text(16777215)
 #  record_at  :date
 #  value      :float(24)
-#  created_at :datetime
-#  updated_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #  habit_id   :integer
 #
 # Indexes

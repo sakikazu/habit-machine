@@ -3,8 +3,8 @@
 # Table name: senses
 #
 #  id          :integer          not null, primary key
-#  content     :text(65535)
-#  description :text(65535)
+#  content     :text(16777215)
+#  description :text(16777215)
 #  end_at      :date
 #  is_inactive :boolean
 #  sort_order  :integer          default(1)
