@@ -39,7 +39,8 @@ $ bin/webpack-dev-server
 
 ## 本番デプロイ
 ```
-$ cap production deploy
+# 意図せぬruby環境のcapを使用しないよう、bundle execをつける
+$ bundle exec cap production deploy
 ```
 
 ### unicorn再起動

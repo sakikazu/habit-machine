@@ -33,6 +33,10 @@ gem 'inline_svg'
 gem 'enum_help'
 gem 'seed-fu', '~> 2.3'
 
+# この2つはcapistrano実行時のssh関連エラーの対応のため
+gem 'ed25519'
+gem 'bcrypt_pbkdf'
+
 gem 'faker'
 
 gem 'bootstrap', '>= 4.2', '< 5.0' # twitter bootstrap4
