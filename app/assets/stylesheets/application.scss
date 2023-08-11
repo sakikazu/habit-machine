@@ -264,18 +264,39 @@ td {
  markdown
 **********************************************/
 .markdown {
-  h1, h2 {
-    border-bottom: 1px solid #ddd;
-    padding-bottom: .1em;
-  }
   h1 {
+    background: #dfefff;
+    box-shadow: 0px 0px 0px 5px #dfefff;
+    border: dashed 1px #96c2fe;
+    padding: 0.2em 0.5em;
+    color: #454545;
+  }
+  h1.action_memo_in_md {
+    background: unset;
+    box-shadow: unset;
+    border: unset;
+    border-bottom: 1px solid #ccc;
+    font-size: 1.5rem;
+    color: #ccc;
     margin-top: -20px;
     margin-bottom: 20px;
     padding-top: 35px;
   }
-  h1.action_memo_in_md {
-    font-size: 1.2rem;
-    color: #ccc;
+  h2 {
+    border-bottom: 3px solid #cce4ff;
+    position: relative;
+    font-weight: bold;
+  }
+  h2:after {
+    position: absolute;
+    content: " ";
+    display: block;
+    border-bottom: solid 3px #5472cd;
+    bottom: -3px;
+    width: 20%;
+  }
+  h3 {
+    font-weight: bold;
   }
   h2, h3, h4, h5 {
     margin-top: -15px;
@@ -283,9 +304,9 @@ td {
     padding-top: 25px;
   }
 
-  h1 { font-size: 1.9em; }
-  h2 { font-size: 1.7em; }
-  h3 { font-size: 1.5em; }
+  h1 { font-size: 1.8em; }
+  h2 { font-size: 1.6em; }
+  h3 { font-size: 1.3em; }
   h4 { font-size: 1.3em; }
   h5 { font-size: 1.2em; }
 
