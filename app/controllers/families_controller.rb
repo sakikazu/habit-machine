@@ -3,7 +3,8 @@ class FamiliesController < ApplicationController
 
   def show
     @users = current_family.users
-    @children = current_family.children.all
+    @children = current_family.children
+    @histories_count_hash = build_histories_count_hash(current_family)
     @content_title = '家族ページ'
   end
 
@@ -19,5 +20,13 @@ class FamiliesController < ApplicationController
 
   def family_params
     params.require(:family).permit(:name)
+  end
+
+  def build_histories_count_hash(family)
+    {
+      children: family.children.includes(:histories).map { [_1.id, _1.histories.count] }.to_h,
+      users: family.users.includes(:histories).map { [_1.id, _1.histories.count] }.to_h,
+      family: family.histories.count
+    }
   end
 end

@@ -10,7 +10,9 @@
           - if child.profile_image.present?
             = image_tag child.profile_image.url(:small), class: 'rounded-circle', width: '75px', height: '75px'
           .ml-3
-            h4 = link_to child.name, month_child_child_histories_path(child, Time.now.year, Time.now.month)
+            h4
+              = link_to child.name, month_child_child_histories_path(child, Time.now.year, Time.now.month)
+              span.badge.badge-secondary.ml-2 = @histories_count_hash[:children][child.id]
             p.text-muted = child.relative_age(Date.today)
         .edit
           = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_path(child)
@@ -19,12 +21,16 @@
     p.text-muted.font-weight-bold
       = fa_icon 'user', text: '他の家族'
     - @users.each do |user|
-      h4.mb-3 = link_to user.dispname, month_user_user_histories_path(user, Time.now.year, Time.now.month)
+      h4.mb-3
+        = link_to user.dispname, month_user_user_histories_path(user, Time.now.year, Time.now.month)
+        span.badge.badge-secondary.ml-2 = @histories_count_hash[:users][user.id]
       hr.mb-3
 
     p.text-muted.font-weight-bold
       = fa_icon 'home', text: '家族事'
     .d-flex.justify-content-between.mb-4
-      h4 = link_to current_family.name_with_suffix, month_family_family_histories_path(Time.now.year, Time.now.month)
+      h4
+        = link_to current_family.name_with_suffix, month_family_family_histories_path(Time.now.year, Time.now.month)
+        span.badge.badge-secondary.ml-2 = @histories_count_hash[:family]
       .edit
         = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_family_path
