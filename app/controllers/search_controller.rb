@@ -39,17 +39,25 @@ class SearchController < ApplicationController
                      raise 'no content_type'
                    end
 
-    @results = source_data.map { |obj| obj.search_result_items }
-    @results.each do |result|
-      result['highlighted'] = highlight_text(result[:target_text].dup)
-      # TODO: 無理やりデータを詰めてる感じ。リファクタリングしたい
-      result['diary_data'] = render_json(
-        partial: 'diaries/show.json.jbuilder',
-        locals: { diary: result[:self_data] }
-      ) if @content_type.to_sym == :diary
-    end
+    result_items = source_data.map { |obj| obj.search_result_items }
+    results = if @content_type.to_sym == :diary
+                     result_items.each do |item|
+                       item[:highlighted] = highlight_text(item[:target_text].dup)
+                       # TODO: 無理やりデータを詰めてる感じ。リファクタリングしたい
+                       item[:diary_data] = render_json(
+                         partial: 'diaries/show.json.jbuilder',
+                         locals: { diary: item[:self_data] }
+                       )
+                     end
+                     result_items.map { _1.slice(:id, :type, :highlighted, :title, :show_path, :diary_data) }
+                   else
+                     result_items.each do |item|
+                       item[:highlighted] = highlight_text(item[:target_text].dup)
+                     end
+                     result_items.map { _1.slice(:id, :type, :highlighted, :title, :body, :show_path) }
+                   end
 
-    render json: @results
+    render json: results
   end
 
   private
