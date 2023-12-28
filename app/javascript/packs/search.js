@@ -58,7 +58,18 @@ document.addEventListener('turbolinks:load', () => {
         event.target.closest('li').classList.add('active')
 
         // NOTE: ベストは、contentTypeに応じたComponentを表示するのがいいかな
-        this.selectedDetailData = data
+        if(data.type === 'Diary') {
+          HmAxios.get(`/diaries/${data.id}.json`)
+            .then(res => {
+              this.selectedDetailData = res.data.diary
+              this.selectedDetailData.type = 'Diary'
+            })
+            .catch(error => {
+              console.log(error)
+            })
+        } else {
+          this.selectedDetailData = data
+        }
       },
       closeDetail() {
         // NOTE: articleをflex-grow:1したら、ここでwidthをいじる必要なくなった。でもopenの時は必要。なぜかはわからない
