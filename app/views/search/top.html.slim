@@ -86,7 +86,7 @@
       .detailInner.bg-light
         template(v-if="selectedDetailData?.type === 'Diary'")
           diary(
-            :diary="selectedDetailData?.diary_data"
+            :diary="selectedDetailData"
             :modal-mode="true"
             highlight-word="#{@search_word}"
             :link-with-target-blank="true"

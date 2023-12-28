@@ -40,32 +40,20 @@ class SearchController < ApplicationController
                    end
 
     result_items = source_data.map { |obj| obj.search_result_items }
+    result_items.each do |item|
+      item[:highlighted] = highlight_text(item[:target_text].dup)
+    end
+
     results = if @content_type.to_sym == :diary
-                     result_items.each do |item|
-                       item[:highlighted] = highlight_text(item[:target_text].dup)
-                       # TODO: 無理やりデータを詰めてる感じ。リファクタリングしたい
-                       item[:diary_data] = render_json(
-                         partial: 'diaries/show.json.jbuilder',
-                         locals: { diary: item[:self_data] }
-                       )
-                     end
-                     result_items.map { _1.slice(:id, :type, :highlighted, :title, :show_path, :diary_data) }
-                   else
-                     result_items.each do |item|
-                       item[:highlighted] = highlight_text(item[:target_text].dup)
-                     end
-                     result_items.map { _1.slice(:id, :type, :highlighted, :title, :body, :show_path) }
-                   end
+                result_items.map { _1.slice(:id, :type, :highlighted, :title, :show_path) }
+              else
+                result_items.map { _1.slice(:id, :type, :highlighted, :title, :body, :show_path) }
+              end
 
     render json: results
   end
 
   private
-
-  def render_json(attributes)
-    # NOTE: view_source_map が有効だとJSON parse不可能な文字列が挿入されてしまうため、無効にする
-    JSON.parse(ApplicationController.render(attributes.merge(view_source_map: false)))
-  end
 
   def highlight_text(target_text)
     # TODO: htmlサニタイズ?
