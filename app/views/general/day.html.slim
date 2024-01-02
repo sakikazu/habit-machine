@@ -30,7 +30,7 @@
                     select.form-control.w100(name="[diary]label_memo")
                       option(v-for="cate in memoCategories" :value="cate" v-text="cate")
                 div
-                  textarea.form-control.first-focus.w100(name="[diary]memo" v-model="memoContent")
+                  textarea.form-control.first-focus.w100(name="[diary]memo" v-model="memoContent" ref="memoContentField")
                 input(type="hidden" name="[diary]record_at" value="#{@date}")
               .modal-footer
                 button.btn.btn-primary(type="submit") メモ追加

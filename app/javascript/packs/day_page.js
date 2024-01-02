@@ -71,6 +71,9 @@ document.addEventListener('turbolinks:load', () => {
         $('#memo-form.modal').on('shown.bs.modal', () => {
           $('#memo-form.modal').find('.first-focus').focus()
         })
+        this.$refs.memoContentField.addEventListener('input', (event) => {
+          localStorage.setItem('inputting-memo-content', event.target.value)
+        })
       },
       setMovePageConfirm () {
         const formWarningMessage = "登録・保存していない入力内容は破棄されますがよろしいですか？"
@@ -100,6 +103,10 @@ document.addEventListener('turbolinks:load', () => {
       showMemoForm () {
         $('#memo-form').show()
         $('#memo-form').modal('show')
+        const inputtingMemoContent = localStorage.getItem('inputting-memo-content')
+        if (inputtingMemoContent) {
+          this.memoContent = inputtingMemoContent
+        }
       },
       setupTimepicker () {
         $('.timepicker').datetimepicker({
@@ -181,6 +188,7 @@ document.addEventListener('turbolinks:load', () => {
             $('.timepicker').datetimepicker('clear')
             $('#memo-form').find('select.form-control').val('')
             this.memoContent = ''
+            localStorage.removeItem('inputting-memo-content')
           })
           .catch(error => {
             this.showToast({isError: true, message: (error?.response?.data?.message || `書いた内容をコピーしてから、リロードして、再度実行してください：${error.message}`)})
