@@ -42,7 +42,7 @@ class GeneralController < ApplicationController
       @date_term = month.beginning_of_month..month.end_of_month
     else
       today = Time.zone.today
-      @date_term = 6.days.ago(today)..today
+      @date_term = today.beginning_of_month..today.end_of_month
     end
 
     if @date_term.count > 100

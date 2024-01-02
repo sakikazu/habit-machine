@@ -7,7 +7,6 @@ import TaskDiary from 'components/diaries/TaskDiary'
 import Toast from 'components/shared/toast'
 import Modal from 'components/shared/Modal'
 
-console.log('day_page.js')
 document.addEventListener('turbolinks:load', () => {
   console.log('day_page.js: turbolinks:load')
   const vm = new Vue({
@@ -21,6 +20,7 @@ document.addEventListener('turbolinks:load', () => {
     },
     data: {
       targetDate: null,
+      targetDateSettingTimeout: null,
       habit_records: [],
       diariesWithOpsions: [],
       diary_links_list: null,
@@ -51,6 +51,21 @@ document.addEventListener('turbolinks:load', () => {
         this.shortcutOfPagingLink('prev-day', 'next-day') // ショートカットで日にち移動
         this.setMovePageConfirm()
         this.setMemoForm()
+        this.setDateField()
+      },
+      setDateField() {
+        const dayPageDateLabel = document.getElementById('day-page-date-label')
+        const dayPageDateField = document.getElementById('day-page-date-field')
+        dayPageDateLabel.addEventListener('click', () => {
+          dayPageDateField.parentElement.style.display = 'block'
+        })
+        // blurにすればゆっくり入力はできるが
+        dayPageDateField.addEventListener('change', (event) => {
+          clearTimeout(this.targetDateSettingTimeout)
+          this.targetDateSettingTimeout = setTimeout(() => {
+            location.href = `/day/${event.target.value}`
+          }, 700)
+        })
       },
       setMemoForm () {
         $('#memo-form.modal').on('shown.bs.modal', () => {
