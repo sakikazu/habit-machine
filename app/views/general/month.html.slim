@@ -1,21 +1,22 @@
-javascript:
-  document.addEventListener('turbolinks:load', () => {
-    let targetDateSettingTimeout
-    const monthPageDateField = document.getElementById('month-page-date')
-    if (monthPageDateField) {
-      monthPageDateField.addEventListener('change', (event) => {
-        clearTimeout(targetDateSettingTimeout)
-        this.targetDateSettingTimeout = setTimeout(() => {
-          location.href = `/month/${event.target.value}`
-        }, 700)
+- content_for :addjs
+  javascript:
+    $(function() {
+      let targetDateSettingTimeout
+      const monthPageDateField = document.getElementById('month-page-date')
+      if (monthPageDateField) {
+        monthPageDateField.addEventListener('change', (event) => {
+          clearTimeout(targetDateSettingTimeout)
+          this.targetDateSettingTimeout = setTimeout(() => {
+            location.href = `/month/${event.target.value}`
+          }, 700)
 
-      })
-    }
-  })
+        })
+      }
+    })
 
 .d-flex.justify-content-between.mt10.mb15
   = link_to fa_icon('caret-left', class: 'fa-lg', style: 'padding:0.6em 0.1em'), month_path(month: (@target_month - 1.month).to_s(:ym)), class: "btn btn-light", data: { turbolinks: false }
-  = month_field_tag 'month-page-date', @target_month.to_s(:ym)
+  = month_field_tag 'month-page-date', @target_month.to_s(:ym), id: 'month-page-date'
   = form_tag this_month_path, method: :get, class: 'form-inline mr5 ml5' do
     .from_date.mr-3
       span.mr-2 From:

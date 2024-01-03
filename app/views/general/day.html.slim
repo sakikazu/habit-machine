@@ -41,7 +41,7 @@
     .dayContentHeaderMiddle
       h3.text-secondary.font-weight-bold
         #day-page-date-label(style="border-bottom: 2px solid deepskyblue; padding-bottom: 3px") = dispdate(@date, true)
-        div.mt-2(style="display: none") = date_field_tag 'day-page-date-field', @date
+        div.mt-2(style="display: none") = date_field_tag 'day-page-date-field', @date, id: 'day-page-date-field'
       .dayContentHeaderMiddleBottom
         .dayContentHeaderMiddleLink = link_to fa_icon('home', class: "fa-2x"), root_path
         = append_memo_container
