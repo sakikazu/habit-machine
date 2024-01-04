@@ -1,5 +1,8 @@
+- content_for :addjs_in_head
+  = javascript_pack_tag 'child_history_form', 'data-turbolinks-track': 'reload'
+
 - url = history.persisted? ? child_child_history_path(history.source, history) : child_child_histories_path(history.source)
-= form_with model: history, url: url, class: 'form' do |f|
+= form_with model: history, url: url, class: 'form', id: 'child-history-form', data: { history_id: history.id.to_s } do |f|
   - if history && history.errors.any?
     .alert.alert-danger
       ul
@@ -13,7 +16,7 @@
       = f.check_box :about_date, class: 'form-check-input', id: 'about_date'
       = f.label :about_date, 'だいたい', class: 'form-check-label', for: 'about_date'
   .form-group
-    = f.text_field :title, class: 'form-control', placeholder: 'タイトル', required: true
+    = f.text_field :title, id: 'title-field', class: 'form-control', placeholder: 'タイトル', required: true
   .form-group
     = f.text_area :content, id: 'content-field', class: 'form-control', placeholder: 'この時のパパ、ママの想いも書いてみて', rows: 5
   .form-group.mb-4
@@ -32,4 +35,3 @@
   .form-group
     = f.submit '送信', class: 'btn btn-primary'
 
-= javascript_tag "$('#content-field').markdownEasily()"
