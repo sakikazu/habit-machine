@@ -51,21 +51,12 @@ document.addEventListener('turbolinks:load', () => {
         this.shortcutOfPagingLink('prev-day', 'next-day') // ショートカットで日にち移動
         this.setMovePageConfirm()
         this.setMemoForm()
-        this.setDateField()
       },
-      setDateField() {
-        const dayPageDateLabel = document.getElementById('day-page-date-label')
+      moveSpecifiedDatePage (event) {
+        event.preventDefault()
+
         const dayPageDateField = document.getElementById('day-page-date-field')
-        dayPageDateLabel.addEventListener('click', () => {
-          dayPageDateField.parentElement.style.display = 'block'
-        })
-        // blurにすればゆっくり入力はできるが
-        dayPageDateField.addEventListener('change', (event) => {
-          clearTimeout(this.targetDateSettingTimeout)
-          this.targetDateSettingTimeout = setTimeout(() => {
-            location.href = `/day/${event.target.value}`
-          }, 700)
-        })
+        location.href = `/day/${dayPageDateField.value}`
       },
       setMemoForm () {
         $('#memo-form.modal').on('shown.bs.modal', () => {
@@ -75,6 +66,7 @@ document.addEventListener('turbolinks:load', () => {
           localStorage.setItem('inputting-memo-content', event.target.value)
         })
       },
+      // LocalStorageによる一時保存があるので、下記対策の重要性は低くはなる
       setMovePageConfirm () {
         const formWarningMessage = "登録・保存していない入力内容は破棄されますがよろしいですか？"
 

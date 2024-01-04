@@ -1,6 +1,7 @@
 - content_for :addjs
   javascript:
     $(function() {
+      // こちらもsubmitボタンで年月移動できるようにしたいが、使用頻度が低く、やるならFrom-ToのUI全体的に変更したいので、そのタイミングでやる
       let targetDateSettingTimeout
       const monthPageDateField = document.getElementById('month-page-date')
       if (monthPageDateField) {

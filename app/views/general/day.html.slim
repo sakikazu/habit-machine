@@ -40,8 +40,10 @@
     = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
     .dayContentHeaderMiddle
       h3.text-secondary.font-weight-bold
-        #day-page-date-label(style="border-bottom: 2px solid deepskyblue; padding-bottom: 3px") = dispdate(@date, true)
-        div.mt-2(style="display: none") = date_field_tag 'day-page-date-field', @date, id: 'day-page-date-field'
+        div(@click="$refs.selectingDateForm.style.display = 'block'" style="border-bottom: 2px solid deepskyblue; padding-bottom: 3px") = dispdate(@date, true)
+        form.form.form-inline.mt-2(style="display: none" @submit="moveSpecifiedDatePage" ref="selectingDateForm")
+          = date_field_tag 'day-page-date-field', @date, id: 'day-page-date-field', class: 'form-control'
+          input(type="submit" class="btn btn-light" value="移動")
       .dayContentHeaderMiddleBottom
         .dayContentHeaderMiddleLink = link_to fa_icon('home', class: "fa-2x"), root_path
         = append_memo_container
