@@ -19,11 +19,11 @@
         input(type="hidden" name="[diary]record_at" :value="targetDate" v-else)
 
       .form-group
-        input.form-control(type="text" name="[diary]title" placeholder="タイトル（未入力可）" ref="diaryTitle" :value="diary.title" :tabindex="tabidxBase + 1")
+        input.form-control(type="text" name="[diary]title" placeholder="タイトル（未入力可）" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
 
       a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
       .form-group
-        textarea.form-control(name="[diary]content" ref="markdownable_textarea" rows="20" placeholder="日記の内容" :value="diary.content" :tabindex="tabidxBase + 2")
+        textarea.form-control(name="[diary]content" ref="markdownable_textarea" rows="20" placeholder="日記の内容" v-model="diary.content" :tabindex="tabidxBase + 2")
       .form-group
         label
           span.mr-1 タグ
@@ -79,6 +79,7 @@
 <script>
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
+import { deleteKeysWithPrefix } from 'local_storage_manager.js'
 
 export default {
   inheritAttrs: false,
@@ -104,9 +105,28 @@ export default {
       tabidxBase: Math.floor(Math.random() * 1000),
     }
   },
+  watch: {
+    'diary.title': function(newVal, oldVal) {
+      // APIレスポンスからtitleに値がセットされた時もwatchが検知するため、ユーザーが入力時のみsetItemを行うように、oldValによって初回セット時を除外するようにしている
+      if (oldVal !== undefined) {
+        localStorage.setItem(this.lsTitleKey, newVal)
+      }
+    },
+    'diary.content': function(newVal, oldVal) {
+      if (oldVal !== undefined) {
+        localStorage.setItem(this.lsContentKey, newVal)
+      }
+    },
+  },
   computed: {
     persisted () {
       return !!this.diary?.id
+    },
+    lsTitleKey () {
+      return this.persisted ? `diary-title-${this.diary.id}` : 'diary-title-new'
+    },
+    lsContentKey () {
+      return this.persisted ? `diary-content-${this.diary.id}` : 'diary-content-new'
     },
   },
   // NOTE: 親でv-ifで表示可否を切り替えているからか、編集キャンセルして再編集時もcreatedが走る。この表示切り替え時に何かpropsで渡してwatchしても発動しないので、フォーム表示時の処理はcreated, mountedに書くべき
@@ -150,6 +170,24 @@ export default {
       this.latest_tags = resData.latest_tags
       this.tagnames = resData.tagnames
       $(this.$refs.taglist).autocompleteMultiple(this.tagnames);
+      this.setFromLocalStorage()
+    },
+    setFromLocalStorage () {
+      const lsTitle = localStorage.getItem(this.lsTitleKey)
+      const lsContent = localStorage.getItem(this.lsContentKey)
+
+      if (this.persisted && (lsTitle || lsContent)) {
+        if (!confirm('未保存のデータがあります。復元しますか？')) {
+          return
+        }
+      }
+
+      if (lsTitle) {
+        this.diary.title = lsTitle
+      }
+      if (lsContent) {
+        this.diary.content = lsContent
+      }
     },
     setCheckUnsavedEvent () {
       $(this.$refs.form).find('input, textarea, select').on('change', () => {
@@ -165,6 +203,7 @@ export default {
         HmAxios.patch(`/diaries/${this.diaryId}.json`, formObject)
           .then(res => {
             this.$emit('submitted', this.formKey, res.data.diary)
+            deleteKeysWithPrefix('diary-')
             if (res.data.changed_record_at) {
               this.$emit('changed_record_at', res.data.changed_record_at)
             }
@@ -176,6 +215,7 @@ export default {
         HmAxios.post(`/diaries.json`, formObject)
           .then(res => {
             this.$emit('submitted', this.formKey, res.data)
+            deleteKeysWithPrefix('diary-')
           })
           .catch(error => {
             alert(error?.response?.data?.message || error.message)
