@@ -19,4 +19,8 @@ class Family < ApplicationRecord
   def name_with_suffix
     "#{name}家"
   end
+
+  def dispname
+    name_with_suffix
+  end
 end

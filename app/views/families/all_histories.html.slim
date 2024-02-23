@@ -1,0 +1,31 @@
+.row.justify-content-center
+  .col-sm(style="max-width: 500px")
+    = link_to '家族ページへ', family_path, class: 'btn btn-light'
+    .page-header
+      h2 みんなの記録一覧
+    - if @histories.blank?
+      p
+        | 記録はありません。
+    - else
+      = paginate @histories, window: 3, outer_window: 2
+      - @histories.each do |history|
+        .card.mb-3(id="history-#{history.target_date.to_s}")
+          .card-header
+            .row.justify-content-between
+              .col-7
+                - if history.about_date
+                  span.mr-1.text-muted = "(だいたい)"
+                = dispdate(history.target_date, true)
+                span.badge.badge-pill.badge-warning.ml-3.p-1 = "#{history.source.dispname}の記録"
+              .col-5.m-auto.text-right
+                = link_to fa_icon('external-link', text: "#{history.source.dispname}のページ"), each_user_history_path(history), target: '_blank'
+          .card-body
+            h5.card-title = history.title
+            - if history.content.present?
+              .card-text.text-muted.markdown = markdown(history.content)
+          - if history.data.present?
+            ul.list-group.list-group-flush
+              - history.data.each do |key, value|
+                li.list-group-item.text-muted = "#{History.human_attribute_name("data.#{key}")}: #{value}"
+          = link_to image_tag(history.image.url(:small), class: 'card-img-bottom'), history.image.url(:large) if history.image?
+      = paginate @histories, window: 3, outer_window: 2

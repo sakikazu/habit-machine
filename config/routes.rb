@@ -164,6 +164,9 @@ Rails.application.routes.draw do
   end
 
   resource :family, only: %i[show edit update] do
+    member do
+      get :all_histories
+    end
     resources :family_histories, path: :histories, only: [:create, :edit, :update, :destroy] do
       collection do
         get 'y/:year', action: :year, as: :year

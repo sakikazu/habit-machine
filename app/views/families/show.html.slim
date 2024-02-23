@@ -34,3 +34,5 @@
         span.badge.badge-secondary.ml-2 = @histories_count_hash[:family]
       .edit
         = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_family_path
+    hr.mb-3
+    = link_to 'みんなの記録一覧', all_histories_family_path, class: 'btn btn-light btn-block'

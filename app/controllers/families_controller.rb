@@ -16,6 +16,11 @@ class FamiliesController < ApplicationController
     redirect_to family_path, notice: '更新しました'
   end
 
+  # Family#historiesのことではなく、Family内のすべてのユーザーのHistory
+  def all_histories
+    @histories = current_family.all_histories.newer.page(params[:page]).per(50)
+  end
+
   private
 
   def family_params

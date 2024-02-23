@@ -43,4 +43,8 @@ class Child < ApplicationRecord
     month = (diff - year * 365) / 30
     "#{year}歳#{month}ヶ月"
   end
+
+  def dispname
+    name
+  end
 end
