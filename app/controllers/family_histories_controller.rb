@@ -5,7 +5,7 @@ class FamilyHistoriesController < ApplicationController
   before_action :set_view_setting, only: %i(index month year)
 
   def index
-    @histories = current_family.histories.newer.page(params[:page]).per(50)
+    @histories = current_family.histories.includes(:author).newer.page(params[:page]).per(50)
   end
 
   def month

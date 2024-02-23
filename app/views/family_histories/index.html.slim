@@ -24,6 +24,7 @@
                 - if history.about_date
                   span.mr-1.text-muted = "(だいたい)"
                 = dispdate(history.target_date, true)
+                span.text-muted.ml-3 = "by #{history.author.dispname}"
               .col-5.m-auto.text-right
                 = link_to fa_icon('external-link', text: "年月のページ"), each_user_history_path(history), target: '_blank'
           .card-body
