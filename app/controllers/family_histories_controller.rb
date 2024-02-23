@@ -2,9 +2,12 @@ class FamilyHistoriesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_content_title
   before_action :set_history, only: [:edit, :update, :destroy]
-  before_action :set_view_setting, only: %i(month year)
+  before_action :set_view_setting, only: %i(index month year)
 
-  # TODO: 家族Historyは、year month分けないかな・・。paginateして普通に一覧か
+  def index
+    @histories = current_family.histories.newer.page(params[:page]).per(50)
+  end
+
   def month
     @month = (Time.local(params[:year], params[:month]) rescue Time.current).to_date
     @histories = current_family.histories.includes(:author).where(target_date: [@month.beginning_of_month..@month.end_of_month]).order(target_date: :asc)

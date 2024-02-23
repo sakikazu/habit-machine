@@ -18,7 +18,7 @@ class FamiliesController < ApplicationController
 
   # Family#historiesのことではなく、Family内のすべてのユーザーのHistory
   def all_histories
-    @histories = current_family.all_histories.newer.page(params[:page]).per(50)
+    @histories = current_family.all_histories.includes(:source).newer.page(params[:page]).per(50)
   end
 
   private

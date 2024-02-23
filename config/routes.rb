@@ -167,7 +167,7 @@ Rails.application.routes.draw do
     member do
       get :all_histories
     end
-    resources :family_histories, path: :histories, only: [:create, :edit, :update, :destroy] do
+    resources :family_histories, path: :histories, only: [:index, :create, :edit, :update, :destroy] do
       collection do
         get 'y/:year', action: :year, as: :year
         get 'm/:year/:month', action: :month, as: :month

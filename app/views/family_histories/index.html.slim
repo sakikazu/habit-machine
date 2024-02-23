@@ -1,12 +1,7 @@
 - content_for :family_header_actions do
-  h5
-    = "#{@month.year}年#{@month.month}月"
   .row.justify-content-between
     .col
-      = link_to '<< 前の月', month_family_family_histories_path(*History.month_path_params(nil, @month - 1.month)), class: 'prev-day text-light'
-      span.mr-3.ml-3
-        = link_to fa_icon('calendar', text: '本年'), year_family_family_histories_path(@month.year), class: 'text-light'
-      = link_to '次の月 >>', month_family_family_histories_path(*History.month_path_params(nil, @month + 1.month)), class: 'next-day text-light'
+      = link_to "今月（#{Time.now.year}年#{Time.now.month}月）", month_family_family_histories_path(Time.now.year, Time.now.month), class: 'prev-day text-light'
 
 .row.justify-content-center.sticky-top.bg-gradient.text-light.mb-5(style="background-color: #1d4e89; z-index:100;")
   .col-sm(style="max-width: 500px")
@@ -14,24 +9,23 @@
 
 .row.justify-content-center
   .col-sm(style="max-width: 500px")
-    = render partial: 'family_histories/form', locals: { history: @history }
-
-    = link_to fa_icon('list', text: '一覧で見る'), family_family_histories_path, class: 'btn btn-light btn-block mb-5'
+    .page-header
+      h2 記録一覧
     - if @histories.blank?
       p
-        | 今月の記録はありません。
+        | 記録はありません。
     - else
+      = paginate @histories, window: 3, outer_window: 2
       - @histories.each do |history|
         .card.mb-3(id="history-#{history.target_date.to_s}")
           .card-header
             .row.justify-content-between
-              .col-10
+              .col-7
                 - if history.about_date
                   span.mr-1.text-muted = "(だいたい)"
                 = dispdate(history.target_date, true)
-                span.text-muted.ml-3 = "by #{history.author.dispname}"
-              .col-1.m-auto
-                = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_family_family_history_path(history)
+              .col-5.m-auto.text-right
+                = link_to fa_icon('external-link', text: "年月のページ"), each_user_history_path(history), target: '_blank'
           .card-body
             h5.card-title = history.title
             - if history.content.present?
@@ -41,3 +35,4 @@
               - history.data.each do |key, value|
                 li.list-group-item.text-muted = "#{History.human_attribute_name("data.#{key}")}: #{value}"
           = link_to image_tag(history.image.url(:small), class: 'card-img-bottom'), history.image.url(:large) if history.image?
+      = paginate @histories, window: 3, outer_window: 2
