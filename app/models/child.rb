@@ -18,6 +18,7 @@
 #
 #  fk_rails_...  (family_id => families.id)
 #
+# TODO: UserのSTIにした方が良かった？変更となれば検討事項が多い
 class Child < ApplicationRecord
   belongs_to :family
   has_many :histories, as: :source

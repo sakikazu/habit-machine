@@ -80,4 +80,9 @@ class User < ApplicationRecord
   def fullname
     "#{self.familyname}#{self.givenname}"
   end
+
+  # TODO: Userのプロフィール画像がHistoryから取得されるのはUIとデータ取得効率的に良くない
+  def profile_image
+    histories.where(as_profile_image: true).order(target_date: :desc).first&.image
+  end
 end

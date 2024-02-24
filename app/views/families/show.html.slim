@@ -21,9 +21,14 @@
     p.text-muted.font-weight-bold
       = fa_icon 'user', text: '他の家族'
     - @users.each do |user|
-      h4.mb-3
-        = link_to user.dispname, month_user_user_histories_path(user, Time.now.year, Time.now.month)
-        span.badge.badge-secondary.ml-2 = @histories_count_hash[:users][user.id]
+      .d-flex.justify-content-between.mb-2
+        .d-flex.flex-grow-1
+          - if user.profile_image.present?
+            = image_tag user.profile_image.url(:small), class: 'rounded-circle', width: '75px', height: '75px'
+          .ml-3.mb-3
+            h4
+              = link_to user.dispname, month_user_user_histories_path(user, Time.now.year, Time.now.month)
+              span.badge.badge-secondary.ml-2 = @histories_count_hash[:users][user.id]
       hr.mb-3
 
     p.text-muted.font-weight-bold
