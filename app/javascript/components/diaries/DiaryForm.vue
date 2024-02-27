@@ -28,7 +28,7 @@
         label
           span.mr-1 タグ
           small.desc カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要
-        input.form-control(type="text" name="[diary]tag_list" ref="taglist" placeholder="矢印キーを押下すれば既存のタグリストが表示されます" :value="diary.tag_list" :tabindex="tabidxBase + 3")
+        input.form-control(type="text" name="[diary]tag_list" ref="taglist" placeholder="矢印キーを押下すれば既存のタグリストが表示されます" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
       .form-group
         | ピン留めタグ 
         span.badge.mr5.cursor-pointer(v-for="tag in pinned_tags" @click="toggleTag(tag.name)" :style="tag.color_style")
@@ -169,8 +169,11 @@ export default {
       this.pinned_tags = resData.pinned_tags
       this.latest_tags = resData.latest_tags
       this.tagnames = resData.tagnames
-      $(this.$refs.taglist).autocompleteMultiple(this.tagnames);
+      $(this.$refs.taglist).autocompleteMultiple(this.tagnames, this.setTagList);
       this.setFromLocalStorage()
+    },
+    setTagList (val) {
+      this.diary.tag_list = val
     },
     setFromLocalStorage () {
       const lsTitle = localStorage.getItem(this.lsTitleKey)
@@ -236,20 +239,18 @@ export default {
     },
     // Diaryのフォームのタグフィールドに、選択したタグ名をトグルで追加/削除する
     toggleTag (tagname) {
-      let $tag_input = $(this.$refs.taglist)
-      let inputted_tags_string = $tag_input.val();
-      if (inputted_tags_string.length == 0) {
-        $tag_input.val(tagname);
+      if (this.diary.tag_list.length == 0) {
+        this.diary.tag_list = tagname;
         return
       }
-      let inputted_tags = inputted_tags_string.split(/\s*,\s*/);
+      let inputted_tags = this.diary.tag_list.split(/\s*,\s*/);
       let find_idx = inputted_tags.indexOf(tagname);
       if (find_idx > -1) {
         inputted_tags.splice(find_idx, 1);
       } else {
         inputted_tags.push(tagname);
       }
-      $tag_input.val(inputted_tags.join(', '));
+      this.diary.tag_list = inputted_tags.join(', ');
     },
     cancelEdit () {
       // todo メッセージ、共通化する？
