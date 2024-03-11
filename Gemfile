@@ -20,9 +20,9 @@ gem "rails_autolink"
 gem 'kaminari'
 gem 'acts-as-taggable-on', '~> 6.0'
 gem 'rest-client'
-
 gem 'dotenv-rails'
-
+# used by ActiveStorage
+gem "image_processing", ">= 1.2"
 # todo deleteしたいがform_withより楽だなぁ
 gem 'simple_form'
 gem 'font-awesome-rails'
