@@ -4,7 +4,7 @@ require_relative "#{Rails.root}/config/environment"
 require 'rexml/document'
 require 'fileutils'
 require 'tty-prompt'
-require 'byebug'
+# require 'byebug'
 
 class EnexParser
   def initialize
