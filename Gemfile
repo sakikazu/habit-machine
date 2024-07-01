@@ -83,6 +83,9 @@ gem 'sassc', '2.1.0'
 
 gem 'webpacker', '~> 5.x'
 
+# enexのスクリプトに使用
+gem 'tty-prompt'
+
 group :development do
   gem 'listen'
   gem 'slim-rails'                # generator時にslim対応可能になる
@@ -104,9 +107,6 @@ group :development do
 
   # better_errorsの画面上にirb/pry(PERL)を表示する
   gem 'binding_of_caller'
-
-  # enexのスクリプトに使用
-  gem 'tty-prompt'
 end
 
 group :development, :test do
