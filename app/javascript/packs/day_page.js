@@ -93,7 +93,6 @@ document.addEventListener('turbolinks:load', () => {
         })
       },
       showMemoForm () {
-        $('#memo-form').show()
         $('#memo-form').modal('show')
         const inputtingMemoContent = localStorage.getItem('inputting-memo-content')
         if (inputtingMemoContent) {

@@ -106,7 +106,6 @@ export default {
       justify-content: space-between
       margin-top: 40px
     .MemberModal_button
-      &.-back
       &.-accept
         margin-left: auto
 

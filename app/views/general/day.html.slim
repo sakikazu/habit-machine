@@ -15,7 +15,7 @@
     .append-memo-container
       a.btn.btn-sm.btn-outline-danger(@click="showMemoForm")
         i.fa.fa-plus &nbsp;メモ
-      #memo-form.modal.fade[tabindex="-1" style="display:none"]
+      #memo-form.modal.fade[tabindex="-1"]
         .modal-dialog
           .modal-content
             form.form.form-inline(ref="memoForm" @submit="submitAppendingMemo")
