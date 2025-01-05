@@ -18,15 +18,17 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/sakikazu15/habit-machine#readme",
   "dependencies": {
-    "@rails/webpacker": "5.4.0",
+    "@rails/webpacker": "5.4.3",
     "axios": "^0.21.1",
+    "babel-loader": "^8.1.0",
+    "babel-preset-env": "^1.7.0",
     "glob-parent": "^6.0.2",
     "node-forge": "^1.3.1",
-    "node-sass": "4.14.1",
     "nth-check": "^2.1.1",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
-    "sass-loader": "7.3.1",
+    "sass": "^1.83.1",
+    "sass-loader": "10.1.1",
     "scss-tokenizer": "^0.4.3",
     "tar": "^6.1.13",
     "trim-newlines": "^4.0.2",
@@ -34,9 +36,11 @@
     "vue-loader": "^15.9.2",
     "vue-template-compiler": "^2.6.11",
     "vue-turbolinks": "^2.1.0",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^2.24.3",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^3.3.12"
   },
   "devDependencies": {
-    "webpack-dev-server": "^3.11.2"
+    "webpack-dev-server": "^3"
   }
 }
