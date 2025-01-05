@@ -29,9 +29,12 @@ set :linked_dirs, %w{log tmp/cache tmp/sockets tmp/pids bundle public/upload}
 # NOTE: for capistrano-bundler config file (see: https://github.com/capistrano/bundler)
 append :linked_dirs, '.bundle'
 
-# Default value for default_env is {}
-# NOTE: asdf global 設定にしたrubyを使わない場合は、これだとダメかも
-set :default_env, { path: "/home/ubuntu/.asdf/shims:$PATH" }
+set :default_env, {
+  # NOTE: asdf global 設定にしたrubyを使わない場合は、これだとダメかも
+  path: "/home/ubuntu/.asdf/shims:$PATH",
+  # NOTE: Node.jsとOpenSSLのバージョンの互換性が合わないために必要になっている環境変数
+  'NODE_OPTIONS' => '--openssl-legacy-provider'
+}
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
