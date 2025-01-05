@@ -38,7 +38,10 @@ gem 'bcrypt_pbkdf'
 
 gem 'faker'
 
-gem 'bootstrap', '>= 4.2', '< 5.0' # twitter bootstrap4
+gem 'bootstrap', '~> 4.6', '>= 4.6.2.1' # twitter bootstrap4
+# 多分bootstrapに必要
+gem 'sassc-rails'
+
 # todo 削除したいが、UIが結構良いので、できるだけ使い続ける
 # TODO: moment.jsも含め、JSファイルサイズが大きいので、TimePickerだけができるライブラリに置き換えたい
 # https://github.com/Bialogs/bootstrap4-datetime-picker-rails
@@ -49,8 +52,6 @@ gem 'uglifier', '>= 1.3.0'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', '~> 5.0'
-
   # See https://github.com/sstephenson/execjs#readme for more supported runtimes
   # gem 'therubyracer', :platforms => :ruby
 end
