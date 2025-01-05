@@ -1,4 +1,3 @@
-# TODO: rails6.1以上にすると、font-awesome-railsなど対応していないgemが出てくるのでその調査の時間があるときにする
 source 'https://rubygems.org'
 
 ruby '2.7.7'
