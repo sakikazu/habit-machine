@@ -23,9 +23,9 @@ html[lang="ja"]
           navigator.serviceWorker.register('/sw.js')
             .then(reg => {
               console.log('Service worker registered.', reg)
-              // todo: これは何？
-              if (typeof registration.update == 'function') {
-                registration.update();
+              // ServiceWorkerの更新
+              if (typeof reg.update == 'function') {
+                reg.update();
               }
             })
             .catch(error => {
