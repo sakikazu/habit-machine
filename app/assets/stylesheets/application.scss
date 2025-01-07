@@ -264,13 +264,45 @@ td {
  markdown
 **********************************************/
 .markdown {
-  h1 {
-    background: #dfefff;
-    box-shadow: 0px 0px 0px 5px #dfefff;
-    border: dashed 1px #96c2fe;
-    padding: 0.2em 0.5em;
-    color: #454545;
+  /* h1, h2, h3は、生成AIのClaudeに提案してもらったもの */
+  h1, h2, h3 {
+    font-family: sans-serif;
+    line-height: 1.5;
   }
+
+  h1 {
+    font-size: 1.8rem;
+    color: #333;
+    margin: 2.5rem 0 1.5rem;
+    padding: 0.6rem 1.2rem;
+    background: #f0f7ff;
+    border-left: 6px solid #4285f4;
+    border-bottom: 2px solid #4285f4;
+    border-radius: 3px;
+    box-shadow: 0 2px 4px rgba(66, 133, 244, 0.1);
+  }
+
+  h2 {
+    font-size: 1.6rem;
+    color: #444;
+    margin: 2rem 0 1.2rem;
+    padding: 0.5rem 1rem 0.5rem 1.2rem;
+    background: linear-gradient(to right, #f7f9fc, transparent);
+    border-left: 4px solid #4285f4;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+    color: #555;
+    margin: 1.8rem 0 1rem;
+    padding: 0.4rem 0 0.4rem 1rem;
+    border-left: 3px solid #4285f4;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* メイン日記の「メモ追加欄」 */
   h1.action_memo_in_md {
     background: unset;
     box-shadow: unset;
@@ -280,33 +312,15 @@ td {
     color: #ccc;
     margin-top: -20px;
     margin-bottom: 20px;
-    padding-top: 35px;
+    padding: 35px 0 0;
   }
-  h2 {
-    border-bottom: 3px solid #cce4ff;
-    position: relative;
-    font-weight: bold;
-  }
-  h2:after {
-    position: absolute;
-    content: " ";
-    display: block;
-    border-bottom: solid 3px #5472cd;
-    bottom: -3px;
-    width: 20%;
-  }
-  h3 {
-    font-weight: bold;
-  }
-  h2, h3, h4, h5 {
+
+  h4, h5 {
     margin-top: -15px;
     margin-bottom: 15px;
     padding-top: 25px;
   }
 
-  h1 { font-size: 1.8em; }
-  h2 { font-size: 1.6em; }
-  h3 { font-size: 1.3em; }
   h4 { font-size: 1.3em; }
   h5 { font-size: 1.2em; }
 
