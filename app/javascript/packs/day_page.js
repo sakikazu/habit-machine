@@ -33,6 +33,8 @@ document.addEventListener('turbolinks:load', () => {
       toastMessage: '',
       pinnedDiaries: [],
       modalableDiaryId: null,
+      // mobileでは「本日の記録」の未記入のものはデフォルト非表示にしているので、それを表示するためのフラグ
+      openRecordContents: false,
     },
     computed: {
       // ページ内のすべてのフォームからデータ変更をチェック

@@ -1,5 +1,5 @@
 <template lang="pug">
-.card.mb15
+.card.mb15(v-if="!mobile || persisted || openRecordContents")
   h5.card-header.p-2(:class="{ 'text-dark bg-warning': habit.for_family }")
     .habit-title
       a(:href="`/habits/${habit.id}`")
@@ -46,6 +46,14 @@ export default {
     targetDate: {
       type: String,
       required: true,
+    },
+    mobile: {
+      type: Boolean,
+      required: true
+    },
+    openRecordContents: {
+      type: Boolean,
+      required: true
     },
   },
   data () {

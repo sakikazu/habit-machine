@@ -53,10 +53,13 @@
   .row.justify-content-center
     .sectionHabitRecords.col-md-2
       .page-header
-        h4 本日の記録
+        h4.d-flex.justify-content-between
+          | 本日の記録
+          - if browser.device.mobile?
+            a.btn.btn-sm.btn-light(v-if="!openRecordContents" @click="openRecordContents = true") すべて表示
       p(v-if="habit_records.length == 0") 習慣が登録されていません。
       .habit-records(v-else)
-        habit-record(v-for="habit_record in habit_records" :habit="habit_record.habit" :record="habit_record.record" target-date="#{@date}" :key="habit_record.habit.id")
+        habit-record(v-for="habit_record in habit_records" :habit="habit_record.habit" :record="habit_record.record" target-date="#{@date}" :mobile="#{browser.device.mobile?}" :open-record-contents="openRecordContents" :key="habit_record.habit.id")
 
     / NOTE: .overflow-autoを付加すると、子要素の幅が限界を超えた時に、画面全体ではなく、この要素に対してスクロールバーが表示される
     / 付加しないと、画面全体にスクロールバーが表示される
