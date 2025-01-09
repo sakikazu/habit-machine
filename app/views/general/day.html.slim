@@ -11,44 +11,62 @@
         @submitted="reflectPinnedDiaries"
       )
 
-  - append_memo_container = capture do
-    .append-memo-container
-      a.btn.btn-sm.btn-outline-danger(@click="showMemoForm")
-        i.fa.fa-plus &nbsp;メモ
-      #memo-form.modal.fade[tabindex="-1"]
-        .modal-dialog
+  / 「日記にメモ」フォーム
+  - append_memo_form = capture do
+    #memo-form.modal.fade[tabindex="-1"]
+      .modal-dialog
+        form.form.form-inline(ref="memoForm" @submit="submitAppendingMemo")
           .modal-content
-            form.form.form-inline(ref="memoForm" @submit="submitAppendingMemo")
-              .modal-body
-                .form-row.mb-2
-                  .col-6.timepicker.input-group[data-target-input="nearest"]
-                    .input-group-prepend
-                      .input-group-text[data-target='.timepicker' data-toggle='datetimepicker']
-                        = fa_icon 'clock-o', class: 'fa-lg'
-                    input.form-control.datetimepicker-input(type="text" name="[diary]time_memo" data-target=".timepicker")
-                  .col-4
-                    select.form-control.w100(name="[diary]label_memo")
-                      option(v-for="cate in memoCategories" :value="cate" v-text="cate")
-                div
-                  textarea.form-control.first-focus.w100(name="[diary]memo" v-model="memoContent" ref="memoContentField")
-                input(type="hidden" name="[diary]record_at" value="#{@date}")
-              .modal-footer
-                button.btn.btn-primary(type="submit") メモ追加
-
+            .modal-header
+              p.mb-0.text-secondary
+                = fa_icon 'exclamation-circle', class: 'mr-1'
+                | メインの日記にメモを追加（日記がなければ作成されます）
+            .modal-body
+              .form-row.mb-2
+                .col-6.timepicker.input-group[data-target-input="nearest"]
+                  .input-group-prepend
+                    .input-group-text[data-target='.timepicker' data-toggle='datetimepicker']
+                      = fa_icon 'clock-o', class: 'fa-lg'
+                  input.form-control.datetimepicker-input(type="text" name="[diary]time_memo" data-target=".timepicker")
+                .col-4
+                  select.form-control.w100(name="[diary]label_memo")
+                    option(v-for="cate in memoCategories" :value="cate" v-text="cate")
+              div
+                textarea.form-control.first-focus.w100(name="[diary]memo" v-model="memoContent" ref="memoContentField")
+              input(type="hidden" name="[diary]record_at" value="#{@date}")
+            .modal-footer
+              button.btn.btn-primary(type="submit") メモ追加
 
   .dayContentHeader
-    = link_to fa_stacked_icon("angle-left", base: "square-o", class: "fa-2x"), day_path(@date - 1), class: 'prev-day'
-    .dayContentHeaderMiddle
-      h3.text-secondary.font-weight-bold
-        div(@click="$refs.selectingDateForm.style.display = 'block'" style="border-bottom: 2px solid deepskyblue; padding-bottom: 3px") = dispdate(@date, true)
+    .nav-container
+      = link_to day_path(@date - 1), class: 'nav-arrow' do
+        svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+          polyline points="15 18 9 12 15 6"
+      div(style="width:100%")
+        button.date-selector(@click="$refs.selectingDateForm.style.display = 'block'")
+          = "#{dispdate(@date, true)}"
         form.form.form-inline.mt-2(style="display: none" @submit="moveSpecifiedDatePage" ref="selectingDateForm")
           = date_field_tag 'day-page-date-field', @date, id: 'day-page-date-field', class: 'form-control'
           input(type="submit" class="btn btn-light" value="移動")
-      .dayContentHeaderMiddleBottom
-        .dayContentHeaderMiddleLink = link_to fa_icon('home', class: "fa-2x"), root_path
-        = append_memo_container
-        .dayContentHeaderMiddleLink = link_to fa_icon('calendar', class: "fa-2x"), month_path(month: @date.to_s(:ym))
-    = link_to fa_stacked_icon("angle-right", base: "square-o", class: "fa-2x"), day_path(@date + 1), class: 'next-day'
+      = link_to day_path(@date + 1), class: 'nav-arrow' do
+        svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+          polyline points="9 18 15 12 9 6"
+
+    = append_memo_form
+    .action-buttons
+      = link_to root_path, class: 'action-button btn-today' do
+        span.button-icon
+          | 🏠
+        | 今日
+      button.action-button.btn-memo(@click="showMemoForm")
+        span.button-icon
+          | 📝
+        | 日記にメモ
+      = link_to month_path(month: @date.to_s(:ym)), class: 'action-button btn-calendar' do
+        span.button-icon
+          | 📅
+        | 月間
+
 
   .row.justify-content-center
     .sectionHabitRecords.col-md-2
@@ -102,23 +120,121 @@
           task-diary(:diary="diary" @updated="showToast" @show-diary-modal="showDiaryModal")
 
 sass:
+  /* 2025/01/08 Claudeのデザイン */
   .dayContentHeader
-    display: flex
-    justify-content: space-between
-    width: 480px
-    margin: 10px auto
-    .dayContentHeaderMiddle
-    .dayContentHeaderMiddleBottom
-      margin-top: 12px
-      display: flex
-      justify-content: space-around
-      align-items: center
-    .dayContentHeaderMiddleLink
-    h3
-      margin: 0
-      font-size: 1.9rem
+    width: 450px;
+    padding: 12px;
+    box-sizing: border-box;
+    margin: 7px auto 5px
 
-  @media screen and (max-width:  640px)
+    .nav-container
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+
+    .nav-arrow
+      width: 50px;
+      height: 50px;
+      background: #ebf5ff;
+      border: none;
+      border-radius: 8px;
+      color: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+    .nav-arrow:hover
+      background: #dbeafe;
+
+    .nav-arrow svg
+      width: 30px;
+      height: 30px;
+      stroke-width: 2.5;
+
+    .date-selector
+      flex: 1;
+      height: 50px;
+      width: 100%;
+      background: white;
+      border: 2px solid #2563eb;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 24px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #374151;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+    .date-selector:hover
+      background: #ebf5ff;
+
+    .date-selector::after
+      content: "";
+      position: absolute;
+      right: 12px;
+      width: 8px;
+      height: 8px;
+      border-left: 2px solid #2563eb;
+      border-bottom: 2px solid #2563eb;
+      transform: rotate(-45deg) translateY(-2px);
+
+    .action-buttons
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+
+    .action-button
+      flex: 1;
+      height: 36px;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    .action-button:hover
+      color: white;
+      text-decoration: none;
+
+    .btn-today
+      background: #16a34a;
+
+    .btn-today:hover
+      background: #15803d;
+
+    .btn-memo
+      background: #dc2626;
+
+    .btn-memo:hover
+      background: #b91c1c;
+
+    .btn-calendar
+      background: #06b6d4;
+
+    .btn-calendar:hover
+      background: #0891b2;
+
+    .button-icon
+      margin-right: 4px;
+
+  @media (max-width: 640px)
     .dayContentHeader
       width: 100%
-      font-size: 0.8rem
+      padding: 8px;
+
+      .action-buttons
+        gap: 4px;
+      .action-button
+        font-size: 13px;

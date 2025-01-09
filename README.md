@@ -70,7 +70,7 @@ $ cap production unicorn:start
   * v16にするとエラーになる
 
 ### 主なライブラリ
-* Twitter bootstrap 4
+* Twitter bootstrap 4: https://getbootstrap.jp/docs/4.2/getting-started/introduction/
 * Font Awesome: https://fontawesome.com/v4.7.0/icons/#
 * テンプレートエンジン: slim
 * altCSS: scss, sass
