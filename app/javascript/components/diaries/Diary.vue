@@ -83,6 +83,9 @@ export default {
     diary(newVal) {
       this.localDiary = newVal
     },
+    editMode(newVal) {
+      this.$emit('on-edit-mode', this.diary.id, newVal)
+    }
   },
   computed: {
     targetDate () {

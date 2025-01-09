@@ -23,6 +23,8 @@ document.addEventListener('turbolinks:load', () => {
       targetDateSettingTimeout: null,
       habit_records: [],
       diariesWithOpsions: [],
+      // ページ内の日記たちの中で編集中のものを保持する
+      editModeDiaryIds: [],
       diary_links_list: null,
       tabidx: 0,
       contentChanged: [],
@@ -157,7 +159,10 @@ document.addEventListener('turbolinks:load', () => {
       submitAppendingMemo (event) {
         event.preventDefault()
 
-        if (!this.memoContent) {
+        if (this.existsEditModeDiaries()) {
+          this.showToast({isError: true, message: '編集中の日記を閉じてください'})
+          return
+        } else if (!this.memoContent) {
           this.showToast({isError: true, message: 'メモの内容を入力してください'})
           return
         }
@@ -189,6 +194,20 @@ document.addEventListener('turbolinks:load', () => {
       },
       newDiary () {
         this.diariesWithOpsions.push({ diary: {}, targetDateForEditMode: this.targetDate, highlightForAMoment: false })
+        this.editModeDiaryIds.push(null)
+      },
+      existsEditModeDiaries () {
+        return this.editModeDiaryIds.length > 0
+      },
+      onEditMode (targetDiaryId, isEdit) {
+        const foundIndex = this.editModeDiaryIds.findIndex(id => id == targetDiaryId)
+        // 編集開始かつ、editModeDiaryIdsに存在しなければ、そこに追加する
+        if (isEdit && foundIndex == -1) {
+          this.editModeDiaryIds.push(targetDiaryId)
+        // 編集終了かつ、editModeDiaryIdsに存在すれば、そこから削除する
+        } else if (!isEdit && foundIndex != -1) {
+          this.editModeDiaryIds.splice(foundIndex, 1)
+        }
       },
       showToast (options) {
         this.toastShowable = true
