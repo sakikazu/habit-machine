@@ -18,9 +18,9 @@
         form.form.form-inline(ref="memoForm" @submit="submitAppendingMemo")
           .modal-content
             .modal-header
-              p.mb-0.text-secondary
-                = fa_icon 'exclamation-circle', class: 'mr-1'
-                | メインの日記にメモを追加（日記がなければ作成されます）
+              h5.mb-0
+                | 📝
+                = "#{dispdate(@date, true)}"
             .modal-body
               .form-row.mb-2
                 .col-6.timepicker.input-group[data-target-input="nearest"]
@@ -34,7 +34,12 @@
               div
                 textarea.form-control.first-focus.w100(name="[diary]memo" v-model="memoContent" ref="memoContentField")
               input(type="hidden" name="[diary]record_at" value="#{@date}")
-            .modal-footer
+            .modal-footer.justify-content-between
+              small.text-muted
+                = fa_icon 'exclamation-circle', class: 'mr-1'
+                | メインの日記にメモを追加します。
+                br
+                | メイン日記が未作成なら同時に作成されます
               button.btn.btn-primary(type="submit") メモ追加
 
   .dayContentHeader
