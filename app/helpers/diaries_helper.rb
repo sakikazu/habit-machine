@@ -28,7 +28,8 @@ module DiariesHelper
   def diary_links_list(diaries)
     tag.ul do |tag|
       diaries.each do |diary|
-        concat tag.li(link_to(diary.title, diary_path(diary)) + " " + tags_link(diary))
+        title = diary.title.presence || '（タイトルなし）'
+        concat tag.li(link_to(title, diary_path(diary)) + " " + tags_link(diary))
       end
     end
   end

@@ -32,9 +32,6 @@
 //= require highcharts/highstock
 
 $(document).on('turbolinks:load', function() {
-  $('[data-toggle="popover"]').popover({
-    html: true,
-  });
   $("a[rel=tooltip]").tooltip();
 
   var shownPopoverElements = [];

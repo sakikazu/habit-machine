@@ -48,6 +48,7 @@ document.addEventListener('turbolinks:load', () => {
       this.setup()
       this.targetDate = this.$el.dataset.targetDate
       this.fetchData()
+      this.enablePopover()
     },
     methods: {
       setup () {
@@ -122,6 +123,9 @@ document.addEventListener('turbolinks:load', () => {
           .catch(error => {
             alert(error.message || error.response.data.message)
           })
+      },
+      enablePopover () {
+        $('[data-toggle="popover"]').popover({ html: true });
       },
       // ショートカットキー
       // shift + < : 日戻し / shift + > : 日送り
