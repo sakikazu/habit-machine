@@ -169,11 +169,6 @@ class DiariesController < ApplicationController
       return
     end
 
-    if request.xhr?
-      render partial: "show_ajax"
-      return
-    end
-
     respond_to do |format|
       format.html # show.html.erb
       format.json
