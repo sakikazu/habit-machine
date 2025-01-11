@@ -96,6 +96,8 @@ Rails.application.routes.draw do
   get 'day_data/:date', to: 'general#day_data'
   get 'month', to: 'general#month', as: :this_month
   get 'month/:month', to: 'general#month', as: :month
+  # 日記のURLに日付が含まれていれば、URLの情報として便利かと思ったが、なくても良かったかも
+  get '/day/:date/diaries/:id', to: 'diaries#show', as: 'diary_with_date', constraints: { date: /\d{4}-\d{1,2}-\d{1,2}/ }
 
   scope :search do
     get '' => 'search#top', as: :search

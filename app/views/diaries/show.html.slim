@@ -1,6 +1,17 @@
-.row.justify-content-center
-  .col-sm-7
-    .form-actions.mt15
-      = link_to 'この日を週表示', root_path(one_day: @diary.record_at), class: "btn btn-light"
-      =< link_to "#{@diary.record_at.year}年の日記", diaries_path("diary[search_word]" => "year:#{@diary.record_at.year}"), class: "btn btn-light"
-    = render partial: "show_ajax"
+- content_for :addjs_in_head
+  = javascript_pack_tag 'diary_show', 'data-turbolinks-track': 'reload'
+
+#diaryShow(data-diary-id="#{@diary.id}")
+  .row.justify-content-center
+    .col-sm-7
+      .d-flex.justify-content-end
+        .mb-4
+          url-copy-button
+      diary(
+        :diary="diary"
+        :modal-mode="true"
+        :target-date-for-edit-mode="null"
+      )
+
+      / 日記の検索フォームに初期値ありで検索できるリンクは良い感じなので、コメントアウトして残しておこう
+      / =< link_to "#{@diary.record_at.year}年の日記", diaries_path("diary[search_word]" => "year:#{@diary.record_at.year}"), class: "btn btn-light"

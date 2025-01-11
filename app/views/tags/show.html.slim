@@ -15,5 +15,5 @@
           li.list-group-item
             = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
             span.ml10
-              = link_to diary.title_mod, diary_path(diary)
+              = link_to diary.title_mod, diary_with_date_path(diary.record_at, diary)
 

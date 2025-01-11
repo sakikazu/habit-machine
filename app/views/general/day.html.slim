@@ -3,6 +3,7 @@
 
 #dayPage(data-target-date="#{@date}")
   toast(:showable="toastShowable" :is-error="toastError" :message="toastMessage" @toast-hidden="toastShowable = false")
+  / モーダルで日記を表示するためのhtmlの仕込み
   modal(v-if="!!modalableDiaryId" :no-padding="true" @on-close="closeDiaryModal")
     template(v-slot:content)
       diary(
@@ -106,7 +107,6 @@
               :key="`diary-${obj.diary.id}`"
               @content-changed="onContentChanged"
               @submitted="onSubmitted"
-              @show-diary-modal="showDiaryModal"
               @on-edit-mode="onEditMode"
             )
       p

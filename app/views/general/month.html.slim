@@ -73,7 +73,7 @@ table.table.table-bordered.table-hover.records-table(style="table-layout: fixed"
           - if @diaries[date].present?
             - @diaries[date].each do |diary|
               = "<hr>".html_safe unless is_first_diary
-              = show_diary_for_toppage(diary)
+              = show_diary_for_month(diary)
               - is_first_diary = false
 
 div[style="width: 3000px"]

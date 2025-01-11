@@ -5,7 +5,7 @@
         h5.diary-title
           - unless is_day_page
             span.date.mr10 = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
-          span.title = link_to diary.title_mod, diary_path(diary)
+          span.title = link_to diary.title_mod, diary_with_date_path(diary.record_at, diary)
       .tags.ml-3 = tags_link(diary)
   = "<p class='btn btn-block btn-danger disabled mb5'>シークレット日記</p>".html_safe if diary.is_secret
   = "<p class='btn btn-block btn-warning disabled mb5'>ハイライト日記</p>".html_safe if diary.is_hilight

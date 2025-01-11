@@ -161,6 +161,7 @@ class DiariesController < ApplicationController
     @tag_names = tags.flatten.map { |tag| tag.name }.uniq
   end
 
+  # NOTE: /day/:date/diaries/:id もshowアクションで処理している。:dateはURLに付与されているのみで、処理に使っていない
   # GET /diaries/1
   # GET /diaries/1.json
   def show

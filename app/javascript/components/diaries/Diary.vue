@@ -15,7 +15,7 @@
             span.title(v-else :class="{'no-title-yet': !localDiary.title}")
               span.text-danger.mr-1(v-if="localDiary.main_in_day")
                 i.fa.fa-star
-              a(@click="showModal" href="javascript:void(0)") {{ localDiary.title_mod }}
+              a(:href="`/day/${localDiary.record_at}/diaries/${localDiary.id}`") {{ localDiary.title_mod }}
         .tags.ml-3(v-html="localDiary.tag_links")
     .diary-body(v-if="!changed_record_at")
       p(v-if="localDiary.is_secret" class='btn btn-block btn-danger disabled mb5') シークレット日記
@@ -50,6 +50,7 @@ export default {
       type: Number,
       default: null,
     },
+    // 2025/01/11: 用途がよくわからなくなっている。効率化できない？
     targetDateForEditMode: {
       type: String,
       required: false,
@@ -58,6 +59,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    // TODO: モーダルではないdiary showページでもtrueにしていて、props名が不適切
     modalMode: {
       type: Boolean,
       default: false
@@ -145,9 +147,6 @@ export default {
     },
     onChangedRecordAt (changed_record_at) {
       this.changed_record_at = changed_record_at
-    },
-    showModal () {
-      this.$emit('show-diary-modal', this.localDiary.id)
     },
   }
 }

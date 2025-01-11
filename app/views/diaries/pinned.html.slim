@@ -15,7 +15,7 @@ ul.mb-4
       .d-flex.justify-content-end
         .flex-grow-1
           span.date.mr10 = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
-          span.title = link_to diary.title_mod, diary_path(diary)
+          span.title = link_to diary.title_mod, diary_with_date_path(diary.record_at, diary)
         small.tags.ml-3 = tags_link(diary)
     .card-body.p-2
       = image_tag(diary.image(:small), class: "w-50 img-thumbnail") if diary.image.present?
