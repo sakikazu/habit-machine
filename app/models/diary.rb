@@ -64,6 +64,7 @@ class Diary < ApplicationRecord
   scope :newer, lambda { order(["record_at DESC", "id ASC"]) }
   scope :older, lambda { order(["record_at ASC", "id ASC"]) }
 
+  before_validation :replace_urls
   after_save :update_tag_used_at
 
 
@@ -74,10 +75,6 @@ class Diary < ApplicationRecord
   def self.group_by_record_at(current_user, date_term)
     diaries = current_user.diaries.where(record_at: date_term).order("id ASC")
     diaries.group_by{|d| d.record_at}
-  end
-
-  def update_tag_used_at
-    CustomTag.update_last_used_at(self.tags) if self.tags.present?
   end
 
   def append_memo(memo)
@@ -101,6 +98,15 @@ class Diary < ApplicationRecord
   end
 
   private
+
+  def replace_urls
+    converter = UrlToMarkdownLinkConverter.new(self.class)
+    self.content = converter.convert(self.content)
+  end
+
+  def update_tag_used_at
+    CustomTag.update_last_used_at(self.tags) if self.tags.present?
+  end
 
   def append_memo_below_line(memo)
     # 文字列の最後を、2行以上の空行にしておく。lines.eachでは、イテレーターは改行付きなので、1行しか空行がないと、その行のループはされない

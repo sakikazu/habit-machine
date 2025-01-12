@@ -66,6 +66,7 @@ Rails.application.configure do
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
   config.action_mailer.raise_delivery_errors = true
 
+  Rails.application.routes.default_url_options[:host] = 'hm.a-dan.com'
   config.action_mailer.default_url_options = { host: 'hm.a-dan.com' }
 
   # Gmail経由でメール送信
