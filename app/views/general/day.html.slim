@@ -92,7 +92,8 @@
       .page-header.d-flex
         h4.flex-grow-1
           | 本日の日記&nbsp;
-          button.btn.btn-primary(v-show="diariesWithOpsions.length > 1" data-toggle="popover" title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
+          / 「data-trigger="focus"」を与えることで、本buttonではなく、他の場所のクリック時に消えるようになる（逆に与えないと、他の場所クリックで消えないので不便だった）
+          button.btn.btn-primary(v-show="diariesWithOpsions.length > 1" data-toggle="popover" data-trigger="focus" title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
       .diaries(ref="diariesBody")
         p(v-if="diariesWithOpsions.length == 0") 日記はありません。
         .diaries-wrapper.d-flex.flex-row.flex-wrap(v-else)

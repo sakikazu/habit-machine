@@ -79,31 +79,27 @@ export default {
 }
 </script>
 
-<style scoped>
-.copy-button {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border: none;
-  border-radius: 4px;
-  background: #f3f4f6;
-  color: #4b5563;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+<style scoped lang="sass">
+.copy-button
+  display: flex
+  align-items: center
+  gap: 6px
+  padding: 4px 10px
+  border: none
+  border-radius: 4px
+  background: #f3f4f6
+  color: #4b5563
+  font-size: 14px
+  cursor: pointer
+  transition: all 0.2s
 
-.copy-button:hover {
-  background: #e5e7eb;
-}
+.copy-button:hover
+  background: #e5e7eb
 
-.copy-button.copied {
-  background: #dcfce7;
-  color: #059669;
-}
+.copy-button.copied
+  background: #dcfce7
+  color: #059669
 
-.icon {
-  flex-shrink: 0;
-}
+.icon
+  flex-shrink: 0
 </style>
