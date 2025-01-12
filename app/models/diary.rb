@@ -17,6 +17,7 @@
 #  pinned             :boolean          default(FALSE), not null
 #  record_at          :date
 #  title              :string(255)
+#  type               :string(255)
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
 #  user_id            :integer
