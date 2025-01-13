@@ -101,6 +101,8 @@ class Diary < ApplicationRecord
   private
 
   def replace_urls
+    return if self.content.blank?
+
     converter = UrlToMarkdownLinkConverter.new(self.class)
     self.content = converter.convert(self.content)
   end
