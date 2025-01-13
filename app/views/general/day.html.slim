@@ -21,7 +21,7 @@
             .modal-header
               h5.mb-0
                 | 📝
-                = "#{dispdate(@date, true)}"
+                = "#{dispdate(@date, true)}のメモ"
             .modal-body
               .form-row.mb-2
                 .col-6.timepicker.input-group[data-target-input="nearest"]
@@ -45,7 +45,7 @@
 
   .dayContentHeader
     .nav-container
-      = link_to day_path(@date - 1), class: 'nav-arrow prev-day' do
+      = link_to day_path(@date - 1), class: 'nav-arrow prev-day', title: 'ショートカットキー: shift + <' do
         svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
           polyline points="15 18 9 12 15 6"
       div(style="width:100%")
@@ -54,7 +54,7 @@
         form.form.form-inline.mt-2(style="display: none" @submit="moveSpecifiedDatePage" ref="selectingDateForm")
           = date_field_tag 'day-page-date-field', @date, id: 'day-page-date-field', class: 'form-control'
           input(type="submit" class="btn btn-light" value="移動")
-      = link_to day_path(@date + 1), class: 'nav-arrow next-day' do
+      = link_to day_path(@date + 1), class: 'nav-arrow next-day', title: 'ショートカットキー: shift + >' do
         svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
           polyline points="9 18 15 12 9 6"
 
