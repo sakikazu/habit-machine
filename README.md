@@ -120,3 +120,10 @@ https://bitbucket.org/tutorials/markdowndemo/src/master/
 $ bin/rake db:seed_fu
 ```
 
+
+## TODO
+* webpackerあたりでハマることが多いので脱却したい
+  * rails7のesbuildへの移行
+  * Viteの採用（HMR、Vue.jsとの相性が良い）
+    * `vite_rails` gem
+

@@ -4,6 +4,7 @@
     .habit-title
       a(:href="`/habits/${habit.id}`")
         | {{ habit.title }}
+        // TODO: 共有アイコンは、アイコンの右に「共有」というラベルがあり、それらが枠線で囲まれているのが良さそう
         i.fa.fa-users.ml-2(v-if="habit.for_family" style="color:orange")
     i.button.saveButton.fa.fa-floppy-o(@click="save" v-if="dataChanged")
     i.button.editButton.fa.fa-pencil(@click="toggleEdit" v-else)
