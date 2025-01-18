@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '3.1.6'
+ruby '3.2.6'
 gem 'rails', '~> 6.1'
 gem 'bootsnap', require: false # railsの起動を速くする
 
