@@ -7,34 +7,34 @@
 # Claudeが生成したコードに手を加えたもの
 class UrlToMarkdownLinkConverter
   include Rails.application.routes.url_helpers
-  MARKDOWN_LINK_PATTERN = /\[.*?\]\(.*?\)/
-  DIARY_PATH = 'day/.+/diaries'
+  # NOTE: /\[.*?\]\(.*?\)/ にしてたら意図した最短一致にはならず、 "[15:00] xxx [title](url)" でもマッチしてしまったので修正
+  MARKDOWN_LINK_PATTERN = /\[[^\]]+\]\([^\)]+\)/
+  DIARY_PATH = 'day/.+?/diaries'
 
   def initialize(target_model)
     @target_model = target_model
     @root_url = root_url(host: Rails.application.routes.default_url_options[:host])
   end
 
-  # TODO: rspec（1つのtext内に複数のURLがある場合、URLの対象Diaryが存在しない場合 etc.）
+  # TODO: user: だけにできるrubyバージョンにしたいな
   def convert(text)
     # 既存のMarkdownリンクを一時的に置換して保護
     placeholders = {}
-    text_without_existing_links = text.gsub(MARKDOWN_LINK_PATTERN) do |match|
+    text_without_existing_links = text.gsub(MARKDOWN_LINK_PATTERN) do |matched|
       placeholder = "PLACEHOLDER_#{placeholders.length}"
-      # TODO: 重複コードなくせるはずなので、rspec時にリファクタリング
-      url = if match_data = match.match(/\[.*?\]\((.*?)\)/)
+      # ここはシンプルな正規表現でOK
+      url = if match_data = matched.match(/\[.*?\]\((.*?)\)/)
               match_data[1]
             end
       label = diary_markdown_link_from(url)
-      placeholders[placeholder] = label.presence || match
+      placeholders[placeholder] = label.presence || matched
       placeholder
     end
 
     # URLを検出して変換
     processed_text = text_without_existing_links.gsub(%r{#{diary_path}/\d+}) do |url|
       label = diary_markdown_link_from(url)
-      next if label.blank?
-      label
+      label.presence || url
     end
 
     # プレースホルダーを元のMarkdownリンクに戻す
