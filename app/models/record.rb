@@ -22,7 +22,7 @@ class Record < ApplicationRecord
 
   belongs_to :habit
 
-  scope :user_by, lambda { |user| where(habit: user.habits_including_familys) }
+  scope :by_user_or_family, lambda { |user| where(habit: user.habits_including_familys) }
   scope :has_data, lambda { where("value is not NULL OR memo is not NULL") }
   scope :newer, lambda { order("record_at DESC") }
 

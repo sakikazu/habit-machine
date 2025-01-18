@@ -7,7 +7,7 @@ class SearchController < ApplicationController
     return if @search_word.blank?
     @g_search_word = @search_word
 
-    records = Record.user_by(current_user).has_data.newer
+    records = Record.by_user_or_family(current_user).has_data.newer
     searcher = HabitRecordSearcher.new(records, "#{HabitRecordSearcher::SEARCH_KEY_MEMO}#{@search_word}")
     @result_records_size = searcher.result.size
     @result_diaries_size = current_user.diaries.find_by_word(@search_word).size
@@ -32,7 +32,7 @@ class SearchController < ApplicationController
                    when :diary
                      current_user.diaries.find_by_word(@search_word).newer
                    when :record
-                     records = Record.user_by(current_user).has_data.newer.includes(:habit)
+                     records = Record.by_user_or_family(current_user).has_data.newer.includes(:habit)
                      searcher = HabitRecordSearcher.new(records, "#{HabitRecordSearcher::SEARCH_KEY_MEMO}#{@search_word}")
                      searcher.result
                    else
