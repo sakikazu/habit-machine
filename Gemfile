@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-ruby '2.7.7'
+ruby '3.1.6'
 gem 'rails', '~> 6.1'
-gem 'bootsnap' # railsの起動を速くする
+gem 'bootsnap', require: false # railsの起動を速くする
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -67,8 +67,7 @@ gem 'turbolinks', '~> 5'
 
 gem 'jbuilder'
 
-# Use unicorn as the app server
-gem 'unicorn'
+gem 'puma'
 
 # unicorn関連？
 gem 'foreman'
@@ -120,7 +119,7 @@ group :development, :test do
   gem 'pry-byebug'
 
   # Pryでの便利コマンド
-  gem 'pry-doc'
+  # gem 'pry-doc'
 
   # PryでのSQLの結果を綺麗に表示。Hirb.enableの実行が必要
   gem 'hirb'
