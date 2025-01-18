@@ -12,9 +12,7 @@ on_worker_boot do
   ActiveRecord::Base.establish_connection
 end
 
-# Rails.envはロード前なので使えない
-if ENV.fetch("RAILS_ENV") == "production"
-  bind 'unix:///home/ubuntu/web/habit-machine/shared/tmp/sockets/puma.sock'
-  pidfile '/home/ubuntu/web/habit-machine/shared/tmp/pids/puma.pid'
-  state_path '/home/ubuntu/web/habit-machine/shared/tmp/pids/puma.state'
-end
+
+bind 'unix:///home/ubuntu/web/habit-machine/shared/tmp/sockets/puma.sock'
+pidfile '/home/ubuntu/web/habit-machine/shared/tmp/pids/puma.pid'
+state_path '/home/ubuntu/web/habit-machine/shared/tmp/pids/puma.state'

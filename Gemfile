@@ -69,6 +69,9 @@ gem 'jbuilder'
 
 gem 'puma'
 
+# 起動時の `uninitialized constant ActiveSupport::LoggerThreadSafeLevel::Logger (NameError)` 対策
+gem 'concurrent-ruby', '1.3.4'
+
 # unicorn関連？
 gem 'foreman'
 
@@ -99,7 +102,8 @@ group :development do
   gem 'capistrano'
   gem 'capistrano-bundler'
   gem 'capistrano-rails'
-  gem 'capistrano3-unicorn'
+  gem 'capistrano-asdf'
+  gem 'capistrano3-puma'
 
   # エラー画面をわかりやすく整形してくれる
   gem 'better_errors'
