@@ -21,7 +21,7 @@
     = f.text_area :content, id: 'content-field', class: 'form-control', placeholder: 'この時のパパ、ママの想いも書いてみて', rows: 5
   .form-group.mb-4
     = f.file_field :image, class: 'form-control'
-    = image_tag history.image.url(:large), class: 'img-thumbnail' if history.image?
+    = image_tag "/#{history.image(:large)}", class: 'img-thumbnail' if history.image?
     .custom-control.custom-checkbox
       = f.check_box :as_profile_image, class: 'custom-control-input', id: 'as_profile_image'
       = f.label :as_profile_image, 'プロフィール画像にする', class: 'custom-control-label', for: 'as_profile_image'
