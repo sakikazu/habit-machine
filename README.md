@@ -43,14 +43,6 @@ $ bin/webpack-dev-server
 $ bundle exec cap production deploy
 ```
 
-### unicorn再起動
-* capistranoの unicorn:restart では再起動できないときに
-
-```
-$ cap production unicorn:stop
-$ cap production unicorn:start
-```
-
 ## デモ環境
 * ※現在は、必要なときにterraformでAWS ECSにデプロイしている
 
@@ -62,8 +54,8 @@ $ cap production unicorn:start
 
 ## System dependencies
 
-* ruby 2.7系
-* rails 5.2系
+* ruby 3.2系
+* rails 6.1系
 * Vue.js 2.6系
 * JavaScript ES2015以降
 * Node 14.17.0
