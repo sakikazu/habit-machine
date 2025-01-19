@@ -21,7 +21,7 @@ module DiariesHelper
     output += "<strong>" + (link_to diary.title_mod, diary_with_date_path(diary.record_at, diary), class: 'diary-title') + "</strong>"
     # ここから日記編集は不要かなー（編集画面をなくしたのでUIを作るのもメンドイし）
     # output += " " + (link_to fa_icon('pencil'), edit_diary_path(diary)) + "<br>"
-    output += image_tag(diary.image(:small), class: "img-thumbnail") + "<br>".html_safe if diary.image.present?
+    output += image_tag("/#{diary.image(:small)}", class: "img-thumbnail") + "<br>".html_safe if diary.image.present?
     return output.html_safe
   end
 

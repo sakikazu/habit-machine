@@ -10,7 +10,7 @@
   = "<p class='btn btn-block btn-danger disabled mb5'>シークレット日記</p>".html_safe if diary.is_secret
   = "<p class='btn btn-block btn-warning disabled mb5'>ハイライト日記</p>".html_safe if diary.is_hilight
   .text-center.mt20
-    = image_tag(diary.image(:small), class: "w-50 img-thumbnail") if diary.image.present?
+    = image_tag("/#{diary.image(:small)}", class: "w-50 img-thumbnail") if diary.image.present?
   .markdown
     = markdown(diary.content)
   - if is_day_page
