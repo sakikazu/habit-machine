@@ -1,4 +1,4 @@
-lock '3.17.0'
+lock '3.19.2'
 
 require 'dotenv/load'
 Dotenv.load
@@ -30,33 +30,25 @@ set :linked_dirs, %w{log tmp/cache tmp/sockets tmp/pids bundle public/upload}
 append :linked_dirs, '.bundle'
 
 set :default_env, {
-  # NOTE: asdf global 設定にしたrubyを使わない場合は、これだとダメかも
-  path: "/home/ubuntu/.asdf/shims:$PATH",
   # NOTE: Node.jsとOpenSSLのバージョンの互換性が合わないために必要になっている環境変数
-  'NODE_OPTIONS' => '--openssl-legacy-provider'
+  'NODE_OPTIONS' => '--openssl-legacy-provider',
+  # task :set_ruby_version のためのASDFの環境変数
+  'PATH' => "/home/ubuntu/.asdf/shims:/home/ubuntu/.asdf/bin:$PATH",
+  'ASDF_DIR' => "/home/ubuntu/.asdf"
 }
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-# unicorn
-set :unicorn_config_path, "#{current_path}/config/unicorn.conf.rb"
-# set :unicorn_pid, 'default'
-
+# TODO: capistrano-asdfがなぜか current/.tool-versionsではなく/home/ubuntu/.tool-versionsを読み込んでしまうため、下記対応
+# deployログを見ると `shared/asdf-wrapper asdf current` がポイントっぽいので、asdf-wrapperを読めばわかるかもしれない
 namespace :deploy do
-  desc 'Restart application'
-  task :restart do
-    invoke 'unicorn:restart'
-  end
-
-  after :publishing, :restart
-
-  after :restart, :clear_cache do
-    on roles(:web), in: :groups, limit: 3, wait: 10 do
-      # Here we can do anything such as:
-      # within release_path do
-      #   execute :rake, 'cache:clear'
-      # end
+  task :set_ruby_version do
+    on roles(:app) do
+      within release_path do
+        execute :asdf, "install"
+      end
     end
   end
 end
+before "deploy:updated", "deploy:set_ruby_version"
