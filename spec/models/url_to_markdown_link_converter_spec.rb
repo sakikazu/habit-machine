@@ -7,7 +7,7 @@ RSpec.describe UrlToMarkdownLinkConverter, type: :model do
     subject(:result) { described_class.new(Diary).convert(target_text) }
 
     let(:user) { create(:user) }
-    let(:diary) { create(:diary, user: user) }
+    let(:diary) { create(:diary, user:) }
 
     def diary_url(diary)
       diary_with_date_url(diary.record_at, diary)
@@ -54,7 +54,7 @@ RSpec.describe UrlToMarkdownLinkConverter, type: :model do
     end
 
     context '複数の日記のURLを含む場合' do
-      let(:diary2) { create(:diary, user: user) }
+      let(:diary2) { create(:diary, user:) }
       let(:target_text) do
         "aaa #{diary_url(diary)} zzz #{diary_url(diary2)}"
       end

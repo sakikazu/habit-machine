@@ -16,7 +16,6 @@ class UrlToMarkdownLinkConverter
     @root_url = root_url(host: Rails.application.routes.default_url_options[:host])
   end
 
-  # TODO: user: だけにできるrubyバージョンにしたいな
   def convert(text)
     # 既存のMarkdownリンクを一時的に置換して保護
     placeholders = {}
