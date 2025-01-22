@@ -30,7 +30,7 @@ class Child < ApplicationRecord
   GENDER = [['男', 1], ['女', 2]].freeze
 
   def profile_image
-    histories.where(as_profile_image: true).order(target_date: :desc).first&.image(:small)
+    histories.where(as_profile_image: true).order(target_date: :desc).first&.eyecatch_image_small
   end
 
   def relative_age(base_date)

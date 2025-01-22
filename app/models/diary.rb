@@ -28,6 +28,7 @@
 #  index_diaries_on_user_id    (user_id)
 #
 
+# TODO: image_xxxカラムを削除
 class Diary < ApplicationRecord
   acts_as_paranoid
   acts_as_taggable
@@ -46,6 +47,16 @@ class Diary < ApplicationRecord
 
   validates_attachment :image,
     content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
+
+  # 日記のアイキャッチ用画像
+  has_one_attached :eyecatch_image
+  # TODO: rails7.1以降だと、variant定義用のブロックが使えるので、eyecatch_image_smallなどがなくせる
+  # has_one_attached :eyecatch_image do |attachable|
+    # attachable.variant :small, resize_to_limit: [180, 180], preprocessed: true
+  # end
+  # 日記中に埋め込む画像
+  # TODO: variant展開については再検討
+  has_many_attached :images
 
   ACTION_MEMO_LINE = "# ----- ACTION MEMO -----"
   CRLF = "\r\n"
@@ -68,6 +79,22 @@ class Diary < ApplicationRecord
   before_validation :replace_urls
   after_save :update_tag_used_at
 
+  # TODO: tmp
+  def self.migrate_to_as
+    diaries_with_image = Diary.where.not(image_file_name: nil)
+    diaries_with_image.each do |diary|
+      image_file = File.open(diary.image.path)
+      diary.eyecatch_image.attach(io: image_file, filename: diary.image_file_name)
+    end
+  end
+
+  def eyecatch_image_small
+    eyecatch_image.variant(resize_to_limit: [180, 180], saver: { quality: 80 })
+  end
+
+  def eyecatch_image_large
+    eyecatch_image.variant(resize_to_limit: [1600, 1600], saver: { quality: 80 })
+  end
 
   def title_mod
     self.title.presence || "(タイトルなし)"

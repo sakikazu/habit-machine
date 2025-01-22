@@ -316,6 +316,6 @@ class DiariesController < ApplicationController
   end
 
   def diary_params
-    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :image, :is_hilight, :is_about_date, :search_word, :main_in_day, :pinned, :pin_priority)
+    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :eyecatch_image, :is_hilight, :is_about_date, :search_word, :main_in_day, :pinned, :pin_priority)
   end
 end

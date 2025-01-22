@@ -83,6 +83,6 @@ class User < ApplicationRecord
 
   # TODO: Userのプロフィール画像がHistoryから取得されるのはUIとデータ取得効率的に良くない
   def profile_image
-    histories.where(as_profile_image: true).order(target_date: :desc).first&.image
+    histories.where(as_profile_image: true).order(target_date: :desc).first&.eyecatch_image_small
   end
 end

@@ -33,6 +33,8 @@
 #  fk_rails_...  (family_id => families.id)
 #  fk_rails_...  (source_id => children.id)
 #
+
+# TODO: image_xxxカラムを削除
 class History < ApplicationRecord
   belongs_to :source, polymorphic: true
   belongs_to :author, class_name: "User", foreign_key: :author_id
@@ -66,6 +68,25 @@ class History < ApplicationRecord
   validates_attachment :image,
     content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
 
+
+  has_one_attached :eyecatch_image
+
+  # TODO: tmp
+  def self.migrate_to_as
+    histories_with_image = History.where.not(image_file_name: nil)
+    histories_with_image.each do |history|
+      image_file = File.open(history.image.path)
+      history.eyecatch_image.attach(io: image_file, filename: history.image_file_name)
+    end
+  end
+
+  def eyecatch_image_small
+    eyecatch_image.variant(resize_to_limit: [350, 350], saver: { quality: 80 })
+  end
+
+  def eyecatch_image_large
+    eyecatch_image.variant(resize_to_limit: [1600, 1600], saver: { quality: 80 })
+  end
 
   def search_result_items
     path, name = case source
@@ -129,7 +150,7 @@ class History < ApplicationRecord
 
   def ensure_existing_profile_image
     return unless as_profile_image?
-    return if image?
+    return if eyecatch_image.attached?
 
     errors.add(:image, "プロフィールにする画像を指定してください")
   end
