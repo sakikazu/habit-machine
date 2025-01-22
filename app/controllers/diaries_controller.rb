@@ -8,6 +8,7 @@ class DiariesController < ApplicationController
   SEARCH_KEY_SINCE = "since:"
   SEARCH_KEY_UNTIL = "until:"
   SEARCH_KEY_YEAR = "year:"
+  SEARCH_KEY_IMAGE = "image:"
 
   # GET /diaries
   # GET /diaries.json
@@ -30,6 +31,7 @@ class DiariesController < ApplicationController
       if inputs.present?
         tags = []
         hilight = false
+        has_image = false
         since_date = nil
         until_date = nil
         date_range = nil
@@ -39,6 +41,8 @@ class DiariesController < ApplicationController
             input[SEARCH_KEY_TAGS.length..-1].split(",").each{|n| tags << n}
           elsif input =~ /^#{SEARCH_KEY_HILIGHT}/
             hilight = true
+          elsif input =~ /^#{SEARCH_KEY_IMAGE}/
+            has_image = true
           elsif input =~ /^#{SEARCH_KEY_SINCE}/
             since_str = input[SEARCH_KEY_SINCE.length..-1]
             since_date = Date.parse(since_str) rescue nil
@@ -62,6 +66,11 @@ class DiariesController < ApplicationController
 
         if hilight
           @diaries = @diaries.hilight
+        end
+
+        if has_image
+          # TODO: ActiveStorageではjoinにする必要性
+          @diaries = @diaries.where.not(image_file_name: nil)
         end
 
         if since_date.present?
