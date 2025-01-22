@@ -40,4 +40,4 @@
             ul.list-group.list-group-flush
               - history.data.each do |key, value|
                 li.list-group-item.text-muted = "#{History.human_attribute_name("data.#{key}")}: #{value}"
-          = link_to image_tag("/#{history.image.url(:small)}", class: 'card-img-bottom'), history.image.url(:large) if history.image?
+          = link_to image_tag(history.eyecatch_image_small, class: 'card-img-bottom'), history.eyecatch_image_large if history.eyecatch_image.attached?

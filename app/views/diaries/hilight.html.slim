@@ -19,7 +19,7 @@
           .tags.ml-3 = tags_link(diary)
       .well.well2
         p.mb25
-          = link_to(image_tag(diary.image(:large), width: "100%", class: "img-thumbnail"), diary.image(:original)) if diary.image.present?
+          = link_to(image_tag(diary.eyecatch_image_large, width: "100%", class: "img-thumbnail"), diary.eyecatch_image) if diary.eyecatch_image.attached?
         .markdown
           = markdown(diary.content)
   .col-sm-3.order-1.order-sm-2

@@ -69,6 +69,6 @@ class FamilyHistoriesController < ApplicationController
   end
 
   def history_params
-    params.require(:history).permit(:title, :content, :image, :as_profile_image, :target_date, :about_date)
+    params.require(:history).permit(:title, :content, :eyecatch_image, :as_profile_image, :target_date, :about_date)
   end
 end
