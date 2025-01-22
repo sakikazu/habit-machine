@@ -25,7 +25,7 @@ set :deploy_to, '/home/ubuntu/web/habit-machine'
 set :linked_files, %w{.env}
 
 # Default value for linked_dirs is []
-set :linked_dirs, %w{log tmp/cache tmp/sockets tmp/pids bundle public/upload}
+set :linked_dirs, %w{log tmp/cache tmp/sockets tmp/pids bundle public/upload storage}
 # NOTE: for capistrano-bundler config file (see: https://github.com/capistrano/bundler)
 append :linked_dirs, '.bundle'
 
