@@ -13,8 +13,6 @@ gem 'devise'
 gem "paranoia", "~> 2.0"
 gem 'exception_notification'
 gem "sanitize"
-# TODO: remove
-gem 'paperclip'
 gem 'exifr'
 gem "rails_autolink"
 gem 'kaminari'

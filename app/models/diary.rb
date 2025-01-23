@@ -33,22 +33,6 @@ class Diary < ApplicationRecord
   acts_as_paranoid
   acts_as_taggable
 
-  content_name = "diary"
-  has_attached_file :image,
-    :styles => {
-      :small => "180x180>",
-      :large => "1600x1600>"
-    },
-    :convert_options => {
-      :small => ['-quality 70', '-strip'],
-    },
-    :url => "/upload/#{content_name}/:id/:style/:basename.:extension",
-    :path => ":rails_root/public/upload/#{content_name}/:id/:style/:basename.:extension"
-
-    # TODO: 本番でpaperclipのvalidateがエラーになる８いので
-  # validates_attachment :image,
-    # content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
-
   # 日記のアイキャッチ用画像
   has_one_attached :eyecatch_image
   # TODO: rails7.1以降だと、variant定義用のブロックが使えるので、eyecatch_image_smallなどがなくせる
@@ -80,15 +64,7 @@ class Diary < ApplicationRecord
   before_validation :replace_urls
   after_save :update_tag_used_at
 
-  # TODO: tmp
-  def self.migrate_to_as
-    diaries_with_image = Diary.where.not(image_file_name: nil)
-    diaries_with_image.each do |diary|
-      image_file = File.open(diary.image.path)
-      diary.eyecatch_image.attach(io: image_file, filename: diary.image_file_name)
-    end
-  end
-
+  # ActiveStorageのファイルパス（Diskのみ）を取得する場合は、 `ActiveStorage::Blob.service.path_for(blob.key)` でOK
   def eyecatch_image_small
     eyecatch_image.variant(resize_to_limit: [180, 180], saver: { quality: 80 })
   end

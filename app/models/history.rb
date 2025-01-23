@@ -53,32 +53,7 @@ class History < ApplicationRecord
   scope :find_by_word, lambda { |word| where('title like :q OR content like :q', :q => "%#{word}%") }
   scope :newer, lambda { order(target_date: :desc) }
 
-  content_name = "history"
-  has_attached_file :image,
-    :styles => {
-      :small => "350x350>",
-      :large => "1600x1600>"
-    },
-    :convert_options => {
-      :small => ['-quality 70', '-strip'],
-    },
-    :url => "/upload/#{content_name}/:id/:style/:basename.:extension",
-    :path => ":rails_root/public/upload/#{content_name}/:id/:style/:basename.:extension"
-
-  validates_attachment :image,
-    content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
-
-
   has_one_attached :eyecatch_image
-
-  # TODO: tmp
-  def self.migrate_to_as
-    histories_with_image = History.where.not(image_file_name: nil)
-    histories_with_image.each do |history|
-      image_file = File.open(history.image.path)
-      history.eyecatch_image.attach(io: image_file, filename: history.image_file_name)
-    end
-  end
 
   def eyecatch_image_small
     eyecatch_image.variant(resize_to_limit: [350, 350], saver: { quality: 80 })
