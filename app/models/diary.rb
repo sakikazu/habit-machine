@@ -45,8 +45,9 @@ class Diary < ApplicationRecord
     :url => "/upload/#{content_name}/:id/:style/:basename.:extension",
     :path => ":rails_root/public/upload/#{content_name}/:id/:style/:basename.:extension"
 
-  validates_attachment :image,
-    content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
+    # TODO: 本番でpaperclipのvalidateがエラーになる８いので
+  # validates_attachment :image,
+    # content_type: { content_type: ["image/jpeg", "image/gif", "image/png"] }
 
   # 日記のアイキャッチ用画像
   has_one_attached :eyecatch_image
