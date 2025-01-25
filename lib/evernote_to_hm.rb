@@ -124,7 +124,7 @@ prompt.say "Saving to database..."
 notes.each do |note|
   record_at, is_about_date = parse_record_date(note[:title], note[:created])
   diary = user.diaries.build(title: note[:title], content: note[:content], created_at: note[:created], record_at: record_at, is_about_date: is_about_date)
-  diary.image = File.open(note[:image_filepath]) if note[:image_filepath].present?
+  diary.eyecatch_image.attach(File.open(note[:image_filepath])) if note[:image_filepath].present?
   diary.tag_list << tag
   diary.save
 end

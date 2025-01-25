@@ -11,24 +11,5 @@ document.addEventListener('turbolinks:load', () => {
       Diary,
       UrlCopyButton,
     },
-    data: {
-      diaryId: null,
-      diary: null
-    },
-    mounted () {
-      this.diaryId = this.$el.dataset.diaryId
-      this.fetchData()
-    },
-    methods: {
-      fetchData () {
-        HmAxios.get(`/diaries/${this.diaryId}.json`)
-          .then(res => {
-            this.diary = res.data.diary
-          })
-          .catch(error => {
-            alert(error.message || error.response.data.message)
-          })
-      },
-    }
   })
 })

@@ -1,14 +1,14 @@
 - content_for :addjs_in_head
   = javascript_pack_tag 'diary_show', 'data-turbolinks-track': 'reload'
 
-#diaryShow(data-diary-id="#{@diary.id}")
+#diaryShow
   .row.justify-content-center
     .col-sm-7
       .d-flex.justify-content-end
         .mb-4
           url-copy-button
       diary(
-        :diary="diary"
+        :diary-id="#{@diary.id}"
         :modal-mode="true"
         :target-date-for-edit-mode="null"
       )

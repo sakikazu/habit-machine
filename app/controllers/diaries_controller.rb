@@ -285,8 +285,7 @@ class DiariesController < ApplicationController
   end
 
   def delete_image
-    @diary.image = nil
-    @diary.save
+    @diary.eyecatch_image.purge
     render partial: 'show', locals: { diary: @diary }
   end
 

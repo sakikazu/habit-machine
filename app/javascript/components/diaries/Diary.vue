@@ -75,6 +75,7 @@ export default {
   },
   data () {
     return {
+      // TODO: propsのdiaryではなく、localDiaryを使う必要性を忘れてしまったので、わかったらコメント書いておく
       localDiary: null,
       editMode: (!!this.targetDateForEditMode ? true : false),
       highlight: this.highlightForAMoment,
@@ -86,7 +87,7 @@ export default {
       this.localDiary = newVal
     },
     editMode(newVal) {
-      this.$emit('on-edit-mode', this.diary.id, newVal)
+      this.$emit('on-edit-mode', this.localDiary.id, newVal)
     }
   },
   computed: {
