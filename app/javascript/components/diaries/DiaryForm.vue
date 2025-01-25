@@ -47,7 +47,7 @@
               img.img-thumbnail(:src="diary.image_path")
               a(href='javascript:void(0)' @click="deleteImage") 画像削除する
           p(v-else) 画像は未添付
-        input(type="file" name="[diary]eyecatch_image" id="diary_image")
+        input(type="file" accept="image/*" name="[diary]eyecatch_image" id="diary_image")
 
       .form-group.form-check
         input(type="hidden" name="[diary]main_in_day" value="0")

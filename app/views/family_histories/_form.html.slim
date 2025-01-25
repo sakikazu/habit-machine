@@ -17,7 +17,7 @@
   .form-group
     = f.text_area :content, id: 'content-field', class: 'form-control', placeholder: '', rows: 5
   .form-group.mb-4
-    = f.file_field :eyecatch_image, class: 'form-control'
+    = f.file_field :eyecatch_image, class: 'form-control', accept: 'image/*'
     = image_tag history.eyecatch_image_large, class: 'img-thumbnail' if history.eyecatch_image.attached?
     / .custom-control.custom-checkbox
       / = f.check_box :as_profile_image, class: 'custom-control-input', id: 'as_profile_image'
