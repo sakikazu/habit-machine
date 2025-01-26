@@ -46,6 +46,9 @@ class Diary < ApplicationRecord
   ACTION_MEMO_LINE = "# ----- ACTION MEMO -----"
   CRLF = "\r\n"
 
+  # TODO: これもrails7.1以降にvariant定義できるようになれば置き換えることができる
+  SUB_IMAGE_VARIANT_HASH = { resize_to_limit: [650, 650], saver: { quality: 80 } }.freeze
+
   validates_presence_of :record_at
   validate :exists_tags?
   validate :unique_main_in_day?

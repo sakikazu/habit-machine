@@ -140,6 +140,8 @@ Rails.application.routes.draw do
   resources :diaries do
     member do
       put :delete_image
+      put 'delete_sub_image/:image_id', action: :delete_sub_image
+      post :create_image
     end
     collection do
       get 'hilight'

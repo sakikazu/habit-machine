@@ -1,5 +1,5 @@
 class DiariesController < ApplicationController
-  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image]
+  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image, :create_image, :delete_sub_image]
   before_action :set_content_title, only: [:show, :edit]
   before_action :authenticate_user!
 
@@ -287,6 +287,21 @@ class DiariesController < ApplicationController
   def delete_image
     @diary.eyecatch_image.purge
     render partial: 'show', locals: { diary: @diary }
+  end
+
+  # 日記サブ画像の登録
+  def create_image
+    @diary.images.attach(params[:image])
+    uploaded_image = @diary.images.last
+    uploaded_image_variant = uploaded_image.variant(Diary::SUB_IMAGE_VARIANT_HASH)
+    render json: { imageId: uploaded_image.id, imageUrl: url_for(uploaded_image_variant) }
+  end
+
+  def delete_sub_image
+    image = @diary.images.find(params[:image_id])
+    image.purge
+
+    head :no_content
   end
 
   private
