@@ -191,12 +191,12 @@ document.addEventListener('turbolinks:load', () => {
             $('#memo-form').find('select.form-control').val('')
             this.memoContent = ''
             localStorage.removeItem('inputting-memo-content')
+
+            $('#memo-form').modal('hide')
           })
           .catch(error => {
             this.showToast({isError: true, message: (error?.response?.data?.message || `書いた内容をコピーしてから、リロードして、再度実行してください：${error.message}`)})
           })
-
-        $('#memo-form').modal('hide')
       },
       newDiary () {
         this.diariesWithOpsions.push({ diary: {}, targetDateForEditMode: this.targetDate, highlightForAMoment: false })
