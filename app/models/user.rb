@@ -66,6 +66,11 @@ class User < ApplicationRecord
     return user
   end
 
+  # 自分の家族のものを含めたカテゴリ
+  def all_categories
+    Category.where(source: [self, family])
+  end
+
   # NOTE: has_many の whereオプションでやれそうだが、めんどそう
   def habits_including_familys
     return habits if family.blank?

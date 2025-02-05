@@ -62,6 +62,7 @@ html[lang="ja"]
               = link_to "人生ハイライト", hilight_diaries_path, class: 'dropdown-item'
               = link_to "10年日記", years_diaries_path(Date.today.year), class: 'dropdown-item'
               = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
+              = link_to 'カテゴリ一覧', categories_path, class: 'dropdown-item'
           li class="dropdown nav-item"
             = link_to "その他", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu

@@ -29,6 +29,7 @@ class Habit < ApplicationRecord
   belongs_to :source, polymorphic: true
   has_many :records
 
+  # TODO: これはUserに設けるべきでは？
   scope :available_by_user, lambda { |user| joins("LEFT JOIN users ON habits.source_id = users.id AND habits.source_type = 'User' LEFT JOIN families ON habits.source_id = families.id AND habits.source_type = 'Family'").where("users.id = ? OR families.id = ?", user.id, user.family&.id) }
 
   validates_presence_of :title, :status, :result_type, :value_type

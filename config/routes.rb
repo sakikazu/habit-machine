@@ -151,6 +151,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :categories
+
   resources :habits
   resources :records, only: [:create, :update]
 
