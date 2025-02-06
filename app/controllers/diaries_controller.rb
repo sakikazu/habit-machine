@@ -10,6 +10,10 @@ class DiariesController < ApplicationController
   SEARCH_KEY_YEAR = "year:"
   SEARCH_KEY_IMAGE = "image:"
 
+  def categorized
+
+  end
+
   # GET /diaries
   # GET /diaries.json
   def index

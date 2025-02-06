@@ -144,6 +144,7 @@ Rails.application.routes.draw do
       post :create_image
     end
     collection do
+      get 'categorized'
       get 'hilight'
       get 'years/:year', action: :years, as: :years
       post 'append_memo'
