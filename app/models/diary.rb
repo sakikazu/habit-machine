@@ -32,6 +32,9 @@ class Diary < ApplicationRecord
   acts_as_paranoid
   acts_as_taggable
 
+  has_many :category_diaries, dependent: :destroy
+  has_many :categories, through: :category_diaries
+
   # 日記のアイキャッチ用画像
   has_one_attached :eyecatch_image
   # TODO: rails7.1以降だと、variant定義用のブロックが使えるので、eyecatch_image_smallなどがなくせる

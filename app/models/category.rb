@@ -23,6 +23,8 @@ class Category < ApplicationRecord
   belongs_to :source, polymorphic: true
   belongs_to :parent, class_name: 'Category', optional: true
   has_many :children, class_name: 'Category', foreign_key: 'parent_id', dependent: :destroy
+  has_many :category_diaries, dependent: :destroy
+  has_many :diaries, through: :category_diaries
 
   validates :name, presence: true
   validate :validate_depth

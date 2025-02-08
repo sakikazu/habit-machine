@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_02_07_000000) do
+ActiveRecord::Schema.define(version: 2025_02_07_233028) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -66,6 +66,15 @@ ActiveRecord::Schema.define(version: 2025_02_07_000000) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["parent_id"], name: "index_categories_on_parent_id"
     t.index ["source_type", "source_id"], name: "index_categories_on_source_type_and_source_id"
+  end
+
+  create_table "category_diaries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "category_id", null: false
+    t.bigint "diary_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["category_id"], name: "index_category_diaries_on_category_id"
+    t.index ["diary_id"], name: "index_category_diaries_on_diary_id"
   end
 
   create_table "children", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -274,6 +283,8 @@ ActiveRecord::Schema.define(version: 2025_02_07_000000) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "categories", "categories", column: "parent_id"
+  add_foreign_key "category_diaries", "categories"
+  add_foreign_key "category_diaries", "diaries"
   add_foreign_key "children", "families"
   add_foreign_key "histories", "children", column: "source_id"
   add_foreign_key "histories", "families"
