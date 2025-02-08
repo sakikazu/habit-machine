@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_02_04_000000) do
+ActiveRecord::Schema.define(version: 2025_02_07_000000) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -78,15 +78,15 @@ ActiveRecord::Schema.define(version: 2025_02_04_000000) do
     t.index ["family_id"], name: "index_children_on_family_id"
   end
 
-  create_table "diaries", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "diaries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "content", size: :medium
     t.integer "user_id"
     t.date "record_at"
-    t.string "image_file_name"
-    t.string "image_content_type"
-    t.integer "image_file_size"
-    t.datetime "image_updated_at"
+    t.string "image_file_name", comment: "AS移行により不要。削除する"
+    t.string "image_content_type", comment: "AS移行により不要。削除する"
+    t.integer "image_file_size", comment: "AS移行により不要。削除する"
+    t.datetime "image_updated_at", comment: "AS移行により不要。削除する"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
