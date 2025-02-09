@@ -1,5 +1,5 @@
 class DiariesController < ApplicationController
-  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image, :create_image, :delete_sub_image]
+  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image, :create_image, :delete_sub_image, :update_categories]
   before_action :set_content_title, only: [:show, :edit]
   before_action :authenticate_user!
 
@@ -9,10 +9,6 @@ class DiariesController < ApplicationController
   SEARCH_KEY_UNTIL = "until:"
   SEARCH_KEY_YEAR = "year:"
   SEARCH_KEY_IMAGE = "image:"
-
-  def categorized
-
-  end
 
   # GET /diaries
   # GET /diaries.json
@@ -306,6 +302,12 @@ class DiariesController < ApplicationController
     image.purge
 
     head :no_content
+  end
+
+  def update_categories
+    @diary.category_ids = params[:category_ids]
+    @diary.save!
+    render 'show'
   end
 
   private

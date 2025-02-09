@@ -44,8 +44,8 @@ html[lang="ja"]
         ul.navbar-nav.ml-auto.mr-3.mr-lg-0
           li.nav-item(class="#{active_class('child_histories')}") = link_to '家族', family_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0
-        li.nav-item(class="#{active_class('diaries', only: ['categorized'])}")
-          = link_to "カテゴリ", categorized_diaries_path, class: 'nav-link'
+        li.nav-item(class="#{active_class('categories', only: ['index'])}")
+          = link_to "カテゴリ", categories_path, class: 'nav-link'
       ul.navbar-nav.mr-3.mr-lg-0.d-lg-none
         li.nav-item
           = text_field_tag '', '', { id: 'globalSearchWord', class: 'form-control', placeholder: '検索', style: 'width: 80px', readonly: true }
@@ -55,14 +55,14 @@ html[lang="ja"]
         ul.navbar-nav.mr-auto
           li class="nav-item #{active_class('general', only: ['month'])}"
             = link_to '月間記録', this_month_path, class: 'nav-link'
-          li class="dropdown nav-item #{active_class('diaries', except: ['categorized'])}"
+          li class="dropdown nav-item #{active_class('diaries')}"
             = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
               = link_to '日記一覧', diaries_path, class: 'dropdown-item'
               = link_to "人生ハイライト", hilight_diaries_path, class: 'dropdown-item'
               = link_to "10年日記", years_diaries_path(Date.today.year), class: 'dropdown-item'
-              = link_to 'タグ一覧', tags_path, class: 'dropdown-item'
-              = link_to 'カテゴリ一覧', categories_path, class: 'dropdown-item'
+              = link_to 'タグ管理', tags_path, class: 'dropdown-item'
+              = link_to 'カテゴリ管理', manage_categories_path, class: 'dropdown-item'
           li class="dropdown nav-item"
             = link_to "その他", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu

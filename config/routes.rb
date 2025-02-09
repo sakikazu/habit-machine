@@ -142,9 +142,9 @@ Rails.application.routes.draw do
       put :delete_image
       put 'delete_sub_image/:image_id', action: :delete_sub_image
       post :create_image
+      post :update_categories
     end
     collection do
-      get 'categorized'
       get 'hilight'
       get 'years/:year', action: :years, as: :years
       post 'append_memo'
@@ -152,7 +152,12 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :categories
+  resources :categories do
+    collection do
+      get :manage
+      get :selection
+    end
+  end
 
   resources :habits
   resources :records, only: [:create, :update]

@@ -67,8 +67,16 @@ class User < ApplicationRecord
   end
 
   # 自分の家族のものを含めたカテゴリ
-  def all_categories
-    Category.where(source: [self, family])
+  def all_categories(eager_load: nil)
+    Category.where(source: [self, family]).tap do |scope|
+      if eager_load == :only_category
+        # TODO: 孫は含まれてないはず
+        scope.includes(:source, :children)
+      elsif eager_load == :with_diaries
+        # TODO: 想定通りに読み込まれているかを確認する
+        scope.includes(:source, :diaries, { children: :diaries })
+      end
+    end
   end
 
   # NOTE: has_many の whereオプションでやれそうだが、めんどそう

@@ -3,6 +3,47 @@ class CategoriesController < ApplicationController
   before_action :authenticate_user!
 
   def index
+    # これまで下記のようにrailsのviewにVue.jsで使うjson用のデータを詰め込むのをやらなかった理由なんだっけ？
+    categories = current_user.all_categories
+    @categories = categories.select { |cate| cate.parent_id.nil? }.map do |category|
+      {
+        id: category.id,
+        name: category.name,
+        shared: category.shared?,
+        diaries: category.diaries.map do |diary|
+          { id: diary.id, record_at: diary.record_at, title: diary.title_mod }
+        end,
+        children: category.children.map do |child|
+          {
+            id: child.id,
+            name: child.name,
+            shared: child.shared?,
+            diaries: child.diaries.map do |diary|
+              { id: diary.id, record_at: diary.record_at, title: diary.title_mod }
+            end,
+            children: child.children.map do |granchild|
+              {
+                id: granchild.id,
+                name: granchild.name,
+                shared: granchild.shared?,
+                diaries: granchild.diaries.map do |diary|
+                  { id: diary.id, record_at: diary.record_at, title: diary.title_mod }
+                end
+              }
+            end
+          }
+        end
+      }
+    end
+  end
+
+  def selection
+    @categories = current_user.all_categories
+    diary = Diary.find(params[:diary_id])
+    @category_ids = diary.category_ids
+  end
+
+  def manage
     # TODO: includes(source)で、shared?メソッドの中のN+1が解消できてないけどなぜだっけ
     @categories = current_user.all_categories.includes(:source, :children).where(parent_id: nil)
   end

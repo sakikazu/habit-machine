@@ -1,0 +1,36 @@
+.row.justify-content-center
+  .col-sm-5
+    ul.alert.alert-info.pl-5.mb-5
+      li
+        | 日記のカテゴリを管理します
+      li
+        | カテゴリは3層まで階層化ができます
+      li
+        | 家族で共有できるカテゴリは、「共有カテゴリを登録」から作成できます。その配下のカテゴリはすべて共有されます
+    .page-header.d-flex.justify-content-between
+      h2 カテゴリ一覧
+      .right-side
+        = link_to 'カテゴリを登録', new_category_path, class: "btn btn-info"
+        =< link_to '共有カテゴリを登録', new_category_path(shared: 1), class: "btn btn-warning"
+    .row
+      ul
+        - @categories.each do |category|
+          li
+            = link_to category_path(category) do
+              = category.name
+              - if category.shared?
+                span.badge.badge-pill.badge-warning 家族共有
+            ul
+              - category.children.each do |child|
+                li
+                  = link_to category_path(child) do
+                    = child.name
+                    - if child.shared?
+                      span.badge.badge-pill.badge-warning 家族共有
+                  ul
+                    - child.children.each do |grandchild|
+                      li
+                        = link_to category_path(grandchild) do
+                          = grandchild.name
+                          - if grandchild.shared?
+                            span.badge.badge-pill.badge-warning 家族共有
