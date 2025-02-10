@@ -11,7 +11,7 @@
         <ul v-if="category.diaries" class="diary-list">
           <li v-for="diary in category.diaries" :key="diary.id">
             <a :href="`/day/${diary.record_at}/diaries/${diary.id}`">
-              {{ `${diary.record_at}${diary.title}` }}
+              {{ `${diary.title} [${diary.record_at}]` }}
             </a>
           </li>
         </ul>

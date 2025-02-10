@@ -114,6 +114,12 @@ export default {
         this.setSelectedToCategories(this.categories, newVal);
       }
     },
+    "localDiary.category_ids": {
+      handler(newVal) {
+        // selectedCategoryIds の変更をlocalDiary.category_ids に同期させたくないので、値渡しにする
+        this.selectedCategoryIds = [...newVal]
+      }
+    },
   },
   computed: {
     targetDate () {
@@ -164,7 +170,6 @@ export default {
       HmAxios.post(`/diaries/${this.localDiary.id}/update_categories.json`, { category_ids: this.selectedCategoryIds })
         .then(res => {
           this.localDiary = res.data.diary
-          this.selectedCategoryIds = res.data.diary.category_ids
         })
         .catch(error => {
           alert(error.message || error.response.data.message)
@@ -174,7 +179,6 @@ export default {
       HmAxios.get(`/diaries/${diaryId}.json`)
         .then(res => {
           this.localDiary = res.data.diary
-          this.selectedCategoryIds = res.data.diary.category_ids
         })
         .catch(error => {
           alert(error.message || error.response.data.message)
