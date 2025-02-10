@@ -82,9 +82,10 @@ export default {
 .diary-list
   padding-left: 20px
   margin-top: 5px
+  margin-left: 20px
 
   li
-    list-style: none
+    list-style: auto
     padding: 5px 0
     font-size: 14px
     color: #333

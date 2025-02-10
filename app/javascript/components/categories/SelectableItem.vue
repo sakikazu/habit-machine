@@ -27,18 +27,17 @@ export default {
 };
 </script>
 
-<style scoped>
-.category-item {
-  margin-left: 10px;
-}
-label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-.children {
-  margin-left: 20px;
-  border-left: 2px solid #ccc;
-  padding-left: 10px;
-}
+<style scoped lang="sass">
+.category-item
+  margin-left: 10px
+
+label
+  display: flex
+  align-items: center
+  gap: 5px
+
+.children
+  margin-left: 20px
+  border-left: 2px solid #ccc
+  padding-left: 10px
 </style>
