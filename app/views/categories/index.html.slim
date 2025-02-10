@@ -1,0 +1,9 @@
+- content_for :addjs_in_head
+  = javascript_pack_tag 'categories', 'data-turbolinks-track': 'reload'
+
+#categories
+  .row.justify-content-center
+    .col-sm-8
+      .page-header
+        h2 カテゴリ表示
+      categories(:categories="#{@categories.to_json}" )

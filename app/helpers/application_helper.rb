@@ -188,8 +188,12 @@ module ApplicationHelper
     link_to "markdown記法", "https://qiita.com/tbpgr/items/989c6badefff69377da7", target: :blank
   end
 
-  def active_class(controller_name, action_name = '')
-    controller.controller_name == controller_name &&
-      (action_name.blank? || (action_name.present? && controller.action_name == action_name)) ? 'active' : ''
+  # TODO: 「家族」タブでは複数controllerが含まれるので、それに対応できるようにしたい。activeかどうかのメソッドを切り出して、家族の方ではそのメソッドを並べて、viewの方でactiveを出力するとか
+  def active_class(controller_name, only: [], except: [])
+    return '' unless controller.controller_name == controller_name
+    return '' if only.present? && only.exclude?(controller.action_name)
+    return '' if except.present? && except.include?(controller.action_name)
+
+    'active'
   end
 end

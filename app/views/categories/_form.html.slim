@@ -1,0 +1,28 @@
+- if @shared
+  .alert.alert-warning
+    | 共有カテゴリを登録します
+- if @category.parent.present?
+  .alert.alert-warning
+    | 親カテゴリ：
+    = @category.parent.name
+- else
+  .alert.alert-warning
+    | トップのカテゴリです
+
+= form_with(model: @category, local: true, class: 'form') do |f|
+  - if @category.errors.any?
+    .alert.alert-danger
+      ul
+        - @category.errors.full_messages.each do |msg|
+          li = msg
+
+  .form-group
+    = f.label :name, 'カテゴリ名'
+    = f.text_field :name, class: 'form-control'
+
+  / 一旦、編集時に親は変更できないようにしている
+  - if @category.new_record?
+    = hidden_field_tag(:parent_id, @category.parent&.id)
+  = hidden_field_tag(:shared, @shared ? 1 : '')
+
+  = f.submit '登録する', class: "btn btn-primary"

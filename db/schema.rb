@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_01_12_111942) do
+ActiveRecord::Schema.define(version: 2025_02_07_233028) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -57,6 +57,26 @@ ActiveRecord::Schema.define(version: 2025_01_12_111942) do
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
 
+  create_table "categories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "parent_id", comment: "親カテゴリ"
+    t.string "source_type", null: false
+    t.bigint "source_id", null: false, comment: "カテゴリの所有者（ポリモーフィック）"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["parent_id"], name: "index_categories_on_parent_id"
+    t.index ["source_type", "source_id"], name: "index_categories_on_source_type_and_source_id"
+  end
+
+  create_table "category_diaries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "category_id", null: false
+    t.bigint "diary_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["category_id"], name: "index_category_diaries_on_category_id"
+    t.index ["diary_id"], name: "index_category_diaries_on_diary_id"
+  end
+
   create_table "children", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.date "birthday"
@@ -67,15 +87,15 @@ ActiveRecord::Schema.define(version: 2025_01_12_111942) do
     t.index ["family_id"], name: "index_children_on_family_id"
   end
 
-  create_table "diaries", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "diaries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "title"
     t.text "content", size: :medium
     t.integer "user_id"
     t.date "record_at"
-    t.string "image_file_name"
-    t.string "image_content_type"
-    t.integer "image_file_size"
-    t.datetime "image_updated_at"
+    t.string "image_file_name", comment: "AS移行により不要。削除する"
+    t.string "image_content_type", comment: "AS移行により不要。削除する"
+    t.integer "image_file_size", comment: "AS移行により不要。削除する"
+    t.datetime "image_updated_at", comment: "AS移行により不要。削除する"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -85,7 +105,6 @@ ActiveRecord::Schema.define(version: 2025_01_12_111942) do
     t.boolean "main_in_day", default: false, null: false
     t.boolean "pinned", default: false, null: false
     t.integer "pin_priority", default: 0, null: false
-    t.string "type"
     t.index ["record_at"], name: "index_diaries_on_record_at"
     t.index ["user_id"], name: "index_diaries_on_user_id"
   end
@@ -263,6 +282,9 @@ ActiveRecord::Schema.define(version: 2025_01_12_111942) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "categories", "categories", column: "parent_id"
+  add_foreign_key "category_diaries", "categories"
+  add_foreign_key "category_diaries", "diaries"
   add_foreign_key "children", "families"
   add_foreign_key "histories", "children", column: "source_id"
   add_foreign_key "histories", "families"

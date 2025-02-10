@@ -1,0 +1,15 @@
+.row.justify-content-center
+  .col-sm-4
+    .form-actions.mb30
+      = link_to '一覧へ', manage_categories_path, class: "btn btn-light"
+    .page-header.d-flex.justify-content-between
+      h2 カテゴリ
+      .right-side
+        = link_to '編集する', edit_category_path(@category), class: "btn btn-light"
+        =< link_to '子カテゴリを登録', new_category_path(parent_id: @category.id), class: "btn btn-info"
+    .row
+      table.table
+        tr
+          th カテゴリ名
+          td = @category.name
+

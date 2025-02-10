@@ -37,6 +37,7 @@ document.addEventListener('turbolinks:load', () => {
       modalableDiaryId: null,
       // mobileでは「本日の記録」の未記入のものはデフォルト非表示にしているので、それを表示するためのフラグ
       openRecordContents: false,
+      categories: [],
     },
     computed: {
       // ページ内のすべてのフォームからデータ変更をチェック
@@ -49,6 +50,7 @@ document.addEventListener('turbolinks:load', () => {
       this.targetDate = this.$el.dataset.targetDate
       this.fetchData()
       this.enablePopover()
+      this.fetchCategories()
     },
     methods: {
       setup () {
@@ -191,12 +193,12 @@ document.addEventListener('turbolinks:load', () => {
             $('#memo-form').find('select.form-control').val('')
             this.memoContent = ''
             localStorage.removeItem('inputting-memo-content')
+
+            $('#memo-form').modal('hide')
           })
           .catch(error => {
             this.showToast({isError: true, message: (error?.response?.data?.message || `書いた内容をコピーしてから、リロードして、再度実行してください：${error.message}`)})
           })
-
-        $('#memo-form').modal('hide')
       },
       newDiary () {
         this.diariesWithOpsions.push({ diary: {}, targetDateForEditMode: this.targetDate, highlightForAMoment: false })
@@ -225,6 +227,16 @@ document.addEventListener('turbolinks:load', () => {
       },
       closeDiaryModal () {
         this.modalableDiaryId = null
+      },
+      // TODO: 共通化したい
+      fetchCategories () {
+        HmAxios.get('/categories/selection.json')
+          .then(res => {
+            this.categories = res.data.categories
+          })
+          .catch(error => {
+            alert(error.message || error.response.data.message)
+          })
       },
     },
   })

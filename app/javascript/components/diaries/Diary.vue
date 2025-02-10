@@ -17,6 +17,8 @@
                 i.fa.fa-star
               a(:href="`/day/${localDiary.record_at}/diaries/${localDiary.id}`") {{ localDiary.title_mod }}
         .tags.ml-3(v-html="localDiary.tag_links")
+      .d-flex.justify-content-end
+        category-links(v-if="categories.length > 0" :categories="categories" :savedCategoryIds="localDiary.category_ids" @edit-category="showCategoryModal = true")
     .diary-body(v-if="!changed_record_at")
       p(v-if="localDiary.is_secret" class='btn btn-block btn-danger disabled mb5') シークレット日記
       p(v-if="localDiary.is_hilight" class='btn btn-block btn-warning disabled mb5') ハイライト日記
@@ -29,17 +31,23 @@
     .diary-recordat-changed(v-else)
       a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
   diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")
+  selectable-modal(v-if="showCategoryModal" :categories="categories" @close="showCategoryModal = false" @save="saveCategories" @toggle="toggleCategory")
 </template>
 
 <script>
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
+// TODO: DiaryFormはDiaryを経由する必要が？
 import DiaryForm from 'components/diaries/DiaryForm'
+import SelectableModal from "components/categories/SelectableModal"
+import CategoryLinks from "components/categories/CategoryLinks"
 
 export default {
   inheritAttrs: false,
   components: {
     DiaryForm,
+    SelectableModal,
+    CategoryLinks,
   },
   props: {
     diary: {
@@ -72,6 +80,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    categories: {
+      type: Array,
+      default: [],
+    },
   },
   data () {
     return {
@@ -80,6 +92,8 @@ export default {
       editMode: (!!this.targetDateForEditMode ? true : false),
       highlight: this.highlightForAMoment,
       changed_record_at: null,
+      showCategoryModal: false,
+      selectedCategoryIds: [],
     }
   },
   watch: {
@@ -88,7 +102,18 @@ export default {
     },
     editMode(newVal) {
       this.$emit('on-edit-mode', this.localDiary.id, newVal)
-    }
+    },
+    // categoriesをpropsで渡すため、categoriesとselectedCategoryIdsが揃った状態で、categoriesの更新を行う
+    categories(newVal) {
+      if (newVal.length > 0 && this.selectedCategoryIds.length > 0) {
+        this.setSelectedToCategories(newVal, this.selectedCategoryIds);
+      }
+    },
+    selectedCategoryIds(newVal) {
+      if (this.categories.length > 0 && newVal.length > 0) {
+        this.setSelectedToCategories(this.categories, newVal);
+      }
+    },
   },
   computed: {
     targetDate () {
@@ -118,10 +143,38 @@ export default {
   mounted () {
   },
   methods: {
+    setSelectedToCategories (categories, selected_ids) {
+      categories.forEach(category => {
+        category.selected = selected_ids.includes(category.id)
+
+        if (category.children && category.children.length > 0) {
+          this.setSelectedToCategories(category.children, selected_ids);
+        }
+      });
+    },
+    toggleCategory (category_id) {
+      const index = this.selectedCategoryIds.indexOf(category_id);
+      if (index !== -1) {
+        this.selectedCategoryIds.splice(index, 1)
+      } else {
+        this.selectedCategoryIds.push(category_id)
+      }
+    },
+    saveCategories () {
+      HmAxios.post(`/diaries/${this.localDiary.id}/update_categories.json`, { category_ids: this.selectedCategoryIds })
+        .then(res => {
+          this.localDiary = res.data.diary
+          this.selectedCategoryIds = res.data.diary.category_ids
+        })
+        .catch(error => {
+          alert(error.message || error.response.data.message)
+        })
+    },
     fetchDiary (diaryId) {
       HmAxios.get(`/diaries/${diaryId}.json`)
         .then(res => {
           this.localDiary = res.data.diary
+          this.selectedCategoryIds = res.data.diary.category_ids
         })
         .catch(error => {
           alert(error.message || error.response.data.message)

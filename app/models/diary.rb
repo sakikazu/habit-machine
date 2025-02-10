@@ -2,25 +2,24 @@
 #
 # Table name: diaries
 #
-#  id                 :integer          not null, primary key
-#  content            :text(16777215)
-#  deleted_at         :datetime
-#  image_content_type :string(255)
-#  image_file_name    :string(255)
-#  image_file_size    :integer
-#  image_updated_at   :datetime
-#  is_about_date      :boolean
-#  is_hilight         :boolean
-#  is_secret          :boolean
-#  main_in_day        :boolean          default(FALSE), not null
-#  pin_priority       :integer          default(0), not null
-#  pinned             :boolean          default(FALSE), not null
-#  record_at          :date
-#  title              :string(255)
-#  type               :string(255)
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  user_id            :integer
+#  id                                             :bigint           not null, primary key
+#  content                                        :text(16777215)
+#  deleted_at                                     :datetime
+#  image_content_type(AS移行により不要。削除する) :string(255)
+#  image_file_name(AS移行により不要。削除する)    :string(255)
+#  image_file_size(AS移行により不要。削除する)    :integer
+#  image_updated_at(AS移行により不要。削除する)   :datetime
+#  is_about_date                                  :boolean
+#  is_hilight                                     :boolean
+#  is_secret                                      :boolean
+#  main_in_day                                    :boolean          default(FALSE), not null
+#  pin_priority                                   :integer          default(0), not null
+#  pinned                                         :boolean          default(FALSE), not null
+#  record_at                                      :date
+#  title                                          :string(255)
+#  created_at                                     :datetime         not null
+#  updated_at                                     :datetime         not null
+#  user_id                                        :integer
 #
 # Indexes
 #
@@ -32,6 +31,9 @@
 class Diary < ApplicationRecord
   acts_as_paranoid
   acts_as_taggable
+
+  has_many :category_diaries, dependent: :destroy
+  has_many :categories, through: :category_diaries
 
   # 日記のアイキャッチ用画像
   has_one_attached :eyecatch_image

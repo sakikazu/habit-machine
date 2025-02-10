@@ -142,12 +142,20 @@ Rails.application.routes.draw do
       put :delete_image
       put 'delete_sub_image/:image_id', action: :delete_sub_image
       post :create_image
+      post :update_categories
     end
     collection do
       get 'hilight'
       get 'years/:year', action: :years, as: :years
       post 'append_memo'
       get 'pinned'
+    end
+  end
+
+  resources :categories do
+    collection do
+      get :manage
+      get :selection
     end
   end
 
