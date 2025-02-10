@@ -2,6 +2,7 @@ class CategoriesController < ApplicationController
   before_action :set_category, only: %i[show edit update destroy]
   before_action :authenticate_user!
 
+  # TODO: index, selectionとも、eager loadingできてないのでやる
   def index
     # これまで下記のようにrailsのviewにVue.jsで使うjson用のデータを詰め込むのをやらなかった理由なんだっけ？
     categories = current_user.all_categories
@@ -37,10 +38,9 @@ class CategoriesController < ApplicationController
     end
   end
 
+  # TODO: indexにあるコードと共通化できたらしたい
   def selection
     @categories = current_user.all_categories
-    diary = Diary.find(params[:diary_id])
-    @category_ids = diary.category_ids
   end
 
   def manage

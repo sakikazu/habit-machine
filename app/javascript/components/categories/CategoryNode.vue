@@ -8,7 +8,7 @@
 
     <transition name="fade">
       <div v-if="isOpen" class="category-content">
-        <ul v-if="category.diaries" class="article-list">
+        <ul v-if="category.diaries" class="diary-list">
           <li v-for="diary in category.diaries" :key="diary.id">
             <a :href="`/day/${diary.record_at}/diaries/${diary.id}`">
               {{ `${diary.record_at}${diary.title}` }}
@@ -90,12 +90,12 @@ export default {
 }
 
 /* 記事リスト */
-.article-list {
+.diary-list {
   padding-left: 20px;
   margin-top: 5px;
 }
 
-.article-list li {
+.diary-list li {
   list-style: none;
   padding: 5px 0;
   font-size: 14px;

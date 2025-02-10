@@ -11,5 +11,22 @@ document.addEventListener('turbolinks:load', () => {
       Diary,
       UrlCopyButton,
     },
+    data: {
+      categories: [],
+    },
+    mounted () {
+      this.fetchCategories()
+    },
+    methods: {
+      fetchCategories () {
+        HmAxios.get('/categories/selection.json')
+          .then(res => {
+            this.categories = res.data.categories
+          })
+          .catch(error => {
+            alert(error.message || error.response.data.message)
+          })
+      },
+    }
   })
 })

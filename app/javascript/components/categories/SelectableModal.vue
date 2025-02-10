@@ -11,8 +11,8 @@
         />
       </div>
       <div class="modal-actions">
-        <button @click="$emit('save')">保存</button>
-        <button @click="$emit('close')">キャンセル</button>
+        <button class="btn btn-primary" @click="$emit('save')">保存</button>
+        <button class="btn btn-light" @click="$emit('close')">キャンセル</button>
       </div>
     </div>
   </div>
@@ -56,16 +56,5 @@ export default {
   margin-top: 15px;
   display: flex;
   justify-content: space-around;
-}
-button {
-  padding: 5px 10px;
-  border: none;
-  background: #007bff;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-}
-button:last-child {
-  background: #ccc;
 }
 </style>

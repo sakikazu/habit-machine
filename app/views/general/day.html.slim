@@ -106,6 +106,7 @@
               :target-date-for-edit-mode="obj.targetDateForEditMode"
               :highlight-for-a-moment="obj.highlightForAMoment"
               :key="`diary-${obj.diary.id}`"
+              :categories="categories"
               @content-changed="onContentChanged"
               @submitted="onSubmitted"
               @on-edit-mode="onEditMode"
