@@ -76,7 +76,7 @@ class CategoriesController < ApplicationController
                        end
 
     if @category.save
-      redirect_to categories_path, notice: 'カテゴリを作成しました'
+      redirect_to manage_categories_path, notice: 'カテゴリを作成しました'
     else
       render :new
     end
@@ -85,14 +85,14 @@ class CategoriesController < ApplicationController
   # TODO: 親カテゴリの変更、共有設定の変更には未対応
   def update
     @category.update(category_params)
-    redirect_to categories_path, notice: 'カテゴリを更新しました'
+    redirect_to manage_categories_path, notice: 'カテゴリを更新しました'
   end
 
   def destroy
     @category.destroy
 
     respond_to do |format|
-      format.html { redirect_to categories_url, notice: 'カテゴリを削除しました.' }
+      format.html { redirect_to manage_categories_url, notice: 'カテゴリを削除しました.' }
       format.json { head :no_content }
     end
   end
