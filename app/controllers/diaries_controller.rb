@@ -174,7 +174,9 @@ class DiariesController < ApplicationController
   # GET /diaries/1
   # GET /diaries/1.json
   def show
-    if @diary.user != current_user
+    # TODO: 日記が家族共有かどうかだけではなく、current_userを見て、参照可否をチェックする。そのメソッドをDiaryに定義してrspecまで
+    if @diary.user != current_user && !@diary.family_shared?
+      # TODO: ErrorsControllerが有効になってない？ActiveRecord::RecordNotFoundを起こしても開発環境だから？任意で404ページ出せるようにしたい
       redirect_to diaries_path, notice: "この日記は存在しません."
       return
     end

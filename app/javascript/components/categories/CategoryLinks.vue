@@ -1,11 +1,13 @@
 <template>
-  <div class="diary-categories">
-    <span>カテゴリ:</span>
-    <div class="category-list">
-      <a v-for="category in savedCategories" :key="category.id" href="/categories" class="category-link">
-        <i v-if="category.shared" class="fa fa-users mr-2" style="color:orange"></i>
-        {{ category.path.join(' > ') }}
-      </a>
+  <div class="diary-categories d-flex justify-content-between">
+    <div class="d-flex">
+      <p class="align-self-center mb-0" style="min-width: 80px">カテゴリ:</p>
+      <div class="category-list">
+        <a v-for="category in savedCategories" :key="category.id" href="/categories" class="category-link">
+          <i v-if="category.shared" class="fa fa-users mr-2" style="color:orange"></i>
+          {{ category.path.join(' > ') }}
+        </a>
+      </div>
     </div>
     <button class="btn btn-light" style="min-width: 70px" @click="$emit('edit-category')">編集</button>
   </div>

@@ -17,8 +17,7 @@
                 i.fa.fa-star
               a(:href="`/day/${localDiary.record_at}/diaries/${localDiary.id}`") {{ localDiary.title_mod }}
         .tags.ml-3(v-html="localDiary.tag_links")
-      .d-flex.justify-content-end
-        category-links(v-if="categories.length > 0" :categories="categories" :savedCategoryIds="localDiary.category_ids" @edit-category="showCategoryModal = true")
+      category-links(v-if="categories.length > 0" :categories="categories" :savedCategoryIds="localDiary.category_ids" @edit-category="showCategoryModal = true")
     .diary-body(v-if="!changed_record_at")
       p(v-if="localDiary.is_secret" class='btn btn-block btn-danger disabled mb5') シークレット日記
       p(v-if="localDiary.is_hilight" class='btn btn-block btn-warning disabled mb5') ハイライト日記
