@@ -359,7 +359,7 @@ export default {
 
       HmAxios.post(`/diaries/${this.diary.id}/create_image`, formData)
         .then(res => {
-          const { imageUrl, imageId } = res.data
+          const { imageUrl, imageOrgUrl, imageId } = res.data
           this.images.push({
             id: imageId,
             url: imageUrl,
@@ -367,7 +367,7 @@ export default {
             uploadedAt: new Date().toISOString()
           })
 
-          this.handleImageInsert({ id: imageId, url: imageUrl })
+          this.handleImageInsert({ id: imageId, url: imageUrl, orgUrl: imageOrgUrl })
         })
         .catch(error => {
           alert(error?.response?.data?.message || error.message)
@@ -395,8 +395,10 @@ export default {
     handleImageInsert(image) {
       // ファイル名に半角カッコが含まれている場合、ActiveStorageの画像パスにそれが含まれるため、現状、markdown用に生成する画像タグが意図せぬカッコで区切られてしまう不具合がある
       // TODO: ここで半角カッコ部分を変換すれば問題はなくなる。全角カッコにするだけでいいかも
-      const imageTag = `![image-${image.id}](${image.url})\n`
-      this.insertTextAtCursor(imageTag)
+      const imageTag = `![image-${image.id}](${image.url})`
+      // サムネイル画像を、オリジナルサイズ画像へのリンクにする
+      const imageLinkTag = `[${imageTag}](${image.orgUrl})\n`
+      this.insertTextAtCursor(imageLinkTag)
     },
 
     triggerFileInput() {

@@ -296,7 +296,7 @@ class DiariesController < ApplicationController
     @diary.images.attach(params[:image])
     uploaded_image = @diary.images.last
     uploaded_image_variant = uploaded_image.variant(Diary::SUB_IMAGE_VARIANT_HASH)
-    render json: { imageId: uploaded_image.id, imageUrl: url_for(uploaded_image_variant) }
+    render json: { imageId: uploaded_image.id, imageUrl: url_for(uploaded_image_variant), imageOrgUrl: url_for(uploaded_image) }
   end
 
   def delete_sub_image

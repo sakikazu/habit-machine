@@ -370,6 +370,18 @@ td {
   > p:last-of-type {
     margin-bottom: 0;
   }
+
+  a > img {
+    border: 3px solid rgba(70, 130, 180, 0.9);
+    box-shadow: 0 0 8px rgba(70, 130, 180, 0.6);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    border-radius: 4px;
+
+    &:hover {
+      border-color: rgba(30, 144, 255, 1); /* 深い青に変化 */
+      box-shadow: 0 0 12px rgba(30, 144, 255, 0.8);
+    }
+  }
 }
 
 /**********************************************
