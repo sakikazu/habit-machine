@@ -30,7 +30,7 @@
     .diary-recordat-changed(v-else)
       a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
   diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")
-  selectable-modal(v-if="showCategoryModal" :categories="categories" @close="showCategoryModal = false" @save="saveCategories" @toggle="toggleCategory")
+  selectable-modal(v-if="showCategoryModal" :categories="localCategories" @close="showCategoryModal = false" @save="saveCategories" @toggle="toggleCategory")
 </template>
 
 <script>
@@ -91,6 +91,8 @@ export default {
       editMode: (!!this.targetDateForEditMode ? true : false),
       highlight: this.highlightForAMoment,
       changed_record_at: null,
+      // 直接categoriesにカテゴリの選択状態を反映してしまうと他のDiary Componentにも影響してしまうので、Componentごとに持つ（選択モーダル用）
+      localCategories: [],
       showCategoryModal: false,
       selectedCategoryIds: [],
     }
@@ -102,15 +104,20 @@ export default {
     editMode(newVal) {
       this.$emit('on-edit-mode', this.localDiary.id, newVal)
     },
-    // categoriesをpropsで渡すため、categoriesとselectedCategoryIdsが揃った状態で、categoriesの更新を行う
-    categories(newVal) {
-      if (newVal.length > 0 && this.selectedCategoryIds.length > 0) {
-        this.setSelectedToCategories(newVal, this.selectedCategoryIds);
-      }
+    // categoriesはpropsで渡されるため、categoriesとselectedCategoryIdsが揃った状態で、localCategoriesの更新を行う
+    categories: {
+      handler(newVal) {
+        this.localCategories = JSON.parse(JSON.stringify(newVal))
+        if (newVal.length > 0 && this.selectedCategoryIds.length > 0) {
+          this.setSelectedToCategories(this.localCategories, this.selectedCategoryIds);
+        }
+      },
+      deep: true,
+      immediate: true // propsで渡されたものだからか、これをつけないと検知されなかった
     },
     selectedCategoryIds(newVal) {
-      if (this.categories.length > 0 && newVal.length > 0) {
-        this.setSelectedToCategories(this.categories, newVal);
+      if (this.localCategories.length > 0 && newVal.length > 0) {
+        this.setSelectedToCategories(this.localCategories, newVal);
       }
     },
     "localDiary.category_ids": {
