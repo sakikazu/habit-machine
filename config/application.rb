@@ -30,6 +30,7 @@ module HabitMachine
 
     # エラーページにlayoutを適用させたいため
     # see. https://qiita.com/mr-myself/items/c2f4fb2e5dcee6a336f3#comment-23298b703d75b7d27487
+    # NOTE: 本番環境のみ。開発環境は config.consider_all_requests_local = true なので、エラー時はデバッグ情報の画面になる
     config.exceptions_app = ->(env) { ErrorsController.action(:show).call(env) }
   end
 end
