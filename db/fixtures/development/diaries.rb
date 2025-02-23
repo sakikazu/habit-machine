@@ -1,13 +1,12 @@
-if User.first.blank?
-  family = Family.create(name: '鈴木')
-  User.create(familyname: '鈴木', givenname: '太郎', email: 'test@example.com', password: 'password', password_confirmation: 'password', family: family)
+family = Family.find_or_create_by(name: '鈴木')
+user = User.find_by(email: 'test@example.com')
+if user.blank?
+  user = User.create(familyname: '鈴木', givenname: '太郎', email: 'test@example.com', password: 'password', password_confirmation: 'password', family:)
 end
-
-user_id = User.first.id
 base_day = Date.today
 
 diary = Diary.seed do |d|
-  d.user_id = user_id
+  d.user = user
   d.record_at = base_day.ago(2.day)
   d.pinned = true
   d.title = '夏休みにやること'
@@ -21,7 +20,7 @@ diary = Diary.seed do |d|
 end
 
 Diary.seed do |d|
-  d.user_id = user_id
+  d.user = user
   d.record_at = base_day.ago(1.day)
   d.pinned = true
   d.title = '夏休み1日目'
@@ -39,7 +38,7 @@ Diary.seed do |d|
 end
 
 Diary.seed do |d|
-  d.user_id = user_id
+  d.user = user
   d.record_at = base_day
   d.title = '夏休み2日目'
   d.content = <<~EOS
@@ -50,12 +49,12 @@ Diary.seed do |d|
   EOS
 end.tap do |result|
   obj = result.first
-  obj.image = File.open("#{Rails.root}/db/fixtures/development/images/2020_kabutomushi.jpg")
+  obj.eyecatch_image.attach(io: File.open("#{Rails.root}/db/fixtures/development/images/2020_kabutomushi.jpg"), filename: 'kabutomushi.jpg')
   obj.save!
 end
 
 Diary.seed do |d|
-  d.user_id = user_id
+  d.user = user
   d.record_at = base_day
   d.pinned = true
   d.title = 'Vue.jsの学習'
@@ -67,7 +66,7 @@ Diary.seed do |d|
 end
 
 Diary.seed do |d|
-  d.user_id = user_id
+  d.user = user
   d.record_at = base_day.since(1.day)
   d.title = '夏休み3日目'
   d.content = <<~EOS
@@ -80,7 +79,7 @@ Diary.seed do |d|
 end
 
 Diary.seed do |d|
-  d.user_id = user_id
+  d.user = user
   d.record_at = base_day.since(2.day)
   d.title = '夏休み4日目'
   d.content = <<~EOS
