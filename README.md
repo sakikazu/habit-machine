@@ -20,8 +20,7 @@ HabitMachine
 
 ## スクリーンキャプチャ
 ### 日ごとのページ
-<img width="1175" alt="2023-02-19_HMキャプチャ（Github用）" src="https://user-images.githubusercontent.com/745130/219923097-3249e197-d0cd-41a3-8c36-ec5ce7182e90.png">
-
+![image](https://github.com/user-attachments/assets/467ae51a-ce8c-456b-9593-f947c110616b)
 
 ### ノートページ
 <img width="1172" alt="image" src="https://user-images.githubusercontent.com/745130/219923297-419e8bd1-fd56-4c41-9a00-6d59faa08363.png">
