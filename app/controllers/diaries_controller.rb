@@ -76,6 +76,7 @@ class DiariesController < ApplicationController
             .left_joins(:eyecatch_image_attachment)
             .left_joins(:images_attachments)
             .where('active_storage_attachments.id IS NOT NULL OR images_attachments_diaries.id IS NOT NULL')
+            .distinct
         end
 
         if since_date.present?
