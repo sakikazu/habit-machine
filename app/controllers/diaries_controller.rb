@@ -69,8 +69,13 @@ class DiariesController < ApplicationController
         end
 
         if has_image
-          # TODO: ActiveStorageではjoinにする必要性
-          @diaries = @diaries.where.not(image_file_name: nil)
+          # NOTE: Diaryのeyecatch_imageとimagesのいずれかの画像がひもづいていることを検索するため left_joinsを2つ指定するが、実質は同じテーブルを見ている。
+          #       このケースでは、railsが2つ目に自動的にaliasを設定するみたいで、whereではそれを指定している `images_attachments_diaries`
+          #       ActiveStorageが自動でxxx_attachmentという関連を追加していることや、aliasを設定することもドキュメントからは多分わからない仕様
+          @diaries = @diaries
+            .left_joins(:eyecatch_image_attachment)
+            .left_joins(:images_attachments)
+            .where('active_storage_attachments.id IS NOT NULL OR images_attachments_diaries.id IS NOT NULL')
         end
 
         if since_date.present?
