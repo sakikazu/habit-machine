@@ -3,103 +3,14 @@ class DiariesController < ApplicationController
   before_action :set_content_title, only: [:show, :edit]
   before_action :authenticate_user!
 
-  SEARCH_KEY_TAGS = "tags:"
-  SEARCH_KEY_HILIGHT = "hilight:"
-  SEARCH_KEY_SINCE = "since:"
-  SEARCH_KEY_UNTIL = "until:"
-  SEARCH_KEY_YEAR = "year:"
-  SEARCH_KEY_IMAGE = "image:"
-
   # GET /diaries
   # GET /diaries.json
   def index
-    # TODO: Searchクラスに切り出したいところだがまあいいや
+    searcher = DiarySearcher.new(current_user.diaries, params)
+    result_diaries = searcher.search
+    @diaries = result_diaries.newer.page(params[:page]).per(20)
     @q = Diary.new
-    @diaries = current_user.diaries.includes(:tags)
-
-    # タグのリンクからの遷移の場合
-    if params[:tag].present?
-      tag = params[:tag]
-      @diaries = @diaries.tagged_with(tag)
-      @q.search_word = "tags:#{tag}"
-    # 検索ボタンからの遷移の場合
-    elsif params[:diary].present? and params[:diary][:search_word].present?
-      search_word = params[:diary][:search_word]
-      @q.search_word = search_word
-
-      inputs = search_word.split(/[ 　]/).delete_if{|n| n.blank?}
-      if inputs.present?
-        tags = []
-        hilight = false
-        has_image = false
-        since_date = nil
-        until_date = nil
-        date_range = nil
-        words = []
-        inputs.each do |input|
-          if input =~ /^#{SEARCH_KEY_TAGS}/
-            input[SEARCH_KEY_TAGS.length..-1].split(",").each{|n| tags << n}
-          elsif input =~ /^#{SEARCH_KEY_HILIGHT}/
-            hilight = true
-          elsif input =~ /^#{SEARCH_KEY_IMAGE}/
-            has_image = true
-          elsif input =~ /^#{SEARCH_KEY_SINCE}/
-            since_str = input[SEARCH_KEY_SINCE.length..-1]
-            since_date = Date.parse(since_str) rescue nil
-          elsif input =~ /^#{SEARCH_KEY_UNTIL}/
-            until_str = input[SEARCH_KEY_UNTIL.length..-1]
-            until_date = Date.parse(until_str) rescue nil
-          elsif input =~ /^#{SEARCH_KEY_YEAR}/
-            year = input[SEARCH_KEY_YEAR.length..-1]
-            date_range = Date.new(year.to_i).beginning_of_year..Date.new(year.to_i).end_of_year rescue nil
-          else
-            words << input
-          end
-        end
-
-        if tags.present?
-          # タグのAND検索にしたいので、OR検索となるtagged_with(["aaa", "bbb"])という配列引数は使えない
-          tags.each do |n|
-            @diaries = @diaries.tagged_with(n)
-          end
-        end
-
-        if hilight
-          @diaries = @diaries.hilight
-        end
-
-        if has_image
-          # NOTE: Diaryのeyecatch_imageとimagesのいずれかの画像がひもづいていることを検索するため left_joinsを2つ指定するが、実質は同じテーブルを見ている。
-          #       このケースでは、railsが2つ目に自動的にaliasを設定するみたいで、whereではそれを指定している `images_attachments_diaries`
-          #       ActiveStorageが自動でxxx_attachmentという関連を追加していることや、aliasを設定することもドキュメントからは多分わからない仕様
-          @diaries = @diaries
-            .left_joins(:eyecatch_image_attachment)
-            .left_joins(:images_attachments)
-            .where('active_storage_attachments.id IS NOT NULL OR images_attachments_diaries.id IS NOT NULL')
-            .distinct
-        end
-
-        if since_date.present?
-          @diaries = @diaries.where("record_at >= ?", since_date)
-        end
-
-        if until_date.present?
-          @diaries = @diaries.where("record_at <= ?", until_date)
-        end
-
-        if date_range.present?
-          @diaries = @diaries.where(record_at: date_range)
-        end
-
-        if words.present?
-          words.each do |word|
-            @diaries = @diaries.find_by_word(word)
-          end
-        end
-      end
-    end
-    @diaries = @diaries.newer.page(params[:page]).per(20)
-
+    @q.search_word = searcher.search_word
     @tags = current_user.mytags.order("pinned DESC")
 
     respond_to do |format|
