@@ -1,0 +1,28 @@
+.row.justify-content-center
+  .col-sm-10
+    = link_to '日記ページに戻る', diary_with_date_path(@diary.record_at, @diary), class: 'btn btn-light'
+    .page-header
+      h2 変更履歴
+    table.table.table-bordered
+      thead
+        tr
+          th(style="min-width:120px")
+          th 現在
+          th 過去
+      tbody
+        tr
+          td 変更者
+          td = @history.user.dispname
+        - @history.changed_prev_attrs.each do |key, val|
+          tr
+            td = key
+            td
+              - if @diary[key].is_a?(String)
+                = simple_format @diary[key]
+              - else
+                = @diary[key]
+            td
+              - if val.is_a?(String)
+                = simple_format val
+              - else
+                = val

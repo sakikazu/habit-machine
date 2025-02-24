@@ -33,6 +33,10 @@ class Category < ApplicationRecord
     source.present? && source.class == Family
   end
 
+  def shared_and_same_family?(family_id)
+    shared? && source_id == family_id
+  end
+
   private
 
   def validate_depth

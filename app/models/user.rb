@@ -2,7 +2,7 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
+#  id                     :bigint           not null, primary key
 #  auth_token             :string(255)
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :string(255)

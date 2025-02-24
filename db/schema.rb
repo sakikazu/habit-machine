@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_02_07_233028) do
+ActiveRecord::Schema.define(version: 2025_02_24_014918) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -109,6 +109,16 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.index ["user_id"], name: "index_diaries_on_user_id"
   end
 
+  create_table "diary_histories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "diary_id", null: false
+    t.json "changed_prev_attrs", comment: "変更されたカラムの変更前の値"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["diary_id"], name: "index_diary_histories_on_diary_id"
+    t.index ["user_id"], name: "index_diary_histories_on_user_id"
+  end
+
   create_table "families", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -128,7 +138,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.index ["user_id"], name: "index_habitodos_on_user_id"
   end
 
-  create_table "habits", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "habits", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "status"
     t.string "title"
     t.integer "source_id", null: false
@@ -150,7 +160,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.bigint "source_id", null: false
     t.string "source_type", null: false
     t.bigint "family_id"
-    t.integer "author_id"
+    t.bigint "author_id"
     t.string "title"
     t.text "content", size: :medium
     t.date "target_date"
@@ -181,7 +191,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
-  create_table "records", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "habit_id"
     t.date "record_at"
     t.float "value"
@@ -207,7 +217,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.integer "parent_id"
   end
 
-  create_table "taggings", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "taggings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "taggable_id"
     t.string "taggable_type"
@@ -219,7 +229,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
   end
 
-  create_table "tags", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.integer "taggings_count", default: 0
     t.integer "user_id"
@@ -254,7 +264,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.index ["source_id", "source_type"], name: "index_todos_on_source_id_and_source_type"
   end
 
-  create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "familyname"
     t.string "givenname"
     t.datetime "deleted_at"
@@ -286,6 +296,8 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
   add_foreign_key "category_diaries", "categories"
   add_foreign_key "category_diaries", "diaries"
   add_foreign_key "children", "families"
+  add_foreign_key "diary_histories", "diaries"
+  add_foreign_key "diary_histories", "users"
   add_foreign_key "histories", "children", column: "source_id"
   add_foreign_key "histories", "families"
   add_foreign_key "histories", "users", column: "author_id"

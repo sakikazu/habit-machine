@@ -1,5 +1,5 @@
 class DiariesController < ApplicationController
-  before_action :set_diary, only: [:show, :edit, :update, :destroy, :delete_image, :create_image, :delete_sub_image, :update_categories]
+  before_action :set_diary!, only: [:show, :edit, :update, :destroy, :delete_image, :create_image, :delete_sub_image, :update_categories, :histories]
   before_action :set_content_title, only: [:show, :edit]
   before_action :authenticate_user!
 
@@ -91,13 +91,6 @@ class DiariesController < ApplicationController
   # GET /diaries/1
   # GET /diaries/1.json
   def show
-    # TODO: 日記が家族共有かどうかだけではなく、current_userを見て、参照可否をチェックする。そのメソッドをDiaryに定義してrspecまで
-    if @diary.user != current_user && !@diary.family_shared?
-      # TODO: ErrorsControllerが有効になってない？ActiveRecord::RecordNotFoundを起こしても開発環境だから？任意で404ページ出せるようにしたい
-      redirect_to diaries_path, notice: "この日記は存在しません."
-      return
-    end
-
     respond_to do |format|
       format.html # show.html.erb
       format.json
@@ -128,10 +121,6 @@ class DiariesController < ApplicationController
   # GET /diaries/1/edit
   def edit
     set_form_variables
-    if @diary.user != current_user
-      redirect_to diaries_path, notice: "この日記は存在しません."
-      return
-    end
 
     respond_to do |format|
       format.html
@@ -162,6 +151,7 @@ class DiariesController < ApplicationController
   # PUT /diaries/1.json
   def update
     respond_to do |format|
+      @diary.current_author = current_user
       if @diary.update(diary_params)
         # NOTE: rails5.1以降では、save後のカラム変更チェックはsaved_change_to_(column)?メソッドを使用すること
         @changed_record_at = @diary.saved_change_to_record_at? ? @diary.record_at : nil
@@ -229,6 +219,11 @@ class DiariesController < ApplicationController
     render 'show'
   end
 
+  def histories
+    @history = @diary.histories.last
+    raise ActiveRecord::RecordNotFound if @history.blank?
+  end
+
   private
 
   def memo_text(memo_params)
@@ -244,8 +239,9 @@ class DiariesController < ApplicationController
   end
 
   # Use callbacks to share common setup or constraints between actions.
-  def set_diary
+  def set_diary!
     @diary = Diary.find(params[:id])
+    raise ActiveRecord::RecordNotFound unless @diary.can_manage?(current_user)
   end
 
   def set_form_variables

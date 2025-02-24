@@ -16,7 +16,7 @@
 #  title              :string(255)
 #  created_at         :datetime         not null
 #  updated_at         :datetime         not null
-#  author_id          :integer
+#  author_id          :bigint
 #  family_id          :bigint
 #  source_id          :bigint           not null
 #

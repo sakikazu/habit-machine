@@ -5,3 +5,4 @@ json.markdowned_content markdown(diary.content)
 json.image_path url_for(diary.eyecatch_image_large) if diary.eyecatch_image.attached?
 json.tag_links tags_link(diary)
 json.category_ids diary.category_ids
+json.history_count diary.histories.count

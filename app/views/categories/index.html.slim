@@ -6,4 +6,14 @@
     .col-sm-8
       .page-header
         h2 カテゴリ表示
+      ul.bd-callout.bd-callout-warning.mb40.pl-5
+        li 日記をカテゴライズすることで情報を体系的に整理でき、ノートみたいな使い方になります
+        li
+          | 家族共有用のカテゴリが追加されたものは、家族内で共有、編集できます（
+          i.fa.fa-users(style="color:orange")
+          | が目印）
+        li
+          | カテゴリの管理は
+          = link_to 'こちら', manage_categories_path
+
       categories(:categories="#{@categories.to_json}" )
