@@ -25,8 +25,9 @@
         // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
         img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
       .markdown.mb-4(v-html="markdownedContent")
-      .buttons
+      .buttons.d-flex.justify-content-between
         a.btn.btn-light.ignore-checking-changes(@click="edit") 編集
+        a.btn.btn-light(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`" v-text="`🕜履歴 (${localDiary.history_count})`")
     .diary-recordat-changed(v-else)
       a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
   diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")

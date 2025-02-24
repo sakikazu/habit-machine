@@ -143,6 +143,7 @@ Rails.application.routes.draw do
       put 'delete_sub_image/:image_id', action: :delete_sub_image
       post :create_image
       post :update_categories
+      get :histories
     end
     collection do
       get 'hilight'

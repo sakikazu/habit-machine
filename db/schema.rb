@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_02_24_000000) do
+ActiveRecord::Schema.define(version: 2025_02_24_014918) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -107,6 +107,16 @@ ActiveRecord::Schema.define(version: 2025_02_24_000000) do
     t.integer "pin_priority", default: 0, null: false
     t.index ["record_at"], name: "index_diaries_on_record_at"
     t.index ["user_id"], name: "index_diaries_on_user_id"
+  end
+
+  create_table "diary_histories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "diary_id", null: false
+    t.json "changed_prev_attrs", comment: "変更されたカラムの変更前の値"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["diary_id"], name: "index_diary_histories_on_diary_id"
+    t.index ["user_id"], name: "index_diary_histories_on_user_id"
   end
 
   create_table "families", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -286,6 +296,8 @@ ActiveRecord::Schema.define(version: 2025_02_24_000000) do
   add_foreign_key "category_diaries", "categories"
   add_foreign_key "category_diaries", "diaries"
   add_foreign_key "children", "families"
+  add_foreign_key "diary_histories", "diaries"
+  add_foreign_key "diary_histories", "users"
   add_foreign_key "histories", "children", column: "source_id"
   add_foreign_key "histories", "families"
   add_foreign_key "histories", "users", column: "author_id"

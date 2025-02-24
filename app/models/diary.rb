@@ -32,8 +32,12 @@ class Diary < ApplicationRecord
   acts_as_paranoid
   acts_as_taggable
 
+  # 共有カテゴリの日記は日記の所有者以外からも更新されるため、そのUser情報を保持するための変数
+  attr_accessor :current_author
+
   has_many :category_diaries, dependent: :destroy
   has_many :categories, through: :category_diaries
+  has_many :histories, class_name: DiaryHistory.to_s, dependent: :destroy
 
   # 日記のアイキャッチ用画像
   has_one_attached :eyecatch_image
@@ -68,6 +72,7 @@ class Diary < ApplicationRecord
 
   before_validation :replace_urls
   after_save :update_tag_used_at
+  after_update :append_history_if_need
 
   # ActiveStorageのファイルパス（Diskのみ）を取得する場合は、 `ActiveStorage::Blob.service.path_for(blob.key)` でOK
   def eyecatch_image_small
@@ -82,8 +87,9 @@ class Diary < ApplicationRecord
     self.title.presence || "(タイトルなし)"
   end
 
-  def family_shared?
-    categories.any? { _1.shared? }
+  # 自分の日記か、日記に自分の家族のカテゴリがひもづいていれば、CRUD可能
+  def can_manage?(user)
+    self.user == user || categories.any? { _1.shared_and_same_family?(user.family_id) }
   end
 
   def self.group_by_record_at(current_user, date_term)
@@ -164,5 +170,14 @@ class Diary < ApplicationRecord
     if not_exists_tags.present?
       self.errors.add(:tag_list, "タグ（#{not_exists_tags.join(', ')}）は未登録です。タグ一覧から作成してください。")
     end
+  end
+
+  # 日記の所有者とは別のUserが更新をしたか、既に変更履歴が存在する（一度でも他Userから更新されているので）場合に、履歴を追加
+  def append_history_if_need
+    return if current_author.nil? || (self.user == current_author && histories.blank?)
+    return if self.saved_changes.blank?
+
+    changed_prev_attrs = self.saved_changes.transform_values(&:first)
+    histories.create(user: current_author, changed_prev_attrs:)
   end
 end
