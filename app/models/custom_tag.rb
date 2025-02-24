@@ -2,7 +2,7 @@
 #
 # Table name: tags
 #
-#  id             :integer          not null, primary key
+#  id             :bigint           not null, primary key
 #  color          :string(255)
 #  description    :text(16777215)
 #  last_used_at   :datetime

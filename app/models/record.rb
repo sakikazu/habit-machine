@@ -2,7 +2,7 @@
 #
 # Table name: records
 #
-#  id         :integer          not null, primary key
+#  id         :bigint           not null, primary key
 #  deleted_at :datetime
 #  memo       :text(16777215)
 #  record_at  :date

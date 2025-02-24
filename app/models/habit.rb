@@ -2,7 +2,7 @@
 #
 # Table name: habits
 #
-#  id          :integer          not null, primary key
+#  id          :bigint           not null, primary key
 #  deleted_at  :datetime
 #  goal        :text(16777215)
 #  memo        :text(16777215)

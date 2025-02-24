@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_02_07_233028) do
+ActiveRecord::Schema.define(version: 2025_02_24_000000) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -128,7 +128,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.index ["user_id"], name: "index_habitodos_on_user_id"
   end
 
-  create_table "habits", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "habits", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "status"
     t.string "title"
     t.integer "source_id", null: false
@@ -150,7 +150,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.bigint "source_id", null: false
     t.string "source_type", null: false
     t.bigint "family_id"
-    t.integer "author_id"
+    t.bigint "author_id"
     t.string "title"
     t.text "content", size: :medium
     t.date "target_date"
@@ -181,7 +181,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
-  create_table "records", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "records", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "habit_id"
     t.date "record_at"
     t.float "value"
@@ -207,7 +207,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.integer "parent_id"
   end
 
-  create_table "taggings", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "taggings", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.integer "tag_id"
     t.integer "taggable_id"
     t.string "taggable_type"
@@ -219,7 +219,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
   end
 
-  create_table "tags", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "tags", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
     t.integer "taggings_count", default: 0
     t.integer "user_id"
@@ -254,7 +254,7 @@ ActiveRecord::Schema.define(version: 2025_02_07_233028) do
     t.index ["source_id", "source_type"], name: "index_todos_on_source_id_and_source_type"
   end
 
-  create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "familyname"
     t.string "givenname"
     t.datetime "deleted_at"
