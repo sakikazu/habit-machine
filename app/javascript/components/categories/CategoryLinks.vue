@@ -1,15 +1,12 @@
 <template>
-  <div class="diary-categories d-flex justify-content-between">
-    <div class="d-flex">
-      <p class="align-self-center mb-0" style="min-width: 80px">カテゴリ:</p>
-      <div class="category-list">
-        <a v-for="category in savedCategories" :key="category.id" href="/categories" class="category-link">
-          <i v-if="category.shared" class="fa fa-users mr-2" style="color:orange"></i>
-          {{ category.path.join(' > ') }}
-        </a>
-      </div>
+  <div class="diary-categories">
+    <button class="category-button" style="min-width: 105px" @click="$emit('edit-category')">カテゴリ ✎</button>
+    <div class="category-list">
+      <a v-for="category in savedCategories" :key="category.id" href="/categories" class="category-link">
+        <i v-if="category.shared" class="fa fa-users mr-2" style="color:orange"></i>
+        {{ category.path.join(' > ') }}
+      </a>
     </div>
-    <button class="btn btn-light" style="min-width: 70px" @click="$emit('edit-category')">編集</button>
   </div>
 </template>
 
@@ -47,7 +44,6 @@ export default {
 .diary-categories
   margin-top: 10px
   padding: 8px
-  background: #f8f9fa
   border-radius: 5px
   display: flex
   align-items: center
@@ -69,15 +65,16 @@ export default {
   &:hover
     text-decoration: underline
 
-.edit-category
-  background: #007bff
-  color: white
-  border: none
+.category-button
+  background-color: #f0f0f0
+  border: 1px solid #ccc
   padding: 5px 10px
   border-radius: 5px
   cursor: pointer
-  font-size: 14px
+  font-weight: bold
+  display: flex
+  align-items: center
 
   &:hover
-    background: #0056b3
+    background-color: #ddd
 </style>
