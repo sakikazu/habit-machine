@@ -21,7 +21,8 @@
 #
 FactoryBot.define do
   factory :diary_history do
-    diary { nil }
-    attrs { "" }
+    diary
+    user
+    changed_prev_attrs { "" }
   end
 end
