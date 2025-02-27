@@ -1,4 +1,4 @@
-class DiarySearcher
+class Diary::Searcher
   SEARCH_KEY_TAGS = "tags:"
   SEARCH_KEY_HILIGHT = "hilight:"
   SEARCH_KEY_SINCE = "since:"

@@ -6,7 +6,7 @@ class DiariesController < ApplicationController
   # GET /diaries
   # GET /diaries.json
   def index
-    searcher = DiarySearcher.new(current_user.diaries, params)
+    searcher = Diary::Searcher.new(current_user.diaries, params)
     result_diaries = searcher.search
     @diaries = result_diaries.newer.page(params[:page]).per(20)
     @q = Diary.new
