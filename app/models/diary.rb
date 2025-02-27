@@ -71,6 +71,8 @@ class Diary < ApplicationRecord
   scope :older, lambda { order(["record_at ASC", "id ASC"]) }
 
   before_validation :replace_urls
+  # TODO: contentEditableの場合のみ、にする
+  before_save :convert_html
   after_save :update_tag_used_at
   after_update :append_history_if_need
 
@@ -118,6 +120,17 @@ class Diary < ApplicationRecord
   end
 
   private
+
+  # TODO: ペーストしたときに、コンテンツが枠をはみ出すことがあるので、自動でエリアを伸ばすことはできないかなあ。長過ぎるコンテンツはったら、ボタンがなくなったわ
+  def convert_html
+    html_converter = Diary::HtmlConverter.new(self.content)
+    html_converter.convert
+    self.content = html_converter.converted_content
+    # NOTE: 通常はattachしてからモデルをsaveすることで画像アップロードされるが、今回はアップロード済みのものをモデルに追加する形
+    html_converter.uploaded_images.each do |image|
+      self.images.attach(image)
+    end
+  end
 
   def replace_urls
     return if self.content.blank?
