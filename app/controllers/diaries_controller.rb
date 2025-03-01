@@ -6,7 +6,7 @@ class DiariesController < ApplicationController
   # GET /diaries
   # GET /diaries.json
   def index
-    searcher = DiarySearcher.new(current_user.diaries, params)
+    searcher = Diary::Searcher.new(current_user.diaries, params)
     result_diaries = searcher.search
     @diaries = result_diaries.newer.page(params[:page]).per(20)
     @q = Diary.new
@@ -166,6 +166,7 @@ class DiariesController < ApplicationController
     end
   end
 
+  # TODO: 日記詳細ページで削除されると、head :okを返すだけなので真っ白の状態になる。ここでだけhtmlでリクエストすればいいが
   # DELETE /diaries/1
   # DELETE /diaries/1.json
   def destroy
@@ -251,6 +252,6 @@ class DiariesController < ApplicationController
   end
 
   def diary_params
-    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :eyecatch_image, :is_hilight, :is_about_date, :search_word, :main_in_day, :pinned, :pin_priority)
+    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :eyecatch_image, :is_hilight, :is_about_date, :search_word, :main_in_day, :pinned, :pin_priority, :content_is_html)
   end
 end

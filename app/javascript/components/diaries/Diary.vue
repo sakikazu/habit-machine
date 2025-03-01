@@ -24,20 +24,20 @@
       .text-center.mt20(v-if="!!localDiary.image_path")
         // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
         img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
-      .markdown.mb-4(v-html="markdownedContent")
+      .markdown.mb-4(v-html="organizedContent")
       .buttons.d-flex.justify-content-between
         a.btn.btn-light.ignore-checking-changes(@click="edit") 編集
         a.btn.btn-light(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`" v-text="`🕜履歴 (${localDiary.history_count})`")
     .diary-recordat-changed(v-else)
       a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
-  diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")
+  diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" :new-content-editable-mode="contentEditableMode" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")
   selectable-modal(v-if="showCategoryModal" :categories="localCategories" @close="showCategoryModal = false" @save="saveCategories" @toggle="toggleCategory")
 </template>
 
 <script>
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
-// TODO: DiaryFormはDiaryを経由する必要が？
+// Diary内にDiaryFormを含んでいたほうが、diaryコンポーネントを記載しておくだけでその編集も可能なので手軽になる。が、無駄に依存が増えて複雑になってる方が良くないかも
 import DiaryForm from 'components/diaries/DiaryForm'
 import SelectableModal from "components/categories/SelectableModal"
 import CategoryLinks from "components/categories/CategoryLinks"
@@ -62,6 +62,11 @@ export default {
     targetDateForEditMode: {
       type: String,
       required: false,
+    },
+    // TODO: 新規作成時のDiaryFormに必要なものなので、Diaryを介さずにすればここから削除できる
+    contentEditableMode: {
+      type: Boolean,
+      default: false
     },
     highlightForAMoment: {
       type: Boolean,
@@ -131,6 +136,9 @@ export default {
   computed: {
     targetDate () {
       return !!this.localDiary.id ? this.localDiary.record_at : this.targetDateForEditMode
+    },
+    organizedContent () {
+      return this.localDiary.content_is_html ? this.localDiary.html_content : this.markdownedContent
     },
     markdownedContent () {
       if (this.highlightWord && this.highlightWord.length > 0) {
