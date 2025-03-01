@@ -35,17 +35,16 @@ export default {
 };
 </script>
 
-<style scoped>
-.content-editable-wrapper {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 8px;
-  overflow-y: auto;
-}
-.content-editable {
-  outline: none;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  min-height: 500px;
-}
+<style scoped lang="sass">
+.content-editable-wrapper
+  border: 1px solid #ccc
+  border-radius: 4px
+  padding: 8px
+  overflow-y: auto
+
+.content-editable
+  outline: none
+  white-space: pre-wrap
+  word-wrap: break-word
+  min-height: 500px
 </style>
