@@ -201,7 +201,12 @@ document.addEventListener('turbolinks:load', () => {
           })
       },
       newDiary () {
-        this.diariesWithOpsions.push({ diary: {}, targetDateForEditMode: this.targetDate, highlightForAMoment: false })
+        this.diariesWithOpsions.push({ diary: {}, targetDateForEditMode: this.targetDate, highlightForAMoment: false, isContentEditable: false })
+        this.editModeDiaryIds.push(null)
+      },
+      // TODO: newDiaryと共通化したいし、DiaryFormに直接渡せるようにすれば、こういった間接的なやり方をせずに済むので、ちゃんとリファクタリングする
+      newDiaryForContentEditable () {
+        this.diariesWithOpsions.push({ diary: {}, targetDateForEditMode: this.targetDate, highlightForAMoment: false, isContentEditable: true })
         this.editModeDiaryIds.push(null)
       },
       existsEditModeDiaries () {

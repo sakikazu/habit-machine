@@ -23,7 +23,9 @@
 
       a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
       .form-group
+        content-editable(v-if="contentEditableMode" :content="diary.content" :tabindex="tabidxBase + 2" @content-updated="updateContent")
         textarea.form-control(
+          v-else
           name="[diary]content"
           ref="markdownable_textarea"
           rows="20"
@@ -117,9 +119,13 @@
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
 import { deleteKeysWithPrefix } from 'local_storage_manager.js'
+import ContentEditable from 'components/diaries/ContentEditable'
 
 export default {
   inheritAttrs: false,
+  components: {
+    ContentEditable,
+  },
   props: {
     diaryId: {
       type: Number,
@@ -128,6 +134,11 @@ export default {
     targetDate: {
       type: String,
       required: true,
+    },
+    // TODO: 適当につけた命名）新規作成時用のObjectにこれらをまとめ、そのObjectがあれば新規作成、という判定に変更したい
+    newContentEditableMode: {
+      type: Boolean,
+      default: false
     },
   },
   data () {
@@ -143,6 +154,8 @@ export default {
       // サブ画像用
       images: [],
       uploading: false,
+      contentEditableMode: false,
+      htmlContent: "",
     }
   },
   watch: {
@@ -190,12 +203,14 @@ export default {
           .then(res => {
             this.diary = res.data.diary
             this.images = res.data.diary.images
+            this.contentEditableMode = res.data.diary.content_is_html
             this.setFormData(res.data)
           })
           .catch(error => {
             alert(error.message || error.response.data.message)
           })
       } else {
+        this.contentEditableMode = this.newContentEditableMode
         HmAxios.get(`/diaries/new.json?record_at=${this.targetDate}`)
           .then(res => {
             this.diary = res.data.diary
@@ -239,10 +254,18 @@ export default {
         this.$emit('content-changed', this.formKey)
       })
     },
+    updateContent (val) {
+      this.htmlContent = val
+    },
     submit (event) {
       event.preventDefault()
       // TODO: FormDataかv-modelか検討中。前者だとvalueは自分で設定しなきゃいけないしcheckboxのとことか面倒。後者は画像アップロードとか別処理がいらないかが懸念
       const formObject = new FormData(this.$refs.form)
+      // contentEditableの入力内容が存在（=contentEditableModeであると想定）すれば、それでdiary.contentを置き換える
+      if (this.htmlContent) {
+        formObject.set("[diary]content", this.htmlContent)
+        formObject.set("[diary]content_is_html", true)
+      }
       if (this.persisted) {
         HmAxios.patch(`/diaries/${this.diaryId}.json`, formObject)
           .then(res => {

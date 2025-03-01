@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_02_24_014918) do
+ActiveRecord::Schema.define(version: 2025_03_01_022030) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 2025_02_24_014918) do
     t.boolean "main_in_day", default: false, null: false
     t.boolean "pinned", default: false, null: false
     t.integer "pin_priority", default: 0, null: false
+    t.boolean "content_is_html", default: false, null: false, comment: "contentがhtmlであるか"
     t.index ["record_at"], name: "index_diaries_on_record_at"
     t.index ["user_id"], name: "index_diaries_on_user_id"
   end

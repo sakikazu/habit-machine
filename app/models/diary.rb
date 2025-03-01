@@ -28,6 +28,13 @@
 #
 
 # TODO: image_xxxカラムを削除
+#
+# 機能
+#   - contentに日記のURLを含めた場合、markdownリンクとして置換される
+#   - フロントにて、contentに画像データをコピペすると、その場でActiveStorageに保存されて、markdownの画像が挿入される
+#   - contentEditableでhtmlを登録された場合は、内部の画像をActiveStorageに登録し、html内容を変換して、htmlのまま表示できるようにしている
+#   - 共有カテゴリを設定することで、家族内共有が可能。その場合、更新時に履歴を保持する
+#
 class Diary < ApplicationRecord
   acts_as_paranoid
   acts_as_taggable
@@ -71,8 +78,7 @@ class Diary < ApplicationRecord
   scope :older, lambda { order(["record_at ASC", "id ASC"]) }
 
   before_validation :replace_urls
-  # TODO: contentEditableの場合のみ、にする
-  before_save :convert_html
+  before_save :convert_html, if: -> { content_is_html? }
   after_save :update_tag_used_at
   after_update :append_history_if_need
 
@@ -121,7 +127,6 @@ class Diary < ApplicationRecord
 
   private
 
-  # TODO: ペーストしたときに、コンテンツが枠をはみ出すことがあるので、自動でエリアを伸ばすことはできないかなあ。長過ぎるコンテンツはったら、ボタンがなくなったわ
   def convert_html
     html_converter = Diary::HtmlConverter.new(self.content)
     html_converter.convert
@@ -132,6 +137,7 @@ class Diary < ApplicationRecord
     end
   end
 
+  # TODO: markdownリンクなので、content_is_html?の場合はリンクが表示されない。が、content_is_html?の時は日記リンクを入れることは基本的にないと思うので放置している
   def replace_urls
     return if self.content.blank?
 
