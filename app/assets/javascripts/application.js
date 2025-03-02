@@ -32,6 +32,8 @@
 //= require highcharts/highstock
 
 $(document).on('turbolinks:load', function() {
+  // Vue component内のpopoverだとmountedで実行しないと有効にならないので、ここでは、rails viewにあるpopoverが対象
+  $('[data-toggle="popover"]').popover({ html: true });
   $("a[rel=tooltip]").tooltip();
 
   var shownPopoverElements = [];
