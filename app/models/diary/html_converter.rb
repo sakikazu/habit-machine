@@ -43,7 +43,8 @@ class Diary::HtmlConverter
     image_urls.each do |image_url|
       begin
         # 画像をダウンロード
-        downloaded_image = URI.open(image_url)
+        decoded_image_url = CGI.unescapeHTML(image_url) # &が&amp;のようにエスケープされているのをデコードする
+        downloaded_image = URI.open(decoded_image_url)
         filename = URI.decode_www_form_component(File.basename(URI.parse(image_url).path))
 
         # attachだとモデルのsave後に処理されてしまい、attachの時点では正確な画像URLが取得できないので、即時処理されるcreate_and_upload!を使う
