@@ -41,6 +41,8 @@ class Diary::HtmlConverter
   # 画像URLからダウンロードし、ActiveStorageに保存して、そのURLで置換する
   def replace_with_active_storage_urls(image_urls)
     image_urls.each do |image_url|
+      next if already_saved?(image_url)
+
       begin
         # 画像をダウンロード
         decoded_image_url = CGI.unescapeHTML(image_url) # &が&amp;のようにエスケープされているのをデコードする
@@ -61,5 +63,9 @@ class Diary::HtmlConverter
         @uploaded_images << blob
       end
     end
+  end
+
+  def already_saved?(image_url)
+    image_url.start_with?(Rails.application.routes.url_helpers.root_url)
   end
 end
