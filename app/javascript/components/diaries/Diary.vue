@@ -30,7 +30,7 @@
         a.btn.btn-light(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`" v-text="`🕜履歴 (${localDiary.history_count})`")
     .diary-recordat-changed(v-else)
       a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
-  diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" :new-content-editable-mode="contentEditableMode" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")
+  diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")
   selectable-modal(v-if="showCategoryModal" :categories="localCategories" @close="showCategoryModal = false" @save="saveCategories" @toggle="toggleCategory")
 </template>
 
@@ -62,11 +62,6 @@ export default {
     targetDateForEditMode: {
       type: String,
       required: false,
-    },
-    // TODO: 新規作成時のDiaryFormに必要なものなので、Diaryを介さずにすればここから削除できる
-    contentEditableMode: {
-      type: Boolean,
-      default: false
     },
     highlightForAMoment: {
       type: Boolean,

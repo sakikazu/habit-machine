@@ -21,19 +21,24 @@
       .form-group
         input.form-control(type="text" name="[diary]title" placeholder="タイトル（未入力可）" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
 
-      a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
+      .tab-container
+        .tab(v-if="!persisted || !contentEditableMode" @click="contentEditableMode = false" :class="{'active': !contentEditableMode, 'unclickable': persisted}")
+          | 通常モード
+        .tab(v-if="!persisted || contentEditableMode" @click="contentEditableMode = true" :class="{'active': contentEditableMode, 'unclickable': persisted}")
+          | webページコピペモード
       .form-group
         content-editable(v-if="contentEditableMode" :content="diary.content" :tabindex="tabidxBase + 2" @content-updated="updateContent")
-        textarea.form-control(
-          v-else
-          name="[diary]content"
-          ref="markdownable_textarea"
-          rows="20"
-          :placeholder="persisted ? '' : '日記の内容です。編集時に画像を貼り付けることができます'"
-          v-model="diary.content"
-          :tabindex="tabidxBase + 2"
-          @paste="handlePaste"
-        )
+        div(v-else)
+          a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
+          textarea.form-control(
+            name="[diary]content"
+            ref="markdownable_textarea"
+            rows="20"
+            :placeholder="persisted ? '' : '日記の内容です。編集時に画像を貼り付けることができます'"
+            v-model="diary.content"
+            :tabindex="tabidxBase + 2"
+            @paste="handlePaste"
+          )
       .form-group
         label
           span.mr-1 タグ
@@ -135,11 +140,6 @@ export default {
       type: String,
       required: true,
     },
-    // TODO: 適当につけた命名）新規作成時用のObjectにこれらをまとめ、そのObjectがあれば新規作成、という判定に変更したい
-    newContentEditableMode: {
-      type: Boolean,
-      default: false
-    },
   },
   data () {
     return {
@@ -210,7 +210,6 @@ export default {
             alert(error.message || error.response.data.message)
           })
       } else {
-        this.contentEditableMode = this.newContentEditableMode
         HmAxios.get(`/diaries/new.json?record_at=${this.targetDate}`)
           .then(res => {
             this.diary = res.data.diary
@@ -439,6 +438,26 @@ export default {
 </script>
 
 <style scoped lang="sass">
+.tab-container
+  display: flex
+  border-bottom: 2px solid #ddd
+  margin-bottom: 8px
+
+  .tab
+    padding: 8px 16px
+    cursor: pointer
+    border: 2px solid transparent
+    border-bottom: none
+    background: #f8f8f8
+    transition: background 0.2s, border-color 0.2s
+
+    &.active
+      background: #fff
+      border-color: #ddd #ddd #fff
+      font-weight: bold
+    &.unclickable
+      cursor: default
+
 .image-manager-card
   padding: 12px
   background: #FFF8E1

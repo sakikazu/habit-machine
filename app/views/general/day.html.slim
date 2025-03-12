@@ -104,7 +104,6 @@
             diary(
               :diary="obj.diary"
               :target-date-for-edit-mode="obj.targetDateForEditMode"
-              :content-editable-mode="obj.isContentEditable"
               :highlight-for-a-moment="obj.highlightForAMoment"
               :key="`diary-${obj.diary.id}`"
               :categories="categories"
@@ -115,8 +114,6 @@
       p
         a.btn.btn-block.btn-light.ignore-checking-changes.mb-3(@click="newDiary")
           i.fa.fa-pencil &nbsp;日記を書く
-        a.btn.btn-block.btn-light.ignore-checking-changes(@click="newDiaryForContentEditable")
-          i.fa.fa-pencil &nbsp;webページをコピペできる日記を書く
 
     .sectionPinnedDiaries.col-md-3
       .page-header
