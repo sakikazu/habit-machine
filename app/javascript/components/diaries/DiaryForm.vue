@@ -22,9 +22,9 @@
         input.form-control(type="text" name="[diary]title" placeholder="タイトル（未入力可）" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
 
       .tab-container
-        .tab(v-if="!persisted || !contentEditableMode" @click="contentEditableMode = false" :class="{'active': !contentEditableMode, 'unclickable': persisted}")
+        .tab(v-if="!persisted || !contentEditableMode" @click="switchNormal" :class="{'active': !contentEditableMode, 'unclickable': persisted}")
           | 通常モード
-        .tab(v-if="!persisted || contentEditableMode" @click="contentEditableMode = true" :class="{'active': contentEditableMode, 'unclickable': persisted}")
+        .tab(v-if="!persisted || contentEditableMode" @click="switchContentEditable" :class="{'active': contentEditableMode, 'unclickable': persisted}")
           | webページコピペモード
       .form-group
         content-editable(v-if="contentEditableMode" :content="diary.content" :tabindex="tabidxBase + 2" @content-updated="updateContent")
@@ -154,6 +154,7 @@ export default {
       // サブ画像用
       images: [],
       uploading: false,
+      // NOTE: 通常/CEモードの切り替えについてはしっかり考慮はしていない段階
       contentEditableMode: false,
       htmlContent: "",
     }
@@ -187,12 +188,15 @@ export default {
     this.fetchFormData()
   },
   mounted () {
-    $(this.$refs.markdownable_textarea).markdownEasily()
+    this.setNormalContentElement()
     this.setCheckUnsavedEvent()
     this.formKey = this.generateKey()
     this.$refs.diaryTitle.focus()
   },
   methods: {
+    setNormalContentElement () {
+      $(this.$refs.markdownable_textarea).markdownEasily()
+    },
     generateKey () {
       // わかってないが10桁～11桁？で作られるな ref. https://qiita.com/fukasawah/items/db7f0405564bdc37820e
       return Math.random().toString(32).substring(2)
@@ -260,8 +264,7 @@ export default {
       event.preventDefault()
       // TODO: FormDataかv-modelか検討中。前者だとvalueは自分で設定しなきゃいけないしcheckboxのとことか面倒。後者は画像アップロードとか別処理がいらないかが懸念
       const formObject = new FormData(this.$refs.form)
-      // contentEditableの入力内容が存在（=contentEditableModeであると想定）すれば、それでdiary.contentを置き換える
-      if (this.htmlContent) {
+      if (this.contentEditableMode) {
         formObject.set("[diary]content", this.htmlContent)
         formObject.set("[diary]content_is_html", true)
       }
@@ -432,6 +435,21 @@ export default {
       if (file) {
         this.handleImageUpload(file)
       }
+    },
+    switchNormal() {
+      if (this.htmlContent) {
+        if (confirm('通常モードに切り替えるとwebページ入力データが削除されますがよろしいですか？')) {
+          this.htmlContent = ''
+        } else {
+          return
+        }
+      }
+      this.contentEditableMode = false
+      // TODO: 効いてない。CEモードから帰って来るとMarkdown入力補助が効かない。この場合、v-showで切り替えるべきかなぁ
+      this.setNormalContentElement()
+    },
+    switchContentEditable () {
+      this.contentEditableMode = true
     },
   }
 }
