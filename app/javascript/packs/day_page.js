@@ -117,7 +117,7 @@ document.addEventListener('turbolinks:load', () => {
             this.habit_records = res.data.habit_records
             const diaries = res.data.diaries
             this.diariesWithOpsions = diaries.map(diary => {
-              return { diary: diary, targetDateForEditMode: null, highlightForAMoment: false }
+              return { diary: diary, targetDateForEditMode: null }
             })
             this.diary_links_list = res.data.diary_links_list
             this.pinnedDiaries = res.data.pinned_diaries
@@ -201,8 +201,8 @@ document.addEventListener('turbolinks:load', () => {
           })
       },
       newDiary () {
-        // TODO: DiaryFormに直接渡せるようにすれば、こういった間接的なやり方をせずに済むので、ちゃんとリファクタリングする
-        this.diariesWithOpsions.push({ diary: {}, targetDateForEditMode: this.targetDate, highlightForAMoment: false })
+        // NOTE: 新規作成なのにDiary経由でDiaryFormに渡していて冗長だが、Diaryコンポーネントのコメントに書いた通り、リファクタリングが微妙なので諦める
+        this.diariesWithOpsions.push({ diary: {}, targetDateForEditMode: this.targetDate })
         this.editModeDiaryIds.push(null)
       },
       existsEditModeDiaries () {

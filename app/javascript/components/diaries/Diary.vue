@@ -1,3 +1,35 @@
+<comment>
+### Diary -> DiaryForm 構成のリファクタリングについて
+- 大きな問題点は、新規作成時に、Diaryを介する必要はないため、propsが冗長になっていること
+- しかし、下記の現状のemitを調査したところ、DiaryFormは上位コンポーネントが必要と判断でき、リファクタリングしても特に変わらなそうなので中止
+- DiaryFormは上位コンポーネントは必須。現状はDiaryが担ってるだけ
+- Diaryの方ではイベントバケツリレーしてるだけのemitが多いが、他のComponentを上位にしても、これは結局変わらない
+- リファクタリングする場合は、Diaryの下に、DiaryShow（現Diary）とDiaryFormか
+
+DiaryForm
+  - cancel-edit
+    - DiaryのeditModeをやめる
+  - content-changed
+    - day_page.jsのcontentChangedにformKeyを追加する→
+  - submitted
+    - day_page.jsにsubmittedをemitする
+    - DiaryでeditMode=false, highlight=true, localDiaryを更新
+  - changed_record_at
+    - Diaryで日付変更の表示を行う
+
+Diary
+  - on-edit-mode
+    - day_page.jsで編集中日記配列に追加
+    - ※現在はDiaryFormからのemmiをリレーしてるだけだが、上位コンポーネントを作った場合は、これが編集の契機になる
+  - content-changed
+    - day_page.jsで、編集中日記がある場合にリンククリックするとアラートを出すための変数を制御
+    - 中からDiaryFormを取り除けば、不要になるemit
+  - submitted
+    - day_page.jsで、編集中日記からremove
+    - 中からDiaryFormを取り除けば、不要になるemit
+
+</comment>
+
 <template lang="pug">
 .diaryWrapper(v-if="localDiary")
   .well(v-if="!editMode" :class="{'highlight-border': highlight}")
