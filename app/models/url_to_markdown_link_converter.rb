@@ -20,7 +20,12 @@ class UrlToMarkdownLinkConverter
     # 既存のMarkdownリンクを一時的に置換して保護
     placeholders = {}
     text_without_existing_links = text.gsub(MARKDOWN_LINK_PATTERN) do |matched|
-      placeholder = "PLACEHOLDER_#{placeholders.length}"
+      # 日記のURLが含まれていない場合は置換しない
+      next matched unless Regexp.new(diary_path).match?(matched)
+
+      # ゼロパディングしないとPLACEHOLDER_1がPLACEHOLDER_10と被ってしまうので。4桁にしているので9999個までは被らない
+      zero_padding_length = placeholders.length.to_s.rjust(4, '0')
+      placeholder = "PLACEHOLDER_#{zero_padding_length}"
       # ここはシンプルな正規表現でOK
       url = if match_data = matched.match(/\[.*?\]\((.*?)\)/)
               match_data[1]
