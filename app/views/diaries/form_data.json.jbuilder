@@ -5,6 +5,7 @@ json.diary do
     json.array! @diary.images do |image|
       json.id image.id
       json.url url_for(image.variant(Diary::SUB_IMAGE_VARIANT_HASH))
+      json.orgUrl url_for(image)
       json.filename image.filename
     end
   end
