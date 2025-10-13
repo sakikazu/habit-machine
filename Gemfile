@@ -88,6 +88,7 @@ gem 'webpacker', '~> 5.x'
 gem 'tty-prompt'
 
 group :development do
+  gem 'ruby-lsp'
   gem 'listen'
   gem 'slim-rails'                # generator時にslim対応可能になる
   gem 'view_source_map'           # webページ中に使用されているviewファイル名が見れる
