@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_01_022030) do
+ActiveRecord::Schema.define(version: 2025_03_01_023000) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -118,6 +118,15 @@ ActiveRecord::Schema.define(version: 2025_03_01_022030) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["diary_id"], name: "index_diary_histories_on_diary_id"
     t.index ["user_id"], name: "index_diary_histories_on_user_id"
+  end
+
+  create_table "diary_links", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "source_diary_id", null: false
+    t.bigint "target_diary_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["source_diary_id", "target_diary_id"], name: "index_diary_links_on_source_diary_id_and_target_diary_id", unique: true
+    t.index ["target_diary_id"], name: "index_diary_links_on_target_diary_id"
   end
 
   create_table "families", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -299,6 +308,8 @@ ActiveRecord::Schema.define(version: 2025_03_01_022030) do
   add_foreign_key "children", "families"
   add_foreign_key "diary_histories", "diaries"
   add_foreign_key "diary_histories", "users"
+  add_foreign_key "diary_links", "diaries", column: "source_diary_id"
+  add_foreign_key "diary_links", "diaries", column: "target_diary_id"
   add_foreign_key "histories", "children", column: "source_id"
   add_foreign_key "histories", "families"
   add_foreign_key "histories", "users", column: "author_id"

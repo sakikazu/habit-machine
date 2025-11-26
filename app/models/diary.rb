@@ -45,6 +45,10 @@ class Diary < ApplicationRecord
   has_many :category_diaries, dependent: :destroy
   has_many :categories, through: :category_diaries
   has_many :histories, class_name: DiaryHistory.to_s, dependent: :destroy
+  has_many :outgoing_diary_links, class_name: DiaryLink.to_s, foreign_key: :source_diary_id, dependent: :delete_all
+  has_many :incoming_diary_links, class_name: DiaryLink.to_s, foreign_key: :target_diary_id, dependent: :delete_all
+  has_many :linked_diaries, through: :outgoing_diary_links, source: :target_diary
+  has_many :backlinked_diaries, through: :incoming_diary_links, source: :source_diary
 
   # 日記のアイキャッチ用画像
   has_one_attached :eyecatch_image
@@ -81,6 +85,7 @@ class Diary < ApplicationRecord
   before_save :convert_html, if: -> { content_is_html? }
   after_save :update_tag_used_at
   after_update :append_history_if_need
+  after_commit :refresh_diary_links, on: %i[create update]
 
   # ActiveStorageのファイルパス（Diskのみ）を取得する場合は、 `ActiveStorage::Blob.service.path_for(blob.key)` でOK
   def eyecatch_image_small
@@ -141,8 +146,7 @@ class Diary < ApplicationRecord
   def replace_urls
     return if self.content.blank?
 
-    converter = UrlToMarkdownLinkConverter.new(self.class)
-    self.content = converter.convert(self.content)
+    self.content = diary_link_converter.convert(self.content)
   end
 
   def update_tag_used_at
@@ -198,5 +202,14 @@ class Diary < ApplicationRecord
 
     changed_prev_attrs = self.saved_changes.transform_values(&:first)
     histories.create(user: current_author, changed_prev_attrs:)
+  end
+
+  def refresh_diary_links
+    target_ids = diary_link_converter.extract_diary_ids(self.content)
+    DiaryLink.refresh_for(self, target_ids: target_ids)
+  end
+
+  def diary_link_converter
+    @diary_link_converter ||= UrlToMarkdownLinkConverter.new(self.class)
   end
 end

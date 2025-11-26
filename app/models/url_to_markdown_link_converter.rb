@@ -21,7 +21,7 @@ class UrlToMarkdownLinkConverter
     placeholders = {}
     text_without_existing_links = text.gsub(MARKDOWN_LINK_PATTERN) do |matched|
       # 日記のURLが含まれていない場合は置換しない
-      next matched unless Regexp.new(diary_path).match?(matched)
+      next matched unless diary_link?(matched)
 
       # ゼロパディングしないとPLACEHOLDER_1がPLACEHOLDER_10と被ってしまうので。4桁にしているので9999個までは被らない
       zero_padding_length = placeholders.length.to_s.rjust(4, '0')
@@ -36,7 +36,7 @@ class UrlToMarkdownLinkConverter
     end
 
     # URLを検出して変換
-    processed_text = text_without_existing_links.gsub(%r{#{diary_path}/\d+}) do |url|
+    processed_text = text_without_existing_links.gsub(diary_url_regex_union) do |url|
       label = diary_markdown_link_from(url)
       label.presence || url
     end
@@ -49,12 +49,16 @@ class UrlToMarkdownLinkConverter
     processed_text
   end
 
+  def extract_diary_ids(text)
+    return [] if text.blank?
+
+    text.scan(diary_url_regex_union).flatten.compact.map(&:to_i).reject(&:zero?).uniq
+  end
+
   private
 
   def diary_markdown_link_from(url)
-    diary_id = if match_data = url.match(%r{#{diary_path}/(\d+)})
-                 match_data[1]
-               end
+    diary_id = extract_diary_id_from(url)
     return if diary_id.blank?
 
     diary = @target_model.find_by(id: diary_id)
@@ -66,5 +70,31 @@ class UrlToMarkdownLinkConverter
 
   def diary_path
     "#{@root_url}#{DIARY_PATH}"
+  end
+
+  def diary_url_regex_union
+    Regexp.union(diary_url_regexes)
+  end
+
+  def diary_url_regexes
+    [
+      %r{#{diary_path}/(\d+)},
+      %r{/#{DIARY_PATH}/(\d+)},
+      %r{#{DIARY_PATH}/(\d+)}
+    ]
+  end
+
+  def diary_link?(text)
+    diary_url_regex_union.match?(text)
+  end
+
+  def extract_diary_id_from(url)
+    diary_url_regexes.each do |regex|
+      if (match_data = url.match(regex))
+        return match_data[1]
+      end
+    end
+
+    nil
   end
 end
