@@ -36,7 +36,8 @@ export default {
   },
   data() {
     return {
-      isOpen: true,
+      // デフォルトでは畳んだ状態で表示する
+      isOpen: false,
     };
   },
   methods: {
