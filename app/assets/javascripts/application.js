@@ -58,18 +58,6 @@ hidePopover = function(elements, $withoutEle = null) {
   });
 }
 
-showCurrentSenses = function() {
-  $.ajax({
-    type: 'GET',
-    url: '/senses/current',
-    success: function(html) {
-      $('#current-senses.modal').remove();
-      $('body').append(html);
-      $('#current-senses.modal').modal('show');
-    }
-  });
-}
-
 const getTimestamp = function() {
   return new Date().getTime();
 }

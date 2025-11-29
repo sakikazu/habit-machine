@@ -18,7 +18,6 @@
 #                           PUT    /habitodos/:id(.:format)                                                                 habitodos#update
 #                           DELETE /habitodos/:id(.:format)                                                                 habitodos#destroy
 #               past_senses GET    /senses/past(.:format)                                                                   senses#past
-#            current_senses GET    /senses/current(.:format)                                                                senses#current
 #                    senses GET    /senses(.:format)                                                                        senses#index
 #                           POST   /senses(.:format)                                                                        senses#create
 #                 new_sense GET    /senses/new(.:format)                                                                    senses#new
@@ -113,7 +112,6 @@ Rails.application.routes.draw do
   resources :senses do
     collection do
       get 'past'
-      get 'current'
     end
   end
 
