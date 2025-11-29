@@ -85,7 +85,7 @@ class Diary < ApplicationRecord
   before_save :convert_html, if: -> { content_is_html? }
   after_save :update_tag_used_at
   after_update :append_history_if_need
-  after_commit :refresh_diary_links, on: %i[create update]
+  after_save :refresh_diary_links
 
   # ActiveStorageのファイルパス（Diskのみ）を取得する場合は、 `ActiveStorage::Blob.service.path_for(blob.key)` でOK
   def eyecatch_image_small
