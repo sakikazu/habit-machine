@@ -4,43 +4,14 @@ class CategoriesController < ApplicationController
 
   # TODO: index, selectionとも、eager loadingできてないのでやる
   def index
-    # これまで下記のようにrailsのviewにVue.jsで使うjson用のデータを詰め込むのをやらなかった理由なんだっけ？
-    categories = current_user.all_categories
-    @categories = categories.select { |cate| cate.parent_id.nil? }.map do |category|
-      {
-        id: category.id,
-        name: category.name,
-        shared: category.shared?,
-        diaries: category.diaries.map do |diary|
-          { id: diary.id, record_at: diary.record_at, title: diary.title_mod }
-        end,
-        children: category.children.map do |child|
-          {
-            id: child.id,
-            name: child.name,
-            shared: child.shared?,
-            diaries: child.diaries.map do |diary|
-              { id: diary.id, record_at: diary.record_at, title: diary.title_mod }
-            end,
-            children: child.children.map do |granchild|
-              {
-                id: granchild.id,
-                name: granchild.name,
-                shared: granchild.shared?,
-                diaries: granchild.diaries.map do |diary|
-                  { id: diary.id, record_at: diary.record_at, title: diary.title_mod }
-                end
-              }
-            end
-          }
-        end
-      }
-    end
+    categories = current_user.all_categories(eager_load: :with_diaries)
+    @categories = Category.sorted_tree(categories)
   end
 
   # TODO: indexにあるコードと共通化できたらしたい
   def selection
-    @categories = current_user.all_categories
+    categories = current_user.all_categories(eager_load: :only_category)
+    @categories = Category.sorted_tree(categories, include_diaries: false)
   end
 
   def manage

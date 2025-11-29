@@ -70,10 +70,8 @@ class User < ApplicationRecord
   def all_categories(eager_load: nil)
     Category.where(source: [self, family]).tap do |scope|
       if eager_load == :only_category
-        # TODO: 孫は含まれてないはず
         scope.includes(:source, :children)
       elsif eager_load == :with_diaries
-        # TODO: 想定通りに読み込まれているかを確認する
         scope.includes(:source, :diaries, { children: :diaries })
       end
     end
