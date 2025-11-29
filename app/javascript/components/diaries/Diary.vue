@@ -49,6 +49,14 @@ Diary
                 i.fa.fa-star
               a(:href="`/day/${localDiary.record_at}/diaries/${localDiary.id}`") {{ localDiary.title_mod }}
         .tags.ml-3(v-html="localDiary.tag_links")
+      .backlinks.mt-2.mb-2(v-if="hasBacklinks")
+        .d-flex.align-items-center.mb-1
+          i.fa.fa-share-square-o.mr-2
+          span.font-weight-bold バックリンク
+        ul.pl-3.mb-0
+          li(v-for="link in localDiary.backlinks" :key="link.id")
+            a(:href="link.path")
+              | 🔗 {{ backlinkLabel(link) }} 🔗
       category-links(v-if="categories.length > 0" :categories="categories" :savedCategoryIds="localDiary.category_ids" @edit-category="showCategoryModal = true")
     .diary-body(v-if="!changed_record_at")
       p(v-if="localDiary.is_secret" class='btn btn-block btn-danger disabled mb5') シークレット日記
@@ -177,6 +185,9 @@ export default {
     },
     linkWithTargetBlankValue () {
       return this.linkWithTargetBlank ? '_blank' : '_self'
+    },
+    hasBacklinks () {
+      return Array.isArray(this.localDiary.backlinks) && this.localDiary.backlinks.length > 0
     }
   },
   created () {
@@ -191,6 +202,10 @@ export default {
   mounted () {
   },
   methods: {
+    backlinkLabel (link) {
+      const title = link.title_mod || '(タイトルなし)'
+      return `${link.record_at} ${title}`
+    },
     setSelectedToCategories (categories, selected_ids) {
       categories.forEach(category => {
         category.selected = selected_ids.includes(category.id)
