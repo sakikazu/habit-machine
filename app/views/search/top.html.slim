@@ -43,7 +43,10 @@
                 p(v-html="data.highlighted")
 
       section#diary.mb40
-        h3 #{fa_icon('book')} 日記
+        h3.d-flex.align-items-center
+          span.d-flex.align-items-center
+            span.mr-4 #{fa_icon('book')} 日記
+            = link_to '日記ページで検索', diaries_path(diary: { search_word: @search_word }), class: 'btn btn-sm btn-outline-primary'
         .result
           - if @result_diaries_size.to_i.zero?
             p データなし
@@ -55,6 +58,7 @@
                 .title(v-text="data.title")
                 p(v-html="data.highlighted")
 
+      / 「記録ページで検索」を設ける場合は、Habitを横断した検索ページを作る必要がある。そのページ自体は特に必要ないので、リンクは不要と判断
       section#record.mb40
         h3 #{fa_icon('bar-chart')} 記録
         .result
