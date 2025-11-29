@@ -2,7 +2,6 @@ class HabitRecordSearcher
   include ActiveModel::Model
 
   SEARCH_KEY_VALUE = 'value:'
-  SEARCH_KEY_MEMO = 'memo:'
   SEARCH_KEY_HASMEMO = 'hasmemo:'
   SEARCH_KEY_SINCE = 'since:'
   SEARCH_KEY_UNTIL = 'until:'
@@ -25,8 +24,6 @@ class HabitRecordSearcher
     inputs.each do |input|
       if input =~ /^#{SEARCH_KEY_VALUE}/
         value_formula = input[SEARCH_KEY_VALUE.length..-1]
-      elsif input =~ /^#{SEARCH_KEY_MEMO}/
-        input[SEARCH_KEY_MEMO.length..-1].split(",").each{|n| memo_words << n}
       elsif input =~ /^#{SEARCH_KEY_HASMEMO}/
         hasmemo = true
       elsif input =~ /^#{SEARCH_KEY_SINCE}/
@@ -35,6 +32,9 @@ class HabitRecordSearcher
       elsif input =~ /^#{SEARCH_KEY_UNTIL}/
         until_str = input[SEARCH_KEY_UNTIL.length..-1]
         until_date = Date.parse(until_str) rescue nil
+      else
+        # prefixがない場合は、メモ内容から検索
+        input.split(",").each { |n| memo_words << n }
       end
     end
 
