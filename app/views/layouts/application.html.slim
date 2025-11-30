@@ -66,9 +66,9 @@ html[lang="ja"]
           li class="dropdown nav-item"
             = link_to "その他", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
             .dropdown-menu
-              = link_to "ノート", habitodos_path, class: 'dropdown-item'
               = link_to "習慣と記録", habits_path, class: 'dropdown-item'
-              = link_to "意識付け一覧", senses_path, class: 'dropdown-item'
+              = link_to "ノート(Legacy)", habitodos_path, class: 'dropdown-item'
+              = link_to "意識付け(Legacy)", senses_path, class: 'dropdown-item'
               = link_to "TODO（学習用）", todos_path, class: 'dropdown-item'
 
           li.nav-item.dropdown
