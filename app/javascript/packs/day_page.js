@@ -30,6 +30,9 @@ document.addEventListener('turbolinks:load', () => {
       contentChanged: [],
       memoCategories: ['', '体調', '作業', 'メモ', '休息', 'TODO'],
       memoContent: '',
+      memoTargetDiaryId: null,
+      memoTargetDiaryTitle: '',
+      memoTargetRecordAt: null,
       toastShowable: false,
       toastError: false,
       toastMessage: '',
@@ -43,6 +46,14 @@ document.addEventListener('turbolinks:load', () => {
       // ページ内のすべてのフォームからデータ変更をチェック
       existsChangedForm () {
         return this.contentChanged.length > 0
+      },
+      hasMainDiary () {
+        return this.diariesWithOpsions.some(obj => !!obj.diary?.main_in_day)
+      },
+      memoTargetDiaryLabel () {
+        if (!this.memoTargetDiaryId) return ''
+        const title = this.memoTargetDiaryTitle || '(タイトルなし)'
+        return this.memoTargetRecordAt ? `${title} (${this.memoTargetRecordAt})` : title
       },
     },
     mounted () {
@@ -68,6 +79,11 @@ document.addEventListener('turbolinks:load', () => {
       setMemoForm () {
         $('#memo-form.modal').on('shown.bs.modal', () => {
           $('#memo-form.modal').find('.first-focus').focus()
+        })
+        $('#memo-form.modal').on('hidden.bs.modal', () => {
+          this.memoTargetDiaryId = null
+          this.memoTargetDiaryTitle = ''
+          this.memoTargetRecordAt = null
         })
         this.$refs.memoContentField.addEventListener('input', (event) => {
           localStorage.setItem('inputting-memo-content', event.target.value)
@@ -99,7 +115,10 @@ document.addEventListener('turbolinks:load', () => {
           }
         })
       },
-      showMemoForm () {
+      showMemoForm (targetDiary = null) {
+        this.memoTargetDiaryId = targetDiary?.id || null
+        this.memoTargetDiaryTitle = targetDiary ? (targetDiary.title_mod || targetDiary.title || '(タイトルなし)') : ''
+        this.memoTargetRecordAt = targetDiary?.record_at || this.targetDate
         $('#memo-form').modal('show')
         const inputtingMemoContent = localStorage.getItem('inputting-memo-content')
         if (inputtingMemoContent) {
@@ -171,6 +190,9 @@ document.addEventListener('turbolinks:load', () => {
         } else if (!this.memoContent) {
           this.showToast({isError: true, message: 'メモの内容を入力してください'})
           return
+        } else if (!this.memoTargetDiaryId) {
+          this.showToast({isError: true, message: 'メモを追加する日記を選択してください'})
+          return
         }
 
         const formObject = new FormData(this.$refs.memoForm)
@@ -204,6 +226,21 @@ document.addEventListener('turbolinks:load', () => {
         // NOTE: 新規作成なのにDiary経由でDiaryFormに渡していて冗長だが、Diaryコンポーネントのコメントに書いた通り、リファクタリングが微妙なので諦める
         this.diariesWithOpsions.push({ diary: {}, targetDateForEditMode: this.targetDate })
         this.editModeDiaryIds.push(null)
+      },
+      newMainDiary () {
+        if (this.hasMainDiary) {
+          this.showToast({isError: true, message: 'メイン日記は既に存在します'})
+          return
+        }
+        const payload = { diary: { record_at: this.targetDate, main_in_day: true, title: '', content: '' } }
+        HmAxios.post('/diaries.json', payload)
+          .then(res => {
+            this.fetchData()
+            this.showToast({isError: false, message: 'メイン日記を作成しました'})
+          })
+          .catch(error => {
+            this.showToast({isError: true, message: (error?.response?.data?.message || error.message)})
+          })
       },
       existsEditModeDiaries () {
         return this.editModeDiaryIds.length > 0

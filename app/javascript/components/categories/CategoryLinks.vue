@@ -1,6 +1,6 @@
 <template>
   <div class="diary-categories">
-    <button class="category-button" style="min-width: 105px" @click="$emit('edit-category')">カテゴリ ✎</button>
+    <button v-if="showEditButton" class="category-button" style="min-width: 105px" @click="$emit('edit-category')">カテゴリ ✎</button>
     <div class="category-list">
       <a v-for="category in savedCategories" :key="category.id" href="/categories" class="category-link">
         <i v-if="category.shared" class="fa fa-users mr-2" style="color:orange"></i>
@@ -14,7 +14,11 @@
 export default {
   props: {
     categories: Array,
-    savedCategoryIds: Array
+    savedCategoryIds: Array,
+    showEditButton: {
+      type: Boolean,
+      default: true
+    }
   },
   computed: {
     savedCategories() {
@@ -42,39 +46,42 @@ export default {
 
 <style scoped lang="sass">
 .diary-categories
-  margin-top: 10px
-  padding: 8px
-  border-radius: 5px
+  margin-top: 6px
+  padding: 0
   display: flex
   align-items: center
-  gap: 10px
+  gap: 8px
 
 .category-list
   display: flex
   flex-wrap: wrap
-  gap: 10px
+  gap: 8px
 
 .category-link
   text-decoration: none
-  color: #007bff
-  font-weight: bold
-  background: #e9ecef
-  padding: 3px 8px
-  border-radius: 3px
+  color: #4338ca
+  font-weight: 700
+  background: #eef2ff
+  padding: 4px 10px
+  border-radius: 999px
+  border: 1px solid #e0e7ff
 
   &:hover
-    text-decoration: underline
+    background: #e0e7ff
 
 .category-button
-  background-color: #f0f0f0
-  border: 1px solid #ccc
-  padding: 5px 10px
-  border-radius: 5px
+  background-color: #eef2ff
+  border: 1px solid #c7d2fe
+  padding: 6px 12px
+  border-radius: 10px
   cursor: pointer
-  font-weight: bold
+  font-weight: 700
   display: flex
   align-items: center
+  transition: transform 0.12s ease, box-shadow 0.12s ease
 
   &:hover
-    background-color: #ddd
+    background-color: #e0e7ff
+    transform: translateY(-1px)
+    box-shadow: 0 6px 14px rgba(67, 56, 202, 0.2)
 </style>

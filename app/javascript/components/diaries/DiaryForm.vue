@@ -283,7 +283,7 @@ export default {
       } else {
         HmAxios.post(`/diaries.json`, formObject)
           .then(res => {
-            this.$emit('submitted', this.formKey, res.data)
+            this.$emit('submitted', this.formKey, res.data.diary)
             deleteKeysWithPrefix('diary-')
           })
           .catch(error => {

@@ -137,7 +137,7 @@ class DiariesController < ApplicationController
     respond_to do |format|
       if @diary.save
         format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
-        format.json { render partial: 'show', locals: { diary: @diary }, status: :created }
+        format.json { render 'show', status: :created }
       else
         set_form_variables
         format.html { render action: "new" }
@@ -180,15 +180,14 @@ class DiariesController < ApplicationController
   end
 
   def append_memo
-    @after_created_by_memo = false
-    found_main_diaries = current_user.diaries.main_in(params[:diary][:record_at])
-    if found_main_diaries.present?
-      @diary = found_main_diaries.first
-    else
-      @diary = current_user.diaries.build(record_at: params[:diary][:record_at], main_in_day: true)
-      @after_created_by_memo = true
+    memo_params = params.require(:diary)
+    unless memo_params[:diary_id].present?
+      render json: { message: 'メモを追記する日記を指定してください' }, status: :unprocessable_entity and return
     end
-    @diary.append_memo(memo_text(params[:diary]))
+
+    @after_created_by_memo = false
+    @diary = current_user.diaries.find(memo_params[:diary_id])
+    @diary.append_memo(memo_text(memo_params))
     unless @diary.save
       render json: { message: @diary.errors.full_messages.join("\n") }, status: :unprocessable_entity
     end

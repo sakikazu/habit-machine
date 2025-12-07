@@ -19,6 +19,9 @@
 - VueコンポーネントはPascalCaseファイル名＋kebab-case props。共通JSは`app/javascript/*.js`に配置。
 - 秘密情報はコミットしない。`.env.sample`をコピーして`.env`を用意し、必要なキーを追加。
 
+## デザイン
+- レスポンシブデザインでPCとスマホ用のViewを実現
+
 ## テスト指針
 - RSpec＋`factory_bot_rails`。モデルは`spec/models`、リクエスト/APIは`spec/requests`、共通ヘルパーは`spec/support`。
 - ファイルは`*_spec.rb`命名で小さく切る。例: `bundle exec rspec spec/models/diary_spec.rb`。

@@ -32,15 +32,17 @@
                 .col-4
                   select.form-control.w100(name="[diary]label_memo")
                     option(v-for="cate in memoCategories" :value="cate" v-text="cate")
+              p.text-muted.mb-2(v-if="memoTargetDiaryLabel")
+                = fa_icon 'sticky-note-o', class: 'mr-1'
+                | 追記先: {{ memoTargetDiaryLabel }}
               div
                 textarea.form-control.first-focus.w100(name="[diary]memo" v-model="memoContent" ref="memoContentField")
-              input(type="hidden" name="[diary]record_at" value="#{@date}")
+              input(type="hidden" name="[diary]record_at" :value="memoTargetRecordAt || '#{@date}'")
+              input(type="hidden" name="[diary]diary_id" :value="memoTargetDiaryId")
             .modal-footer.justify-content-between
               small.text-muted
                 = fa_icon 'exclamation-circle', class: 'mr-1'
-                | メインの日記にメモを追加します。
-                br
-                | メイン日記が未作成なら同時に作成されます
+                | 選択した日記の本文末尾にメモを追加します
               button.btn.btn-primary(type="submit") メモ追加
 
   .dayContentHeader
@@ -64,10 +66,6 @@
         span.button-icon
           | 🏠
         | 今日
-      button.action-button.btn-memo(@click="showMemoForm")
-        span.button-icon
-          | 📝
-        | 日記にメモ
       = link_to month_path(month: @date.to_s(:ym)), class: 'action-button btn-calendar' do
         span.button-icon
           | 📅
@@ -110,8 +108,12 @@
               @content-changed="onContentChanged"
               @submitted="onSubmitted"
               @on-edit-mode="onEditMode"
+              @append-memo="showMemoForm"
             )
       p
+        a.btn.btn-block.btn-warning.mb-2(v-if="!hasMainDiary" @click="newMainDiary")
+          i.fa.fa-star
+          | &nbsp;メイン日記を作成
         a.btn.btn-block.btn-light.ignore-checking-changes.mb-3(@click="newDiary")
           i.fa.fa-pencil &nbsp;日記を書く
 
