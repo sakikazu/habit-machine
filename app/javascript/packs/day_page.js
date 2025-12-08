@@ -204,9 +204,24 @@ document.addEventListener('turbolinks:load', () => {
               this.diariesWithOpsions.push({ diary: res.data.diary, targetDateForEditMode: null, highlightForAMoment: true })
             } else {
               const foundIdx = this.diariesWithOpsions.findIndex(obj => obj.diary.id === res.data.diary.id)
-              // TODO: Vue.setじゃないけど反映されてる？確認しておく
-              this.diariesWithOpsions[foundIdx].diary = res.data.diary
-              this.diariesWithOpsions[foundIdx].highlightForAMoment = true
+              if (foundIdx >= 0) {
+                // NOTE: オブジェクトを差し替えてリアクティブに更新
+                const target = this.diariesWithOpsions[foundIdx]
+                target.diary = res.data.diary
+                target.highlightForAMoment = true
+                this.$set(this.diariesWithOpsions, foundIdx, target)
+              }
+              // 固定エリアなどモーダルのみ表示の場合は、pinned配列を更新する
+              const pinnedIdx = this.pinnedDiaries.findIndex(diary => diary.id === res.data.diary.id)
+              if (pinnedIdx >= 0) {
+                this.$set(this.pinnedDiaries, pinnedIdx, res.data.diary)
+              }
+            }
+            // モーダル表示中で追記した場合に内容を即時反映
+            if (this.modalableDiaryId && this.modalableDiaryId == res.data.diary.id) {
+              this.$nextTick(() => {
+                this.$refs.modalDiary?.updateDiary?.(res.data.diary)
+              })
             }
 
             // NOTE: val('')で値クリアしてしまうと、次の入力時に現在時刻が出なくなる

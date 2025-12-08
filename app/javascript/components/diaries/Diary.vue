@@ -33,7 +33,7 @@ Diary
 <template lang="pug">
 .diaryWrapper(v-if="localDiary")
   .well.diary-card(v-if="!editMode" :class="{'highlight-border': highlight}")
-    .memo-fab(v-if="localDiary.id && !modalMode")
+    .memo-fab(v-if="localDiary.id")
       button.memo-fab__button(@click.prevent="$emit('append-memo', localDiary)")
         i.fa.fa-sticky-note-o.mr-1
         | 追記
@@ -88,7 +88,7 @@ Diary
         // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
         img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
       .markdown.mb-4(v-html="organizedContent")
-      .utility-bar(v-if="!modalMode")
+      .utility-bar
         button.utility-pill(@click.prevent="edit")
           i.fa.fa-pencil.mr-1
           | 編集
@@ -167,7 +167,11 @@ export default {
   },
   watch: {
     diary(newVal) {
-      this.localDiary = newVal
+      if (this.hasFullData(newVal)) {
+        this.localDiary = newVal
+      } else if (newVal?.id) {
+        this.fetchDiary(newVal.id)
+      }
     },
     editMode(newVal) {
       this.$emit('on-edit-mode', this.localDiary.id, newVal)
@@ -219,7 +223,7 @@ export default {
   },
   created () {
     if (!this.diary && !this.diaryId) throw new Error('diary or diaryId props is required')
-    if (this.diary) {
+    if (this.diary && this.hasFullData(this.diary)) {
       this.localDiary = this.diary
     } else {
       // TODO: Diaryの取得を待つようにすれば(await)、templateで `v-if="localDiary"` する必要ないかも？
@@ -232,6 +236,17 @@ export default {
     backlinkLabel (link) {
       const title = link.title_mod || '(タイトルなし)'
       return `${link.record_at} ${title}`
+    },
+    updateDiary (diary) {
+      // 外部から日記データを更新するとき用
+      if (this.hasFullData(diary)) {
+        this.localDiary = diary
+      } else if (diary?.id) {
+        this.fetchDiary(diary.id)
+      }
+    },
+    hasFullData (diary) {
+      return !!diary && !!diary.markdowned_content
     },
     setSelectedToCategories (categories, selected_ids) {
       categories.forEach(category => {
@@ -337,7 +352,7 @@ export default {
   position: relative
 
 .diary-card .diary-title
-  padding-right: 170px
+  padding-right: 70px
 
 .diary-card .diary-title .title
   font-size: 22px

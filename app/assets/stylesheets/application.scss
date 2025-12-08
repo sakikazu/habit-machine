@@ -384,6 +384,14 @@ td {
   }
 }
 
+// Memoモーダルを日記詳細モーダルより前面に出す
+.modal {
+  z-index: 21010;
+}
+.modal-backdrop {
+  z-index: 21000;
+}
+
 /**********************************************
  from bootstrap_and_overrides.css.less
  todo グルーピングして別ファイル切り出したい
@@ -454,4 +462,3 @@ ul.ui-menu.ui-widget.ui-widget-content.ui-autocomplete {
   height: 250px;
   overflow-y: scroll;
 }
-

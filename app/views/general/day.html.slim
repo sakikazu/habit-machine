@@ -9,7 +9,9 @@
       diary(
         :diary-id="modalableDiaryId"
         :modal-mode="true"
+        ref="modalDiary"
         @submitted="reflectPinnedDiaries"
+        @append-memo="showMemoForm"
       )
 
   / 「日記にメモ」フォーム
