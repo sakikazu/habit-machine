@@ -60,9 +60,6 @@ class Diary < ApplicationRecord
   # TODO: variant展開については再検討
   has_many_attached :images
 
-  ACTION_MEMO_LINE = "# ----- ACTION MEMO -----"
-  CRLF = "\r\n"
-
   # TODO: これもrails7.1以降にvariant定義できるようになれば置き換えることができる
   SUB_IMAGE_VARIANT_HASH = { resize_to_limit: [650, 650], saver: { quality: 80 } }.freeze
 
@@ -111,13 +108,10 @@ class Diary < ApplicationRecord
   end
 
   def append_memo(memo)
-    line_existed = self.content.present? && self.content.match(/^#{ACTION_MEMO_LINE}/)
-    if line_existed
-      self.content = append_memo_below_line(memo)
-    else
-      self.content = "" if self.content.nil?
-      self.content += CRLF + ACTION_MEMO_LINE + CRLF + memo + CRLF
-    end
+    self.content = '' if self.content.nil?
+    # 末尾が改行で終わっていなければ追記前に改行を足す
+    self.content += "\n" unless self.content.end_with?("\n") || self.content.empty?
+    self.content += memo.to_s
   end
 
   def search_result_items
@@ -151,26 +145,6 @@ class Diary < ApplicationRecord
 
   def update_tag_used_at
     CustomTag.update_last_used_at(self.tags) if self.tags.present?
-  end
-
-  def append_memo_below_line(memo)
-    # 文字列の最後を、2行以上の空行にしておく。lines.eachでは、イテレーターは改行付きなので、1行しか空行がないと、その行のループはされない
-    # NOTE: \Rは、\r\nや\nを同一に扱ってくれる正規表現。2つあるのは、1つ目は最後の文字列
-    if self.content.match(/.+\R\R\Z/).blank?
-      self.content += CRLF + CRLF
-    end
-    appending_content = ""
-    is_line_start = false
-    self.content.lines.each do |line|
-      if is_line_start && line.blank?
-        appending_content += "#{memo}#{CRLF}"
-        is_line_start = false
-      else
-        appending_content += line
-        is_line_start = true if line.match(/^#{ACTION_MEMO_LINE}/).present?
-      end
-    end
-    appending_content
   end
 
   def unique_main_in_day?
