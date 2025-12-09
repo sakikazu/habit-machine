@@ -62,6 +62,7 @@ document.addEventListener('turbolinks:load', () => {
       this.fetchCategories()
     },
     methods: {
+      // Sidebar Vueインスタンスからのイベントでモーダル表示／トースト表示を橋渡しする
       setupGlobalListeners () {
         window.addEventListener('open-diary-modal', (event) => {
           if (event?.detail?.diaryId) this.showDiaryModal(event.detail.diaryId)

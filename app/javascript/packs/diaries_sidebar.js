@@ -6,6 +6,8 @@ import TaskDiary from 'components/diaries/TaskDiary'
 document.addEventListener('turbolinks:load', () => {
   const el = document.getElementById('diariesSidebar')
   if (!el) return
+  // NOTE: data-turbolinks-permanentで復元されたDOMには既にVueインスタンスがぶら下がっているので再マウントを避ける
+  if (el.__vue__) return
 
   new Vue({
     el,
@@ -35,9 +37,11 @@ document.addEventListener('turbolinks:load', () => {
     },
     mounted () {
       this.fetchPinned()
+      // main/day_page側へ依頼されたリフレッシュイベントを拾って最新の固定日記を取得
       window.addEventListener('sidebar-refresh', this.fetchPinned)
     },
     methods: {
+      // 固定日記一覧をサーバーから再取得してサイドバーを更新
       fetchPinned () {
         HmAxios.get('/diaries/pinned.json')
           .then(res => {

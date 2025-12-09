@@ -121,7 +121,8 @@
           i.fa.fa-pencil &nbsp;日記を書く
 
     .sectionPinnedDiaries.col-md-3
-      #diariesSidebar
+      / NOTE: turbolinks permanentで日付遷移時もDOMを保持し、サイドバーの再fetchを防ぐ
+      #diariesSidebar[data-turbolinks-permanent]
 
 sass:
   /* 2025/01/08 Claudeのデザイン */
