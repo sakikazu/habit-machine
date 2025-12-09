@@ -1,5 +1,6 @@
 - content_for :addjs_in_head
   = javascript_pack_tag 'day_page', 'data-turbolinks-track': 'reload'
+  = javascript_pack_tag 'diaries_sidebar', 'data-turbolinks-track': 'reload'
 
 #dayPage(data-target-date="#{@date}")
   toast(:showable="toastShowable" :is-error="toastError" :message="toastMessage" @toast-hidden="toastShowable = false")
@@ -120,15 +121,7 @@
           i.fa.fa-pencil &nbsp;日記を書く
 
     .sectionPinnedDiaries.col-md-3
-      .page-header
-        h4
-          span.mr-2
-            i.fa.fa-thumb-tack
-          | 固定
-          small.ml-3 = link_to '[管理]', pinned_diaries_path
-      .diaries
-        .mb-1(v-for="diary in pinnedDiaries" :key="diary.id")
-          task-diary(:diary="diary" @updated="showToast" @show-diary-modal="showDiaryModal")
+      #diariesSidebar
 
 sass:
   /* 2025/01/08 Claudeのデザイン */

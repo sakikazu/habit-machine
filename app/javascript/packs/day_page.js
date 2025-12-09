@@ -3,7 +3,6 @@ import HmAxios from 'hm_axios.js'
 
 import HabitRecord from 'components/habits/HabitRecord'
 import Diary from 'components/diaries/Diary'
-import TaskDiary from 'components/diaries/TaskDiary'
 import Toast from 'components/shared/toast'
 import Modal from 'components/shared/Modal'
 
@@ -14,7 +13,6 @@ document.addEventListener('turbolinks:load', () => {
     components: {
       HabitRecord,
       Diary,
-      TaskDiary,
       Toast,
       Modal,
     },
@@ -36,7 +34,6 @@ document.addEventListener('turbolinks:load', () => {
       toastShowable: false,
       toastError: false,
       toastMessage: '',
-      pinnedDiaries: [],
       modalableDiaryId: null,
       // mobileでは「本日の記録」の未記入のものはデフォルト非表示にしているので、それを表示するためのフラグ
       openRecordContents: false,
@@ -58,12 +55,21 @@ document.addEventListener('turbolinks:load', () => {
     },
     mounted () {
       this.setup()
+      this.setupGlobalListeners()
       this.targetDate = this.$el.dataset.targetDate
       this.fetchData()
       this.enablePopover()
       this.fetchCategories()
     },
     methods: {
+      setupGlobalListeners () {
+        window.addEventListener('open-diary-modal', (event) => {
+          if (event?.detail?.diaryId) this.showDiaryModal(event.detail.diaryId)
+        })
+        window.addEventListener('sidebar-toast', (event) => {
+          if (event?.detail) this.showToast(event.detail)
+        })
+      },
       setup () {
         this.setupTimepicker()
         this.shortcutOfPagingLink('prev-day', 'next-day') // ショートカットで日にち移動
@@ -139,10 +145,10 @@ document.addEventListener('turbolinks:load', () => {
               return { diary: diary, targetDateForEditMode: null }
             })
             this.diary_links_list = res.data.diary_links_list
-            this.pinnedDiaries = res.data.pinned_diaries
           })
           .catch(error => {
             alert(error.message || error.response.data.message)
+            console.error(error)
           })
       },
       enablePopover () {
@@ -178,8 +184,7 @@ document.addEventListener('turbolinks:load', () => {
       },
       // this.diariesの方には反映する必要性はあまりない
       reflectPinnedDiaries (_formKey, updatedDiary) {
-        let foundIndex = this.pinnedDiaries.findIndex(diary => diary.id == updatedDiary.id)
-        Vue.set(this.pinnedDiaries, foundIndex, updatedDiary)
+        window.dispatchEvent(new CustomEvent('sidebar-refresh', { detail: { diary: updatedDiary } }))
       },
       submitAppendingMemo (event) {
         event.preventDefault()
@@ -203,18 +208,13 @@ document.addEventListener('turbolinks:load', () => {
             if (!!res.data.after_created_by_memo) {
               this.diariesWithOpsions.push({ diary: res.data.diary, targetDateForEditMode: null, highlightForAMoment: true })
             } else {
-              const foundIdx = this.diariesWithOpsions.findIndex(obj => obj.diary.id === res.data.diary.id)
+              const foundIdx = this.diariesWithOpsions.findIndex(obj => obj.diary?.id === res.data.diary.id)
               if (foundIdx >= 0) {
                 // NOTE: オブジェクトを差し替えてリアクティブに更新
                 const target = this.diariesWithOpsions[foundIdx]
                 target.diary = res.data.diary
                 target.highlightForAMoment = true
                 this.$set(this.diariesWithOpsions, foundIdx, target)
-              }
-              // 固定エリアなどモーダルのみ表示の場合は、pinned配列を更新する
-              const pinnedIdx = this.pinnedDiaries.findIndex(diary => diary.id === res.data.diary.id)
-              if (pinnedIdx >= 0) {
-                this.$set(this.pinnedDiaries, pinnedIdx, res.data.diary)
               }
             }
             // モーダル表示中で追記した場合に内容を即時反映
@@ -235,6 +235,7 @@ document.addEventListener('turbolinks:load', () => {
           })
           .catch(error => {
             this.showToast({isError: true, message: (error?.response?.data?.message || `書いた内容をコピーしてから、リロードして、再度実行してください：${error.message}`)})
+            console.error(error)
           })
       },
       newDiary () {
@@ -255,6 +256,7 @@ document.addEventListener('turbolinks:load', () => {
           })
           .catch(error => {
             this.showToast({isError: true, message: (error?.response?.data?.message || error.message)})
+            console.error(error)
           })
       },
       existsEditModeDiaries () {
@@ -289,6 +291,7 @@ document.addEventListener('turbolinks:load', () => {
           })
           .catch(error => {
             alert(error.message || error.response.data.message)
+            console.error(error)
           })
       },
     },

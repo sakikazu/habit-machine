@@ -225,9 +225,12 @@ export default {
     if (!this.diary && !this.diaryId) throw new Error('diary or diaryId props is required')
     if (this.diary && this.hasFullData(this.diary)) {
       this.localDiary = this.diary
-    } else {
+    } else if (this.diaryId) {
       // TODO: Diaryの取得を待つようにすれば(await)、templateで `v-if="localDiary"` する必要ないかも？
       this.fetchDiary(this.diaryId)
+    } else {
+      // 日記IDが無い場合（新規作成時など）は取得せず、そのままフォームを表示する
+      this.localDiary = this.diary || {}
     }
   },
   mounted () {
@@ -275,6 +278,7 @@ export default {
         })
     },
     fetchDiary (diaryId) {
+      if (!diaryId) return
       HmAxios.get(`/diaries/${diaryId}.json`)
         .then(res => {
           this.localDiary = res.data.diary

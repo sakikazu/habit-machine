@@ -85,6 +85,11 @@ class DiariesController < ApplicationController
     end
     tags = current_user.diaries.pinned.map { |d| d.tags }
     @tag_names = tags.flatten.map { |tag| tag.name }.uniq
+
+    respond_to do |format|
+      format.html
+      format.json
+    end
   end
 
   # NOTE: /day/:date/diaries/:id もshowアクションで処理している。:dateはURLに付与されているのみで、処理に使っていない
