@@ -30,8 +30,18 @@
                   span.mr-1.text-muted = "(だいたい)"
                 = dispdate(history.target_date, true)
                 span.text-muted.ml-3 = "by #{history.author.dispname}"
-              .col-1.m-auto
-                = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_child_history_path(history.source, history)
+              .col-2.d-flex.justify-content-end.align-items-center
+                - favorited = history.favorited_by?(current_user)
+                button.btn.btn-sm.mr-2(
+                  type="button"
+                  class=(favorited ? 'btn-warning text-white' : 'btn-outline-warning')
+                  data-favorite-button="history"
+                  data-favoritable-type="History"
+                  data-favoritable-id=history.id
+                  data-favorited=favorited
+                )
+                  i class=(favorited ? 'fa fa-star' : 'fa fa-star-o')
+                = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_child_history_path(history.source, history), class: 'text-secondary'
           .card-body
             h5.card-title = history.title
             - if history.content.present?
@@ -41,3 +51,58 @@
               - history.data.each do |key, value|
                 li.list-group-item.text-muted = "#{History.human_attribute_name("data.#{key}")}: #{value}"
           = link_to image_tag(history.eyecatch_image_small, class: 'card-img-bottom'), history.eyecatch_image_large if history.eyecatch_image.attached?
+
+javascript:
+  document.addEventListener('turbolinks:load', () => {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
+    const buttons = document.querySelectorAll('[data-favorite-button="history"]')
+
+    buttons.forEach((button) => {
+      if (button.dataset.favoriteListenerAttached) return
+      button.dataset.favoriteListenerAttached = 'true'
+
+      button.addEventListener('click', () => toggleFavorite(button, csrfToken))
+    })
+  })
+
+  function toggleFavorite(button, csrfToken) {
+    const favorited = button.dataset.favorited === 'true'
+    const payload = {
+      favoritable_type: button.dataset.favoritableType,
+      favoritable_id: button.dataset.favoritableId
+    }
+
+    fetch('/favorites', {
+      method: favorited ? 'DELETE' : 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'X-CSRF-Token': csrfToken
+      },
+      body: JSON.stringify(payload),
+      credentials: 'same-origin'
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error('お気に入りの更新に失敗しました')
+        return response.json()
+      })
+      .then((data) => {
+        updateFavoriteButton(button, data.favorited)
+      })
+      .catch((error) => {
+        console.error(error)
+        alert(error.message)
+      })
+  }
+
+  function updateFavoriteButton(button, favorited) {
+    button.dataset.favorited = favorited ? 'true' : 'false'
+    button.classList.toggle('btn-warning', favorited)
+    button.classList.toggle('text-white', favorited)
+    button.classList.toggle('btn-outline-warning', !favorited)
+
+    const icon = button.querySelector('i')
+    if (icon) {
+      icon.className = favorited ? 'fa fa-star' : 'fa fa-star-o'
+    }
+  }

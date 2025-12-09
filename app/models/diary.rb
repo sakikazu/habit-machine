@@ -79,6 +79,12 @@ class Diary < ApplicationRecord
   scope :newer, lambda { order(["record_at DESC", "id ASC"]) }
   scope :older, lambda { order(["record_at ASC", "id ASC"]) }
 
+  def favorited_by?(user)
+    return false if user.blank?
+
+    favorites.exists?(user_id: user.id)
+  end
+
   before_validation :replace_urls
   before_save :convert_html, if: -> { content_is_html? }
   after_save :update_tag_used_at

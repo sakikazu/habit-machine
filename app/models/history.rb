@@ -64,6 +64,12 @@ class History < ApplicationRecord
     eyecatch_image.variant(resize_to_limit: [1600, 1600], saver: { quality: 80 })
   end
 
+  def favorited_by?(user)
+    return false if user.blank?
+
+    favorites.exists?(user_id: user.id)
+  end
+
   def search_result_items
     path, name = case source
            when Child
