@@ -19,6 +19,8 @@
 #  fk_rails_...  (diary_id => diaries.id)
 #  fk_rails_...  (user_id => users.id)
 #
+#
+# 日記の変更履歴（家族の他のユーザーが共有日記を変更したときに、履歴を保存する）
 class DiaryHistory < ApplicationRecord
   belongs_to :user
   belongs_to :diary

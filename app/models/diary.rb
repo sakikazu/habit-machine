@@ -49,6 +49,7 @@ class Diary < ApplicationRecord
   has_many :incoming_diary_links, class_name: DiaryLink.to_s, foreign_key: :target_diary_id, dependent: :delete_all
   has_many :linked_diaries, through: :outgoing_diary_links, source: :target_diary
   has_many :backlinked_diaries, through: :incoming_diary_links, source: :source_diary
+  has_many :favorites, as: :favoritable, dependent: :destroy
 
   # 日記のアイキャッチ用画像
   has_one_attached :eyecatch_image

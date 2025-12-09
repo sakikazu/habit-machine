@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_01_023000) do
+ActiveRecord::Schema.define(version: 2025_03_15_000000) do
 
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
@@ -134,6 +134,17 @@ ActiveRecord::Schema.define(version: 2025_03_01_023000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "enabled", default: false, null: false
+  end
+
+  create_table "favorites", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "favoritable_type", null: false
+    t.bigint "favoritable_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable"
+    t.index ["user_id", "favoritable_type", "favoritable_id"], name: "idx_favorites_on_user_and_favoritable", unique: true
+    t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
   create_table "habitodos", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
@@ -310,6 +321,7 @@ ActiveRecord::Schema.define(version: 2025_03_01_023000) do
   add_foreign_key "diary_histories", "users"
   add_foreign_key "diary_links", "diaries", column: "source_diary_id"
   add_foreign_key "diary_links", "diaries", column: "target_diary_id"
+  add_foreign_key "favorites", "users"
   add_foreign_key "histories", "children", column: "source_id"
   add_foreign_key "histories", "families"
   add_foreign_key "histories", "users", column: "author_id"

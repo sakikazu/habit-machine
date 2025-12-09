@@ -54,6 +54,7 @@ class User < ApplicationRecord
   has_many :senses
   has_many :mytags, class_name: 'CustomTag'
   has_many :habitodos
+  has_many :favorites, dependent: :destroy
   has_many :histories, as: :source
   has_many :todos, as: :source
   has_many :todo_projects, as: :source

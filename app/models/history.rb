@@ -39,6 +39,7 @@ class History < ApplicationRecord
   belongs_to :source, polymorphic: true
   belongs_to :author, class_name: "User", foreign_key: :author_id
   belongs_to :family
+  has_many :favorites, as: :favoritable, dependent: :destroy
 
   # TODO: メタプロ
   # attr_accessor :height, :weight
