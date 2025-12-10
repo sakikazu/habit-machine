@@ -24,7 +24,7 @@
             .modal-header
               h5.mb-0
                 | 📝
-                = "#{dispdate(@date, true)}のメモ"
+                | {{ memoModalTitle }}
             .modal-body
               .form-row.mb-2
                 .col-6.timepicker.input-group[data-target-input="nearest"]
@@ -243,3 +243,9 @@ sass:
         gap: 4px;
       .action-button
         font-size: 13px;
+
+  #memo-form.modal-over-history
+    z-index: 21030
+
+  .modal-backdrop.modal-backdrop-over-history
+    z-index: 21020

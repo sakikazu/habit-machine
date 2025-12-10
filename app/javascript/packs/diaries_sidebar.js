@@ -23,23 +23,16 @@ document.addEventListener('turbolinks:load', () => {
         </div>
         <div class="diaries mb-4 favorite-list">
           <div v-if="favorites.length === 0" class="text-muted small">まだお気に入りはありません</div>
-          <div class="favorite-item mb-2 p-2" v-for="fav in favorites" :key="fav.type + '-' + fav.id">
-            <a v-if="fav.type === 'History' && fav.path" :href="fav.path" class="d-flex align-items-center">
-              <i class="mr-2" :class="iconClass(fav)"></i>
+          <div class="favorite-item mb-2 p-2 clickable" v-for="fav in favorites" :key="fav.type + '-' + fav.id" @click.prevent="openFavorite(fav)">
+            <div class="d-flex align-items-start">
+              <i class="mr-2 mt-1" :class="iconClass(fav)"></i>
               <div>
                 <div class="font-weight-bold">{{ fav.title }}</div>
                 <div class="text-muted small">
                   <span v-if="fav.member" class="mr-1">({{ fav.member }})</span>{{ fav.date }}
                 </div>
               </div>
-            </a>
-            <a v-else href="javascript:void(0)" @click.prevent="openFavorite(fav)" class="d-flex align-items-center">
-              <i class="mr-2" :class="iconClass(fav)"></i>
-              <div>
-                <div class="font-weight-bold">{{ fav.title }}</div>
-                <div class="text-muted small">{{ fav.date }}</div>
-              </div>
-            </a>
+            </div>
           </div>
         </div>
         <div class="page-header">
@@ -64,6 +57,7 @@ document.addEventListener('turbolinks:load', () => {
     data: {
       diaries: [],
       favorites: [],
+      activeHistory: null,
     },
     mounted () {
       this.fetchPinned()
@@ -71,10 +65,12 @@ document.addEventListener('turbolinks:load', () => {
       window.addEventListener('sidebar-refresh', this.fetchPinned)
       this.fetchFavorites()
       window.addEventListener('favorites-refresh', this.fetchFavorites)
+      window.addEventListener('history-appended', this.onHistoryAppended)
     },
     destroyed () {
       window.removeEventListener('sidebar-refresh', this.fetchPinned)
       window.removeEventListener('favorites-refresh', this.fetchFavorites)
+      window.removeEventListener('history-appended', this.onHistoryAppended)
     },
     methods: {
       // 固定日記一覧をサーバーから再取得してサイドバーを更新
@@ -108,12 +104,60 @@ document.addEventListener('turbolinks:load', () => {
       openFavorite (fav) {
         if (fav.type === 'Diary') {
           this.showDiaryModal(fav.id)
-        } else if (fav.path) {
-          window.location.href = fav.path
+        } else {
+          this.showHistoryModal(fav)
+        }
+      },
+      openHistoryEdit (fav) {
+        if (fav.edit_path) {
+          window.location.href = fav.edit_path
         }
       },
       iconClass (fav) {
         return fav.type === 'History' ? 'fa fa-history' : 'fa fa-book'
+      },
+      showHistoryModal (fav) {
+        this.activeHistory = fav
+        this.renderHistoryModal()
+      },
+      closeHistoryModal () {
+        this.activeHistory = null
+        $('#historyFavoriteModal').modal('hide')
+      },
+      renderHistoryModal () {
+        if (!this.activeHistory) return
+        const titleEl = document.getElementById('historyFavoriteTitle')
+        const metaEl = document.getElementById('historyFavoriteMeta')
+        const contentEl = document.getElementById('historyFavoriteContent')
+        const anchorEl = document.getElementById('historyFavoriteAnchor')
+        const editEl = document.getElementById('historyFavoriteEdit')
+        const appendEl = document.getElementById('historyFavoriteAppend')
+
+        if (titleEl) titleEl.textContent = this.activeHistory.title
+        if (metaEl) metaEl.textContent = `${this.activeHistory.member ? '(' + this.activeHistory.member + ') ' : ''}${this.activeHistory.date || ''}`
+        if (contentEl) contentEl.textContent = this.activeHistory.content || ''
+        if (anchorEl) {
+          anchorEl.href = this.activeHistory.path || '#'
+          anchorEl.classList.toggle('disabled', !this.activeHistory.path)
+        }
+        if (editEl) {
+          editEl.href = this.activeHistory.edit_path || '#'
+          editEl.classList.toggle('disabled', !this.activeHistory.edit_path)
+        }
+        if (appendEl) {
+          appendEl.onclick = (e) => {
+            e.preventDefault()
+            window.dispatchEvent(new CustomEvent('open-history-append', { detail: { history: this.activeHistory } }))
+          }
+        }
+        $('#historyFavoriteModal').modal('show')
+      },
+      onHistoryAppended (event) {
+        const updated = event?.detail
+        if (!updated?.id || !this.activeHistory || this.activeHistory.id !== updated.id) return
+        this.activeHistory.content = updated.content || ''
+        const contentEl = document.getElementById('historyFavoriteContent')
+        if (contentEl) contentEl.textContent = this.activeHistory.content
       }
     }
   })
@@ -128,6 +172,7 @@ style.innerHTML = `
     background: #f9fafb;
     transition: background-color 0.15s ease, box-shadow 0.15s ease;
     display: block;
+    cursor: pointer;
   }
   .sectionPinnedDiaries .favorite-list .favorite-item:hover {
     background: #fff;
@@ -142,3 +187,38 @@ style.innerHTML = `
   }
 `
 document.head.appendChild(style)
+
+// Append a simple modal container for history view
+const modalTemplate = `
+  <div class="modal fade" id="historyFavoriteModal" tabindex="-1" role="dialog" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">
+            <i class="fa fa-history mr-2"></i>
+            <span id="historyFavoriteTitle"></span>
+          </h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="text-muted mb-2" id="historyFavoriteMeta"></div>
+          <div id="historyFavoriteContent" style="white-space: pre-line;"></div>
+        </div>
+        <div class="modal-footer">
+          <a id="historyFavoriteAppend" class="btn btn-outline-warning">追記</a>
+          <a id="historyFavoriteAnchor" class="btn btn-outline-secondary" target="_blank" rel="noopener">履歴ページへ</a>
+          <a id="historyFavoriteEdit" class="btn btn-primary">編集</a>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+        </div>
+      </div>
+    </div>
+  </div>
+`
+
+document.addEventListener('turbolinks:load', () => {
+  if (!document.getElementById('historyFavoriteModal')) {
+    document.body.insertAdjacentHTML('beforeend', modalTemplate)
+  }
+})

@@ -161,6 +161,7 @@ Rails.application.routes.draw do
   resources :habits
   resources :records, only: [:create, :update]
   resources :favorites, only: [:index, :create]
+  post '/favorites/append_history', to: 'favorites#append_history'
   delete '/favorites', to: 'favorites#destroy'
 
   resources :children, except: %i[index show] do

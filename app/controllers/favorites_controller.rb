@@ -30,6 +30,8 @@ class FavoritesController < ApplicationController
           date: favoritable.record_at,
           path: diary_with_date_path(date: favoritable.record_at, id: favoritable.id),
           member: nil,
+          edit_path: edit_diary_path(favoritable),
+          content: nil,
           favorited_at: favorite.created_at
         }
       when History
@@ -40,6 +42,8 @@ class FavoritesController < ApplicationController
           date: favoritable.target_date,
           member: history_member_label(favoritable),
           path: history_show_path(favoritable),
+          edit_path: history_edit_path(favoritable),
+          content: favoritable.content,
           favorited_at: favorite.created_at
         }
       end
@@ -60,6 +64,30 @@ class FavoritesController < ApplicationController
       render json: { favorited: false }
     else
       render json: { favorited: false, message: 'favorite not found' }, status: :not_found
+    end
+  end
+
+  # History向けの簡易追記
+  def append_history
+    history = History.find(params.require(:history_id))
+    memo = params[:content].to_s.strip
+
+    if memo.blank?
+      render json: { message: '追記内容を入力してください' }, status: :unprocessable_entity and return
+    end
+
+    # 簡易なアクセス制御: 家族が異なる場合は拒否
+    if history.family_id.present? && respond_to?(:current_family) && history.family_id != current_family&.id
+      render json: { message: '権限がありません' }, status: :forbidden and return
+    end
+
+    # 末尾の空行を取り除き、文字のある最終行の直後に追記する
+    existing = history.content.to_s.rstrip.presence
+    new_content = [existing, memo].compact.join("\n")
+    if history.update(content: new_content)
+      render json: { history: { id: history.id, content: history.content } }
+    else
+      render json: { message: history.errors.full_messages.join(', ') }, status: :unprocessable_entity
     end
   end
 
@@ -101,6 +129,19 @@ class FavoritesController < ApplicationController
       history.source.name_with_suffix
     else
       ''
+    end
+  end
+
+  def history_edit_path(history)
+    case history.source
+    when Child
+      edit_child_child_history_path(history.source, history)
+    when User
+      edit_user_user_history_path(history.source, history)
+    when Family
+      edit_family_family_history_path(history.source, history)
+    else
+      nil
     end
   end
 end
