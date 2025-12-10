@@ -89,6 +89,14 @@ Diary
         img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
       .markdown.mb-4(v-html="organizedContent")
       .utility-bar
+        button.utility-pill(
+          type="button"
+          :class="isFavorited ? 'favorite-active' : 'favorite-inactive'"
+          :disabled="favoriting"
+          @click.prevent="toggleFavorite"
+        )
+          i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
+          | お気に入り
         button.utility-pill(@click.prevent="edit")
           i.fa.fa-pencil.mr-1
           | 編集
@@ -163,6 +171,7 @@ export default {
       localCategories: [],
       showCategoryModal: false,
       selectedCategoryIds: [],
+      favoriting: false,
     }
   },
   watch: {
@@ -202,6 +211,9 @@ export default {
   computed: {
     targetDate () {
       return !!this.localDiary.id ? this.localDiary.record_at : this.targetDateForEditMode
+    },
+    isFavorited () {
+      return !!this.localDiary?.favorited
     },
     organizedContent () {
       return this.localDiary.content_is_html ? this.localDiary.html_content : this.markdownedContent
@@ -285,6 +297,27 @@ export default {
         })
         .catch(error => {
           alert(error.message || error.response.data.message)
+        })
+    },
+    toggleFavorite () {
+      if (!this.localDiary?.id || this.favoriting) return
+
+      this.favoriting = true
+      const payload = { favoritable_type: 'Diary', favoritable_id: this.localDiary.id }
+      const request = this.isFavorited
+        ? HmAxios.delete('/favorites', { data: payload })
+        : HmAxios.post('/favorites', payload)
+
+      request
+        .then(res => {
+          const favorited = !!res.data.favorited
+          this.$set(this.localDiary, 'favorited', favorited)
+        })
+        .catch(error => {
+          alert(error?.response?.data?.message || error.message)
+        })
+        .finally(() => {
+          this.favoriting = false
         })
     },
     edit () {
@@ -590,6 +623,20 @@ export default {
   cursor: pointer
   transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease
   text-decoration: none
+
+.utility-pill.favorite-inactive
+  background: #fffbeb
+  color: #b45309
+  border-color: #fcd34d
+
+.utility-pill.favorite-active
+  background: #f59e0b
+  color: #fff
+  border-color: #d97706
+
+.utility-pill.favorite-inactive:hover
+  background: #fef3c7
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08)
 
 .utility-pill:hover
   transform: translateY(-1px)

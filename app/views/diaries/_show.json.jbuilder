@@ -9,3 +9,4 @@ json.tag_links tags_link(diary)
 json.category_ids diary.category_ids
 json.history_count diary.histories.count
 json.backlinks diary.backlinked_diaries.map { |d| { id: d.id, title_mod: d.title_mod, record_at: d.record_at, path: "/day/#{d.record_at}/diaries/#{d.id}" } }
+json.favorited diary.favorited_by?(current_user)
