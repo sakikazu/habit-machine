@@ -312,6 +312,7 @@ export default {
         .then(res => {
           const favorited = !!res.data.favorited
           this.$set(this.localDiary, 'favorited', favorited)
+          window.dispatchEvent(new CustomEvent('favorites-refresh'))
         })
         .catch(error => {
           alert(error?.response?.data?.message || error.message)

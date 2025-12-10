@@ -160,7 +160,7 @@ Rails.application.routes.draw do
 
   resources :habits
   resources :records, only: [:create, :update]
-  resources :favorites, only: [:create]
+  resources :favorites, only: [:index, :create]
   delete '/favorites', to: 'favorites#destroy'
 
   resources :children, except: %i[index show] do

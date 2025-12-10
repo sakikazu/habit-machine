@@ -88,6 +88,7 @@ javascript:
       })
       .then((data) => {
         updateFavoriteButton(button, data.favorited)
+        window.dispatchEvent(new CustomEvent('favorites-refresh'))
       })
       .catch((error) => {
         console.error(error)
