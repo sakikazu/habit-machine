@@ -61,6 +61,9 @@ class Diary < ApplicationRecord
   # TODO: variant展開については再検討
   has_many_attached :images
 
+  ACTION_MEMO_LINE = "# ----- ACTION MEMO -----"
+  CRLF = "\r\n"
+
   # TODO: これもrails7.1以降にvariant定義できるようになれば置き換えることができる
   SUB_IMAGE_VARIANT_HASH = { resize_to_limit: [650, 650], saver: { quality: 80 } }.freeze
 
