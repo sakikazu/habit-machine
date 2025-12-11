@@ -157,7 +157,7 @@ export default {
     },
     categories: {
       type: Array,
-      default: [],
+      default: () => [],
     },
   },
   data () {
