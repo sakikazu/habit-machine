@@ -115,10 +115,8 @@ class Diary < ApplicationRecord
   end
 
   def append_memo(memo)
-    self.content = '' if self.content.nil?
-    # 末尾が改行で終わっていなければ追記前に改行を足す
-    self.content += "\n" unless self.content.end_with?("\n") || self.content.empty?
-    self.content += memo.to_s
+    base = self.content.to_s.rstrip
+    self.content = base.present? ? "#{base}\n#{memo}" : memo.to_s
   end
 
   def search_result_items
