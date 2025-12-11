@@ -45,15 +45,17 @@ Diary
               a.date.mr10(:href="`/day/${localDiary.record_at}`" :target="linkWithTargetBlankValue")
                 i.fa.fa-window-restore.mr-1(v-if="linkWithTargetBlank")
                 | {{ localDiary.disp_record_at }}
-              span.text-danger.mr-1(v-if="localDiary.main_in_day")
-                i.fa.fa-star
+              span.main-badge.ml-2(v-if="localDiary.main_in_day")
+                span.main-dot
+                | メイン
               span.title(v-if="localDiary.title") {{ localDiary.title }}
               span.no-title-yet(v-else)
                 i.fa.fa-exclamation-triangle.mr-1
                 | タイトル未設定
             span.title(v-else)
-              span.text-danger.mr-1(v-if="localDiary.main_in_day")
-                i.fa.fa-star
+              span.main-badge.mr-2(v-if="localDiary.main_in_day")
+                span.main-dot
+                | メイン
               a(v-if="localDiary.title" :href="`/day/${localDiary.record_at}/diaries/${localDiary.id}`" :aria-label="localDiary.title || 'タイトル未設定の日記'") {{ localDiary.title }}
               span.no-title-yet(v-else)
                 i.fa.fa-exclamation-triangle.mr-1
@@ -367,11 +369,11 @@ export default {
 
 .diary-card
   position: relative
-  border: 1px solid #e5e7eb
-  border-radius: 14px
-  padding: 18px 18px 14px
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)
-  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08)
+  border: 1px solid #e2e8f0
+  border-radius: 12px
+  padding: 16px 16px 12px
+  background: #ffffff
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05)
   overflow: visible
 
 .diary-card::before
@@ -380,8 +382,8 @@ export default {
   top: 0
   left: 0
   width: 100%
-  height: 6px
-  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 50%, #0ea5e9 100%)
+  height: 3px
+  background: linear-gradient(90deg, #e2e8f0 0%, #e2e8f0 100%)
 
 .diary-card .page-header
   border-bottom: none
@@ -397,6 +399,24 @@ export default {
   font-weight: 800
   letter-spacing: 0.01em
   color: #0f172a
+
+.main-badge
+  display: inline-flex
+  align-items: center
+  gap: 6px
+  padding: 4px 9px
+  border-radius: 999px
+  background: #eef2ff
+  color: #1d4ed8
+  font-weight: 700
+  font-size: 12px
+
+.main-dot
+  width: 8px
+  height: 8px
+  border-radius: 999px
+  background: linear-gradient(135deg, #1d4ed8 0%, #60a5fa 100%)
+  box-shadow: 0 0 0 3px rgba(226, 232, 240, 0.8)
 
 .diary-card .diary-title .title.no-title-yet
   color: #b91c1c
@@ -440,13 +460,13 @@ export default {
 
 .meta-bar
   position: relative
-  margin: 14px -18px 0 -18px
+  margin: 12px -16px 0 -16px
   display: grid
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr))
   gap: 10px 14px
-  background: linear-gradient(180deg, rgba(248, 250, 252, 0.9) 0%, rgba(241, 245, 249, 0.8) 100%)
-  padding: 12px 18px 12px
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 1px 4px rgba(15, 23, 42, 0.03)
+  background: #f8fafc
+  padding: 10px 16px 10px
+  box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.15)
 
 .meta-bar::before
   content: ""
@@ -489,24 +509,24 @@ export default {
 ::v-deep .tag-list a
   display: inline-flex
   align-items: center
-  padding: 4px 10px
+  padding: 4px 9px
   border-radius: 999px
-  background: #ecfeff
-  color: #0ea5e9
-  font-weight: 700
-  border: 1px solid #cffafe
+  background: #f1f5f9
+  color: #475569
+  font-weight: 600
+  border: 1px solid #e2e8f0
   text-decoration: none
 
 ::v-deep .tag-list a:hover
-  background: #e0f2fe
+  background: #e2e8f0
 
 .category-edit-quiet
   border: 1px solid #e2e8f0
-  background: #f8fafc
+  background: #ffffff
   color: #475569
-  border-radius: 999px
-  padding: 5px 10px
-  font-weight: 700
+  border-radius: 10px
+  padding: 4px 9px
+  font-weight: 600
   cursor: pointer
   display: inline-flex
   align-items: center
@@ -515,8 +535,8 @@ export default {
 
 .category-edit-quiet:hover
   transform: translateY(-1px)
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08)
-  background: #eef2ff
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06)
+  background: #f8fafc
 
 .category-edit-quiet:active
   transform: translateY(0)
@@ -581,25 +601,25 @@ export default {
   z-index: 2
 
 .memo-fab__button
-  border: 1px solid #f5c16c
-  padding: 10px 16px
-  border-radius: 10px 10px 10px 0
-  background: linear-gradient(135deg, #fff9e6 0%, #ffe6b3 100%)
-  color: #8c5a11
-  font-weight: 700
-  letter-spacing: 0.01em
+  border: 1px solid #e2e8f0
+  padding: 9px 12px
+  border-radius: 12px
+  background: rgba(241, 245, 249, 0.9)
+  color: #475569
+  font-weight: 600
+  letter-spacing: 0
   display: inline-flex
   align-items: center
   justify-content: center
-  min-width: 90px
-  min-height: 38px
-  box-shadow: 0 6px 12px rgba(245, 193, 108, 0.25)
+  min-width: 86px
+  min-height: 36px
+  box-shadow: 0 6px 12px rgba(15, 23, 42, 0.06)
   cursor: pointer
   transition: transform 0.12s ease, box-shadow 0.12s ease
 
 .memo-fab__button:hover
   transform: translateY(-1px)
-  box-shadow: 0 10px 18px rgba(37, 99, 235, 0.3)
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08)
 
 .memo-fab__button:active
   transform: translateY(0)
@@ -616,33 +636,33 @@ export default {
   display: inline-flex
   align-items: center
   border: 1px solid #e2e8f0
-  padding: 7px 12px
+  padding: 6px 10px
   border-radius: 10px
-  background: #f8fafc
-  color: #334155
+  background: #ffffff
+  color: #475569
   font-weight: 600
   cursor: pointer
   transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease
   text-decoration: none
 
 .utility-pill.favorite-inactive
-  background: #fffbeb
-  color: #b45309
-  border-color: #fcd34d
+  background: #f8fafc
+  color: #475569
+  border-color: #e2e8f0
 
 .utility-pill.favorite-active
-  background: #f59e0b
+  background: #1d4ed8
   color: #fff
-  border-color: #d97706
+  border-color: #1d4ed8
 
 .utility-pill.favorite-inactive:hover
-  background: #fef3c7
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08)
+  background: #f1f5f9
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05)
 
 .utility-pill:hover
   transform: translateY(-1px)
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08)
-  background: #e2e8f0
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05)
+  background: #f8fafc
 
 .utility-pill:active
   transform: translateY(0)
