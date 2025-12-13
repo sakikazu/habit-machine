@@ -1,5 +1,8 @@
 # Repository Guidelines
 
+## 基本
+- 回答は日本語でしてください
+
 ## プロジェクト構成
 - Rails本体は`app/`配下（`controllers`/`models`/`views`/`assets`）。Vue関連は`app/javascript`に集約し、エントリは`packs/`、共通パーツは`components/`、ユーティリティは直下の`*.js`。
 - スタイルは`app/assets/stylesheets`および`app/javascript/stylesheets`。静的ファイルは`public/`。
