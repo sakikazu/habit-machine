@@ -2,23 +2,19 @@
 #
 # Table name: histories
 #
-#  id                 :bigint           not null, primary key
-#  about_date         :boolean
-#  as_profile_image   :boolean
-#  content            :text(16777215)
-#  data               :json
-#  image_content_type :string(255)
-#  image_file_name    :string(255)
-#  image_file_size    :bigint
-#  image_updated_at   :datetime
-#  source_type        :string(255)      not null
-#  target_date        :date
-#  title              :string(255)
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
-#  author_id          :bigint
-#  family_id          :bigint
-#  source_id          :bigint           not null
+#  id               :bigint           not null, primary key
+#  about_date       :boolean
+#  as_profile_image :boolean
+#  content          :text(16777215)
+#  data             :json
+#  source_type      :string(255)      not null
+#  target_date      :date
+#  title            :string(255)
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  author_id        :bigint
+#  family_id        :bigint
+#  source_id        :bigint           not null
 #
 # Indexes
 #
