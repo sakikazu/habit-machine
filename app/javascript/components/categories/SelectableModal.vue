@@ -40,6 +40,7 @@ export default {
   display: flex
   justify-content: center
   align-items: center
+  z-index: 3000 // 既存のフローティング要素より前面に出す
 
 .modal-content
   background: white
@@ -47,6 +48,8 @@ export default {
   border-radius: 10px
   width: 300px
   text-align: center
+  position: relative
+  z-index: 3100
 
 .category-list
   text-align: left
