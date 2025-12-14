@@ -60,20 +60,17 @@ Diary
               span.no-title-yet(v-else)
                 i.fa.fa-exclamation-triangle.mr-1
                 | タイトル未設定
-      .meta-bar.mt-2(v-if="!modalMode || localDiary.tag_links || (categories.length > 0)")
-        .meta-block
+      .meta-bar.mt-2(v-if="showMetaBar")
+        .meta-block(v-if="hasTags")
           .meta-label
             i.fa.fa-tag.mr-1
             | タグ
           .tag-list(v-html="localDiary.tag_links")
-        .meta-block
+        .meta-block(v-if="hasCategories")
           .meta-head
             .meta-label
               i.fa.fa-folder-open.mr-1
               | カテゴリ
-            button.category-edit-quiet.ml-2(v-if="!modalMode" @click.prevent="showCategoryModal = true")
-              i.fa.fa-pencil.mr-1
-              | 編集
           category-links.mt-1(v-if="categories.length > 0" :categories="categories" :savedCategoryIds="localDiary.category_ids" :show-edit-button="false" @edit-category="showCategoryModal = true")
       .backlinks.mt-2.mb-2(v-if="hasBacklinks")
         .d-flex.align-items-center.mb-1
@@ -89,7 +86,9 @@ Diary
       .text-center.mt20(v-if="!!localDiary.image_path")
         // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
         img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
-      .markdown.mb-4(v-html="organizedContent")
+      .markdown.mb-4(v-if="hasContent" v-html="organizedContent")
+      .markdown-placeholder.mb-4(v-else)
+        | (日記の内容)
       .utility-bar
         button.utility-pill(
           type="button"
@@ -99,12 +98,16 @@ Diary
         )
           i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
           | お気に入り
-        button.utility-pill(@click.prevent="edit")
-          i.fa.fa-pencil.mr-1
-          | 編集
-        a.utility-pill.subtle(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
-          i.fa.fa-clock-o.mr-1
-          | 履歴 ({{ localDiary.history_count }})
+        .utility-group
+          button.utility-pill(v-if="!modalMode" @click.prevent="showCategoryModal = true")
+            i.fa.fa-folder-open.mr-1
+            | カテゴリ編集
+          button.utility-pill(@click.prevent="edit")
+            i.fa.fa-pencil.mr-1
+            | 編集
+          a.utility-pill.subtle(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
+            i.fa.fa-clock-o.mr-1
+            | 履歴 ({{ localDiary.history_count }})
     .diary-recordat-changed(v-else)
       a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
   diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")
@@ -233,6 +236,19 @@ export default {
     },
     hasBacklinks () {
       return Array.isArray(this.localDiary.backlinks) && this.localDiary.backlinks.length > 0
+    },
+    hasTags () {
+      return !!(this.localDiary?.tag_links && this.localDiary.tag_links.length > 0)
+    },
+    hasCategories () {
+      return Array.isArray(this.localDiary?.category_ids) && this.localDiary.category_ids.length > 0
+    },
+    showMetaBar () {
+      return this.hasTags || this.hasCategories
+    },
+    hasContent () {
+      const content = this.localDiary?.content_is_html ? this.localDiary?.html_content : this.localDiary?.markdowned_content
+      return !!(content && content.trim().length > 0)
     }
   },
   created () {
@@ -520,27 +536,6 @@ export default {
 ::v-deep .tag-list a:hover
   background: #e2e8f0
 
-.category-edit-quiet
-  border: 1px solid #e2e8f0
-  background: #ffffff
-  color: #475569
-  border-radius: 10px
-  padding: 4px 9px
-  font-weight: 600
-  cursor: pointer
-  display: inline-flex
-  align-items: center
-  font-size: 13px
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease
-
-.category-edit-quiet:hover
-  transform: translateY(-1px)
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.06)
-  background: #f8fafc
-
-.category-edit-quiet:active
-  transform: translateY(0)
-
 ::v-deep .diary-categories
   margin-top: 2px
   padding: 0
@@ -632,6 +627,12 @@ export default {
   border-top: 1px solid #e5e7eb
   margin-top: 8px
 
+.utility-group
+  display: flex
+  flex-wrap: wrap
+  gap: 8px
+  margin-left: auto
+
 .utility-pill
   display: inline-flex
   align-items: center
@@ -670,4 +671,8 @@ export default {
 .utility-pill.subtle
   background: #fff
   color: #475569
+
+.markdown-placeholder
+  color: #94a3b8
+  font-style: italic
 </style>
