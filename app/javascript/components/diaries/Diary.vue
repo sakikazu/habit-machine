@@ -90,21 +90,21 @@ Diary
       .markdown-placeholder.mb-4(v-else)
         | (日記の内容)
       .utility-bar
-        button.utility-pill(
-          type="button"
-          :class="isFavorited ? 'favorite-active' : 'favorite-inactive'"
-          :disabled="favoriting"
-          @click.prevent="toggleFavorite"
-        )
-          i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
-          | お気に入り
+        button.utility-pill(@click.prevent="edit")
+          i.fa.fa-pencil.mr-1
+          | 編集
         .utility-group
+          button.utility-pill(
+            type="button"
+            :class="isFavorited ? 'favorite-active' : 'favorite-inactive'"
+            :disabled="favoriting"
+            @click.prevent="toggleFavorite"
+          )
+            i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
+            | お気に入り
           button.utility-pill(v-if="!modalMode" @click.prevent="showCategoryModal = true")
             i.fa.fa-folder-open.mr-1
             | カテゴリ編集
-          button.utility-pill(@click.prevent="edit")
-            i.fa.fa-pencil.mr-1
-            | 編集
           a.utility-pill.subtle(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
             i.fa.fa-clock-o.mr-1
             | 履歴 ({{ localDiary.history_count }})
