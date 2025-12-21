@@ -47,6 +47,12 @@
 <script>
 export default {
   name: 'UrlCopyButton',
+  props: {
+    url: {
+      type: String,
+      default: null,
+    },
+  },
   data() {
     return {
       copied: false
@@ -63,7 +69,7 @@ export default {
 
   methods: {
     async handleCopy() {
-      const currentUrl = window.location.href;
+      const currentUrl = this.url || window.location.href;
 
       try {
         await navigator.clipboard.writeText(currentUrl)

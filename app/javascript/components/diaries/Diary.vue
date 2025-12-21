@@ -33,11 +33,35 @@ Diary
 <template lang="pug">
 .diaryWrapper(v-if="localDiary")
   .well.diary-card(v-if="!editMode" :class="{'highlight-border': highlight}")
-    .memo-fab(v-if="localDiary.id")
-      button.memo-fab__button(@click.prevent="$emit('append-memo', localDiary)")
-        i.fa.fa-sticky-note-o.mr-1
-        | 追記
     .page-header.mt0
+      .diary-topbar
+        .diary-actions
+          button.action-pill.primary(v-if="localDiary.id && hasAppendMemo" @click.prevent="$emit('append-memo', localDiary)")
+            i.fa.fa-sticky-note-o.mr-1
+            | 追記
+          button.action-pill(@click.prevent="edit")
+            i.fa.fa-pencil.mr-1
+            | 編集
+        .action-menu-wrapper(ref="actionMenuWrapper")
+          button.action-pill(@click.prevent="toggleActionMenu")
+            i.fa.fa-ellipsis-h.mr-1
+            | その他
+          .action-menu(v-if="showActionMenu")
+            button.action-menu__item(
+              type="button"
+              :class="isFavorited ? 'favorite-active' : 'favorite-inactive'"
+              :disabled="favoriting"
+              @click.prevent="toggleFavoriteFromMenu"
+            )
+              i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
+              | {{ favoriteLabel }}
+            url-copy-button.action-menu__item(v-if="diaryDetailUrl" :url="diaryDetailUrl")
+            button.action-menu__item(v-if="!modalMode" @click.prevent="openCategoryModalFromMenu")
+              i.fa.fa-folder-open.mr-1
+              | カテゴリ編集
+            a.action-menu__item(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
+              i.fa.fa-clock-o.mr-1
+              | 履歴 ({{ localDiary.history_count }})
       .d-flex.justify-content-end
         .flex-grow-1
           h5.diary-title
@@ -89,25 +113,6 @@ Diary
       .markdown.mb-4(v-if="hasContent" v-html="organizedContent")
       .markdown-placeholder.mb-4(v-else)
         | (日記の内容)
-      .utility-bar
-        button.utility-pill(@click.prevent="edit")
-          i.fa.fa-pencil.mr-1
-          | 編集
-        .utility-group
-          button.utility-pill(
-            type="button"
-            :class="isFavorited ? 'favorite-active' : 'favorite-inactive'"
-            :disabled="favoriting"
-            @click.prevent="toggleFavorite"
-          )
-            i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
-            | お気に入り
-          button.utility-pill(v-if="!modalMode" @click.prevent="showCategoryModal = true")
-            i.fa.fa-folder-open.mr-1
-            | カテゴリ編集
-          a.utility-pill.subtle(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
-            i.fa.fa-clock-o.mr-1
-            | 履歴 ({{ localDiary.history_count }})
     .diary-recordat-changed(v-else)
       a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
   diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")
@@ -121,6 +126,7 @@ import HmAxios from 'hm_axios.js'
 import DiaryForm from 'components/diaries/DiaryForm'
 import SelectableModal from "components/categories/SelectableModal"
 import CategoryLinks from "components/categories/CategoryLinks"
+import UrlCopyButton from "components/shared/UrlCopyButton"
 
 export default {
   inheritAttrs: false,
@@ -128,6 +134,7 @@ export default {
     DiaryForm,
     SelectableModal,
     CategoryLinks,
+    UrlCopyButton,
   },
   props: {
     diary: {
@@ -177,6 +184,7 @@ export default {
       showCategoryModal: false,
       selectedCategoryIds: [],
       favoriting: false,
+      showActionMenu: false,
     }
   },
   watch: {
@@ -220,6 +228,13 @@ export default {
     isFavorited () {
       return !!this.localDiary?.favorited
     },
+    hasAppendMemo () {
+      // 親側にappend-memoが実装されている場合のみ追記を出す
+      return !!this.$listeners['append-memo']
+    },
+    favoriteLabel () {
+      return this.isFavorited ? 'お気に入り解除' : 'お気に入り'
+    },
     organizedContent () {
       return this.localDiary.content_is_html ? this.localDiary.html_content : this.markdownedContent
     },
@@ -233,6 +248,10 @@ export default {
     },
     linkWithTargetBlankValue () {
       return this.linkWithTargetBlank ? '_blank' : '_self'
+    },
+    diaryDetailUrl () {
+      // APIで返された絶対URLを優先して利用する
+      return this.localDiary?.diary_url || null
     },
     hasBacklinks () {
       return Array.isArray(this.localDiary.backlinks) && this.localDiary.backlinks.length > 0
@@ -264,6 +283,10 @@ export default {
     }
   },
   mounted () {
+    document.addEventListener('click', this.onClickOutside)
+  },
+  beforeDestroy () {
+    document.removeEventListener('click', this.onClickOutside)
   },
   methods: {
     backlinkLabel (link) {
@@ -342,6 +365,26 @@ export default {
     edit () {
       this.editMode = true
     },
+    toggleActionMenu () {
+      this.showActionMenu = !this.showActionMenu
+    },
+    closeActionMenu () {
+      this.showActionMenu = false
+    },
+    onClickOutside (event) {
+      if (!this.showActionMenu) return
+      const menuWrapper = this.$refs.actionMenuWrapper
+      if (menuWrapper && !menuWrapper.contains(event.target)) {
+        this.showActionMenu = false
+      }
+    },
+    toggleFavoriteFromMenu () {
+      this.toggleFavorite()
+    },
+    openCategoryModalFromMenu () {
+      this.showCategoryModal = true
+      this.closeActionMenu()
+    },
     onCancelEdit () {
       this.editMode = false
       if (!this.localDiary.id) {
@@ -407,8 +450,110 @@ export default {
   padding-bottom: 6px
   position: relative
 
+.diary-topbar
+  display: flex
+  align-items: center
+  justify-content: space-between
+  gap: 10px
+  margin-bottom: 10px
+  flex-wrap: wrap
+
+.diary-actions
+  display: flex
+  flex-wrap: wrap
+  gap: 8px
+
+.action-pill
+  display: inline-flex
+  align-items: center
+  border: 1px solid #e2e8f0
+  padding: 6px 10px
+  border-radius: 10px
+  background: #ffffff
+  color: #475569
+  font-weight: 600
+  cursor: pointer
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease
+  text-decoration: none
+
+.action-pill.primary
+  background: #0ea5e9
+  color: #fff
+  border-color: #0ea5e9
+
+.action-pill:hover
+  transform: translateY(-1px)
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05)
+  background: #f8fafc
+
+.action-pill.primary:hover
+  background: #0284c7
+
+.action-menu-wrapper
+  position: relative
+
+.action-menu
+  position: absolute
+  top: calc(100% + 6px)
+  right: 0
+  min-width: 180px
+  background: #ffffff
+  border: 1px solid #e2e8f0
+  border-radius: 12px
+  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.12)
+  padding: 6px
+  z-index: 4
+  display: grid
+  gap: 4px
+
+.action-menu__item
+  display: inline-flex
+  align-items: center
+  gap: 6px
+  width: 100%
+  padding: 8px 10px
+  border-radius: 10px
+  border: none
+  background: transparent
+  color: #475569
+  font-weight: 600
+  text-decoration: none
+  cursor: pointer
+  transition: background-color 0.12s ease, box-shadow 0.12s ease
+
+.action-menu__item:hover
+  background: #f1f5f9
+
+.action-menu__item:disabled
+  cursor: not-allowed
+  opacity: 0.6
+  box-shadow: none
+
+.action-menu__item.favorite-active
+  background: #1d4ed8
+  color: #fff
+
+.action-menu__item.favorite-active:hover
+  background: #1e40af
+
+::v-deep .action-menu .copy-button
+  width: 100%
+  justify-content: flex-start
+  background: transparent
+  border: none
+  padding: 8px 10px
+  border-radius: 10px
+  font-weight: 600
+
+::v-deep .action-menu .copy-button:hover
+  background: #f1f5f9
+
+::v-deep .action-menu .copy-button.copied
+  background: #dcfce7
+  color: #059669
+
 .diary-card .diary-title
-  padding-right: 70px
+  padding-right: 0
 
 .diary-card .diary-title .title
   font-size: 22px
@@ -589,88 +734,6 @@ export default {
   100%
     border: 3px solid red
 
-.memo-fab
-  position: absolute
-  top: -6px
-  right: -6px
-  z-index: 2
-
-.memo-fab__button
-  border: 1px solid #e2e8f0
-  padding: 9px 12px
-  border-radius: 12px
-  background: rgba(241, 245, 249, 0.9)
-  color: #475569
-  font-weight: 600
-  letter-spacing: 0
-  display: inline-flex
-  align-items: center
-  justify-content: center
-  min-width: 86px
-  min-height: 36px
-  box-shadow: 0 6px 12px rgba(15, 23, 42, 0.06)
-  cursor: pointer
-  transition: transform 0.12s ease, box-shadow 0.12s ease
-
-.memo-fab__button:hover
-  transform: translateY(-1px)
-  box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08)
-
-.memo-fab__button:active
-  transform: translateY(0)
-
-.utility-bar
-  display: flex
-  flex-wrap: wrap
-  gap: 8px
-  padding: 8px 0
-  border-top: 1px solid #e5e7eb
-  margin-top: 8px
-
-.utility-group
-  display: flex
-  flex-wrap: wrap
-  gap: 8px
-  margin-left: auto
-
-.utility-pill
-  display: inline-flex
-  align-items: center
-  border: 1px solid #e2e8f0
-  padding: 6px 10px
-  border-radius: 10px
-  background: #ffffff
-  color: #475569
-  font-weight: 600
-  cursor: pointer
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease
-  text-decoration: none
-
-.utility-pill.favorite-inactive
-  background: #f8fafc
-  color: #475569
-  border-color: #e2e8f0
-
-.utility-pill.favorite-active
-  background: #1d4ed8
-  color: #fff
-  border-color: #1d4ed8
-
-.utility-pill.favorite-inactive:hover
-  background: #f1f5f9
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05)
-
-.utility-pill:hover
-  transform: translateY(-1px)
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05)
-  background: #f8fafc
-
-.utility-pill:active
-  transform: translateY(0)
-
-.utility-pill.subtle
-  background: #fff
-  color: #475569
 
 .markdown-placeholder
   color: #94a3b8
