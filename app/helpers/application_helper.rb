@@ -176,6 +176,7 @@ module ApplicationHelper
       autolink:           true, # リンクタグ適用
       no_intra_emphasis:  true, # aaa_bbb_ccc の bbb を強調しないように
       fenced_code_blocks: true, # ```で囲まれた部分をコードとして装飾
+      tables: true,             # table記法を適用
     }
 
     renderer = CustomRedcarpetRender.new(options)
