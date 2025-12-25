@@ -17,8 +17,8 @@ html[lang="ja"]
     link rel="manifest" href="/manifest.json"
     = favicon_link_tag 'logo/apple-touch-icon-180x180.png', :rel => 'apple-touch-icon', :type => 'image/png'
     javascript:
-      $(function() {
-        if ('serviceWorker' in navigator) {
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
           // ServiceWorkerの登録
           navigator.serviceWorker.register('/sw.js')
             .then(reg => {
@@ -31,8 +31,8 @@ html[lang="ja"]
             .catch(error => {
               console.log("Error Log: " + error);
             });
-        }
-      })
+        })
+      }
 
     / NOTE: turbolinksでは、head内のscriptはページの初回表示時のみに実行されるので、重複実行させたくないものを置くこと。全てここに置いた方が事故がないか・・
     = yield :addjs_in_head
