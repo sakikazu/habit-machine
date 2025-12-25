@@ -205,8 +205,16 @@ class DiariesController < ApplicationController
 
   # 日記サブ画像の登録
   def create_image
-    @diary.images.attach(params[:image])
-    uploaded_image = @diary.images.last
+    if params[:image].blank?
+      render json: { message: "画像ファイルが見つかりません" }, status: :bad_request and return
+    end
+
+    attachments = @diary.images.attach(params[:image])
+    uploaded_image = attachments.last || @diary.images.last
+    unless uploaded_image
+      render json: { message: "画像の登録に失敗しました" }, status: :unprocessable_entity and return
+    end
+
     uploaded_image_variant = uploaded_image.variant(Diary::SUB_IMAGE_VARIANT_HASH)
     render json: { imageId: uploaded_image.id, imageUrl: url_for(uploaded_image_variant), imageOrgUrl: url_for(uploaded_image) }
   end
@@ -256,6 +264,21 @@ class DiariesController < ApplicationController
   end
 
   def diary_params
-    params.require(:diary).permit(:content, :record_at, :title, :tag_list, :eyecatch_image, :is_hilight, :is_about_date, :search_word, :main_in_day, :pinned, :pin_priority, :content_is_html)
+    permitted = params.require(:diary).permit(
+      :content,
+      :record_at,
+      :title,
+      :tag_list,
+      :eyecatch_image,
+      :is_hilight,
+      :is_about_date,
+      :search_word,
+      :main_in_day,
+      :pinned,
+      :pin_priority,
+      :content_is_html
+    )
+
+    permitted
   end
 end

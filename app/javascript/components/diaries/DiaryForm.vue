@@ -15,11 +15,11 @@
       .date-field
         .edit-date(v-if="persisted")
           label.mr-2 日付
-          input.form-control.mb-3(type="date" name="[diary]record_at" :value="targetDate" v-if="persisted")
-        input(type="hidden" name="[diary]record_at" :value="targetDate" v-else)
+          input.form-control.mb-3(type="date" name="diary[record_at]" :value="targetDate" v-if="persisted")
+        input(type="hidden" name="diary[record_at]" :value="targetDate" v-else)
 
       .form-group
-        input.form-control(type="text" name="[diary]title" placeholder="タイトル（未入力可）" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
+        input.form-control(type="text" name="diary[title]" placeholder="タイトル（未入力可）" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
 
       .tab-container
         .tab(v-if="!persisted || !contentEditableMode" @click="switchNormal" :class="{'active': !contentEditableMode, 'unclickable': persisted}")
@@ -31,7 +31,7 @@
         div(v-else)
           a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
           textarea.form-control(
-            name="[diary]content"
+            name="diary[content]"
             ref="markdownable_textarea"
             rows="20"
             :placeholder="persisted ? '' : '日記の内容です。編集時に画像を貼り付けることができます'"
@@ -43,7 +43,7 @@
         label
           span.mr-1 タグ
           small.desc カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要
-        input.form-control(type="text" name="[diary]tag_list" ref="taglist" placeholder="矢印キーを押下すれば既存のタグリストが表示されます" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
+        input.form-control(type="text" name="diary[tag_list]" ref="taglist" placeholder="矢印キーを押下すれば既存のタグリストが表示されます" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
       .form-group
         | ピン留めタグ 
         span.badge.mr5.cursor-pointer(v-for="tag in pinned_tags" @click="toggleTag(tag.name)" :style="tag.color_style")
@@ -62,7 +62,7 @@
               img.img-thumbnail(:src="diary.image_path")
               a(href='javascript:void(0)' @click="deleteImage") 画像削除する
           p(v-else) メイン画像はありません
-        input(type="file" accept="image/*" name="[diary]eyecatch_image" id="diary_image")
+        input(type="file" accept="image/*" name="diary[eyecatch_image]" id="diary_image")
 
       //- 画像管理エリア（画像選択時にアップロードを行うため、Diaryが特定できる必要があるので、編集時のみ）
       .image-manager-card.mb-4(v-if="persisted")
@@ -93,24 +93,24 @@
         )
 
       .form-group.form-check
-        input(type="hidden" name="[diary]main_in_day" value="0")
-        input.form-check-input(type="checkbox" id="mainInDay" name="[diary]main_in_day" value="1" :checked="diary.main_in_day")
+        input(type="hidden" name="diary[main_in_day]" value="0")
+        input.form-check-input(type="checkbox" id="mainInDay" name="diary[main_in_day]" value="1" :checked="diary.main_in_day")
         label.form-check-label(for="mainInDay") 1日のメイン日記
       .form-group.form-check
-        input(type="hidden" name="[diary]pinned" value="0")
-        input.form-check-input(type="checkbox" id="makePinned" name="[diary]pinned" value="1" :checked="diary.pinned")
+        input(type="hidden" name="diary[pinned]" value="0")
+        input.form-check-input(type="checkbox" id="makePinned" name="diary[pinned]" value="1" :checked="diary.pinned")
         label.form-check-label(for="makePinned") 固定表示にする
       // TODO: とりあえずDiary.id降順のままでいいのでコメントアウト。やるならD&Dで順序変更できるUIかなぁ
       // .form-group
         // input.form-control(type="number" name="[diary]pin_priority" :value="diary.pin_priority")
         // label 固定表示の順（降順）
       .form-group.form-check
-        input(type="hidden" name="[diary]is_hilight" value="0")
-        input.form-check-input(type="checkbox" id="makeHighlight" name="[diary]is_hilight" value="1" :checked="diary.is_hilight")
+        input(type="hidden" name="diary[is_hilight]" value="0")
+        input.form-check-input(type="checkbox" id="makeHighlight" name="diary[is_hilight]" value="1" :checked="diary.is_hilight")
         label.form-check-label(for="makeHighlight") 人生ハイライトにする
       .form-group.form-check
-        input(type="hidden" name="[diary]is_about_date" value="0")
-        input.form-check-input(type="checkbox" id="makeAmbiguousDate" name="[diary]is_about_date" value="1" :checked="diary.is_about_date")
+        input(type="hidden" name="diary[is_about_date]" value="0")
+        input.form-check-input(type="checkbox" id="makeAmbiguousDate" name="diary[is_about_date]" value="1" :checked="diary.is_about_date")
         label.form-check-label(for="makeAmbiguousDate") 日付を曖昧にする
 
     .card-footer
