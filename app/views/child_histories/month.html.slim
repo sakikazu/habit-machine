@@ -66,20 +66,19 @@ javascript:
   })
 
   function toggleFavorite(button, csrfToken) {
-    const favorited = button.dataset.favorited === 'true'
-    const payload = {
+    // data属性が古い場合があるため、見た目の状態も併用して判定する
+    const favorited = button.dataset.favorited === 'true' || button.classList.contains('btn-warning')
+    const params = new URLSearchParams({
       favoritable_type: button.dataset.favoritableType,
       favoritable_id: button.dataset.favoritableId
-    }
+    })
 
-    fetch('/favorites', {
+    fetch(`/favorites?${params.toString()}`, {
       method: favorited ? 'DELETE' : 'POST',
       headers: {
-        'Content-Type': 'application/json',
         'Accept': 'application/json',
         'X-CSRF-Token': csrfToken
       },
-      body: JSON.stringify(payload),
       credentials: 'same-origin'
     })
       .then((response) => {
