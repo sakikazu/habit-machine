@@ -1,12 +1,13 @@
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
+import { onPageLoad } from 'helper'
 
 import HabitRecord from 'components/habits/HabitRecord'
 import Diary from 'components/diaries/Diary'
 import Toast from 'components/shared/toast'
 import Modal from 'components/shared/Modal'
 
-document.addEventListener('turbolinks:load', () => {
+onPageLoad(() => {
   console.log('day_page.js: turbolinks:load')
   const vm = new Vue({
     el: '#dayPage',

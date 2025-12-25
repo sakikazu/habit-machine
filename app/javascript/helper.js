@@ -73,3 +73,17 @@ export function truncate(text, length) {
   if (text.length <= length) { return text }
   return text.substring(0, length) + '...'
 }
+
+// Turbolinks未使用/未読込でも初期化できるようにフォールバックする
+export function onPageLoad(callback) {
+  if (window.Turbolinks && window.Turbolinks.supported) {
+    document.addEventListener('turbolinks:load', callback)
+    return
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', callback)
+  } else {
+    callback()
+  }
+}

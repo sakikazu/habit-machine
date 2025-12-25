@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
+import { onPageLoad } from 'helper'
 
 import TaskDiary from 'components/diaries/TaskDiary'
 
-document.addEventListener('turbolinks:load', () => {
+onPageLoad(() => {
   const el = document.getElementById('diariesSidebar')
   if (!el) return
   // NOTE: data-turbolinks-permanentで復元されたDOMには既にVueインスタンスがぶら下がっているので再マウントを避ける
@@ -217,7 +218,7 @@ const modalTemplate = `
   </div>
 `
 
-document.addEventListener('turbolinks:load', () => {
+onPageLoad(() => {
   if (!document.getElementById('historyFavoriteModal')) {
     document.body.insertAdjacentHTML('beforeend', modalTemplate)
   }

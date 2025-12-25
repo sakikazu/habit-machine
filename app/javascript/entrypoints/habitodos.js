@@ -9,9 +9,9 @@ import Vue from 'vue/dist/vue.esm'
 import HmAxios from 'hm_axios.js'
 import ContentEditor from 'components/habitodos/ContentEditor.vue'
 import CreateForm from 'components/habitodos/CreateForm.vue'
-import { isSmartPhone, moveCaret } from 'helper.js'
+import { isSmartPhone, moveCaret, onPageLoad } from 'helper.js'
 
-document.addEventListener('turbolinks:load', () => {
+onPageLoad(() => {
 const vm = new Vue({
   el: '#habitodo',
   components: {
