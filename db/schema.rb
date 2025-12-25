@@ -10,14 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_03_17_000000) do
-
+ActiveRecord::Schema[7.2].define(version: 2025_12_25_134717) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
     t.bigint "record_id", null: false
     t.bigint "blob_id", null: false
-    t.datetime "created_at", null: false
+    t.datetime "created_at", precision: nil, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
   end
@@ -28,8 +27,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.string "content_type"
     t.text "metadata"
     t.bigint "byte_size", null: false
-    t.string "checksum", null: false
-    t.datetime "created_at", null: false
+    t.string "checksum"
+    t.datetime "created_at", precision: nil, null: false
     t.string "service_name", null: false
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
@@ -44,15 +43,15 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
   end
@@ -62,8 +61,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.bigint "parent_id", comment: "親カテゴリ"
     t.string "source_type", null: false
     t.bigint "source_id", null: false, comment: "カテゴリの所有者（ポリモーフィック）"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["parent_id"], name: "index_categories_on_parent_id"
     t.index ["source_type", "source_id"], name: "index_categories_on_source_type_and_source_id"
   end
@@ -71,8 +70,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
   create_table "category_diaries", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "category_id", null: false
     t.bigint "diary_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["category_id"], name: "index_category_diaries_on_category_id"
     t.index ["diary_id"], name: "index_category_diaries_on_diary_id"
   end
@@ -81,8 +80,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.string "name"
     t.date "birthday"
     t.integer "gender"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "family_id"
     t.index ["family_id"], name: "index_children_on_family_id"
   end
@@ -92,9 +91,9 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.text "content", size: :medium
     t.integer "user_id"
     t.date "record_at"
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "deleted_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "is_hilight"
     t.boolean "is_about_date"
     t.boolean "is_secret"
@@ -110,8 +109,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.bigint "user_id", null: false
     t.bigint "diary_id", null: false
     t.json "changed_prev_attrs", comment: "変更されたカラムの変更前の値"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["diary_id"], name: "index_diary_histories_on_diary_id"
     t.index ["user_id"], name: "index_diary_histories_on_user_id"
   end
@@ -119,16 +118,16 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
   create_table "diary_links", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.bigint "source_diary_id", null: false
     t.bigint "target_diary_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["source_diary_id", "target_diary_id"], name: "index_diary_links_on_source_diary_id_and_target_diary_id", unique: true
     t.index ["target_diary_id"], name: "index_diary_links_on_target_diary_id"
   end
 
   create_table "families", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.boolean "enabled", default: false, null: false
   end
 
@@ -136,8 +135,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.bigint "user_id", null: false
     t.string "favoritable_type", null: false
     t.bigint "favoritable_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable"
     t.index ["user_id", "favoritable_type", "favoritable_id"], name: "idx_favorites_on_user_and_favoritable", unique: true
     t.index ["user_id"], name: "index_favorites_on_user_id"
@@ -149,9 +148,9 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.bigint "user_id"
     t.string "uuid"
     t.integer "order_number", default: 0
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "deleted_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["user_id"], name: "index_habitodos_on_user_id"
   end
 
@@ -166,9 +165,9 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.boolean "reminder"
     t.text "goal", size: :medium
     t.text "memo", size: :medium
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "deleted_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.text "template", size: :medium
     t.index ["source_id", "source_type"], name: "index_habits_on_source_id_and_source_type"
   end
@@ -184,8 +183,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.boolean "about_date"
     t.boolean "as_profile_image"
     t.json "data"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["author_id"], name: "index_histories_on_author_id"
     t.index ["family_id"], name: "index_histories_on_family_id"
     t.index ["source_id", "source_type"], name: "index_histories_on_source_id_and_source_type"
@@ -199,8 +198,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.string "table"
     t.integer "month", limit: 2
     t.bigint "year"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["item", "table", "month", "year"], name: "index_rails_admin_histories"
   end
 
@@ -209,9 +208,9 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.date "record_at"
     t.float "value"
     t.text "memo", size: :medium
-    t.datetime "deleted_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "deleted_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["habit_id"], name: "index_records_on_habit_id"
     t.index ["record_at"], name: "index_records_on_record_at"
   end
@@ -225,8 +224,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.date "end_at"
     t.boolean "is_inactive"
     t.integer "sort_order", default: 1
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.integer "parent_id"
   end
 
@@ -237,7 +236,7 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.integer "tagger_id"
     t.string "tagger_type"
     t.string "context", limit: 128
-    t.datetime "created_at"
+    t.datetime "created_at", precision: nil
     t.index ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], name: "taggings_idx", unique: true
     t.index ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context"
   end
@@ -246,7 +245,7 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.string "name"
     t.integer "taggings_count", default: 0
     t.integer "user_id"
-    t.datetime "last_used_at"
+    t.datetime "last_used_at", precision: nil
     t.text "description", size: :medium
     t.string "color"
     t.boolean "pinned", default: false
@@ -258,8 +257,8 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.text "content", size: :medium
     t.integer "source_id", null: false
     t.string "source_type", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["source_id", "source_type"], name: "index_todo_projects_on_source_id_and_source_type"
   end
 
@@ -271,28 +270,28 @@ ActiveRecord::Schema.define(version: 2025_03_17_000000) do
     t.text "content", size: :medium
     t.integer "priority", default: 0, null: false
     t.integer "sort_order", default: 0, null: false
-    t.datetime "done_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "done_at", precision: nil
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["source_id", "source_type"], name: "index_todos_on_source_id_and_source_type"
   end
 
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "familyname"
     t.string "givenname"
-    t.datetime "deleted_at"
+    t.datetime "deleted_at", precision: nil
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at", precision: nil
+    t.datetime "remember_created_at", precision: nil
     t.integer "sign_in_count", default: 0
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
+    t.datetime "current_sign_in_at", precision: nil
+    t.datetime "last_sign_in_at", precision: nil
     t.string "current_sign_in_ip"
     t.string "last_sign_in_ip"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.string "auth_token"
     t.string "nickname"
     t.bigint "family_id"

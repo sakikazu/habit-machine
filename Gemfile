@@ -131,8 +131,6 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'factory_bot_rails'
 
-  # テスト環境のテーブルをきれいにする
-  gem 'database_rewinder'
 
   # デバッグ情報をフッターに出してくれる
   # memo rails5には対応していないようでコメントアウト
