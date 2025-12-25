@@ -36,12 +36,39 @@ class Habit < ApplicationRecord
   attr_accessor :search_word, :records_in_date_term, :record_at_date
 
   # todo 非公開の設定はまた今後人に見せる機能を追加したときに対応しよう
-  enum status: { enabled: 1, disabled: 2, done: 3 }, _prefix: true
-  enum value_type: { collection: 1, integer: 2, float: 3 }, _prefix: true
-  enum result_type: { table: 1, line_graph: 2, bar_graph: 3 }, _prefix: true
+  enum :status, { enabled: 1, disabled: 2, done: 3 }, prefix: true
+  enum :value_type, { collection: 1, integer: 2, float: 3 }, prefix: true
+  enum :result_type, { table: 1, line_graph: 2, bar_graph: 3 }, prefix: true
 
   GRAPH_TYPE_ORESEN = 'spline'
   GRAPH_TYPE_BOU = 'column'
+
+  # enum_helpの代替: i18nラベルを返すための簡易実装
+  def self.statuses_i18n
+    enum_i18n_map(:status)
+  end
+
+  # enum_helpの代替: i18nラベルを返すための簡易実装
+  def self.value_types_i18n
+    enum_i18n_map(:value_type)
+  end
+
+  # enum_helpの代替: i18nラベルを返すための簡易実装
+  def self.result_types_i18n
+    enum_i18n_map(:result_type)
+  end
+
+  def status_i18n
+    self.class.statuses_i18n[status]
+  end
+
+  def value_type_i18n
+    self.class.value_types_i18n[value_type]
+  end
+
+  def result_type_i18n
+    self.class.result_types_i18n[result_type]
+  end
 
   # NOTE: valueはFloat型のためフォームには小数点を含む値がセットされており、optionsの値も合わせておかないと正しく表示されない
   # NOTE: 空の選択肢の値がnilだと0がポストされてしまうので、空文字列にする必要がある
@@ -53,6 +80,13 @@ class Habit < ApplicationRecord
 
   def for_family?
     source_type == 'Family'
+  end
+
+  def self.enum_i18n_map(name)
+    keys = public_send(name.to_s.pluralize).keys
+    keys.index_with do |key|
+      I18n.t("enums.habit.#{name}.#{key}", default: key.humanize)
+    end.with_indifferent_access
   end
 
   # 対象期間分の習慣データを取得

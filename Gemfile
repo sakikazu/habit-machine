@@ -28,7 +28,6 @@ gem 'lazy_high_charts'
 gem 'browser'
 gem 'redcarpet' # markdown
 gem 'inline_svg'
-gem 'enum_help'
 gem 'seed-fu', '~> 2.3'
 
 # この2つはcapistrano実行時のssh関連エラーの対応のため
