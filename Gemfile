@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 ruby '3.2.6'
-gem 'rails', '~> 6.1'
+gem 'rails', '~> 7.2.0'
 gem 'bootsnap', require: false # railsの起動を速くする
 
 # Bundle edge Rails instead:
@@ -10,7 +10,7 @@ gem 'bootsnap', require: false # railsの起動を速くする
 gem 'mysql2'
 
 gem 'devise'
-gem "paranoia", "~> 2.0"
+gem "paranoia", "~> 3.0"
 gem 'exception_notification'
 gem "sanitize"
 gem 'exifr'
