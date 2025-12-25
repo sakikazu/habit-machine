@@ -68,7 +68,7 @@
         span.button-icon
           | 🏠
         | 今日
-      = link_to month_path(month: @date.to_s(:ym)), class: 'action-button btn-calendar' do
+      = link_to month_path(month: @date.to_fs(:ym)), class: 'action-button btn-calendar' do
         span.button-icon
           | 📅
         | 月間

@@ -49,9 +49,9 @@ module ApplicationHelper
     wdays = ["日", "月", "火", "水", "木", "金", "土"]
     ret = ""
     if is_long
-      ret = date.to_s(:normal)
+      ret = date.to_fs(:normal)
     else
-      ret = date.to_s(:short)
+      ret = date.to_fs(:short)
     end
     ret += "(#{wdays[date.wday]})"
   end

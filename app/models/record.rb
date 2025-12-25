@@ -32,7 +32,7 @@ class Record < ApplicationRecord
   def displaying_value
     return "" if value.blank?
     result = habit.value_type_float? ? value : value.to_i
-    result.to_s(:delimited)
+    result.to_fs(:delimited)
   end
 
   def search_result_items

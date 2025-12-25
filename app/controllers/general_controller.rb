@@ -13,7 +13,7 @@ class GeneralController < ApplicationController
       end
     end
 
-    @page_title = "#{@date.to_s(:normal)}の記録"
+    @page_title = "#{@date.to_fs(:normal)}の記録"
     @no_header_margin = true
   end
 
@@ -98,7 +98,7 @@ class GeneralController < ApplicationController
   end
 
   def build_graph(results_for_oresen)
-    xAxis_categories = @date_term.map{|date| date.to_s(:short)}
+    xAxis_categories = @date_term.map { |date| date.to_fs(:short) }
     tickInterval     = 0
 
     return LazyHighCharts::HighChart.new('graph') do |f|
@@ -135,7 +135,7 @@ class GeneralController < ApplicationController
   end
 
   def build_bou_graph(results_for_bou)
-    xAxis_categories = @date_term.map{|date| date.to_s(:short)}
+    xAxis_categories = @date_term.map { |date| date.to_fs(:short) }
     tickInterval     = 0
 
     return LazyHighCharts::HighChart.new('graph') do |f|

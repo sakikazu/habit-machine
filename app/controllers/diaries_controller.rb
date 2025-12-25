@@ -141,7 +141,7 @@ class DiariesController < ApplicationController
 
     respond_to do |format|
       if @diary.save
-        format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_s(:short)}の日記を追加しました." }
+        format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_fs(:short)}の日記を追加しました." }
         format.json { render 'show', status: :created }
       else
         set_form_variables
@@ -161,7 +161,7 @@ class DiariesController < ApplicationController
         # NOTE: rails5.1以降では、save後のカラム変更チェックはsaved_change_to_(column)?メソッドを使用すること
         @changed_record_at = @diary.saved_change_to_record_at? ? @diary.record_at : nil
 
-        format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_s(:short)}の日記を更新しました." }
+        format.html { redirect_to day_path(@diary.record_at.to_s, anchor: "diary-#{@diary.id}"), notice: "#{@diary.record_at.to_fs(:short)}の日記を更新しました." }
         format.json { render 'update', status: :created }
       else
         set_form_variables
