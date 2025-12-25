@@ -9,7 +9,7 @@ gem 'bootsnap', require: false # railsの起動を速くする
 
 gem 'mysql2'
 
-gem 'devise'
+gem 'devise', '~> 4.9'
 gem "paranoia", "~> 3.0"
 gem 'exception_notification'
 gem "sanitize"
@@ -93,7 +93,6 @@ group :development do
   gem 'slim-rails'                # generator時にslim対応可能になる
   gem 'view_source_map'           # webページ中に使用されているviewファイル名が見れる
   gem 'annotate'
-  gem 'bullet'                    # n+1検出
   gem 'rubocop', require: false
   gem 'rack-mini-profiler', require: false        # 処理時間を表示
   gem 'letter_opener_web', '~> 2.0'
