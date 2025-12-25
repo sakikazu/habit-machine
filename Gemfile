@@ -82,7 +82,7 @@ gem 'slim'
 # for scss; NOTE: 2.4にすると、VPSでbundle installが終わらなくなる
 gem 'sassc', '2.1.0'
 
-gem 'webpacker', '6.0.0.rc.6'
+gem 'jsbundling-rails'
 
 # enexのスクリプトに使用
 gem 'tty-prompt'

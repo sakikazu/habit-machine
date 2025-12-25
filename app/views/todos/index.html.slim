@@ -1,6 +1,5 @@
 - content_for :addjs_in_head
-  = javascript_pack_tag 'todo_page', 'data-turbolinks-track': 'reload'
-
+  = javascript_include_tag 'todo_page', 'data-turbolinks-track': 'reload', defer: true
 ul.alert.alert-danger
   li.ml-2 Todoistでタスク管理をするようにしたので使わない
   li.ml-2 いつかは、Todoistからこちらに移行できたら良いなとは思う（タスクの履歴をHMに残したいため）

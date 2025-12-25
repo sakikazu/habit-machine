@@ -1,6 +1,5 @@
 - content_for :addjs_in_head
-  = javascript_pack_tag 'categories', 'data-turbolinks-track': 'reload'
-
+  = javascript_include_tag 'categories', 'data-turbolinks-track': 'reload', defer: true
 #categories
   .row.justify-content-center
     .col-sm-8

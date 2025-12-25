@@ -1,6 +1,5 @@
 - content_for :addjs_in_head
-  = javascript_pack_tag 'search', 'data-turbolinks-track': 'reload'
-
+  = javascript_include_tag 'search', 'data-turbolinks-track': 'reload', defer: true
 / ### ページの仕様
 / ページヘッダーは、日記など各コンテンツにページ内遷移するためのメニュー。下にスクロールしても上部固定にしている
 / 検索結果はスクロール可能にして、その詳細はスクロール不可、検索結果をスクロールしても詳細は常に同じ位置を維持できるように

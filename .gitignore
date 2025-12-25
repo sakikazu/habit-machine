@@ -39,6 +39,8 @@ config/mysqldump.ini
 
 /public/packs
 /public/packs-test
+/app/assets/builds/*
+!/app/assets/builds/.keep
 /node_modules
 /yarn-error.log
 yarn-debug.log*

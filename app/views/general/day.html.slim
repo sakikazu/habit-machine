@@ -1,7 +1,6 @@
 - content_for :addjs_in_head
-  = javascript_pack_tag 'day_page', 'data-turbolinks-track': 'reload'
-  = javascript_pack_tag 'diaries_sidebar', 'data-turbolinks-track': 'reload'
-
+  = javascript_include_tag 'day_page', 'data-turbolinks-track': 'reload', defer: true
+  = javascript_include_tag 'diaries_sidebar', 'data-turbolinks-track': 'reload', defer: true
 #dayPage(data-target-date="#{@date}")
   toast(:showable="toastShowable" :is-error="toastError" :message="toastMessage" @toast-hidden="toastShowable = false")
   / モーダルで日記を表示するためのhtmlの仕込み

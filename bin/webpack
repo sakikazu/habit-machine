@@ -1,18 +1,9 @@
 #!/usr/bin/env ruby
 
-ENV["RAILS_ENV"] ||= ENV["RACK_ENV"] || "development"
-ENV["NODE_ENV"]  ||= "development"
-
-require "pathname"
-ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile",
-  Pathname.new(__FILE__).realpath)
-
-require "bundler/setup"
-
-require "webpacker"
-require "webpacker/webpack_runner"
+ENV["NODE_ENV"] ||= "development"
 
 APP_ROOT = File.expand_path("..", __dir__)
+
 Dir.chdir(APP_ROOT) do
-  Webpacker::WebpackRunner.run(ARGV)
+  exec("yarn", "build", *ARGV)
 end

@@ -1,6 +1,5 @@
 - content_for :addjs_in_head
-  = javascript_pack_tag 'child_history_form', 'data-turbolinks-track': 'reload'
-
+  = javascript_include_tag 'child_history_form', 'data-turbolinks-track': 'reload', defer: true
 - url = history.persisted? ? child_child_history_path(history.source, history) : child_child_histories_path(history.source)
 = form_with model: history, url: url, class: 'form', id: 'child-history-form', data: { history_id: history.id.to_s } do |f|
   - if history && history.errors.any?

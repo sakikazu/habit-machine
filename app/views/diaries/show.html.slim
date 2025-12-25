@@ -1,6 +1,5 @@
 - content_for :addjs_in_head
-  = javascript_pack_tag 'diary_show', 'data-turbolinks-track': 'reload'
-
+  = javascript_include_tag 'diary_show', 'data-turbolinks-track': 'reload', defer: true
 #diaryShow
   .row.justify-content-center
     .col-sm-7

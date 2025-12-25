@@ -1,7 +1,6 @@
 / todo textareaでも、caretを駆使すればsetPosして目次は実現できそうだな
 - content_for :addjs_in_head
-  = javascript_pack_tag 'habitodos', 'data-turbolinks-track': 'reload'
-
+  = javascript_include_tag 'habitodos', 'data-turbolinks-track': 'reload', defer: true
 #habitodo
   #habitodo-header.row.bg-dark.text-light
     .flex-grow-1
