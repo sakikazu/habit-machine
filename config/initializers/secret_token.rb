@@ -4,9 +4,12 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-key_base = ENV['SECRET_KEY_BASE'] || Rails.application.credentials.secret_key_base
+key_base = ENV["SECRET_KEY_BASE"] || Rails.application.credentials.secret_key_base
 if !key_base.is_a?(String) || key_base.empty?
-  key_base = '49520d6c8415a8fb6bc9fad344a43e607ac109c74bec3af9b994f559632f7598e63d34ac628d4fe41058514f2eea1cdae8b5115c3b07151334b1fb42ccff6bb3'
+  if Rails.env.production?
+    raise "SECRET_KEY_BASE is missing for production"
+  end
+  key_base = "49520d6c8415a8fb6bc9fad344a43e607ac109c74bec3af9b994f559632f7598e63d34ac628d4fe41058514f2eea1cdae8b5115c3b07151334b1fb42ccff6bb3"
 end
 
 HabitMachine::Application.config.secret_key_base = key_base
