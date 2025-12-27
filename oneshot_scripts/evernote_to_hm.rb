@@ -1,10 +1,10 @@
 # Rails環境をロード
-require_relative "#{Rails.root}/config/environment"
+require_relative "../config/environment"
 
-require 'rexml/document'
-require 'fileutils'
-require 'tty-prompt'
-# require 'byebug'
+require "rexml/document"
+require "fileutils"
+require "tty-prompt"
+# require "byebug"
 
 class EnexParser
   def initialize
@@ -19,15 +19,15 @@ class EnexParser
     notes = []
 
     count = 0
-    doc.elements.each('en-export/note') do |note|
-      title = note.elements['title'].text
+    doc.elements.each("en-export/note") do |note|
+      title = note.elements["title"].text
 
-      created = Time.zone.parse(note.elements['created'].text)
+      created = Time.zone.parse(note.elements["created"].text)
 
       # 内容部分
-      content_doc = REXML::Document.new(note.elements['content'].texts.join.strip)
+      content_doc = REXML::Document.new(note.elements["content"].texts.join.strip)
       div_texts = []
-      content_doc.elements.each('en-note/div') do |div|
+      content_doc.elements.each("en-note/div") do |div|
         div_texts << div.text
         div.elements.each do |ele|
           traverse_element(ele, div_texts)
@@ -35,7 +35,7 @@ class EnexParser
       end
 
       # 添付画像部分
-      image_filepath = output_image_file_if_exists(note.elements['resource'], count)
+      image_filepath = output_image_file_if_exists(note.elements["resource"], count)
 
       notes << { title: title, created: created, content: div_texts.join("\n"), image_filepath: image_filepath }
       count += 1
@@ -63,12 +63,12 @@ class EnexParser
   def output_image_file_if_exists(resource, count)
     return nil if resource.blank?
 
-    base64_string = resource.elements['data'].text.strip
+    base64_string = resource.elements["data"].text.strip
     image_data = Base64.decode64(base64_string)
     FileUtils.mkdir_p("#{Rails.root}/evernote/#{count}")
-    image_filename = resource.elements['resource-attributes'].elements['file-name'].text.strip
+    image_filename = resource.elements["resource-attributes"].elements["file-name"].text.strip
     image_filepath = "#{Rails.root}/evernote/#{count}/#{image_filename}"
-    File.open(image_filepath, 'wb') do |file|
+    File.open(image_filepath, "wb") do |file|
       file.write(image_data)
     end
     image_filepath
@@ -99,11 +99,11 @@ prompt = TTY::Prompt.new
 categories = %w[身体の異常や記録 日記 妊娠、出産、育児日記]
 
 users = User.all.map { [_1.dispname, _1.id] }.to_h
-user_id = prompt.select('対象ユーザーを選択してください: ', users)
+user_id = prompt.select("対象ユーザーを選択してください: ", users)
 user = User.find(user_id)
 
-file_path = prompt.ask('enexファイルのパスを入力してください: ')
-tag_name = prompt.select('日記につけるタグ名を選択してください: ', categories.map { "[EN]#{_1}" })
+file_path = prompt.ask("enexファイルのパスを入力してください: ")
+tag_name = prompt.select("日記につけるタグ名を選択してください: ", categories.map { "[EN]#{_1}" })
 
 unless prompt.yes?("こちらで実行していいですか？（ユーザー：#{user.dispname}, ファイルパス: #{file_path}, タグ: #{tag_name}）")
   prompt.say "中断します"
@@ -113,7 +113,7 @@ end
 create_tags(categories, user)
 tag = user.mytags.find { _1.name == tag_name }
 if tag.blank?
-  prompt.error 'そのようなタグはありません.　終了'
+  prompt.error "そのようなタグはありません.　終了"
   exit
 end
 
@@ -128,4 +128,3 @@ notes.each do |note|
   diary.tag_list << tag
   diary.save
 end
-

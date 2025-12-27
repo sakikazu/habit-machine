@@ -85,7 +85,6 @@ gem 'jsbundling-rails'
 
 # enexのスクリプトに使用
 gem 'tty-prompt'
-gem 'rexml'
 
 group :development do
   gem 'ruby-lsp'
