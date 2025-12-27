@@ -578,6 +578,7 @@ DEPENDENCIES
   rails_autolink
   redcarpet
   rest-client
+  rexml
   rspec-rails
   rubocop
   ruby-lsp
