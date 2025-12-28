@@ -16,11 +16,6 @@ class FamiliesController < ApplicationController
     redirect_to family_path, notice: '更新しました'
   end
 
-  # 家族内の全History
-  def all_histories
-    @histories = current_family.all_histories.includes(:family, member_histories: :member).newer.page(params[:page]).per(50)
-  end
-
   # 家族ページ用の作成フォームを返す。
   def history_form
     history = current_family.histories.build(target_date: Time.current)
