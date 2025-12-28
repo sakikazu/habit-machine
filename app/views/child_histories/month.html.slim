@@ -41,7 +41,7 @@
                   data-favorited=favorited
                 )
                   i class=(favorited ? 'fa fa-star' : 'fa fa-star-o')
-                = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_child_history_path(history.source, history), class: 'text-secondary'
+                = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_child_history_path(@child, history), class: 'text-secondary'
           .card-body
             h5.card-title = history.title
             - if history.content.present?

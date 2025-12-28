@@ -5,12 +5,12 @@ class FamilyHistoriesController < ApplicationController
   before_action :set_view_setting, only: %i(index month year)
 
   def index
-    @histories = current_family.histories.includes(:author).newer.page(params[:page]).per(50)
+    @histories = current_family.histories.includes(:author, member_histories: :member).newer.page(params[:page]).per(50)
   end
 
   def month
     @month = (Time.local(params[:year], params[:month]) rescue Time.current).to_date
-    @histories = current_family.histories.includes(:author).where(target_date: [@month.beginning_of_month..@month.end_of_month]).order(target_date: :asc)
+    @histories = current_family.histories.includes(:author, member_histories: :member).where(target_date: [@month.beginning_of_month..@month.end_of_month]).order(target_date: :asc)
     default_target_date = @month.year == Time.current.year && @month.month == Time.current.month ? Time.current : @month
     @history = current_family.histories.build(target_date: default_target_date)
   end
@@ -18,7 +18,7 @@ class FamilyHistoriesController < ApplicationController
   def year
     @year = (params[:year] || Time.now.year).to_i
     target_year = Time.local(@year ,1, 1)
-    histories = current_family.histories.includes(:author).where(target_date: [target_year.beginning_of_year..target_year.end_of_year]).order(target_date: :asc)
+    histories = current_family.histories.includes(:author, member_histories: :member).where(target_date: [target_year.beginning_of_year..target_year.end_of_year]).order(target_date: :asc)
     @histories_grouped_by_month = histories.group_by { |h| h.target_date.month }
     @months = 1..12
   end

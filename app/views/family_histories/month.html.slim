@@ -29,6 +29,8 @@
                 - if history.about_date
                   span.mr-1.text-muted = "(だいたい)"
                 = dispdate(history.target_date, true)
+                - if history.member_names.present?
+                  span.badge.badge-pill.badge-warning.ml-2.p-1 = history.member_label
                 span.text-muted.ml-3 = "by #{history.author.dispname}"
               .col-1.m-auto
                 = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_family_family_history_path(history)

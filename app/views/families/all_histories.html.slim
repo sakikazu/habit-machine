@@ -16,9 +16,11 @@
                 - if history.about_date
                   span.mr-1.text-muted = "(だいたい)"
                 = dispdate(history.target_date, true)
-                span.badge.badge-pill.badge-warning.ml-3.p-1 = "#{history.source.dispname}の記録"
+                - member_label = history.member_label.presence || '家族'
+                - link_label = history.member_names.size == 1 ? member_label : (history.family&.name_with_suffix || '家族')
+                span.badge.badge-pill.badge-warning.ml-3.p-1 = "#{member_label}の記録"
               .col-5.m-auto.text-right
-                = link_to fa_icon('external-link', text: "#{history.source.dispname}のページ"), each_user_history_path(history), target: '_blank'
+                = link_to fa_icon('external-link', text: "#{link_label}のページ"), each_user_history_path(history), target: '_blank'
           .card-body
             h5.card-title = history.title
             - if history.content.present?

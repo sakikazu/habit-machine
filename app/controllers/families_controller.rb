@@ -16,9 +16,9 @@ class FamiliesController < ApplicationController
     redirect_to family_path, notice: '更新しました'
   end
 
-  # Family#historiesのことではなく、Family内のすべてのユーザーのHistory
+  # 家族内の全History
   def all_histories
-    @histories = current_family.all_histories.includes(:source).newer.page(params[:page]).per(50)
+    @histories = current_family.all_histories.includes(:family, member_histories: :member).newer.page(params[:page]).per(50)
   end
 
   private

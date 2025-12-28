@@ -17,7 +17,7 @@ class FavoritesController < ApplicationController
   end
 
   def index
-    favorites = current_user.favorites.includes(favoritable: [:source]).order(created_at: :desc)
+    favorites = current_user.favorites.includes(:favoritable).order(created_at: :desc)
 
     @favorites = favorites.map do |favorite|
       favoritable = favorite.favoritable
@@ -106,42 +106,31 @@ class FavoritesController < ApplicationController
   end
 
   def history_show_path(history)
-    params = History.month_path_params(history.source.is_a?(Family) ? nil : history.source, history.target_date, anchor: true)
-    case history.source
-    when Child
-      month_child_child_histories_path(*params)
-    when User
-      month_user_user_histories_path(*params)
-    when Family
-      month_family_family_histories_path(*params)
-    else
-      nil
+    member = history.member_names.size == 1 ? history.primary_member : nil
+    if member.is_a?(Child)
+      return month_child_child_histories_path(*History.month_path_params(member, history.target_date, anchor: true))
     end
+    if member.is_a?(User)
+      return month_user_user_histories_path(*History.month_path_params(member, history.target_date, anchor: true))
+    end
+
+    month_family_family_histories_path(*History.month_path_params(nil, history.target_date, anchor: true))
   end
 
   def history_member_label(history)
-    case history.source
-    when Child
-      history.source.name
-    when User
-      history.source.dispname
-    when Family
-      history.source.name_with_suffix
-    else
-      ''
-    end
+    label = history.member_label
+    label.presence || '家族'
   end
 
   def history_edit_path(history)
-    case history.source
-    when Child
-      edit_child_child_history_path(history.source, history)
-    when User
-      edit_user_user_history_path(history.source, history)
-    when Family
-      edit_family_family_history_path(history.source, history)
-    else
-      nil
+    member = history.member_names.size == 1 ? history.primary_member : nil
+    if member.is_a?(Child)
+      return edit_child_child_history_path(member, history)
     end
+    if member.is_a?(User)
+      return edit_user_user_history_path(member, history)
+    end
+
+    edit_family_family_history_path(history)
   end
 end

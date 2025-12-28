@@ -9,7 +9,7 @@ class ChildHistoriesController < ApplicationController
     @month = (Time.local(params[:year], params[:month]) rescue Time.current).to_date
     @histories = @child.histories.includes(:author).where(target_date: [@month.beginning_of_month..@month.end_of_month]).order(target_date: :asc)
     default_target_date = @month.year == Time.current.year && @month.month == Time.current.month ? Time.current : @month
-    @history = @child.histories.build(target_date: default_target_date)
+    @history = History.new(target_date: default_target_date)
   end
 
   def year
@@ -21,7 +21,8 @@ class ChildHistoriesController < ApplicationController
   end
 
   def create
-    @history = @child.histories.build(history_params)
+    @history = History.new(history_params)
+    @history.member_histories.build(member: @child)
     @history.set_data_by_keys(params[:history], %i[height weight])
     @history.author = current_user
     @history.family = current_family
@@ -40,17 +41,16 @@ class ChildHistoriesController < ApplicationController
     @history.set_data_by_keys(params[:history], %i[height weight])
     unless @history.update(history_params)
       @month = @history.target_date
-      @child = @history.source
       render :month
       return
     end
-    redirect_to month_child_child_histories_path(*History.month_path_params(@history.source, @history.target_date, anchor: true))
+    redirect_to month_child_child_histories_path(*History.month_path_params(@child, @history.target_date, anchor: true))
   end
 
   def destroy
     target_date = @history.target_date
     @history.destroy
-    redirect_to month_child_child_histories_path(*History.month_path_params(@history.source, target_date)), notice: '削除しました'
+    redirect_to month_child_child_histories_path(*History.month_path_params(@child, target_date)), notice: '削除しました'
   end
 
   private

@@ -13,7 +13,7 @@ class UserHistoriesController < ApplicationController
     @month = (Time.local(params[:year], params[:month]) rescue Time.current).to_date
     @histories = @user.histories.includes(:author).where(target_date: [@month.beginning_of_month..@month.end_of_month]).order(target_date: :asc)
     default_target_date = @month.year == Time.current.year && @month.month == Time.current.month ? Time.current : @month
-    @history = @user.histories.build(target_date: default_target_date)
+    @history = History.new(target_date: default_target_date)
   end
 
   def year
@@ -25,7 +25,8 @@ class UserHistoriesController < ApplicationController
   end
 
   def create
-    @history = @user.histories.build(history_params)
+    @history = History.new(history_params)
+    @history.member_histories.build(member: @user)
     @history.author = current_user
     @history.family = current_family
     unless @history.save

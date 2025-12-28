@@ -7,14 +7,14 @@
 #  as_profile_image :boolean
 #  content          :text(16777215)
 #  data             :json
-#  source_type      :string(255)      not null
+#  source_type      :string(255)
 #  target_date      :date
 #  title            :string(255)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  author_id        :bigint
 #  family_id        :bigint
-#  source_id        :bigint           not null
+#  source_id        :bigint
 #
 # Indexes
 #
@@ -27,14 +27,15 @@
 #
 #  fk_rails_...  (author_id => users.id)
 #  fk_rails_...  (family_id => families.id)
-#  fk_rails_...  (source_id => children.id)
 #
 
 # TODO: image_xxxカラムを削除
 class History < ApplicationRecord
-  belongs_to :source, polymorphic: true
   belongs_to :author, class_name: "User", foreign_key: :author_id
   belongs_to :family
+  has_many :member_histories, dependent: :destroy
+  has_many :users, through: :member_histories, source: :member, source_type: 'User'
+  has_many :children, through: :member_histories, source: :member, source_type: 'Child'
   has_many :favorites, as: :favoritable, dependent: :destroy
 
   # TODO: メタプロ
@@ -67,23 +68,8 @@ class History < ApplicationRecord
   end
 
   def search_result_items
-    path, name = case source
-           when Child
-             [
-              Rails.application.routes.url_helpers.month_child_child_histories_path(*History.month_path_params(source, target_date, anchor: true)),
-              source.name
-             ]
-           when User
-             [
-              Rails.application.routes.url_helpers.month_user_user_histories_path(*History.month_path_params(source, target_date, anchor: true)),
-              source.dispname
-             ]
-           when Family
-             [
-              Rails.application.routes.url_helpers.month_family_family_histories_path(*History.month_path_params(nil, target_date, anchor: true)),
-              source.name_with_suffix
-             ]
-           end
+    path = member_path_for_search
+    name = member_label
 
     {
       type: self.class.to_s,
@@ -124,7 +110,50 @@ class History < ApplicationRecord
     result
   end
 
+  # リンク生成用に先頭memberを返す。
+  def primary_member
+    if member_histories.loaded?
+      return member_histories.map(&:member).compact.first
+    end
+
+    member_histories.includes(:member).order(:id).first&.member
+  end
+
+  # 表示用のmember名を安定順で返す。
+  def member_names
+    histories = member_histories.loaded? ? member_histories : member_histories.includes(:member).order(:id)
+    histories.map { |mh| mh.member&.dispname }.compact
+  end
+
+  # 一覧バッジ/リンク用のラベル。
+  def member_label
+    names = member_names
+    return names.join('、') if names.present?
+
+    family&.name_with_suffix.to_s
+  end
+
   private
+
+  # memberの文脈に合わせた検索結果のパスを返す。
+  def member_path_for_search
+    member = member_for_path
+    if member.is_a?(Child)
+      return Rails.application.routes.url_helpers.month_child_child_histories_path(*History.month_path_params(member, target_date, anchor: true))
+    end
+    if member.is_a?(User)
+      return Rails.application.routes.url_helpers.month_user_user_histories_path(*History.month_path_params(member, target_date, anchor: true))
+    end
+
+    Rails.application.routes.url_helpers.month_family_family_histories_path(*History.month_path_params(nil, target_date, anchor: true))
+  end
+
+  # memberが1人のときだけ返す。
+  def member_for_path
+    return nil unless member_histories.size == 1
+
+    primary_member
+  end
 
   def ensure_existing_profile_image
     return unless as_profile_image?

@@ -21,7 +21,8 @@
 # TODO: UserのSTIにした方が良かった？変更となれば検討事項が多い
 class Child < ApplicationRecord
   belongs_to :family
-  has_many :histories, as: :source
+  has_many :member_histories, as: :member, dependent: :destroy
+  has_many :histories, through: :member_histories
 
   validates :name, presence: true
   validates :birthday, presence: true

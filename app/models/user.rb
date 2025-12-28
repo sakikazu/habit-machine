@@ -57,7 +57,8 @@ class User < ApplicationRecord
   has_many :favorites, dependent: :destroy
   has_many :favorite_diaries, through: :favorites, source: :favoritable, source_type: 'Diary'
   has_many :favorite_histories, through: :favorites, source: :favoritable, source_type: 'History'
-  has_many :histories, as: :source
+  has_many :member_histories, as: :member, dependent: :destroy
+  has_many :histories, through: :member_histories
   has_many :todos, as: :source
   has_many :todo_projects, as: :source
 

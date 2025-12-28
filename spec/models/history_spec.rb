@@ -7,14 +7,14 @@
 #  as_profile_image :boolean
 #  content          :text(16777215)
 #  data             :json
-#  source_type      :string(255)      not null
+#  source_type      :string(255)
 #  target_date      :date
 #  title            :string(255)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  author_id        :bigint
 #  family_id        :bigint
-#  source_id        :bigint           not null
+#  source_id        :bigint
 #
 # Indexes
 #
@@ -27,7 +27,6 @@
 #
 #  fk_rails_...  (author_id => users.id)
 #  fk_rails_...  (family_id => families.id)
-#  fk_rails_...  (source_id => children.id)
 #
 require 'rails_helper'
 

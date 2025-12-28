@@ -12,8 +12,8 @@ class Family < ApplicationRecord
   # TODO: enabled は、「家族」メニューを非表示にしたい時が出てきた時に利用する
   has_many :users
   has_many :children
-  has_many :histories, as: :source
-  has_many :all_histories, class_name: 'History'
+  has_many :histories
+  has_many :all_histories, class_name: 'History', foreign_key: :family_id
   has_many :habits, as: :source
 
   def name_with_suffix
