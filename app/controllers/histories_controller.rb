@@ -18,10 +18,14 @@ class HistoriesController < ApplicationController
     @history.family = current_family
     assign_member_histories(@history)
 
-    if @history.save
-      redirect_to history_path(@history)
-    else
-      render :edit
+    respond_to do |format|
+      if @history.save
+        format.html { redirect_to history_path(@history) }
+        format.json { render json: { history: build_history_payload(@history) } }
+      else
+        format.html { render :edit }
+        format.json { render json: { errors: @history.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -30,10 +34,14 @@ class HistoriesController < ApplicationController
     @history.set_data_by_keys(params[:history], %i[height weight])
     assign_member_histories(@history)
 
-    if @history.update(history_params)
-      redirect_to history_path(@history)
-    else
-      render :edit
+    respond_to do |format|
+      if @history.update(history_params)
+        format.html { redirect_to history_path(@history) }
+        format.json { render json: { history: build_history_payload(@history) } }
+      else
+        format.html { render :edit }
+        format.json { render json: { errors: @history.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 
@@ -63,5 +71,14 @@ class HistoriesController < ApplicationController
       MemberHistory.new(member_type: type, member_id: id.to_i)
     end
     history.member_histories = member_histories
+  end
+
+  # API用のHistory情報を組み立てる。
+  def build_history_payload(history)
+    {
+      id: history.id,
+      target_date: history.target_date&.to_s,
+      show_path: history_path(history)
+    }
   end
 end

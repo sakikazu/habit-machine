@@ -31,7 +31,7 @@
         <label class="family-dashboard__label">年月</label>
         <div class="family-dashboard__years">
           <button
-            v-for="year in years"
+            v-for="year in visibleYears"
             :key="year"
             type="button"
             class="family-dashboard__year"
@@ -39,6 +39,14 @@
             @click="toggleYear(year)"
           >
             {{ year }}年
+          </button>
+          <button
+            v-if="hasMoreYears"
+            type="button"
+            class="family-dashboard__year family-dashboard__year--more"
+            @click="showAllYears = true"
+          >
+            もっと見る
           </button>
         </div>
         <div v-if="selectedYear" class="family-dashboard__months">
@@ -144,6 +152,7 @@ export default {
       selectedMemberKeys: [],
       appliedMemberKeys: [],
       years: [],
+      showAllYears: false,
       selectedYear: null,
       selectedMonth: null,
       appliedYear: null,
@@ -160,6 +169,13 @@ export default {
   computed: {
     months () {
       return Array.from({ length: 12 }, (_, index) => index + 1)
+    },
+    visibleYears () {
+      if (this.showAllYears) return this.years
+      return this.years.slice(0, 5)
+    },
+    hasMoreYears () {
+      return !this.showAllYears && this.years.length > 5
     },
     hasMonthFilter () {
       return this.appliedYear && this.appliedMonth
@@ -218,6 +234,7 @@ export default {
           this.selectedMemberKeys = []
           this.selectedYear = res.data.current_year
           this.years = this.buildYears(res.data.current_year, res.data.min_year)
+          this.showAllYears = false
           this.applyFilters()
         })
         .catch((error) => {
