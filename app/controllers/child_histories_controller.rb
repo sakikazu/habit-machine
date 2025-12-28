@@ -65,7 +65,7 @@ class ChildHistoriesController < ApplicationController
 
   # TODO: 現状でも問題ないが、認可ライブラリも導入したいところ
   def set_history
-    @history = current_family.all_histories.find(params[:id])
+    @history = current_family.histories.find(params[:id])
   end
 
   def set_view_setting

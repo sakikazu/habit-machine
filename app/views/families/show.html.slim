@@ -37,7 +37,7 @@
       = fa_icon 'home', text: '家族事'
     .d-flex.justify-content-between.mb-4
       h4
-        = link_to current_family.name_with_suffix, month_family_family_histories_path(Time.now.year, Time.now.month)
+        = link_to current_family.name_with_suffix, family_path
         span.badge.badge-secondary.ml-2 = @histories_count_hash[:family]
       .edit
         = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_family_path

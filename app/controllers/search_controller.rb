@@ -13,7 +13,7 @@ class SearchController < ApplicationController
     @result_diaries_size = current_user.diaries.find_by_word(@search_word).size
     @result_habitodos_size = current_user.habitodos.find_by_word(@search_word).size
     # @result_senses = current_user.senses.find_by_word(@search_word)
-    @result_histories_size = current_family.all_histories.find_by_word(@search_word).size
+    @result_histories_size = current_family.histories.find_by_word(@search_word).size
 
     @page_title = 'サイト内検索'
     @no_header_margin = true
@@ -26,7 +26,7 @@ class SearchController < ApplicationController
 
     source_data = case @content_type.to_sym
                    when :history
-                     current_family.all_histories.find_by_word(@search_word).newer
+                     current_family.histories.find_by_word(@search_word).newer
                    when :habitodo
                      current_user.habitodos.find_by_word(@search_word)
                    when :diary

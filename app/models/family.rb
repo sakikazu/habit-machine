@@ -13,7 +13,6 @@ class Family < ApplicationRecord
   has_many :users
   has_many :children
   has_many :histories
-  has_many :all_histories, class_name: 'History', foreign_key: :family_id
   has_many :habits, as: :source
 
   def name_with_suffix

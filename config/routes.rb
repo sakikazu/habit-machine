@@ -185,12 +185,6 @@ Rails.application.routes.draw do
       get :history_month_counts
       get :history_feed
     end
-    resources :family_histories, path: :histories, only: [:index, :create, :edit, :update, :destroy] do
-      collection do
-        get 'y/:year', action: :year, as: :year
-        get 'm/:year/:month', action: :month, as: :month
-      end
-    end
   end
 
   # devise + α

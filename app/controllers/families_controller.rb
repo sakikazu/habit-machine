@@ -19,12 +19,12 @@ class FamiliesController < ApplicationController
   # 家族ページ用の作成フォームを返す。
   def history_form
     history = current_family.histories.build(target_date: Time.current)
-    render partial: 'family_histories/form', locals: { history: history }, layout: false
+    render partial: 'histories/form', locals: { history: history }, layout: false
   end
 
   # 家族のメンバー選択肢と年の範囲を返す。
   def history_meta
-    min_date = current_family.all_histories.minimum(:target_date)
+    min_date = current_family.histories.minimum(:target_date)
     current_year = Time.current.year
     min_year = min_date&.year || current_year
 
@@ -97,7 +97,7 @@ class FamiliesController < ApplicationController
 
   # 検索条件に応じたHistoryのスコープを返す。
   def filter_histories_scope
-    scope = current_family.all_histories.includes(:author, :family, member_histories: :member)
+    scope = current_family.histories.includes(:author, :family, member_histories: :member)
     member_keys = params[:member_keys]
     member_keys = Array(member_keys).map(&:to_s).reject(&:blank?)
     return scope if member_keys.blank?

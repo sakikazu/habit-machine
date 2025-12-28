@@ -46,7 +46,7 @@ class HistoriesController < ApplicationController
   private
 
   def set_history
-    @history = current_family.all_histories.find(params[:id])
+    @history = current_family.histories.find(params[:id])
   end
 
   def history_params

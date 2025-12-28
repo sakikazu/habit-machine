@@ -10,7 +10,6 @@ module HistoriesHelper
       end
     end
 
-    # familyはfamilyを特定する必要がないので、その引数は不要
-    month_family_family_histories_path(history.target_date.year, history.target_date.month)
+    history_path(history)
   end
 end

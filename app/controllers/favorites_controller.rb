@@ -114,7 +114,7 @@ class FavoritesController < ApplicationController
       return month_user_user_histories_path(*History.month_path_params(member, history.target_date, anchor: true))
     end
 
-    month_family_family_histories_path(*History.month_path_params(nil, history.target_date, anchor: true))
+    history_path(history)
   end
 
   def history_member_label(history)
