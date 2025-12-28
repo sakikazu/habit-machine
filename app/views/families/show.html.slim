@@ -33,14 +33,8 @@
               span.badge.badge-secondary.ml-2 = @histories_count_hash[:users][user.id]
       hr.mb-3
 
-    p.text-muted.font-weight-bold
-      = fa_icon 'home', text: '家族事'
-    .d-flex.justify-content-between.mb-4
-      h4
-        = link_to current_family.name_with_suffix, family_path
-        span.badge.badge-secondary.ml-2 = @histories_count_hash[:family]
-      .edit
-        = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_family_path
+    .mb-4
+      = link_to fa_icon('pencil-square-o', text: '家族を編集'), edit_family_path, class: 'btn btn-light btn-block'
     hr.mb-3
 
 .row.justify-content-center
