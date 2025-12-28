@@ -108,6 +108,7 @@ class FamilyHistoriesController < ApplicationController
       id: history.id,
       title: history.title,
       content: history.content,
+      content_html: helpers.markdown(history.content),
       target_date: history.target_date&.to_s,
       about_date: history.about_date,
       author_name: history.author&.dispname,

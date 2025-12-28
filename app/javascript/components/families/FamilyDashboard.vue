@@ -82,7 +82,7 @@
             <span v-if="history.height">{{ history.height }}cm</span>
             <span v-if="history.weight" class="family-dashboard__metric-separator">{{ history.weight }}kg</span>
           </p>
-          <p v-if="history.content" class="family-dashboard__card-body" v-html="nl2br(history.content)"></p>
+          <p v-if="history.content_html || history.content" class="family-dashboard__card-body" v-html="history.content_html || nl2br(history.content)"></p>
           <img v-if="history.eyecatch_url" :src="history.eyecatch_url" alt="" class="family-dashboard__card-image">
         </article>
       </div>
