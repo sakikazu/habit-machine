@@ -19,12 +19,26 @@
   .form-group.mb-4
     = f.file_field :eyecatch_image, class: 'form-control', accept: 'image/*'
     = image_tag history.eyecatch_image_large, class: 'img-thumbnail' if history.eyecatch_image.attached?
-    / .custom-control.custom-checkbox
-      / = f.check_box :as_profile_image, class: 'custom-control-input', id: 'as_profile_image'
-      / = f.label :as_profile_image, 'プロフィール画像にする', class: 'custom-control-label', for: 'as_profile_image'
-    / small.desc
-      / | 一番最近プロフィール画像にしたものが使用されます
+    .custom-control.custom-checkbox
+      = f.check_box :as_profile_image, class: 'custom-control-input', id: 'as_profile_image'
+      = f.label :as_profile_image, 'プロフィール画像にする', class: 'custom-control-label', for: 'as_profile_image'
+    small.desc
+      | 一番最近プロフィール画像にしたものが使用されます
+  .row.mb-3
+    .col
+      = f.number_field :height, step: '0.1', class: 'form-control', placeholder: "#{History.human_attribute_name("data.height")} (cm)"
+    .col
+      = f.number_field :weight, step: '0.1', class: 'form-control', placeholder: "#{History.human_attribute_name("data.weight")} (kg)"
+  - member_options = current_family.children.order(:id).map { |child| [child.name, "Child:#{child.id}"] }
+  - member_options += current_family.users.order(:id).map { |user| [user.dispname, "User:#{user.id}"] }
+  - selected_member_keys = history.member_histories.map { |mh| "#{mh.member_type}:#{mh.member_id}" }
+  .form-group
+    = label_tag :member_keys, '関連する人（複数選択可能）', class: 'form-label'
+    = select_tag 'member_keys[]', options_for_select(member_options, selected_member_keys), class: 'form-control', multiple: true, size: 4
+    button.btn.btn-light.btn-sm.mt-2.js-clear-member-keys(type="button") 選択を解除
   .form-group
     = f.submit '送信', class: 'btn btn-primary'
 
 = javascript_tag "$('#content-field').markdownEasily()"
+
+= javascript_tag "$('.js-clear-member-keys').off('click').on('click', function() { var select = $(this).closest('form').find('select[name=\"member_keys[]\"]'); select.val([]); select.find('option').prop('selected', false); })"

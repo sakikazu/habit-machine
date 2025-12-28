@@ -160,6 +160,7 @@ Rails.application.routes.draw do
 
   resources :habits
   resources :records, only: [:create, :update]
+  resources :histories, only: [:show, :create, :edit, :update, :destroy]
   resources :favorites, only: [:index, :create]
   post '/favorites/append_history', to: 'favorites#append_history'
   delete '/favorites', to: 'favorites#destroy'
@@ -180,6 +181,10 @@ Rails.application.routes.draw do
   resource :family, only: %i[show edit update] do
     member do
       get :all_histories
+      get :history_form
+      get :history_meta
+      get :history_month_counts
+      get :history_feed
     end
     resources :family_histories, path: :histories, only: [:index, :create, :edit, :update, :destroy] do
       collection do

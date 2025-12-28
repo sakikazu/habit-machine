@@ -23,22 +23,40 @@ class FamilyHistoriesController < ApplicationController
     @months = 1..12
   end
 
+  # 家族のHistoryを作成する。
   def create
     @history = current_family.histories.build(history_params)
+    @history.set_data_by_keys(params[:history], %i[height weight])
     @history.author = current_user
     @history.family = current_family
-    unless @history.save
-      @month = @history.target_date
-      render :month
-      return
+    assign_member_histories(@history)
+    respond_to do |format|
+      if @history.save
+        format.html do
+          redirect_to month_family_family_histories_path(*History.month_path_params(nil, @history.target_date, anchor: true))
+        end
+        format.json do
+          render json: { history: build_history_payload(@history) }
+        end
+      else
+        format.html do
+          @month = @history.target_date
+          render :month
+        end
+        format.json do
+          render json: { errors: @history.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
     end
-    redirect_to month_family_family_histories_path(*History.month_path_params(nil, @history.target_date, anchor: true))
   end
 
   def edit
   end
 
+  # 家族のHistoryを更新する。
   def update
+    @history.set_data_by_keys(params[:history], %i[height weight])
+    assign_member_histories(@history)
     unless @history.update(history_params)
       @month = @history.target_date
       render :month
@@ -70,5 +88,35 @@ class FamilyHistoriesController < ApplicationController
 
   def history_params
     params.require(:history).permit(:title, :content, :eyecatch_image, :as_profile_image, :target_date, :about_date)
+  end
+
+  # member_keysから中間テーブルを組み立てる。
+  def assign_member_histories(history)
+    member_keys = Array(params[:member_keys]).map(&:to_s).reject(&:blank?)
+    member_histories = member_keys.filter_map do |key|
+      type, id = key.split(':', 2)
+      next unless %w[User Child].include?(type)
+      next if id.blank?
+      MemberHistory.new(member_type: type, member_id: id.to_i)
+    end
+    history.member_histories = member_histories
+  end
+
+  # API用のHistory情報を組み立てる。
+  def build_history_payload(history)
+    {
+      id: history.id,
+      title: history.title,
+      content: history.content,
+      target_date: history.target_date&.to_s,
+      about_date: history.about_date,
+      author_name: history.author&.dispname,
+      member_label: history.member_label,
+      member_names: history.member_names,
+      show_path: history_path(history),
+      eyecatch_url: history.eyecatch_image.attached? ? url_for(history.eyecatch_image_large) : nil,
+      height: history.height,
+      weight: history.weight
+    }
   end
 end

@@ -1,0 +1,23 @@
+.row.justify-content-center
+  .col-sm(style="max-width: 700px")
+    .page-header
+      h2 = @history.title
+    .mb-3.text-muted
+      span = dispdate(@history.target_date, true)
+      - if @history.about_date
+        span.ml-2 (だいたい)
+      - if @history.member_label.present?
+        span.badge.badge-pill.badge-warning.ml-2.p-1 = @history.member_label
+      - if @history.author.present?
+        span.ml-2 = "by #{@history.author.dispname}"
+    - if @history.eyecatch_image.attached?
+      = image_tag @history.eyecatch_image_large, class: 'img-fluid mb-3'
+    - if @history.content.present?
+      .markdown = markdown(@history.content)
+    - if @history.data.present?
+      ul.list-group.list-group-flush.mt-3
+        - @history.data.each do |key, value|
+          li.list-group-item.text-muted = "#{History.human_attribute_name("data.#{key}")}: #{value}"
+    .mt-4
+      = link_to '編集', edit_history_path(@history), class: 'btn btn-secondary mr-2'
+      = link_to '削除', history_path(@history), method: :delete, class: 'btn btn-danger', data: { confirm: '本当に削除しますか？' }

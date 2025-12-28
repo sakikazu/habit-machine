@@ -1,3 +1,5 @@
+= javascript_include_tag 'family_page', 'data-turbolinks-track': 'reload', defer: true
+
 .row.justify-content-center
   .col-sm-2
     .mb-3
@@ -41,3 +43,7 @@
         = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_family_path
     hr.mb-3
     = link_to 'みんなの記録一覧', all_histories_family_path, class: 'btn btn-light btn-block'
+
+.row.justify-content-center
+  .col-sm-10
+    #family-dashboard(data-current-year=Time.current.year data-current-month=Time.current.month)

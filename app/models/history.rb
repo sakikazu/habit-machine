@@ -68,7 +68,7 @@ class History < ApplicationRecord
   end
 
   def search_result_items
-    path = member_path_for_search
+    path = Rails.application.routes.url_helpers.history_path(self)
     name = member_label
 
     {
@@ -134,26 +134,6 @@ class History < ApplicationRecord
   end
 
   private
-
-  # memberの文脈に合わせた検索結果のパスを返す。
-  def member_path_for_search
-    member = member_for_path
-    if member.is_a?(Child)
-      return Rails.application.routes.url_helpers.month_child_child_histories_path(*History.month_path_params(member, target_date, anchor: true))
-    end
-    if member.is_a?(User)
-      return Rails.application.routes.url_helpers.month_user_user_histories_path(*History.month_path_params(member, target_date, anchor: true))
-    end
-
-    Rails.application.routes.url_helpers.month_family_family_histories_path(*History.month_path_params(nil, target_date, anchor: true))
-  end
-
-  # memberが1人のときだけ返す。
-  def member_for_path
-    return nil unless member_histories.size == 1
-
-    primary_member
-  end
 
   def ensure_existing_profile_image
     return unless as_profile_image?
