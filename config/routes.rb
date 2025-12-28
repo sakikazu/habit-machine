@@ -188,12 +188,5 @@ Rails.application.routes.draw do
   end
 
   # devise + α
-  resources :users, only: [] do
-    resources :user_histories, path: :histories, only: [:index, :create, :edit, :update, :destroy] do
-      collection do
-        get 'y/:year', action: :year, as: :year
-        get 'm/:year/:month', action: :month, as: :month
-      end
-    end
-  end
+  resources :users, only: []
 end

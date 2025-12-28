@@ -106,14 +106,6 @@ class FavoritesController < ApplicationController
   end
 
   def history_show_path(history)
-    member = history.member_names.size == 1 ? history.primary_member : nil
-    if member.is_a?(Child)
-      return month_child_child_histories_path(*History.month_path_params(member, history.target_date, anchor: true))
-    end
-    if member.is_a?(User)
-      return month_user_user_histories_path(*History.month_path_params(member, history.target_date, anchor: true))
-    end
-
     history_path(history)
   end
 
@@ -123,14 +115,6 @@ class FavoritesController < ApplicationController
   end
 
   def history_edit_path(history)
-    member = history.member_names.size == 1 ? history.primary_member : nil
-    if member.is_a?(Child)
-      return edit_child_child_history_path(member, history)
-    end
-    if member.is_a?(User)
-      return edit_user_user_history_path(member, history)
-    end
-
-    edit_family_family_history_path(history)
+    edit_history_path(history)
   end
 end

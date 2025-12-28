@@ -6,7 +6,7 @@ module HistoriesHelper
         return month_child_child_histories_path(member, history.target_date.year, history.target_date.month)
       end
       if member.is_a?(User)
-        return month_user_user_histories_path(member, history.target_date.year, history.target_date.month)
+        return history_path(history)
       end
     end
 

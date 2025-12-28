@@ -29,7 +29,7 @@
             = image_tag user.profile_image, class: 'rounded-circle', width: '75px', height: '75px'
           .ml-3.mb-3
             h4
-              = link_to user.dispname, month_user_user_histories_path(user, Time.now.year, Time.now.month)
+              = user.dispname
               span.badge.badge-secondary.ml-2 = @histories_count_hash[:users][user.id]
       hr.mb-3
 
