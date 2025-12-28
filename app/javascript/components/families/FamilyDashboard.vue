@@ -66,11 +66,9 @@
       <div v-else class="family-dashboard__cards">
         <article v-for="history in histories" :key="history.id" :id="historyCardId(history)" class="family-dashboard__card">
           <div class="family-dashboard__card-header">
-            <div class="family-dashboard__date">
+            <div class="family-dashboard__date-group">
               <span v-if="history.about_date" class="family-dashboard__approx">(だいたい)</span>
-              {{ formatDate(history.target_date) }}
-            </div>
-            <div class="family-dashboard__meta">
+              <span class="family-dashboard__date">{{ history.target_date_label || history.target_date }}</span>
               <span v-if="history.member_label" class="family-dashboard__member">{{ history.member_label }}</span>
               <span v-if="history.author_name" class="family-dashboard__author">by {{ history.author_name }}</span>
             </div>

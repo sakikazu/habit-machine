@@ -122,6 +122,7 @@ class FamiliesController < ApplicationController
       content: history.content,
       content_html: helpers.markdown(history.content),
       target_date: history.target_date&.to_s,
+      target_date_label: helpers.dispdate(history.target_date, true),
       about_date: history.about_date,
       author_name: history.author&.dispname,
       member_label: history.member_label,
