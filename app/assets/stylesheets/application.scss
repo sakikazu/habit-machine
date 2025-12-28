@@ -112,6 +112,41 @@ footer > p {
   color: #6C6767;
 }
 
+.member-pill-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.member-pill {
+  display: inline-flex;
+  align-items: center;
+}
+
+.member-pill__input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.member-pill__label {
+  border: 1px solid #e0d2c2;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #3f372c;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.member-pill__input:checked + .member-pill__label {
+  background: #f7c062;
+  border-color: #f7c062;
+  color: #20180e;
+  font-weight: 600;
+}
+
 // todo
 .habits_controller {
   .record_value {

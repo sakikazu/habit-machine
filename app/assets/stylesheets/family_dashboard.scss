@@ -59,6 +59,19 @@
   align-items: start;
 }
 
+.family-dashboard__filter-toggle {
+  display: none;
+  width: 100%;
+  border: 1px solid #e0d2c2;
+  background: #fff;
+  color: #3f372c;
+  border-radius: 999px;
+  padding: 10px 16px;
+  font-weight: 600;
+  margin-top: 16px;
+  margin-bottom: 12px;
+}
+
 .family-dashboard__control {
   display: flex;
   flex-direction: column;
@@ -72,12 +85,39 @@
   text-transform: uppercase;
 }
 
-.family-dashboard__select {
-  border-radius: 12px;
+.family-dashboard__member-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.family-dashboard__member-pill {
+  display: inline-flex;
+  align-items: center;
+}
+
+.family-dashboard__member-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.family-dashboard__member-label {
   border: 1px solid #e0d2c2;
-  padding: 10px 12px;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: #3f372c;
   background: #fff;
-  min-height: 120px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.family-dashboard__member-input:checked + .family-dashboard__member-label {
+  background: #f7c062;
+  border-color: #f7c062;
+  color: #20180e;
+  font-weight: 600;
 }
 
 .family-dashboard__calendar {
@@ -263,8 +303,18 @@
     align-items: flex-start;
   }
 
+  .family-dashboard__filter-toggle {
+    display: inline-flex;
+    justify-content: center;
+  }
+
   .family-dashboard__controls {
+    display: none;
     grid-template-columns: 1fr;
+  }
+
+  .family-dashboard__controls.is-open {
+    display: grid;
   }
 
   .family-dashboard__card-header {

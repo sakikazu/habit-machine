@@ -9,22 +9,29 @@
       </button>
     </header>
 
-    <div class="family-dashboard__controls">
+    <button type="button" class="family-dashboard__filter-toggle" @click="toggleFilters">
+      {{ filtersOpen ? '条件を閉じる' : '条件で絞り込む' }}
+    </button>
+
+    <div class="family-dashboard__controls" :class="{ 'is-open': filtersOpen }">
       <div class="family-dashboard__control">
         <label class="family-dashboard__label">メンバー</label>
-        <select
-          v-model="selectedMemberKeys"
-          class="family-dashboard__select"
-          multiple
-          size="4"
-        >
-          <option v-for="option in memberOptions" :key="optionKey(option)" :value="optionKey(option)">
-            {{ option.name }}
-          </option>
-        </select>
-        <button type="button" class="family-dashboard__reset" @click="resetMembers">
-          全員に戻す
-        </button>
+        <div class="family-dashboard__member-list">
+          <label
+            v-for="option in memberOptions"
+            :key="optionKey(option)"
+            class="family-dashboard__member-pill"
+          >
+            <input
+              type="checkbox"
+              class="family-dashboard__member-input"
+              :value="optionKey(option)"
+              v-model="selectedMemberKeys"
+              @change="onMemberSelectionChange"
+            >
+            <span class="family-dashboard__member-label">{{ option.name }}</span>
+          </label>
+        </div>
       </div>
 
       <div class="family-dashboard__control family-dashboard__calendar">
@@ -77,7 +84,13 @@
             <div class="family-dashboard__date-group">
               <span v-if="history.about_date" class="family-dashboard__approx">(だいたい)</span>
               <span class="family-dashboard__date">{{ history.target_date_label || history.target_date }}</span>
-              <span v-if="history.member_label" class="family-dashboard__member">{{ history.member_label }}</span>
+              <span
+                v-for="name in memberNamePills(history)"
+                :key="`${history.id}-${name}`"
+                class="family-dashboard__member"
+              >
+                {{ name }}
+              </span>
               <span v-if="history.author_name" class="family-dashboard__author">by {{ history.author_name }}</span>
             </div>
           </div>
@@ -163,7 +176,8 @@ export default {
       loading: false,
       showFormModal: false,
       formHtml: '',
-      formLoading: false
+      formLoading: false,
+      filtersOpen: true
     }
   },
   computed: {
@@ -186,9 +200,18 @@ export default {
   },
   mounted () {
     this.fetchMeta()
+    this.filtersOpen = !this.isMobile()
   },
   methods: {
     nl2br,
+    // モバイルかどうかを判定する。
+    isMobile () {
+      return window.matchMedia && window.matchMedia('(max-width: 768px)').matches
+    },
+    // 検索条件の表示/非表示を切り替える。
+    toggleFilters () {
+      this.filtersOpen = !this.filtersOpen
+    },
     // モーダルでフォームHTMLを読み込む。
     openFormModal () {
       this.showFormModal = true
@@ -205,7 +228,6 @@ export default {
           this.formLoading = false
           this.$nextTick(() => {
             this.bindFormSubmit()
-            this.bindFormClear()
             if (window.$ && window.$('#content-field').length > 0) {
               window.$('#content-field').markdownEasily()
             }
@@ -225,6 +247,15 @@ export default {
     },
     formatDate (dateString) {
       return dateString || ''
+    },
+    memberNamePills (history) {
+      if (history.member_names && history.member_names.length > 0) {
+        return history.member_names
+      }
+      if (history.member_label) {
+        return [history.member_label]
+      }
+      return []
     },
     // 初期データ（年/メンバー）を取得する。
     fetchMeta () {
@@ -261,8 +292,9 @@ export default {
     toggleMonth (month) {
       this.selectedMonth = this.selectedMonth === month ? null : month
     },
-    resetMembers () {
-      this.selectedMemberKeys = []
+    onMemberSelectionChange () {
+      this.selectedYear = null
+      this.selectedMonth = null
     },
     // 選択条件を適用して一覧を再取得する。
     applyFilters () {
@@ -337,21 +369,6 @@ export default {
       })
     },
     // 追加フォームのメンバー選択を解除する。
-    bindFormClear () {
-      const button = this.$el.querySelector('.family-dashboard__modal-body .js-clear-member-keys')
-      if (!button || button.dataset.bound) return
-
-      button.dataset.bound = 'true'
-      button.addEventListener('click', () => {
-        const select = this.$el.querySelector('.family-dashboard__modal-body select[name="member_keys[]"]')
-        if (select) {
-          select.value = null
-          Array.from(select.options).forEach((option) => {
-            option.selected = false
-          })
-        }
-      })
-    },
     // 画像読み込み後に対象カードへスクロールする。
     scrollToHistory (scrollId) {
       const tryScroll = (attemptsLeft) => {

@@ -29,8 +29,8 @@ class FamiliesController < ApplicationController
     min_year = min_date&.year || current_year
 
     member_options = []
-    member_options += current_family.users.order(:id).map { |user| { type: 'User', id: user.id, name: user.dispname } }
     member_options += current_family.children.order(:id).map { |child| { type: 'Child', id: child.id, name: child.name } }
+    member_options += current_family.users.order(:id).map { |user| { type: 'User', id: user.id, name: user.dispname } }
 
     render json: {
       current_year: current_year,
