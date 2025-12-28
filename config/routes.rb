@@ -180,6 +180,7 @@ Rails.application.routes.draw do
 
   resource :family, only: %i[show edit update] do
     member do
+      get :settings
       get :history_form
       get :history_meta
       get :history_month_counts

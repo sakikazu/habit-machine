@@ -130,7 +130,7 @@ class History < ApplicationRecord
     names = member_names
     return names.join('、') if names.present?
 
-    family&.name_with_suffix.to_s
+    ''
   end
 
   private

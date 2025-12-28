@@ -2,22 +2,20 @@
 
 .row.justify-content-center
   .col-sm-2
-    .mb-3
+    .mb-3.d-flex.justify-content-between.align-items-center
       span.text-muted.font-weight-bold.mr-2
         = fa_icon 'child', text: 'こども'
-      = link_to '作成', new_child_path
+      = link_to fa_icon('cog', text: '設定'), settings_family_path, class: 'btn btn-light btn-sm'
     - @children.each do |child|
       .d-flex.justify-content-between.mb-2
         .d-flex.flex-grow-1
           - if child.profile_image.present?
             = image_tag child.profile_image, class: 'rounded-circle', width: '75px', height: '75px'
           .ml-3
-            h4
-              = link_to child.name, month_child_child_histories_path(child, Time.now.year, Time.now.month)
-              span.badge.badge-secondary.ml-2 = @histories_count_hash[:children][child.id]
+            h4 = link_to child.name, month_child_child_histories_path(child, Time.now.year, Time.now.month)
             p.text-muted = child.relative_age(Date.today)
         .edit
-          = link_to fa_icon('pencil-square-o', class: 'fa-lg'), edit_child_path(child)
+          = link_to fa_icon('line-chart', class: 'fa-lg'), graph_child_path(child)
       hr.mb-3
 
     p.text-muted.font-weight-bold
@@ -28,13 +26,9 @@
           - if user.profile_image.present?
             = image_tag user.profile_image, class: 'rounded-circle', width: '75px', height: '75px'
           .ml-3.mb-3
-            h4
-              = user.dispname
-              span.badge.badge-secondary.ml-2 = @histories_count_hash[:users][user.id]
+            h4 = user.dispname
       hr.mb-3
 
-    .mb-4
-      = link_to fa_icon('pencil-square-o', text: '家族を編集'), edit_family_path, class: 'btn btn-light btn-block'
     hr.mb-3
 
 .row.justify-content-center

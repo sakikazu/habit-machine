@@ -1,0 +1,15 @@
+.row.justify-content-center
+  .col-sm(style="max-width: 700px")
+    .page-header
+      h2 家族設定
+
+    .mb-4
+      = link_to '家族を編集', edit_family_path, class: 'btn btn-light btn-block'
+
+    .mb-4
+      = link_to '子供を追加', new_child_path, class: 'btn btn-light btn-block'
+
+    - if @children.present?
+      h5.mt-4.mb-2.text-muted 子供の編集
+      - @children.each do |child|
+        = link_to "編集: #{child.name}", edit_child_path(child), class: 'btn btn-outline-secondary btn-block mb-2'

@@ -1,7 +1,7 @@
 .row.justify-content-center
-  .col-sm-2
+  .col-sm(style="max-width: 700px")
     .form-actions.mb30
-      = link_to '家族ページへ', family_path, class: "btn btn-light"
+      = link_to '設定へ', settings_family_path, class: "btn btn-light"
     .page-header
       h4 こどもデータ作成
     = render 'form'

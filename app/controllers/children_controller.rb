@@ -14,7 +14,7 @@ class ChildrenController < ApplicationController
 
     respond_to do |format|
       if @child.save
-        format.html { redirect_to family_path, notice: 'こどもデータを作成しました.' }
+        format.html { redirect_to settings_family_path, notice: 'こどもデータを作成しました.' }
       else
         format.html { render action: :new }
       end
@@ -26,8 +26,8 @@ class ChildrenController < ApplicationController
 
   def update
     respond_to do |format|
-      if @child.update_attributes(child_params)
-        format.html { redirect_to family_path, notice: 'こどもデータを更新しました.' }
+      if @child.update(child_params)
+        format.html { redirect_to settings_family_path, notice: 'こどもデータを更新しました.' }
       else
         format.html { render action: :edit }
       end
@@ -39,7 +39,7 @@ class ChildrenController < ApplicationController
     @child.destroy
 
     respond_to do |format|
-      format.html { redirect_to family_path, notice: 'こどもデータを削除しました.' }
+      format.html { redirect_to settings_family_path, notice: 'こどもデータを削除しました.' }
     end
   end
 
