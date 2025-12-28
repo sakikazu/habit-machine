@@ -188,6 +188,7 @@
 .family-dashboard__card-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   font-size: 12px;
   color: #7b6d5a;
 }
@@ -220,6 +221,17 @@
   border-radius: 999px;
   font-size: 11px;
   color: #5a4630;
+}
+
+.family-dashboard__edit {
+  border: none;
+  background: transparent;
+  color: #7b6d5a;
+  padding: 4px 6px;
+}
+
+.family-dashboard__edit:hover {
+  color: #1d4e89;
 }
 
 .family-dashboard__author {

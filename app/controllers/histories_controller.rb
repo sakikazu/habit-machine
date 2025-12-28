@@ -8,6 +8,12 @@ class HistoriesController < ApplicationController
 
   # Historyの編集フォームを表示する。
   def edit
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: { form_html: render_to_string(partial: 'histories/form', locals: { history: @history }, formats: [:html]) }
+      end
+    end
   end
 
   # Historyを作成する。

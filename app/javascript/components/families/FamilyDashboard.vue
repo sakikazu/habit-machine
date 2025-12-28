@@ -93,6 +93,13 @@
               </span>
               <span v-if="history.author_name" class="family-dashboard__author">by {{ history.author_name }}</span>
             </div>
+            <button
+              type="button"
+              class="family-dashboard__edit"
+              @click="openEditModal(history)"
+            >
+              <i class="fa fa-pencil-square-o"></i>
+            </button>
           </div>
           <h4 class="family-dashboard__card-title">
             <a :href="history.show_path">{{ history.title }}</a>
@@ -131,9 +138,18 @@
 
     <Modal v-if="showFormModal" :no-padding="true" @on-close="closeFormModal">
       <template #content>
-        <div class="family-dashboard__modal-body">
+        <div class="family-dashboard__modal-body family-dashboard__modal-body--create">
           <div v-if="formLoading" class="family-dashboard__loading">フォームを読み込み中...</div>
           <div v-else v-html="formHtml"></div>
+        </div>
+      </template>
+    </Modal>
+
+    <Modal v-if="showEditModal" :no-padding="true" @on-close="closeEditModal">
+      <template #content>
+        <div class="family-dashboard__modal-body family-dashboard__modal-body--edit">
+          <div v-if="editLoading" class="family-dashboard__loading">フォームを読み込み中...</div>
+          <div v-else v-html="editHtml"></div>
         </div>
       </template>
     </Modal>
@@ -177,6 +193,10 @@ export default {
       showFormModal: false,
       formHtml: '',
       formLoading: false,
+      showEditModal: false,
+      editHtml: '',
+      editLoading: false,
+      editingHistoryId: null,
       filtersOpen: true
     }
   },
@@ -233,6 +253,36 @@ export default {
             }
           })
         })
+    },
+    // 編集フォームをモーダルで開く。
+    openEditModal (history) {
+      if (!history?.id) return
+      this.showEditModal = true
+      this.editLoading = true
+      this.editHtml = ''
+      this.editingHistoryId = history.id
+      HmAxios.get(`/histories/${history.id}/edit.json`)
+        .then((res) => {
+          this.editHtml = res.data.form_html
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+        .finally(() => {
+          this.editLoading = false
+          this.$nextTick(() => {
+            this.bindEditSubmit()
+            if (window.$ && window.$('#content-field').length > 0) {
+              window.$('#content-field').markdownEasily()
+            }
+          })
+        })
+    },
+    // 編集モーダルを閉じる。
+    closeEditModal () {
+      this.showEditModal = false
+      this.editHtml = ''
+      this.editingHistoryId = null
     },
     closeFormModal () {
       this.showFormModal = false
@@ -359,13 +409,24 @@ export default {
     },
     // 追加フォームのsubmitをフックする。
     bindFormSubmit () {
-      const form = this.$el.querySelector('.family-dashboard__modal-body form')
+      const form = this.$el.querySelector('.family-dashboard__modal-body--create form')
       if (!form || form.dataset.bound) return
 
       form.dataset.bound = 'true'
       form.addEventListener('submit', (event) => {
         event.preventDefault()
         this.submitForm(form)
+      })
+    },
+    // 編集フォームのsubmitをフックする。
+    bindEditSubmit () {
+      const form = this.$el.querySelector('.family-dashboard__modal-body--edit form')
+      if (!form || form.dataset.bound) return
+
+      form.dataset.bound = 'true'
+      form.addEventListener('submit', (event) => {
+        event.preventDefault()
+        this.submitEditForm(form)
       })
     },
     // 追加フォームのメンバー選択を解除する。
@@ -431,6 +492,26 @@ export default {
         })
         .finally(() => {
           this.formLoading = false
+        })
+    },
+    // 編集フォームをAPI経由で送信する。
+    submitEditForm (form) {
+      const formData = new FormData(form)
+      this.editLoading = true
+      HmAxios.post(form.action, formData, { headers: { Accept: 'application/json' } })
+        .then((res) => {
+          const history = res.data.history
+          this.closeEditModal()
+          if (history?.target_date) {
+            const scrollId = history?.id ? `history-${history.id}` : null
+            this.fetchHistories(1, { scrollId })
+          }
+        })
+        .catch((error) => {
+          alert(error.response?.data?.errors?.join('\n') || '保存に失敗しました')
+        })
+        .finally(() => {
+          this.editLoading = false
         })
     },
     shouldRefreshList (targetDate) {
