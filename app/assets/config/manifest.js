@@ -2,3 +2,4 @@
 //= link_tree ../builds
 //= link_tree ../javascripts
 //= link_directory ../stylesheets .css
+//= link highcharts/highstock.js

@@ -24,7 +24,6 @@
 //= require jquery.selection
 //= require jquery.markdown-easily
 //= require_tree .
-
 // for lazy_high_charts
 // NOTE: highchartsはhighstock内でincludeされてるから不要。-moreの方はわからないが動作に異常はないので無効にしとく
 // require highcharts/highcharts

@@ -1,16 +1,15 @@
 - content_for :addjs
   javascript:
-    $(function() {
+    document.addEventListener('turbolinks:load', () => {
       // こちらもsubmitボタンで年月移動できるようにしたいが、使用頻度が低く、やるならFrom-ToのUI全体的に変更したいので、そのタイミングでやる
       let targetDateSettingTimeout
       const monthPageDateField = document.getElementById('month-page-date')
       if (monthPageDateField) {
         monthPageDateField.addEventListener('change', (event) => {
           clearTimeout(targetDateSettingTimeout)
-          this.targetDateSettingTimeout = setTimeout(() => {
+          targetDateSettingTimeout = setTimeout(() => {
             location.href = `/month/${event.target.value}`
           }, 700)
-
         })
       }
     })
