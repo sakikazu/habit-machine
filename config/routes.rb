@@ -76,7 +76,10 @@
 #      rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                           active_storage/direct_uploads#create
 
 Rails.application.routes.draw do
-  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+  # productionのrails runnerでも定数参照で落ちるため、defined?でガードする
+  if Rails.env.development? && defined?(LetterOpenerWeb)
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
 
   ### for API
   namespace 'api' do
