@@ -5,7 +5,7 @@
         <h3 class="family-dashboard__title">家族の記録</h3>
       </div>
       <button type="button" class="family-dashboard__add" @click="openFormModal">
-        記録を追加
+        記録する
       </button>
     </header>
 
