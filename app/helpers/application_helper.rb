@@ -187,14 +187,12 @@ module ApplicationHelper
     md.render(text).html_safe
   end
 
-  ACTIVE_STORAGE_URL_PLACEHOLDER = 'ACTIVE_STORAGE_URL'.freeze
-
   # ActiveStorageの署名付きURLは失効するのでDB保存しない（プレースホルダ運用）。
   # プレースホルダ付きURLを最新URLへ差し替える。
   def replace_placeholder_urls(text)
-    return text unless text.include?(ACTIVE_STORAGE_URL_PLACEHOLDER)
+    return text unless text.include?(Diary::ACTIVE_STORAGE_URL_PLACEHOLDER)
 
-    text.gsub(/(?<!\[)!\[image-(\d+)\]\(#{ACTIVE_STORAGE_URL_PLACEHOLDER}\)/) do
+    text.gsub(/(?<!\[)!\[image-(\d+)\]\(#{Diary::ACTIVE_STORAGE_URL_PLACEHOLDER}\)/) do
       attachment_id = Regexp.last_match(1).to_i
       attachment = ActiveStorage::Attachment.find_by(id: attachment_id)
       next Regexp.last_match(0) unless attachment
@@ -203,7 +201,7 @@ module ApplicationHelper
     rescue StandardError
       Regexp.last_match(0)
     end
-      .gsub(/\[!\[image-(\d+)\]\(#{ACTIVE_STORAGE_URL_PLACEHOLDER}\)\]\(#{ACTIVE_STORAGE_URL_PLACEHOLDER}\)/) do
+      .gsub(/\[!\[image-(\d+)\]\(#{Diary::ACTIVE_STORAGE_URL_PLACEHOLDER}\)\]\(#{Diary::ACTIVE_STORAGE_URL_PLACEHOLDER}\)/) do
         attachment_id = Regexp.last_match(1).to_i
         attachment = ActiveStorage::Attachment.find_by(id: attachment_id)
         next Regexp.last_match(0) unless attachment

@@ -61,6 +61,7 @@ class Diary < ApplicationRecord
 
   ACTION_MEMO_LINE = "# ----- ACTION MEMO -----"
   CRLF = "\r\n"
+  ACTIVE_STORAGE_URL_PLACEHOLDER = "ACTIVE_STORAGE_URL".freeze
 
   # TODO: これもrails7.1以降にvariant定義できるようになれば置き換えることができる
   SUB_IMAGE_VARIANT_HASH = { resize_to_limit: [650, 650], saver: { quality: 80 } }.freeze

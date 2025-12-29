@@ -194,6 +194,10 @@ export default {
     this.$refs.diaryTitle.focus()
   },
   methods: {
+    // Diary::ACTIVE_STORAGE_URL_PLACEHOLDER と合わせる
+    activeStorageUrlPlaceholder () {
+      return 'ACTIVE_STORAGE_URL'
+    },
     setNormalContentElement () {
       $(this.$refs.markdownable_textarea).markdownEasily()
     },
@@ -406,11 +410,12 @@ export default {
         .then((res) => {
           // テキストエリア内の画像参照も削除
           // TODO: これは削除できてない
-          const image = this.images.find(img => img.id === imageId)
-          if (image) {
-            const imageTag = `![image-${imageId}](${image.url})\n`
-            this.diary.content = this.diary.content.replace(imageTag, '')
-          }
+          const placeholder = this.activeStorageUrlPlaceholder()
+          const linkedPattern = new RegExp(`\\[!\\[image-${imageId}\\]\\(${placeholder}\\)\\]\\(${placeholder}\\)\\n?`, 'g')
+          const imagePattern = new RegExp(`!\\[image-${imageId}\\]\\(${placeholder}\\)\\n?`, 'g')
+          this.diary.content = this.diary.content
+            .replace(linkedPattern, '')
+            .replace(imagePattern, '')
           this.images = this.images.filter(img => img.id !== imageId)
         })
         .catch(error => {
@@ -420,9 +425,10 @@ export default {
     handleImageInsert(image) {
       // ファイル名に半角カッコが含まれている場合、ActiveStorageの画像パスにそれが含まれるため、現状、markdown用に生成する画像タグが意図せぬカッコで区切られてしまう不具合がある
       // TODO: ここで半角カッコ部分を変換すれば問題はなくなる。全角カッコにするだけでいいかも
-      const imageTag = `![image-${image.id}](${image.url})`
+      const placeholder = this.activeStorageUrlPlaceholder()
+      const imageTag = `![image-${image.id}](${placeholder})`
       // サムネイル画像を、オリジナルサイズ画像へのリンクにする
-      const imageLinkTag = `[${imageTag}](${image.orgUrl})\n`
+      const imageLinkTag = `[${imageTag}](${placeholder})\n`
       this.insertTextAtCursor(imageLinkTag)
     },
 

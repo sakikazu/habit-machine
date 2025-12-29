@@ -2,7 +2,7 @@
 # ActiveStorageの署名付きURLは失効するのでDB保存しない前提。
 # 使い方: bundle exec rails runner oneshot_scripts/2025-03-08_replace_diary_image_urls.rb [apply]
 
-PLACEHOLDER_URL = 'ACTIVE_STORAGE_URL'
+PLACEHOLDER_URL = Diary::ACTIVE_STORAGE_URL_PLACEHOLDER
 LINKED_IMAGE_PATTERN = /\[!\[image-(\d+)\]\(([^)]+)\)\]\(([^)]+)\)/
 IMAGE_PATTERN = /!\[image-(\d+)\]\(([^)]+)\)/
 
