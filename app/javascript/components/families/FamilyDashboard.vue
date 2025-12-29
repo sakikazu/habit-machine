@@ -93,13 +93,23 @@
               </span>
               <span v-if="history.author_name" class="family-dashboard__author">by {{ history.author_name }}</span>
             </div>
-            <button
-              type="button"
-              class="family-dashboard__edit"
-              @click="openEditModal(history)"
-            >
-              <i class="fa fa-pencil-square-o"></i>
-            </button>
+            <div class="family-dashboard__card-actions">
+              <button
+                type="button"
+                class="family-dashboard__favorite"
+                :class="{ 'is-favorited': history.favorited }"
+                @click="toggleFavorite(history)"
+              >
+                <i :class="history.favorited ? 'fa fa-star' : 'fa fa-star-o'"></i>
+              </button>
+              <button
+                type="button"
+                class="family-dashboard__edit"
+                @click="openEditModal(history)"
+              >
+                <i class="fa fa-pencil-square-o"></i>
+              </button>
+            </div>
           </div>
           <h4 class="family-dashboard__card-title">
             <a :href="history.show_path">{{ history.title }}</a>
@@ -522,6 +532,24 @@ export default {
       const matchYear = !this.appliedYear || targetYear === this.appliedYear
       const matchMonth = !this.appliedMonth || targetMonth === this.appliedMonth
       return matchYear && matchMonth
+    },
+    toggleFavorite (history) {
+      if (!history) return
+      const params = new URLSearchParams({
+        favoritable_type: 'History',
+        favoritable_id: history.id
+      })
+      const request = history.favorited
+        ? HmAxios.delete(`/favorites?${params.toString()}`)
+        : HmAxios.post(`/favorites?${params.toString()}`)
+      request
+        .then((res) => {
+          history.favorited = res.data.favorited
+        })
+        .catch((error) => {
+          console.log(error)
+          alert('お気に入りの更新に失敗しました')
+        })
     }
   }
 }

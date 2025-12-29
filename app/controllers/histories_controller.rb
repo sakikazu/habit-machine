@@ -84,7 +84,8 @@ class HistoriesController < ApplicationController
     {
       id: history.id,
       target_date: history.target_date&.to_s,
-      show_path: history_path(history)
+      show_path: history_path(history),
+      favorited: history.favorited_by?(current_user)
     }
   end
 end

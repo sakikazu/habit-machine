@@ -95,7 +95,7 @@ class FamiliesController < ApplicationController
 
   # 検索条件に応じたHistoryのスコープを返す。
   def filter_histories_scope
-    scope = current_family.histories.includes(:author, :family, member_histories: :member)
+    scope = current_family.histories.includes(:author, :family, :favorites, member_histories: :member)
     member_keys = params[:member_keys]
     member_keys = Array(member_keys).map(&:to_s).reject(&:blank?)
     return scope if member_keys.blank?
@@ -155,6 +155,7 @@ class FamiliesController < ApplicationController
       member_names: history.member_names,
       show_path: history_path(history),
       eyecatch_url: history_eyecatch_url(history),
+      favorited: history.favorited_by?(current_user),
       height: history.height,
       weight: history.weight
     }

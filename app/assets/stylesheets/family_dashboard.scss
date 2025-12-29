@@ -371,6 +371,27 @@
   margin: 10px 0 6px;
 }
 
+.family-dashboard__card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.family-dashboard__favorite {
+  border: 1px solid #f1e3cf;
+  background: #fff;
+  color: #c79a43;
+  border-radius: 999px;
+  padding: 4px 10px;
+}
+
+.family-dashboard__favorite.is-favorited {
+  background: #f7c062;
+  border-color: #f7c062;
+  color: #fff;
+}
+
 .family-dashboard__card-title a {
   color: #1d4e89;
   text-decoration: none;
