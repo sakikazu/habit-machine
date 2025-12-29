@@ -34,6 +34,13 @@
               {{ member.name }}
             </p>
             <p v-if="member.age_label" class="family-overview__age">{{ member.age_label }}</p>
+            <a
+              v-if="member.legacy_path"
+              :href="member.legacy_path"
+              class="family-overview__legacy"
+            >
+              旧ページ
+            </a>
           </div>
           <a v-if="member.graph_path" :href="member.graph_path" class="family-overview__graph">
             <i class="fa fa-line-chart"></i>
