@@ -3,8 +3,8 @@
 # 使い方: bundle exec rails runner oneshot_scripts/2025-03-08_replace_diary_image_urls.rb [apply]
 
 PLACEHOLDER_URL = Diary::ACTIVE_STORAGE_URL_PLACEHOLDER
-LINKED_IMAGE_PATTERN = /\[\s*!\[image-(\d+)\]\(([^)]+)\)\s*\]\(([^)]+)\)/m
-IMAGE_PATTERN = /!\[image-(\d+)\]\(([^)]+)\)/
+LINKED_IMAGE_PATTERN = /\[\s*!\[image-(\d+)\]\(([^)]+?)\)\s*\]\(([^)]+?)\)/m
+IMAGE_PATTERN = /!\[image-(\d+)\]\(([^)]+?)\)/
 
 def extract_urls(text)
   urls = []
