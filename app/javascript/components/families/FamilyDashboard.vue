@@ -77,10 +77,10 @@
 
     <div v-if="showMemberAges" class="family-dashboard__member-ages">
       <div class="family-dashboard__member-ages-header">
-        <span class="family-dashboard__member-ages-title">選択年月の年齢</span>
         <span class="family-dashboard__member-ages-date">
           {{ appliedYear }}年{{ appliedMonth }}月
         </span>
+        <span class="family-dashboard__member-ages-suffix">時点の年齢</span>
       </div>
       <div class="family-dashboard__member-ages-list">
         <span
