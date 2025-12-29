@@ -15,7 +15,8 @@ gem 'exception_notification'
 gem "sanitize"
 gem 'exifr'
 gem "rails_autolink"
-gem 'kaminari'
+# rails7.2にしたら動作しなくなり、新バージョンも出ていないので、コミットベースで参照して動作した
+gem 'kaminari', github: 'kaminari/kaminari', ref: '55d6e40767442d206236d3718c5bdb32d01f2345'
 gem 'acts-as-taggable-on'
 gem 'rest-client'
 gem 'dotenv-rails'
