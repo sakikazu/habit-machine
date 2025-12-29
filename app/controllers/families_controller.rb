@@ -4,6 +4,7 @@ class FamiliesController < ApplicationController
   def show
     @users = current_family.users
     @children = current_family.children
+    @overview_json = build_family_overview_data.to_json
     @content_title = '家族ページ'
   end
 
@@ -109,6 +110,34 @@ class FamiliesController < ApplicationController
 
     conditions = pairs.map { '(member_histories.member_type = ? AND member_histories.member_id = ?)' }.join(' OR ')
     scope.joins(:member_histories).where(conditions, *pairs.flatten)
+  end
+
+  # 家族ページ上部の表示データを組み立てる。
+  def build_family_overview_data
+    members = []
+    members += current_family.children.order(:id).map do |child|
+      {
+        id: child.id,
+        type: 'Child',
+        name: child.name,
+        age_label: child.relative_age(Date.today),
+        graph_path: graph_child_path(child),
+        image_url: child.profile_image.present? ? url_for(child.profile_image) : nil
+      }
+    end
+    members += current_family.users.order(:id).map do |user|
+      {
+        id: user.id,
+        type: 'User',
+        name: user.dispname,
+        image_url: user.profile_image.present? ? url_for(user.profile_image) : nil
+      }
+    end
+
+    {
+      settings_path: settings_family_path,
+      members: members
+    }
   end
 
   # API用のHistory情報を組み立てる。
