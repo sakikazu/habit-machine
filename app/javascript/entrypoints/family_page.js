@@ -1,33 +1,22 @@
 import Vue from 'vue/dist/vue.esm'
 import { onPageLoad } from '../helper.js'
-import FamilyOverview from '../components/families/FamilyOverview.vue'
-import FamilyDashboard from '../components/families/FamilyDashboard.vue'
+import FamilyPage from '../components/families/FamilyPage.vue'
 
 onPageLoad(() => {
-  const overviewElement = document.getElementById('family-overview')
-  if (overviewElement) {
-    const overview = JSON.parse(overviewElement.dataset.overview || '{}')
-    new Vue({
-      render: (h) => h(FamilyOverview, {
-        props: {
-          overview
-        }
-      })
-    }).$mount(overviewElement)
-  }
+  const pageElement = document.getElementById('family-page')
+  if (!pageElement) return
 
-  const dashboardElement = document.getElementById('family-dashboard')
-  if (!dashboardElement) return
-
-  const currentYear = Number(dashboardElement.dataset.currentYear)
-  const currentMonth = Number(dashboardElement.dataset.currentMonth)
+  const overview = JSON.parse(pageElement.dataset.overview || '{}')
+  const currentYear = Number(pageElement.dataset.currentYear)
+  const currentMonth = Number(pageElement.dataset.currentMonth)
 
   new Vue({
-    render: (h) => h(FamilyDashboard, {
+    render: (h) => h(FamilyPage, {
       props: {
+        overview,
         currentYear,
         currentMonth
       }
     })
-  }).$mount(dashboardElement)
+  }).$mount(pageElement)
 })

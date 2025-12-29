@@ -1,9 +1,7 @@
 = javascript_include_tag 'family_page', 'data-turbolinks-track': 'reload', defer: true
 
-.row.justify-content-center
-  .col-sm-10
-    #family-overview(data-overview=@overview_json)
-
-.row.justify-content-center
-  .col-sm-10
-    #family-dashboard(data-current-year=Time.current.year data-current-month=Time.current.month)
+#family-page.family-page(
+  data-overview=@overview_json
+  data-current-year=Time.current.year
+  data-current-month=Time.current.month
+)
