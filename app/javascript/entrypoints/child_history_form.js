@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import { deleteKeysWithPrefix } from 'local_storage_manager.js'
-import { onPageLoad } from 'helper'
 
-onPageLoad(() => {
+document.addEventListener('turbolinks:load', () => {
   const vm = new Vue({
     el: '#child-history-form',
     mounted () {

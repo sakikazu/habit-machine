@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
-import { onPageLoad } from 'helper'
 
 import draggable from 'vuedraggable'
 
-onPageLoad(() => {
+document.addEventListener('turbolinks:load', () => {
   const vm = new Vue({
     el: '#todoPage',
     components: {

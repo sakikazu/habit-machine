@@ -1,8 +1,7 @@
 import Vue from 'vue/dist/vue.esm'
-import { onPageLoad } from '../helper.js'
 import FamilyPage from '../components/families/FamilyPage.vue'
 
-// turbolinks:loadを取り逃がすケースがあるので即時マウントも試す
+// turbolinksでの二重初期化を避けるため、マウント済み判定を入れて初期化する
 const mountFamilyPage = () => {
   const pageElement = document.getElementById('family-page')
   if (!pageElement || pageElement.dataset.vueMounted === 'true') return
@@ -23,8 +22,8 @@ const mountFamilyPage = () => {
   }).$mount(pageElement)
 }
 
-onPageLoad(mountFamilyPage)
-// turbolinks後にscriptが読み込まれた場合のフォールバック
+document.addEventListener('turbolinks:load', mountFamilyPage)
+// turbolinks:load発火後にscriptが読み込まれた場合の保険
 if (document.readyState !== 'loading') {
   mountFamilyPage()
 }

@@ -1,10 +1,9 @@
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
-import { onPageLoad } from 'helper'
 
 import Diary from 'components/diaries/Diary'
 
-onPageLoad(() => {
+document.addEventListener('turbolinks:load', () => {
   const vm = new Vue({
     el: '#diaryShow',
     components: {

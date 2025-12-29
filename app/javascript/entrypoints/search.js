@@ -1,11 +1,11 @@
 import Vue from 'vue/dist/vue.esm'
 import HmAxios from '../hm_axios.js'
-import { nl2br, onPageLoad } from '../helper.js'
+import { nl2br } from '../helper.js'
 
 import Diary from 'components/diaries/Diary'
 import Modal from 'components/shared/Modal'
 
-onPageLoad(() => {
+document.addEventListener('turbolinks:load', () => {
   const vm = new Vue({
     el: '#searchResult',
     components: {
