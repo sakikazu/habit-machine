@@ -56,6 +56,7 @@ class Diary < ApplicationRecord
   # end
   # 日記中に埋め込む画像
   # TODO: variant展開については再検討
+  # ActiveStorageの署名付きURLは失効するので本文に保存しない（プレースホルダ運用）。
   has_many_attached :images
 
   ACTION_MEMO_LINE = "# ----- ACTION MEMO -----"

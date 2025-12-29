@@ -166,6 +166,8 @@ module ApplicationHelper
   def markdown text
     return '' if text.blank?
 
+    text = replace_placeholder_urls(text)
+
     options = {
       filter_html:     true, # htmlタグをサニタイズではなく<p>タグに置き換えて無効化
       hard_wrap:       true, # 空行を改行ではなく、改行を改行に変換
@@ -183,6 +185,47 @@ module ApplicationHelper
     md = Redcarpet::Markdown.new(renderer, extensions)
 
     md.render(text).html_safe
+  end
+
+  ACTIVE_STORAGE_URL_PLACEHOLDER = 'ACTIVE_STORAGE_URL'.freeze
+
+  # ActiveStorageの署名付きURLは失効するのでDB保存しない（プレースホルダ運用）。
+  # プレースホルダ付きURLを最新URLへ差し替える。
+  def replace_placeholder_urls(text)
+    return text unless text.include?(ACTIVE_STORAGE_URL_PLACEHOLDER)
+
+    text.gsub(/(?<!\[)!\[image-(\d+)\]\(#{ACTIVE_STORAGE_URL_PLACEHOLDER}\)/) do
+      attachment_id = Regexp.last_match(1).to_i
+      attachment = ActiveStorage::Attachment.find_by(id: attachment_id)
+      next Regexp.last_match(0) unless attachment
+
+      "![image-#{attachment_id}](#{diary_image_url_for(attachment)})"
+    rescue StandardError
+      Regexp.last_match(0)
+    end
+      .gsub(/\[!\[image-(\d+)\]\(#{ACTIVE_STORAGE_URL_PLACEHOLDER}\)\]\(#{ACTIVE_STORAGE_URL_PLACEHOLDER}\)/) do
+        attachment_id = Regexp.last_match(1).to_i
+        attachment = ActiveStorage::Attachment.find_by(id: attachment_id)
+        next Regexp.last_match(0) unless attachment
+
+        thumb_url = diary_image_variant_url_for(attachment)
+        org_url = diary_image_url_for(attachment)
+        "[![image-#{attachment_id}](#{thumb_url})](#{org_url})"
+      rescue StandardError
+        Regexp.last_match(0)
+      end
+  end
+
+  # 日記サブ画像のサムネイルURLを返す。
+  def diary_image_variant_url_for(attachment)
+    url_for(attachment.variant(Diary::SUB_IMAGE_VARIANT_HASH))
+  rescue StandardError
+    url_for(attachment)
+  end
+
+  # 日記サブ画像のオリジナルURLを返す。
+  def diary_image_url_for(attachment)
+    url_for(attachment)
   end
 
   def markdown_help_link
