@@ -305,6 +305,54 @@
   gap: 8px;
 }
 
+.family-dashboard__member-ages {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  background: #f2e5d3;
+  border: 1px solid #e1cdb1;
+  border-radius: 12px;
+  color: #7b6d5a;
+}
+
+.family-dashboard__member-ages-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  margin-bottom: 8px;
+  color: #6f5b44;
+}
+
+.family-dashboard__member-ages-title {
+  font-weight: 600;
+}
+
+.family-dashboard__member-ages-date {
+  font-weight: 600;
+  color: #4a3c2e;
+}
+
+.family-dashboard__member-ages-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.family-dashboard__member-age {
+  background: #f7f1e7;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: inherit;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.family-dashboard__member-age-name {
+  font-weight: 600;
+}
+
 .family-dashboard__count {
   background: #f1e3cf;
   border-radius: 999px;

@@ -80,6 +80,7 @@ class FamiliesController < ApplicationController
     render json: {
       histories: histories.map { |history| build_history_payload(history) },
       pagination: build_pagination_payload(histories),
+      member_ages: build_member_age_payload(year, month),
       filter: {
         year: year,
         month: month
@@ -159,6 +160,25 @@ class FamiliesController < ApplicationController
       height: history.height,
       weight: history.weight
     }
+  end
+
+  # 月指定時のメンバー年齢情報を返す。
+  def build_member_age_payload(year, month)
+    return [] unless year.present? && month.present?
+
+    base_date = Date.new(year, month, 1)
+    members = current_family.children.order(:id) + current_family.users.order(:id)
+    members.filter_map do |member|
+      next unless member.respond_to?(:birthday) && member.birthday.present?
+      next unless member.respond_to?(:relative_age)
+
+      {
+        type: member.class.name,
+        id: member.id,
+        name: member.dispname,
+        age_label: member.relative_age(base_date)
+      }
+    end
   end
 
   # ページネーション情報を整形する。

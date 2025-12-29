@@ -75,6 +75,25 @@
       </button>
     </div>
 
+    <div v-if="showMemberAges" class="family-dashboard__member-ages">
+      <div class="family-dashboard__member-ages-header">
+        <span class="family-dashboard__member-ages-title">選択年月の年齢</span>
+        <span class="family-dashboard__member-ages-date">
+          {{ appliedYear }}年{{ appliedMonth }}月
+        </span>
+      </div>
+      <div class="family-dashboard__member-ages-list">
+        <span
+          v-for="age in memberAges"
+          :key="`age-${age.type}-${age.id}`"
+          class="family-dashboard__member-age"
+        >
+          <span class="family-dashboard__member-age-name">{{ age.name }}</span>
+          <span class="family-dashboard__member-age-value">{{ age.age_label }}</span>
+        </span>
+      </div>
+    </div>
+
     <div class="family-dashboard__list">
       <div v-if="loading" class="family-dashboard__loading">読み込み中...</div>
       <div v-else-if="histories.length === 0" class="family-dashboard__empty">記録はありません。</div>
@@ -197,6 +216,7 @@ export default {
       appliedYear: null,
       appliedMonth: null,
       monthCounts: {},
+      memberAges: [],
       histories: [],
       pagination: null,
       loading: false,
@@ -227,6 +247,9 @@ export default {
     showPagination () {
       return this.pagination && this.pagination.total_pages > 1
     },
+    showMemberAges () {
+      return this.appliedYear && this.appliedMonth && this.memberAges.length > 0
+    }
   },
   mounted () {
     this.fetchMeta()
@@ -388,6 +411,7 @@ export default {
         .then((res) => {
           this.histories = res.data.histories
           this.pagination = res.data.pagination
+          this.memberAges = res.data.member_ages || []
           if (options.scrollId) {
             this.scrollToHistory(options.scrollId)
           }
