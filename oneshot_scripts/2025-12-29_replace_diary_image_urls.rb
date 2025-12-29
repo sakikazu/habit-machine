@@ -55,7 +55,7 @@ Diary.where('content LIKE ?', '%image-%').find_each do |diary|
 end
 
 puts "対象件数: #{targets.size}"
-targets.first(10).each do |target|
+targets.each do |target|
   puts "id=#{target[:id]} title=#{target[:title]}"
   if target[:record_at].present?
     base_url = ENV.fetch('APP_HOST', 'http://localhost:3000')
@@ -68,7 +68,7 @@ targets.first(10).each do |target|
 end
 
 puts "未検出件数: #{unmatched.size}"
-unmatched.first(10).each do |target|
+unmatched.each do |target|
   puts "id=#{target[:id]} title=#{target[:title]}"
   if target[:record_at].present?
     base_url = ENV.fetch('APP_HOST', 'http://localhost:3000')
