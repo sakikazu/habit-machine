@@ -451,6 +451,7 @@ export default {
         event.preventDefault()
         this.submitForm(form)
       })
+      this.enableFormDraft(form, 'create')
     },
     // 編集フォームのsubmitをフックする。
     bindEditSubmit () {
@@ -461,6 +462,89 @@ export default {
       form.addEventListener('submit', (event) => {
         event.preventDefault()
         this.submitEditForm(form)
+      })
+      this.enableFormDraft(form, 'edit')
+    },
+    // 追記に備えてフォーム入力をLocalStorageに保存・復元する。
+    enableFormDraft (form, mode) {
+      if (!form || form.dataset.draftBound) return
+
+      const storageKey = this.formDraftKey(mode)
+      this.restoreFormDraft(form, storageKey)
+
+      form.dataset.draftBound = 'true'
+      const handler = () => {
+        this.saveFormDraft(form, storageKey)
+      }
+      form.addEventListener('input', handler)
+      form.addEventListener('change', handler)
+    },
+    formDraftKey (mode) {
+      if (mode === 'edit' && this.editingHistoryId) {
+        return `history_form_draft_edit_${this.editingHistoryId}`
+      }
+      return 'history_form_draft_new'
+    },
+    saveFormDraft (form, storageKey) {
+      if (!storageKey) return
+
+      const data = {}
+      const arrayValues = {}
+      form.querySelectorAll('input, textarea, select').forEach((el) => {
+        if (!el.name || el.type === 'file') return
+        if (el.type === 'checkbox') {
+          if (el.name.endsWith('[]')) {
+            arrayValues[el.name] = arrayValues[el.name] || []
+            if (el.checked) {
+              arrayValues[el.name].push(el.value)
+            }
+          } else {
+            data[el.name] = !!el.checked
+          }
+          return
+        }
+        if (el.type === 'radio') {
+          if (el.checked) data[el.name] = el.value
+          return
+        }
+        data[el.name] = el.value
+      })
+
+      Object.keys(arrayValues).forEach((key) => {
+        data[key] = arrayValues[key]
+      })
+
+      localStorage.setItem(storageKey, JSON.stringify(data))
+    },
+    restoreFormDraft (form, storageKey) {
+      if (!storageKey) return
+      const raw = localStorage.getItem(storageKey)
+      if (!raw) return
+
+      let data = {}
+      try {
+        data = JSON.parse(raw)
+      } catch (error) {
+        return
+      }
+
+      form.querySelectorAll('input, textarea, select').forEach((el) => {
+        if (!el.name || !(el.name in data)) return
+        if (el.type === 'file') return
+        if (el.type === 'checkbox') {
+          if (el.name.endsWith('[]')) {
+            const values = Array.isArray(data[el.name]) ? data[el.name] : []
+            el.checked = values.includes(el.value)
+          } else {
+            el.checked = !!data[el.name]
+          }
+          return
+        }
+        if (el.type === 'radio') {
+          el.checked = el.value === data[el.name]
+          return
+        }
+        el.value = data[el.name]
       })
     },
     // 追加フォームのメンバー選択を解除する。
@@ -512,6 +596,7 @@ export default {
           const targetDate = history?.target_date
           const match = this.shouldRefreshList(targetDate)
 
+          localStorage.removeItem(this.formDraftKey('create'))
           this.closeFormModal()
 
           if (match) {
@@ -535,6 +620,7 @@ export default {
       HmAxios.post(form.action, formData, { headers: { Accept: 'application/json' } })
         .then((res) => {
           const history = res.data.history
+          localStorage.removeItem(this.formDraftKey('edit'))
           this.closeEditModal()
           if (history?.target_date) {
             const scrollId = history?.id ? `history-${history.id}` : null
