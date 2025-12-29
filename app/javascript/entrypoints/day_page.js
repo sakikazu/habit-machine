@@ -307,8 +307,9 @@ onPageLoad(() => {
         }
       },
       buildMemoText () {
-        const timeVal = this.$refs.memoForm.querySelector('input[name="[diary]time_memo"]').value
-        const labelVal = this.$refs.memoForm.querySelector('select[name="[diary]label_memo"]').value
+        const form = this.$refs.memoForm
+        const timeVal = form?.querySelector('input[name="[diary]time_memo"]')?.value || ''
+        const labelVal = form?.querySelector('select[name="[diary]label_memo"]')?.value || ''
         let result = '- '
         if (timeVal) result += `[${timeVal}]`
         if (labelVal) result += `[${labelVal}] `
