@@ -3,7 +3,7 @@
 # 使い方: bundle exec rails runner oneshot_scripts/2025-03-08_replace_diary_image_urls.rb [apply]
 
 PLACEHOLDER_URL = Diary::ACTIVE_STORAGE_URL_PLACEHOLDER
-LINKED_IMAGE_PATTERN = /\[!\[image-(\d+)\]\(([^)]+)\)\]\(([^)]+)\)/
+LINKED_IMAGE_PATTERN = /\[\s*!\[image-(\d+)\]\(([^)]+)\)\s*\]\(([^)]+)\)/m
 IMAGE_PATTERN = /!\[image-(\d+)\]\(([^)]+)\)/
 
 def extract_urls(text)
@@ -34,11 +34,15 @@ end
 apply = ARGV.first == 'apply'
 
 targets = []
+unmatched = []
 Diary.where('content LIKE ?', '%image-%').find_each do |diary|
   next if diary.content.blank?
 
   urls = extract_urls(diary.content)
-  next if urls.empty?
+  if urls.empty?
+    unmatched << { id: diary.id, title: diary.title, record_at: diary.record_at }
+    next
+  end
 
   replaced = replace_urls(diary.content)
   next if replaced == diary.content
@@ -61,6 +65,15 @@ targets.first(10).each do |target|
     puts "  - image_id=#{item[:image_id]} url=#{item[:url]}"
   end
   puts "  ..."
+end
+
+puts "未検出件数: #{unmatched.size}"
+unmatched.first(10).each do |target|
+  puts "id=#{target[:id]} title=#{target[:title]}"
+  if target[:record_at].present?
+    base_url = ENV.fetch('APP_HOST', 'http://localhost:3000')
+    puts "  Diary URL: #{base_url}/day/#{target[:record_at]}/diaries/#{target[:id]}"
+  end
 end
 
 puts(apply ? '置換完了' : '確認のみ (apply を付けると置換します)')
