@@ -13,6 +13,16 @@
       </a>
     </header>
 
+    <div v-if="!membersOpen" class="family-overview__avatars">
+      <img
+        v-for="member in avatarMembers"
+        :key="`avatar-${member.type}-${member.id}`"
+        :src="member.image_url"
+        alt=""
+        class="family-overview__avatar family-overview__avatar--small"
+      >
+    </div>
+
     <div class="family-overview__section">
       <div class="family-overview__grid" :class="{ 'is-open': membersOpen }">
         <article
@@ -63,6 +73,12 @@ export default {
   data () {
     return {
       membersOpen: true
+    }
+  },
+  computed: {
+    avatarMembers () {
+      if (!this.overview?.members) return []
+      return this.overview.members.filter((member) => !!member.image_url)
     }
   },
   mounted () {

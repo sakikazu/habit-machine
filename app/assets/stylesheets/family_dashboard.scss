@@ -78,6 +78,19 @@
   margin-top: 20px;
 }
 
+.family-overview__avatars {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.family-overview__avatar--small {
+  width: 40px;
+  height: 40px;
+}
+
 .family-overview__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -540,6 +553,10 @@
     align-items: flex-start;
     border-bottom: none;
     padding-bottom: 0;
+  }
+
+  .family-overview__avatars {
+    display: flex;
   }
 
   .family-overview__grid {
