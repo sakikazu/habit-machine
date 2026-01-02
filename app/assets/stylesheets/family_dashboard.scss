@@ -425,10 +425,11 @@
 
 .family-dashboard__date {
   font-weight: 600;
+  font-size: 14px;
 }
 
 .family-dashboard__approx {
-  margin-right: 6px;
+  margin-right: 0;
   color: #b0874a;
 }
 
@@ -450,7 +451,8 @@
   border: none;
   background: transparent;
   color: #7b6d5a;
-  padding: 4px 6px;
+  padding: 8px 10px;
+  font-size: 16px;
 }
 
 .family-dashboard__edit:hover {
