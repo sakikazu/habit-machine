@@ -501,18 +501,23 @@
 }
 
 .family-dashboard__metrics {
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: #7b6d5a;
-  display: flex;
-  gap: 8px;
+  margin: 8px 0 12px;
+  padding: 6px 10px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #2f5f99;
+  background: #f6efe3;
+  border: 1px solid #ead8c4;
+  border-radius: 999px;
+  display: inline-flex;
+  gap: 10px;
   align-items: center;
 }
 
 .family-dashboard__metric-separator::before {
   content: "/";
-  margin-right: 8px;
-  color: #c0ad97;
+  margin-right: 10px;
+  color: #b79b77;
 }
 
 .family-dashboard__card-image {
