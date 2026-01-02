@@ -346,7 +346,8 @@ export default {
         .then((res) => {
           this.memberOptions = res.data.member_options
           this.selectedMemberKeys = []
-          this.selectedYear = res.data.current_year
+          this.selectedYear = null
+          this.selectedMonth = null
           this.years = this.buildYears(res.data.current_year, res.data.min_year)
           this.showAllYears = false
           this.applyFilters()

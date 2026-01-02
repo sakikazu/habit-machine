@@ -21,6 +21,7 @@ Rails.application.configure do
   # config.require_master_key = true
 
   # 静的ファイルはNginxで配信するためRails側では配信しない
+  # Disable serving static files from `public/`, relying on NGINX/Apache to do so instead.
   config.public_file_server.enabled = false
 
   # Compress CSS using a preprocessor.
