@@ -1,0 +1,108 @@
+// Histories#showの表示調整
+.history-show {
+  background: #fff;
+  border: 1px solid #f0e4d6;
+  border-radius: 12px;
+  padding: 20px 22px 24px;
+  box-shadow: 0 10px 24px rgba(122, 91, 46, 0.08);
+}
+
+// ヘッダー全体の区切り
+.history-show__header {
+  border-bottom: 1px dashed #e7d7c2;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+}
+
+// タイトルの視認性を確保
+.history-show__title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #3b342a;
+  margin-bottom: 8px;
+}
+
+// メタ情報の並び
+.history-show__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: #7b6d5a;
+  font-size: 13px;
+}
+
+// 日付の強調
+.history-show__date {
+  font-weight: 600;
+  color: #5c4a34;
+}
+
+// だいたいのラベルを目立たせる
+.history-show__approx {
+  color: #b0874a;
+}
+
+// メンバーバッジの強調
+.history-show__badge {
+  background: #f7d9ae;
+  color: #5a4630;
+  border-radius: 999px;
+  padding: 2px 8px;
+  font-weight: 600;
+}
+
+// 作成者表示の色味
+.history-show__author {
+  color: #7b6d5a;
+}
+
+// アイキャッチ画像の余白と影
+.history-show__image {
+  margin: 12px 0 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 18px rgba(122, 91, 46, 0.12);
+}
+
+// 本文の読みやすさ調整
+.history-show__content {
+  color: #4a3f32;
+  line-height: 1.7;
+}
+
+// 付随データの一覧表示
+.history-show__data-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+// 付随データの1行表示
+.history-show__data-item {
+  background: #faf4ea;
+  border: 1px solid #efe0cc;
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #6b5a45;
+  font-size: 13px;
+}
+
+// 操作ボタンの配置
+.history-show__actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 768px) {
+  .history-show {
+    padding: 18px 16px 20px;
+  }
+
+  .history-show__title {
+    font-size: 20px;
+  }
+}
