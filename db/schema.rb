@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_12_28_000002) do
+ActiveRecord::Schema[7.2].define(version: 2026_01_02_220811) do
   create_table "active_storage_attachments", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -173,8 +173,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_28_000002) do
   end
 
   create_table "histories", charset: "utf8mb4", collation: "utf8mb4_0900_ai_ci", force: :cascade do |t|
-    t.bigint "source_id"
-    t.string "source_type"
     t.bigint "family_id"
     t.bigint "author_id"
     t.string "title"
@@ -187,7 +185,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_12_28_000002) do
     t.datetime "updated_at", precision: nil, null: false
     t.index ["author_id"], name: "index_histories_on_author_id"
     t.index ["family_id"], name: "index_histories_on_family_id"
-    t.index ["source_id", "source_type"], name: "index_histories_on_source_id_and_source_type"
     t.index ["target_date"], name: "index_histories_on_target_date"
   end
 

@@ -7,21 +7,18 @@
 #  as_profile_image :boolean
 #  content          :text(16777215)
 #  data             :json
-#  source_type      :string(255)
 #  target_date      :date
 #  title            :string(255)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  author_id        :bigint
 #  family_id        :bigint
-#  source_id        :bigint
 #
 # Indexes
 #
-#  index_histories_on_author_id                  (author_id)
-#  index_histories_on_family_id                  (family_id)
-#  index_histories_on_source_id_and_source_type  (source_id,source_type)
-#  index_histories_on_target_date                (target_date)
+#  index_histories_on_author_id    (author_id)
+#  index_histories_on_family_id    (family_id)
+#  index_histories_on_target_date  (target_date)
 #
 # Foreign Keys
 #
@@ -45,9 +42,6 @@ class History < ApplicationRecord
   validates :target_date, presence: true
   validate :ensure_existing_profile_image
 
-  # NOTE: 使ってないけどポリモーフィック関連先のテーブルを条件で絞る方法としてコメントアウトで残している
-  # CHILD_JOIN_SQL = "JOIN children ON children.id = histories.source_id AND histories.source_type = 'Child'"
-  # scope :with_child_in_family, lambda { |family| History.joins(CHILD_JOIN_SQL).where(children: { family_id: family.id }) }
   scope :find_by_word, lambda { |word| where('title like :q OR content like :q', :q => "%#{word}%") }
   scope :newer, lambda { order(target_date: :desc) }
 

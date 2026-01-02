@@ -7,21 +7,18 @@
 #  as_profile_image :boolean
 #  content          :text(16777215)
 #  data             :json
-#  source_type      :string(255)
 #  target_date      :date
 #  title            :string(255)
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  author_id        :bigint
 #  family_id        :bigint
-#  source_id        :bigint
 #
 # Indexes
 #
-#  index_histories_on_author_id                  (author_id)
-#  index_histories_on_family_id                  (family_id)
-#  index_histories_on_source_id_and_source_type  (source_id,source_type)
-#  index_histories_on_target_date                (target_date)
+#  index_histories_on_author_id    (author_id)
+#  index_histories_on_family_id    (family_id)
+#  index_histories_on_target_date  (target_date)
 #
 # Foreign Keys
 #
