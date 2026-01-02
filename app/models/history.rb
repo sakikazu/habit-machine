@@ -101,15 +101,6 @@ class History < ApplicationRecord
     self.data&.dig('weight')
   end
 
-  def self.month_path_params(member = nil, target_date, anchor: false)
-    result = [target_date.year, target_date.month]
-    result.unshift(member) if member.present?
-    if anchor
-      result << { anchor: "history-#{target_date.strftime('%Y-%m-%d')}" }
-    end
-    result
-  end
-
   # リンク生成用に先頭memberを返す。
   def primary_member
     if member_histories.loaded?

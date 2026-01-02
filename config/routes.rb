@@ -173,7 +173,6 @@ Rails.application.routes.draw do
     resources :child_histories, path: :histories, only: [:create, :edit, :update, :destroy] do
       collection do
         get 'y/:year', action: :year, as: :year
-        get 'm/:year/:month', action: :month, as: :month
       end
     end
   end

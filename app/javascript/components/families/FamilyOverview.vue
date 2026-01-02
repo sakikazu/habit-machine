@@ -49,7 +49,7 @@
               :href="member.legacy_path"
               class="family-overview__legacy"
             >
-              旧ページ
+              年ページ
             </a>
           </div>
           <a v-if="member.graph_path" :href="member.graph_path" class="family-overview__graph">

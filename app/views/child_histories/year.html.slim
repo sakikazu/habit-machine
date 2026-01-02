@@ -19,7 +19,7 @@
       h3.mb-5 = "#{@year}年の記録はありません"
     - @months.each do |month|
       .month.mb-4
-        h4 = link_to "#{month}月", month_child_child_histories_path(@child, @year, month)
+        h4 = "#{month}月"
         - histories = @histories_grouped_by_month[month]
         - if histories.blank?
           p.text-muted 記録がありません
@@ -33,5 +33,5 @@
                 p.mb-0 まだ写真がアップされてないよ！
             .card-body
               - histories.each do |history|
-                span = link_to history.title, month_child_child_histories_path(*History.month_path_params(@child, history.target_date, anchor: true))
+                span = link_to history.title, history_path(history)
                 span.mr-1.ml-1 = '/'

@@ -123,7 +123,7 @@ class FamiliesController < ApplicationController
         name: child.name,
         age_label: child.relative_age(Date.today),
         graph_path: graph_child_path(child),
-        legacy_path: month_child_child_histories_path(child, Time.current.year, Time.current.month),
+        legacy_path: year_child_child_histories_path(child, Time.current.year),
         image_url: child.profile_image.present? ? url_for(child.profile_image) : nil
       }
     end

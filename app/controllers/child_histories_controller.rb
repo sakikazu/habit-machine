@@ -3,21 +3,11 @@ class ChildHistoriesController < ApplicationController
   before_action :set_child
   before_action :set_content_title
   before_action :set_history, only: [:edit, :update, :destroy]
-  before_action :set_view_setting, only: %i(month year)
-
-  def month
-    @month = (Time.local(params[:year], params[:month]) rescue Time.current).to_date
-    @histories = @child.histories.includes(:author).where(target_date: [@month.beginning_of_month..@month.end_of_month]).order(target_date: :asc)
-    default_target_date = @month.year == Time.current.year && @month.month == Time.current.month ? Time.current : @month
-    @history = History.new(target_date: default_target_date)
-  end
+  before_action :set_view_setting, only: %i(year)
 
   def year
     @year = (params[:year] || Time.now.year).to_i
-    target_year = Time.local(@year ,1, 1)
-    histories = @child.histories.includes(:author).where(target_date: [target_year.beginning_of_year..target_year.end_of_year]).order(target_date: :asc)
-    @histories_grouped_by_month = histories.group_by { |h| h.target_date.month }
-    @months = 1..12
+    set_year_histories(@year)
   end
 
   def create
@@ -27,11 +17,11 @@ class ChildHistoriesController < ApplicationController
     @history.author = current_user
     @history.family = current_family
     unless @history.save
-      @month = @history.target_date
-      render :month
+      set_year_histories(@history.target_date.year)
+      render :year
       return
     end
-    redirect_to month_child_child_histories_path(*History.month_path_params(@child, @history.target_date, anchor: true))
+    redirect_to year_child_child_histories_path(@child, @history.target_date.year)
   end
 
   def edit
@@ -40,17 +30,17 @@ class ChildHistoriesController < ApplicationController
   def update
     @history.set_data_by_keys(params[:history], %i[height weight])
     unless @history.update(history_params)
-      @month = @history.target_date
-      render :month
+      set_year_histories(@history.target_date.year)
+      render :year
       return
     end
-    redirect_to month_child_child_histories_path(*History.month_path_params(@child, @history.target_date, anchor: true))
+    redirect_to year_child_child_histories_path(@child, @history.target_date.year)
   end
 
   def destroy
     target_date = @history.target_date
     @history.destroy
-    redirect_to month_child_child_histories_path(*History.month_path_params(@child, target_date)), notice: '削除しました'
+    redirect_to year_child_child_histories_path(@child, target_date.year), notice: '削除しました'
   end
 
   private
@@ -74,5 +64,14 @@ class ChildHistoriesController < ApplicationController
 
   def history_params
     params.require(:history).permit(:title, :content, :eyecatch_image, :as_profile_image, :target_date, :about_date)
+  end
+
+  # 年ページの一覧表示に必要なデータをまとめる
+  def set_year_histories(year)
+    @year = year
+    target_year = Time.local(@year, 1, 1)
+    histories = @child.histories.includes(:author).where(target_date: [target_year.beginning_of_year..target_year.end_of_year]).order(target_date: :asc)
+    @histories_grouped_by_month = histories.group_by { |history| history.target_date.month }
+    @months = 1..12
   end
 end

@@ -1,5 +1,5 @@
 .row.pt-1.pb-1
-  - home_path = month_child_child_histories_path(child, Time.now.year, Time.now.month)
+  - home_path = year_child_child_histories_path(child, Time.now.year)
   - if child.profile_image.present?
     = link_to image_tag(child.profile_image, class: 'rounded-circle', width: '65px', height: '65px'), home_path
   .flex-grow-1.align-self-center
@@ -8,4 +8,3 @@
     .ml-3 = link_to fa_icon('bar-chart'), graph_child_path(child)
   .align-self-center
     = yield :child_header_actions
-
