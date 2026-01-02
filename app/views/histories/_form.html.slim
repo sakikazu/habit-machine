@@ -25,7 +25,7 @@
   .form-group
     = f.text_field :title, class: 'form-control', placeholder: 'タイトル', required: true
   .form-group
-    = f.text_area :content, id: 'content-field', class: 'form-control', placeholder: '', rows: 5
+    = f.text_area :content, id: 'content-field', class: 'form-control', placeholder: 'この時のパパ、ママの想いも書いてみて', rows: 5
   .form-group.mb-4
     = f.file_field :eyecatch_image, class: 'form-control', accept: 'image/*'
     = image_tag history.eyecatch_image_large, class: 'img-thumbnail' if history.eyecatch_image.attached?
