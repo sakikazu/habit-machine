@@ -60,7 +60,7 @@ class TagsController < ApplicationController
   # PUT /tags/1.json
   def update
     respond_to do |format|
-      if @tag.update_attributes(tag_params)
+      if @tag.update(tag_params)
         format.html { redirect_to tag_path(@tag), notice: 'タグ名を更新しました.' }
         format.json { head :no_content }
       else

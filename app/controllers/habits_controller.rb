@@ -63,7 +63,7 @@ class HabitsController < ApplicationController
   # PUT /habits/1.json
   def update
     respond_to do |format|
-      if @habit.update_attributes(habit_params)
+      if @habit.update(habit_params)
         format.html { redirect_to habit_path(@habit), notice: '習慣データを更新しました.' }
         format.json { head :no_content }
       else
