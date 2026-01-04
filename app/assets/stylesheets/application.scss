@@ -299,6 +299,8 @@ td {
  markdown
 **********************************************/
 .markdown {
+  overflow-x: auto;
+
   /* h1, h2, h3は、生成AIのClaudeに提案してもらったもの */
   h1, h2, h3 {
     font-family: sans-serif;
@@ -416,6 +418,45 @@ td {
       border-color: rgba(30, 144, 255, 1); /* 深い青に変化 */
       box-shadow: 0 0 12px rgba(30, 144, 255, 0.8);
     }
+  }
+
+  table {
+    width: 100%;
+    margin: 12px 0 16px;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+  }
+
+  th,
+  td {
+    padding: 10px 12px;
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  thead th {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-weight: 700;
+    text-align: left;
+  }
+
+  tbody tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  th:last-child,
+  td:last-child {
+    border-right: none;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
   }
 }
 
