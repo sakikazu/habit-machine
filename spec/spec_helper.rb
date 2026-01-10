@@ -14,6 +14,10 @@
 #
 # See https://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  # fixture_path= が定義されない環境向けの互換対応
+  unless RSpec::Core::ExampleGroup.respond_to?(:fixture_path=)
+    RSpec::Core::ExampleGroup.singleton_class.attr_accessor :fixture_path
+  end
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

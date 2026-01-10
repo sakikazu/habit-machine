@@ -33,7 +33,7 @@ RSpec.describe "Diaries", type: :request do
 
     it "works!" do
       get diary_with_date_path(diary.record_at, diary)
-      response.status.should be(200)
+      expect(response).to have_http_status(:success)
     end
 
     context '日記の所有者ではないユーザー' do
@@ -45,7 +45,8 @@ RSpec.describe "Diaries", type: :request do
       end
 
       it 'ActiveRecord::RecordNotFoundが発生すること' do
-        expect { get diary_with_date_path(diary.record_at, diary) }.to raise_error(ActiveRecord::RecordNotFound)
+        get diary_with_date_path(diary.record_at, diary)
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
