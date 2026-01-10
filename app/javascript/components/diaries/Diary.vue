@@ -96,6 +96,10 @@ Diary
               i.fa.fa-folder-open.mr-1
               | カテゴリ
           category-links.mt-1(v-if="categories.length > 0" :categories="categories" :savedCategoryIds="localDiary.category_ids" :show-edit-button="false" @edit-category="showCategoryModal = true")
+      .diary-collapse-actions.mt-2(v-if="collapsibleBody")
+        button.btn.btn-sm.btn-outline-primary(@click.prevent="toggleDiaryBody")
+          | {{ bodyCollapsed ? '続きを表示' : '折りたたむ' }}
+    template(v-if="!bodyCollapsed")
       .backlinks.mt-2.mb-2(v-if="hasBacklinks")
         .d-flex.align-items-center.mb-1
           i.fa.fa-share-square-o.mr-2
@@ -104,17 +108,17 @@ Diary
           li(v-for="link in localDiary.backlinks" :key="link.id")
             a(:href="link.path")
               | 🔗 {{ backlinkLabel(link) }} 🔗
-    .diary-body(v-if="!changed_record_at")
-      p(v-if="localDiary.is_secret" class='btn btn-block btn-danger disabled mb5') シークレット日記
-      p(v-if="localDiary.is_hilight" class='btn btn-block btn-warning disabled mb5') ハイライト日記
-      .text-center.mt20(v-if="!!localDiary.image_path")
-        // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
-        img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
-      .markdown.mb-4(v-if="hasContent" v-html="organizedContent")
-      .markdown-placeholder.mb-4(v-else)
-        | (日記の内容)
-    .diary-recordat-changed(v-else)
-      a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
+      .diary-body(v-if="!changed_record_at")
+        p(v-if="localDiary.is_secret" class='btn btn-block btn-danger disabled mb5') シークレット日記
+        p(v-if="localDiary.is_hilight" class='btn btn-block btn-warning disabled mb5') ハイライト日記
+        .text-center.mt20(v-if="!!localDiary.image_path")
+          // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
+          img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
+        .markdown.mb-4(v-if="hasContent" v-html="organizedContent")
+        .markdown-placeholder.mb-4(v-else)
+          | (日記の内容)
+      .diary-recordat-changed(v-else)
+        a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
   diary-form(v-else :diary-id="localDiary.id" :target-date="targetDate" @cancel-edit="onCancelEdit" @content-changed="onContentChanged" @submitted="onSubmitted" @changed_record_at="onChangedRecordAt")
   selectable-modal(v-if="showCategoryModal" :categories="localCategories" @close="showCategoryModal = false" @save="saveCategories" @toggle="toggleCategory")
 </template>
@@ -171,6 +175,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    collapsibleBody: {
+      type: Boolean,
+      default: false,
+    },
+    collapseByDefault: {
+      type: Boolean,
+      default: false,
+    },
   },
   data () {
     return {
@@ -185,6 +197,7 @@ export default {
       selectedCategoryIds: [],
       favoriting: false,
       showActionMenu: false,
+      bodyCollapsed: this.collapseByDefault,
     }
   },
   watch: {
@@ -384,6 +397,11 @@ export default {
     openCategoryModalFromMenu () {
       this.showCategoryModal = true
       this.closeActionMenu()
+    },
+    // 日記本文の開閉を切り替える
+    toggleDiaryBody () {
+      if (!this.collapsibleBody) return
+      this.bodyCollapsed = !this.bodyCollapsed
     },
     onCancelEdit () {
       this.editMode = false
