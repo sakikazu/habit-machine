@@ -50,6 +50,14 @@ document.addEventListener('turbolinks:load', () => {
       hasMainDiary () {
         return this.diariesWithOpsions.some(obj => !!obj.diary?.main_in_day)
       },
+      mainDiaryObj () {
+        if (this.diariesWithOpsions.length === 0) return null
+        return this.diariesWithOpsions.find(obj => !!obj.diary?.main_in_day) || this.diariesWithOpsions[0]
+      },
+      secondaryDiaryObjs () {
+        if (!this.mainDiaryObj) return []
+        return this.diariesWithOpsions.filter(obj => obj !== this.mainDiaryObj)
+      },
       memoTargetDiaryLabel () {
         const title = this.memoTargetDiaryTitle || '(タイトルなし)'
         if (this.memoTargetType === 'History') {

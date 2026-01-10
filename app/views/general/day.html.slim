@@ -96,24 +96,36 @@
           button.btn.btn-primary(v-show="diariesWithOpsions.length > 1" data-toggle="popover" data-trigger="focus" title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
       .diaries(ref="diariesBody")
         p(v-if="diariesWithOpsions.length == 0") 日記はありません。
-        .diaries-wrapper.d-flex.flex-row.flex-wrap(v-else)
-          / NOTE: basis: autoにすると、幅が大きい要素は領域めいっぱいに広がって次の要素が改行されてしまうのでNG
-          / .flex-grow-1.flex-basis-0 / Diaryの幅を等分して並べる。100%を要素数で割っても同じことができる。この場合はgrow-1は不要になるはず
-          / flex-basis:650にすることで、diaries-wrapperが1300pxを越える場合はDiaryを横に2つ並べ、否なら1つ。いずれにしてもDiaryはめいっぱい広がる
-          .flex-grow-1.ml-2.mb-3.diary-wrapper(v-for="(obj, index) in diariesWithOpsions" style="flex-basis:650px")
-            diary(
-              :diary="obj.diary"
-              :target-date-for-edit-mode="obj.targetDateForEditMode"
-              :highlight-for-a-moment="obj.highlightForAMoment"
-              :key="`diary-${obj.diary.id}`"
-              :categories="categories"
-              :collapsible-body="diariesWithOpsions.length > 1 && index > 0 && #{browser.device.mobile?}"
-              :collapse-by-default="diariesWithOpsions.length > 1 && index > 0 && #{browser.device.mobile?}"
-              @content-changed="onContentChanged"
-              @submitted="onSubmitted"
-              @on-edit-mode="onEditMode"
-              @append-memo="showMemoForm"
-            )
+        .diaries-grid(v-else :class="{ 'two-columns': secondaryDiaryObjs.length > 0 }")
+          .diary-main(v-if="mainDiaryObj")
+            .diary-wrapper
+              diary(
+                :diary="mainDiaryObj.diary"
+                :target-date-for-edit-mode="mainDiaryObj.targetDateForEditMode"
+                :highlight-for-a-moment="mainDiaryObj.highlightForAMoment"
+                :key="`diary-${mainDiaryObj.diary.id}`"
+                :categories="categories"
+                :collapsible-body="false"
+                @content-changed="onContentChanged"
+                @submitted="onSubmitted"
+                @on-edit-mode="onEditMode"
+                @append-memo="showMemoForm"
+              )
+          .diary-list
+            .diary-wrapper(v-for="obj in secondaryDiaryObjs")
+              diary(
+                :diary="obj.diary"
+                :target-date-for-edit-mode="obj.targetDateForEditMode"
+                :highlight-for-a-moment="obj.highlightForAMoment"
+                :key="`diary-${obj.diary.id}`"
+                :categories="categories"
+                :collapsible-body="true"
+                :collapse-by-default="true"
+                @content-changed="onContentChanged"
+                @submitted="onSubmitted"
+                @on-edit-mode="onEditMode"
+                @append-memo="showMemoForm"
+              )
       p
         a.btn.btn-block.btn-warning.mb-2(v-if="!hasMainDiary" @click="newMainDiary")
           i.fa.fa-star
@@ -126,6 +138,11 @@
       #diariesSidebar[data-turbolinks-permanent]
 
 sass:
+  $habit-records-width: 370px
+  $pinned-diaries-width: 400px
+  $desktop-breakpoint: 992px
+  $diary-two-columns-breakpoint: 2100px
+
   /* 2025/01/08 Claudeのデザイン */
   .dayContentHeader
     width: 450px;
@@ -250,3 +267,43 @@ sass:
 
   .modal-backdrop.modal-backdrop-over-history
     z-index: 21020
+
+  .diaries-grid
+    display: flex
+    flex-direction: column
+    gap: 12px
+  .diary-main,
+  .diary-list
+    display: flex
+    flex-direction: column
+    gap: 12px
+  .sectionHabitRecords
+    flex: 0 0 auto
+    max-width: $habit-records-width
+  .sectionPinnedDiaries
+    flex: 0 0 auto
+    max-width: $pinned-diaries-width
+  .sectionDiaries
+    flex: 1 1 auto
+    max-width: none
+  #dayPage .row.justify-content-center
+    justify-content: flex-start
+
+  @media (min-width: $desktop-breakpoint)
+    #dayPage .row.justify-content-center
+      flex-wrap: nowrap
+      align-items: flex-start
+    .sectionHabitRecords
+      width: $habit-records-width
+    .sectionPinnedDiaries
+      width: $pinned-diaries-width
+    .sectionDiaries
+      min-width: 0
+
+  // PCではメイン日記を左、他の日記を右に並べる
+  @media (min-width: $diary-two-columns-breakpoint)
+    .diaries-grid.two-columns
+      display: grid
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr)
+      gap: 16px
+      align-items: start
