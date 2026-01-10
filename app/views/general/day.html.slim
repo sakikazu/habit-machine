@@ -120,7 +120,7 @@
                 :key="`diary-${obj.diary.id}`"
                 :categories="categories"
                 :collapsible-body="true"
-                :collapse-by-default="true"
+                :collapse-by-default="shouldCollapseSecondaryDiary"
                 @content-changed="onContentChanged"
                 @submitted="onSubmitted"
                 @on-edit-mode="onEditMode"

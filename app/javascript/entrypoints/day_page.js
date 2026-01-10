@@ -41,6 +41,9 @@ document.addEventListener('turbolinks:load', () => {
       // mobileでは「本日の記録」の未記入のものはデフォルト非表示にしているので、それを表示するためのフラグ
       openRecordContents: false,
       categories: [],
+      isDiaryTwoColumns: false,
+      diaryTwoColumnsMediaQuery: null,
+      diaryTwoColumnsMediaListener: null,
     },
     computed: {
       // ページ内のすべてのフォームからデータ変更をチェック
@@ -58,6 +61,9 @@ document.addEventListener('turbolinks:load', () => {
         if (!this.mainDiaryObj) return []
         return this.diariesWithOpsions.filter(obj => obj !== this.mainDiaryObj)
       },
+      shouldCollapseSecondaryDiary () {
+        return !(this.isDiaryTwoColumns && this.diariesWithOpsions.length === 2)
+      },
       memoTargetDiaryLabel () {
         const title = this.memoTargetDiaryTitle || '(タイトルなし)'
         if (this.memoTargetType === 'History') {
@@ -74,10 +80,20 @@ document.addEventListener('turbolinks:load', () => {
     mounted () {
       this.setup()
       this.setupGlobalListeners()
+      this.setupDiaryTwoColumnsWatcher()
       this.targetDate = this.$el.dataset.targetDate
       this.fetchData()
       this.enablePopover()
       this.fetchCategories()
+    },
+    beforeDestroy () {
+      if (this.diaryTwoColumnsMediaQuery && this.diaryTwoColumnsMediaListener) {
+        if (this.diaryTwoColumnsMediaQuery.removeEventListener) {
+          this.diaryTwoColumnsMediaQuery.removeEventListener('change', this.diaryTwoColumnsMediaListener)
+        } else if (this.diaryTwoColumnsMediaQuery.removeListener) {
+          this.diaryTwoColumnsMediaQuery.removeListener(this.diaryTwoColumnsMediaListener)
+        }
+      }
     },
     methods: {
       // Sidebar Vueインスタンスからのイベントでモーダル表示／トースト表示を橋渡しする
@@ -98,6 +114,19 @@ document.addEventListener('turbolinks:load', () => {
         this.shortcutOfPagingLink('prev-day', 'next-day') // ショートカットで日にち移動
         this.setMovePageConfirm()
         this.setMemoForm()
+      },
+      // 2カラム判定を監視して日記の初期折りたたみを切り替える
+      setupDiaryTwoColumnsWatcher () {
+        this.diaryTwoColumnsMediaQuery = window.matchMedia('(min-width: 2100px)')
+        this.diaryTwoColumnsMediaListener = () => {
+          this.isDiaryTwoColumns = this.diaryTwoColumnsMediaQuery.matches
+        }
+        this.diaryTwoColumnsMediaListener()
+        if (this.diaryTwoColumnsMediaQuery.addEventListener) {
+          this.diaryTwoColumnsMediaQuery.addEventListener('change', this.diaryTwoColumnsMediaListener)
+        } else if (this.diaryTwoColumnsMediaQuery.addListener) {
+          this.diaryTwoColumnsMediaQuery.addListener(this.diaryTwoColumnsMediaListener)
+        }
       },
       moveSpecifiedDatePage (event) {
         event.preventDefault()
