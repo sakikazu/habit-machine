@@ -1,6 +1,6 @@
 class CategoriesController < ApplicationController
-  before_action :set_category, only: %i[show edit update destroy]
   before_action :authenticate_user!
+  before_action :set_category, only: %i[show edit update destroy]
 
   # TODO: index, selectionとも、eager loadingできてないのでやる
   def index

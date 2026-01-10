@@ -1,7 +1,7 @@
 class HabitsController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_habit, only: [:show, :edit, :update, :destroy]
   before_action :set_content_title, only: [:show, :edit]
-  before_action :authenticate_user!
 
   # GET /habits
   # GET /habits.json

@@ -1,6 +1,6 @@
 class HabitodosController < ApplicationController
-  before_action :set_habitodo, only: [:update, :destroy]
   before_action :authenticate_user!
+  before_action :set_habitodo, only: [:update, :destroy]
 
   # GET /habitodos
   def index

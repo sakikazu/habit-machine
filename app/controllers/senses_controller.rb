@@ -1,7 +1,7 @@
 class SensesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_sense, only: [:show, :edit, :update, :destroy]
   before_action :set_content_title, only: [:edit]
-  before_action :authenticate_user!
 
   # GET /senses
   def index
