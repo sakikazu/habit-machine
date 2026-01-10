@@ -5,15 +5,16 @@
     .page-header
       h3
         | タグ: #{content_tag('span', @tag.name, class: 'badge badge-big', style: @tag.color_style)}
-        small.badge.badge-pill.badge-warning.ml20 =< "日記数：#{@diaries.size}"
+        small.badge.badge-pill.badge-warning.ml20 =< "日記数：#{@diaries.total_count}"
     p.description
       = sani_br(@tag.description)
     .card.mt40
       .card-header 関連日記
+      = paginate @diaries, window: 3, outer_window: 2
       ul.list-group.list-group-flush
         - @diaries.each do |diary|
           li.list-group-item
             = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
             span.ml10
               = link_to diary.title_mod, diary_with_date_path(diary.record_at, diary)
-
+      = paginate @diaries, window: 3, outer_window: 2

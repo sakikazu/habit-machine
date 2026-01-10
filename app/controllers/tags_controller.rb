@@ -16,7 +16,7 @@ class TagsController < ApplicationController
   # GET /tags/1
   # GET /tags/1.json
   def show
-    @diaries = Diary.tagged_with(@tag.name)
+    @diaries = Diary.tagged_with(@tag.name).newer.page(params[:page]).per(30)
 
     respond_to do |format|
       format.html # show.html.erb
