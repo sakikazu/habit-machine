@@ -16,7 +16,7 @@ class TagsController < ApplicationController
   # GET /tags/1
   # GET /tags/1.json
   def show
-    @diaries = Diary.tagged_with(@tag.name).newer.page(params[:page]).per(30)
+    @diaries = Diary.accessible_by(current_user).tagged_with(@tag.name).newer.page(params[:page]).per(30)
 
     respond_to do |format|
       format.html # show.html.erb
@@ -84,7 +84,7 @@ class TagsController < ApplicationController
   private
   # Use callbacks to share common setup or constraints between actions.
   def set_tag
-    @tag = CustomTag.find(params[:id])
+    @tag = current_user.mytags.find(params[:id])
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.

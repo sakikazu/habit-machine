@@ -80,6 +80,18 @@ class Diary < ApplicationRecord
   scope :find_by_word, lambda { |word| where('title like :q OR content like :q', :q => "%#{word}%") }
   scope :newer, lambda { order(["record_at DESC", "id ASC"]) }
   scope :older, lambda { order(["record_at ASC", "id ASC"]) }
+  # 所有者か共有カテゴリ経由で閲覧できる日記に絞る
+  scope :accessible_by, lambda { |user|
+    return none if user.blank?
+
+    left_joins(:categories)
+      .where(
+        "diaries.user_id = :user_id OR (categories.source_type = 'Family' AND categories.source_id = :family_id)",
+        user_id: user.id,
+        family_id: user.family_id
+      )
+      .distinct
+  }
 
   def favorited_by?(user)
     return false if user.blank?

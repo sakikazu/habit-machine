@@ -100,7 +100,14 @@ class FavoritesController < ApplicationController
       render json: { message: 'invalid favoritable_type' }, status: :bad_request and return
     end
 
-    type.constantize.find(id)
+    case type
+    when 'Diary'
+      Diary.accessible_by(current_user).find(id)
+    when 'History'
+      History.find(id)
+    else
+      type.constantize.find(id)
+    end
   rescue ActiveRecord::RecordNotFound
     render json: { message: 'favoritable not found' }, status: :not_found
   end

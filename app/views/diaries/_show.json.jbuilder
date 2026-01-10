@@ -8,6 +8,6 @@ json.image_path url_for(diary.eyecatch_image_large) if diary.eyecatch_image.atta
 json.tag_links tags_link(diary)
 json.category_ids diary.category_ids
 json.history_count diary.histories.count
-json.backlinks diary.backlinked_diaries.map { |d| { id: d.id, title_mod: d.title_mod, record_at: d.record_at, path: "/day/#{d.record_at}/diaries/#{d.id}" } }
+json.backlinks diary.backlinked_diaries.accessible_by(current_user).map { |d| { id: d.id, title_mod: d.title_mod, record_at: d.record_at, path: "/day/#{d.record_at}/diaries/#{d.id}" } }
 json.favorited diary.favorited_by?(current_user)
 json.diary_url diary_with_date_url(date: diary.record_at, id: diary.id)

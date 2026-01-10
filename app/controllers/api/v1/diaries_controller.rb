@@ -48,7 +48,8 @@ module Api
       private
 
       def set_diary
-        @diary = Diary.find(params[:id])
+        @diary = Diary.accessible_by(current_user).find(params[:id])
+        raise ActiveRecord::RecordNotFound unless @diary.can_manage?(current_user)
       end
 
       def build_term(limit)
