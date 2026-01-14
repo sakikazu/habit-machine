@@ -44,6 +44,7 @@ class FavoritesController < ApplicationController
           path: history_show_path(favoritable),
           edit_path: history_edit_path(favoritable),
           content: favoritable.content,
+          content_html: history_content_html(favoritable),
           favorited_at: favorite.created_at
         }
       end
@@ -85,13 +86,18 @@ class FavoritesController < ApplicationController
     existing = history.content.to_s.rstrip.presence
     new_content = [existing, memo].compact.join("\n")
     if history.update(content: new_content)
-      render json: { history: { id: history.id, content: history.content } }
+      render json: { history: { id: history.id, content: history.content, content_html: history_content_html(history) } }
     else
       render json: { message: history.errors.full_messages.join(', ') }, status: :unprocessable_entity
     end
   end
 
   private
+
+  # History本文をMarkdown変換したHTMLを返す
+  def history_content_html(history)
+    helpers.markdown(history.content).to_s
+  end
 
   def find_favoritable!
     type = params.require(:favoritable_type)

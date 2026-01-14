@@ -329,7 +329,8 @@ document.addEventListener('turbolinks:load', () => {
             .then(res => {
               this.showToast({isError: false, message: 'メモを追加しました'})
               const updatedContent = res.data?.history?.content
-              window.dispatchEvent(new CustomEvent('history-appended', { detail: { id: this.memoTargetHistoryId, content: updatedContent } }))
+              const updatedContentHtml = res.data?.history?.content_html
+              window.dispatchEvent(new CustomEvent('history-appended', { detail: { id: this.memoTargetHistoryId, content: updatedContent, content_html: updatedContentHtml } }))
               $('.timepicker').datetimepicker('clear')
               $('#memo-form').find('select.form-control').val('')
               this.memoContent = ''

@@ -137,7 +137,7 @@ document.addEventListener('turbolinks:load', () => {
 
         if (titleEl) titleEl.textContent = this.activeHistory.title
         if (metaEl) metaEl.textContent = `${this.activeHistory.member ? '(' + this.activeHistory.member + ') ' : ''}${this.activeHistory.date || ''}`
-        if (contentEl) contentEl.textContent = this.activeHistory.content || ''
+        this.updateHistoryContent(contentEl)
         if (anchorEl) {
           anchorEl.href = this.activeHistory.path || '#'
           anchorEl.classList.toggle('disabled', !this.activeHistory.path)
@@ -194,12 +194,24 @@ document.addEventListener('turbolinks:load', () => {
             this.historyFavoriteUpdating = false
           })
       },
+      // 履歴モーダル本文の描画を統一する
+      updateHistoryContent (contentEl) {
+        if (!contentEl) return
+        const contentHtml = this.activeHistory?.content_html
+        contentEl.classList.toggle('history-favorite-content--plain', !contentHtml)
+        if (contentHtml) {
+          contentEl.innerHTML = contentHtml
+        } else {
+          contentEl.textContent = this.activeHistory?.content || ''
+        }
+      },
       onHistoryAppended (event) {
         const updated = event?.detail
         if (!updated?.id || !this.activeHistory || this.activeHistory.id !== updated.id) return
         this.activeHistory.content = updated.content || ''
+        this.activeHistory.content_html = updated.content_html || ''
         const contentEl = document.getElementById('historyFavoriteContent')
-        if (contentEl) contentEl.textContent = this.activeHistory.content
+        this.updateHistoryContent(contentEl)
       }
     }
   })
@@ -263,6 +275,9 @@ style.innerHTML = `
     border-color: #f7c062;
     color: #fff;
   }
+  .history-favorite-content--plain {
+    white-space: pre-line;
+  }
 `
 document.head.appendChild(style)
 
@@ -282,7 +297,7 @@ const modalTemplate = `
         </div>
         <div class="modal-body">
           <div class="text-muted mb-2" id="historyFavoriteMeta"></div>
-          <div id="historyFavoriteContent" style="white-space: pre-line;"></div>
+          <div id="historyFavoriteContent"></div>
         </div>
         <div class="modal-footer history-favorite-actions">
           <a id="historyFavoriteAppend" class="btn history-favorite-actions__append">追記</a>
