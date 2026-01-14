@@ -155,7 +155,9 @@ document.addEventListener('turbolinks:load', () => {
           }
         })
         this.$refs.memoContentField.addEventListener('input', (event) => {
-          localStorage.setItem('inputting-memo-content', event.target.value)
+          const storageKey = this.memoLocalStorageKey()
+          if (!storageKey) return
+          localStorage.setItem(storageKey, event.target.value)
         })
       },
       // 履歴モーダル上にメモモーダルを重ねるための調整
@@ -194,6 +196,16 @@ document.addEventListener('turbolinks:load', () => {
           }
         })
       },
+      // 追記モーダルの下書きを保存するキーを作成
+      memoLocalStorageKey () {
+        if (this.memoTargetType === 'Diary' && this.memoTargetDiaryId) {
+          return `diary-append-memo-${this.memoTargetDiaryId}`
+        }
+        if (this.memoTargetType === 'History' && this.memoTargetHistoryId) {
+          return `history-append-memo-${this.memoTargetHistoryId}`
+        }
+        return null
+      },
       showMemoForm (targetDiary = null) {
         this.memoTargetType = 'Diary'
         this.memoTargetHistoryId = null
@@ -201,9 +213,10 @@ document.addEventListener('turbolinks:load', () => {
         this.memoTargetDiaryId = targetDiary?.id || null
         this.memoTargetDiaryTitle = targetDiary ? (targetDiary.title_mod || targetDiary.title || '(タイトルなし)') : ''
         this.memoTargetRecordAt = targetDiary?.record_at || this.targetDate
-        this.memoContent = this.memoContent || ''
+        this.memoContent = ''
         $('#memo-form').modal('show')
-        const inputtingMemoContent = localStorage.getItem('inputting-memo-content')
+        const storageKey = this.memoLocalStorageKey()
+        const inputtingMemoContent = storageKey ? localStorage.getItem(storageKey) : null
         if (inputtingMemoContent) {
           this.memoContent = inputtingMemoContent
         }
@@ -217,6 +230,11 @@ document.addEventListener('turbolinks:load', () => {
         this.memoContent = ''
         this.memoOverHistoryModal = true
         $('#memo-form').modal('show')
+        const storageKey = this.memoLocalStorageKey()
+        const inputtingMemoContent = storageKey ? localStorage.getItem(storageKey) : null
+        if (inputtingMemoContent) {
+          this.memoContent = inputtingMemoContent
+        }
       },
       setupTimepicker () {
         $('.timepicker').datetimepicker({
@@ -312,7 +330,10 @@ document.addEventListener('turbolinks:load', () => {
               $('.timepicker').datetimepicker('clear')
               $('#memo-form').find('select.form-control').val('')
               this.memoContent = ''
-              localStorage.removeItem('inputting-memo-content')
+              const storageKey = this.memoLocalStorageKey()
+              if (storageKey) {
+                localStorage.removeItem(storageKey)
+              }
               $('#memo-form').modal('hide')
             })
             .catch(error => {
@@ -334,6 +355,10 @@ document.addEventListener('turbolinks:load', () => {
               $('.timepicker').datetimepicker('clear')
               $('#memo-form').find('select.form-control').val('')
               this.memoContent = ''
+              const storageKey = this.memoLocalStorageKey()
+              if (storageKey) {
+                localStorage.removeItem(storageKey)
+              }
               $('#memo-form').modal('hide')
               window.dispatchEvent(new CustomEvent('favorites-refresh'))
             })
