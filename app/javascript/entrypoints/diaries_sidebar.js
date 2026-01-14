@@ -58,6 +58,7 @@ document.addEventListener('turbolinks:load', () => {
       diaries: [],
       favorites: [],
       activeHistory: null,
+      historyFavoriteUpdating: false,
     },
     mounted () {
       this.fetchPinned()
@@ -117,7 +118,7 @@ document.addEventListener('turbolinks:load', () => {
         return fav.type === 'History' ? 'fa fa-history' : 'fa fa-book'
       },
       showHistoryModal (fav) {
-        this.activeHistory = fav
+        this.activeHistory = Object.assign({}, fav, { favorited: true })
         this.renderHistoryModal()
       },
       closeHistoryModal () {
@@ -132,6 +133,7 @@ document.addEventListener('turbolinks:load', () => {
         const anchorEl = document.getElementById('historyFavoriteAnchor')
         const editEl = document.getElementById('historyFavoriteEdit')
         const appendEl = document.getElementById('historyFavoriteAppend')
+        const favoriteToggleEl = document.getElementById('historyFavoriteToggle')
 
         if (titleEl) titleEl.textContent = this.activeHistory.title
         if (metaEl) metaEl.textContent = `${this.activeHistory.member ? '(' + this.activeHistory.member + ') ' : ''}${this.activeHistory.date || ''}`
@@ -150,7 +152,47 @@ document.addEventListener('turbolinks:load', () => {
             window.dispatchEvent(new CustomEvent('open-history-append', { detail: { history: this.activeHistory } }))
           }
         }
+        if (favoriteToggleEl) {
+          favoriteToggleEl.onclick = (e) => {
+            e.preventDefault()
+            this.toggleHistoryFavorite()
+          }
+          this.updateHistoryFavoriteButton(favoriteToggleEl, this.activeHistory.favorited)
+        }
         $('#historyFavoriteModal').modal('show')
+      },
+      // 履歴モーダルのお気に入り状態を反映する
+      updateHistoryFavoriteButton (element, favorited) {
+        if (!element) return
+        element.classList.toggle('is-favorited', favorited)
+        element.innerHTML = favorited ? '<i class="fa fa-star mr-1"></i>お気に入り解除' : '<i class="fa fa-star-o mr-1"></i>お気に入り'
+      },
+      // 履歴のお気に入りを切り替える
+      toggleHistoryFavorite () {
+        if (!this.activeHistory || this.historyFavoriteUpdating) return
+        this.historyFavoriteUpdating = true
+        const payload = {
+          favoritable_type: 'History',
+          favoritable_id: this.activeHistory.id
+        }
+        const request = this.activeHistory.favorited
+          ? HmAxios.delete('/favorites', { data: payload })
+          : HmAxios.post('/favorites', payload)
+
+        request
+          .then(res => {
+            const favorited = !!res.data?.favorited
+            this.activeHistory.favorited = favorited
+            const favoriteToggleEl = document.getElementById('historyFavoriteToggle')
+            this.updateHistoryFavoriteButton(favoriteToggleEl, favorited)
+            window.dispatchEvent(new CustomEvent('favorites-refresh'))
+          })
+          .catch(error => {
+            alert(error.message || error?.response?.data?.message)
+          })
+          .finally(() => {
+            this.historyFavoriteUpdating = false
+          })
       },
       onHistoryAppended (event) {
         const updated = event?.detail
@@ -185,6 +227,42 @@ style.innerHTML = `
   .sectionPinnedDiaries .favorite-list .favorite-item a:hover {
     text-decoration: none;
   }
+  /* お気に入り履歴モーダルの操作ボタンを整理 */
+  .history-favorite-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .history-favorite-actions__primary {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #fff;
+  }
+  .history-favorite-actions__append {
+    background: #0ea5e9;
+    border-color: #0ea5e9;
+    color: #fff;
+  }
+  .history-favorite-actions__append:hover {
+    background: #0284c7;
+    border-color: #0284c7;
+    color: #fff;
+  }
+  .history-favorite-actions__secondary {
+    background: #f3f4f6;
+    border-color: #e5e7eb;
+    color: #374151;
+  }
+  .history-favorite-actions__favorite {
+    border-color: #f1e3cf;
+    background: #fff;
+    color: #c79a43;
+  }
+  .history-favorite-actions__favorite.is-favorited {
+    background: #f7c062;
+    border-color: #f7c062;
+    color: #fff;
+  }
 `
 document.head.appendChild(style)
 
@@ -206,11 +284,11 @@ const modalTemplate = `
           <div class="text-muted mb-2" id="historyFavoriteMeta"></div>
           <div id="historyFavoriteContent" style="white-space: pre-line;"></div>
         </div>
-        <div class="modal-footer">
-          <a id="historyFavoriteAppend" class="btn btn-outline-warning">追記</a>
-          <a id="historyFavoriteAnchor" class="btn btn-outline-secondary" target="_blank" rel="noopener">履歴ページへ</a>
-          <a id="historyFavoriteEdit" class="btn btn-primary">編集</a>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+        <div class="modal-footer history-favorite-actions">
+          <a id="historyFavoriteAppend" class="btn history-favorite-actions__append">追記</a>
+          <a id="historyFavoriteToggle" class="btn history-favorite-actions__favorite">お気に入り解除</a>
+          <a id="historyFavoriteAnchor" class="btn history-favorite-actions__secondary" target="_blank" rel="noopener">履歴ページへ</a>
+          <a id="historyFavoriteEdit" class="btn history-favorite-actions__primary">編集</a>
         </div>
       </div>
     </div>
