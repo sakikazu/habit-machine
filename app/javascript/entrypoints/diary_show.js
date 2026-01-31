@@ -1,6 +1,4 @@
 import Vue from 'vue'
-import HmAxios from 'hm_axios.js'
-
 import Diary from 'components/diaries/Diary'
 
 document.addEventListener('turbolinks:load', () => {
@@ -12,19 +10,5 @@ document.addEventListener('turbolinks:load', () => {
     data: {
       categories: [],
     },
-    mounted () {
-      this.fetchCategories()
-    },
-    methods: {
-      fetchCategories () {
-        HmAxios.get('/categories/selection.json')
-          .then(res => {
-            this.categories = res.data.categories
-          })
-          .catch(error => {
-            alert(error.message || error.response.data.message)
-          })
-      },
-    }
   })
 })

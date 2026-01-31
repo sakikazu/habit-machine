@@ -56,7 +56,7 @@ Diary
               i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
               | {{ favoriteLabel }}
             url-copy-button.action-menu__item(v-if="diaryDetailUrl" :url="diaryDetailUrl")
-            button.action-menu__item(v-if="!modalMode" @click.prevent="openCategoryModalFromMenu")
+            button.action-menu__item(@click.prevent="openCategoryModalFromMenu")
               i.fa.fa-folder-open.mr-1
               | カテゴリ編集
             a.action-menu__item(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
@@ -95,7 +95,7 @@ Diary
             .meta-label
               i.fa.fa-folder-open.mr-1
               | カテゴリ
-          category-links.mt-1(v-if="categories.length > 0" :categories="categories" :savedCategoryIds="localDiary.category_ids" :show-edit-button="false" @edit-category="showCategoryModal = true")
+          category-links.mt-1(v-if="displayCategories.length > 0" :categories="displayCategories" :savedCategoryIds="localDiary.category_ids" :show-edit-button="false" @edit-category="openCategoryModal")
       .diary-collapse-actions.mt-2(v-if="collapsibleBody")
         button.btn.btn-sm.btn-outline-primary(@click.prevent="toggleDiaryBody")
           | {{ bodyCollapsed ? '続きを表示' : '折りたたむ' }}
@@ -193,6 +193,9 @@ export default {
       changed_record_at: null,
       // 直接categoriesにカテゴリの選択状態を反映してしまうと他のDiary Componentにも影響してしまうので、Componentごとに持つ（選択モーダル用）
       localCategories: [],
+      fetchedCategories: [],
+      categoriesLoading: false,
+      categoriesLoadingPromise: null,
       showCategoryModal: false,
       selectedCategoryIds: [],
       favoriting: false,
@@ -211,8 +214,8 @@ export default {
     editMode(newVal) {
       this.$emit('on-edit-mode', this.localDiary.id, newVal)
     },
-    // categoriesはpropsで渡されるため、categoriesとselectedCategoryIdsが揃った状態で、localCategoriesの更新を行う
-    categories: {
+    // displayCategoriesはpropsまたは取得結果のどちらかなので、displayCategoriesとselectedCategoryIdsが揃った状態でlocalCategoriesを更新する
+    displayCategories: {
       handler(newVal) {
         this.localCategories = JSON.parse(JSON.stringify(newVal))
         if (newVal.length > 0 && this.selectedCategoryIds.length > 0) {
@@ -230,7 +233,7 @@ export default {
     "localDiary.category_ids": {
       handler(newVal) {
         // selectedCategoryIds の変更をlocalDiary.category_ids に同期させたくないので、値渡しにする
-        this.selectedCategoryIds = [...newVal]
+        this.selectedCategoryIds = Array.isArray(newVal) ? [...newVal] : []
       }
     },
   },
@@ -277,6 +280,9 @@ export default {
     },
     showMetaBar () {
       return this.hasTags || this.hasCategories
+    },
+    displayCategories () {
+      return this.categories.length > 0 ? this.categories : this.fetchedCategories
     },
     hasContent () {
       const content = this.localDiary?.content_is_html ? this.localDiary?.html_content : this.localDiary?.markdowned_content
@@ -348,6 +354,9 @@ export default {
       HmAxios.get(`/diaries/${diaryId}.json`)
         .then(res => {
           this.localDiary = res.data.diary
+          if (res.data.categories) {
+            this.fetchedCategories = res.data.categories
+          }
         })
         .catch(error => {
           alert(error.message || error.response.data.message)
@@ -394,9 +403,37 @@ export default {
     toggleFavoriteFromMenu () {
       this.toggleFavorite()
     },
-    openCategoryModalFromMenu () {
-      this.showCategoryModal = true
+    async openCategoryModalFromMenu () {
+      await this.openCategoryModal()
       this.closeActionMenu()
+    },
+    // カテゴリ編集用の一覧が未取得なら取得する
+    async ensureCategoriesLoaded () {
+      if (this.displayCategories.length > 0) return true
+      if (this.categoriesLoadingPromise) return this.categoriesLoadingPromise
+
+      this.categoriesLoading = true
+      this.categoriesLoadingPromise = HmAxios.get('/categories/selection.json')
+        .then(res => {
+          this.fetchedCategories = res.data.categories || []
+          return true
+        })
+        .catch(error => {
+          alert(error.message || error.response.data.message)
+          return false
+        })
+        .finally(() => {
+          this.categoriesLoading = false
+          this.categoriesLoadingPromise = null
+        })
+
+      return this.categoriesLoadingPromise
+    },
+    // カテゴリ編集モーダルを開く前に必要データを揃える
+    async openCategoryModal () {
+      const loaded = await this.ensureCategoriesLoaded()
+      if (!loaded) return
+      this.showCategoryModal = true
     },
     // 日記本文の開閉を切り替える
     toggleDiaryBody () {

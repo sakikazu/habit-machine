@@ -96,6 +96,11 @@ class DiariesController < ApplicationController
   # GET /diaries/1
   # GET /diaries/1.json
   def show
+    if request.format.json?
+      categories = current_user.all_categories(eager_load: :only_category)
+      @categories = Category.sorted_tree(categories, include_diaries: false)
+    end
+
     respond_to do |format|
       format.html # show.html.erb
       format.json
