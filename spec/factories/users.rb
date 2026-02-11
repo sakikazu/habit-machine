@@ -39,7 +39,7 @@ FactoryBot.define do
     family
     familyname { '田中' }
     givenname { 'はじめ' }
-    email { 'example@com' }
+    sequence(:email) { |n| "example#{n}@com" }
     password { 'test1234' }
   end
 end

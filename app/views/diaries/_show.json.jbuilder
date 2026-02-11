@@ -2,7 +2,7 @@ json.extract! diary, :id, :title, :content, :record_at, :main_in_day, :is_hiligh
 json.title_mod diary.title_mod
 json.disp_record_at dispdate(diary.record_at, true)
 json.content_is_html diary.content_is_html
-json.markdowned_content markdown(diary.content)
+json.markdowned_content markdown(diary.content, diary: diary)
 json.html_content diary.content
 json.image_path url_for(diary.eyecatch_image_large) if diary.eyecatch_image.attached?
 json.tag_links tags_link(diary)

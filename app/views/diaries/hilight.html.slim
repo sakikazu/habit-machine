@@ -21,11 +21,10 @@
         p.mb25
           = link_to(image_tag(diary.eyecatch_image_large, width: "100%", class: "img-thumbnail"), diary.eyecatch_image) if diary.eyecatch_image.attached?
         .markdown
-          = markdown(diary.content)
+          = markdown(diary.content, diary: diary)
   .col-sm-3.order-1.order-sm-2
     .card
       ul.list-group.list-group-flush
         - @diaries.each do |diary|
           li.list-group-item
             = link_to "#{dispdate(diary.record_at, false)} #{diary.title_mod}", "#diary#{diary.id}"
-

@@ -12,7 +12,7 @@
   .text-center.mt20
     = image_tag(diary.eyecatch_image_large, class: "w-50 img-thumbnail") if diary.eyecatch_image.attached?
   .markdown
-    = markdown(diary.content)
+    = markdown(diary.content, diary: diary)
   - if is_day_page
     .buttons
       = link_to '編集', edit_diary_path(diary), class: "btn btn-light ignore-checking-changes", remote: true

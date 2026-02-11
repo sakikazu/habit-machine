@@ -163,10 +163,10 @@ module ApplicationHelper
   end
 
   # filter_htmlオプションにより入力されたタグを無効化してくれるのでサニタイズは不要
-  def markdown text
+  def markdown(text, diary: nil)
     return '' if text.blank?
 
-    text = replace_placeholder_urls(text)
+    text = replace_placeholder_urls(text, diary: diary)
 
     options = {
       filter_html:     true, # htmlタグをサニタイズではなく<p>タグに置き換えて無効化
@@ -189,13 +189,14 @@ module ApplicationHelper
 
   # ActiveStorageの署名付きURLは失効するのでDB保存しない（プレースホルダ運用）。
   # プレースホルダ付きURLを最新URLへ差し替える。
-  def replace_placeholder_urls(text)
+  def replace_placeholder_urls(text, diary: nil)
     return text unless text.include?(Diary::ACTIVE_STORAGE_URL_PLACEHOLDER)
 
     text.gsub(/(?<!\[)!\[image-(\d+)\]\(#{Diary::ACTIVE_STORAGE_URL_PLACEHOLDER}\)/) do
       attachment_id = Regexp.last_match(1).to_i
       attachment = ActiveStorage::Attachment.find_by(id: attachment_id)
       next Regexp.last_match(0) unless attachment
+      next Regexp.last_match(0) if diary.present? && attachment.record != diary
 
       "![image-#{attachment_id}](#{diary_image_url_for(attachment)})"
     rescue StandardError
@@ -205,6 +206,7 @@ module ApplicationHelper
         attachment_id = Regexp.last_match(1).to_i
         attachment = ActiveStorage::Attachment.find_by(id: attachment_id)
         next Regexp.last_match(0) unless attachment
+        next Regexp.last_match(0) if diary.present? && attachment.record != diary
 
         thumb_url = diary_image_variant_url_for(attachment)
         org_url = diary_image_url_for(attachment)
