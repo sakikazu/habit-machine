@@ -4,3 +4,6 @@ prefecture: [['北海道', 1], ['青森県', 2], ['岩手県', 3], ['宮城県',
 google_oauth:
   client_id: '5493614998-ccop2er3riig6j04eauk7e1je3cm8fq6.apps.googleusercontent.com'
   client_secret: <%= ENV['GOOGLE_OAUTH_CLIENT_SECRET'] %>
+
+youtube_api:
+  key: <%= ENV['YOUTUBE_API_KEY'] %>
