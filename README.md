@@ -36,6 +36,18 @@ $ docker compose up
 $ bin/webpack-dev-server
 ```
 
+### YouTubeアーカイブ用の環境変数
+`.env` に以下を設定
+
+```dotenv
+YOUTUBE_API_KEY=your_youtube_api_key
+```
+
+アプリ側では `config/settings.yml` 経由で `Settings.youtube_api.key` として参照する
+
+Capistranoデプロイでは `config/deploy.rb` の `linked_files` に `.env` が含まれているため、
+サーバー側の `shared/.env` に同じ `YOUTUBE_API_KEY` を設定すれば反映される
+
 ## 本番デプロイ
 ```
 # 意図せぬruby環境のcapを使用しないよう、bundle execをつける
@@ -117,4 +129,3 @@ $ bin/rake db:seed_fu
   * rails7のesbuildへの移行
   * Viteの採用（HMR、Vue.jsとの相性が良い）
     * `vite_rails` gem
-

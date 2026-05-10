@@ -116,6 +116,10 @@ Rails.application.routes.draw do
   end
 
   resources :tags
+  resource :youtube_archive, only: [:show], controller: :youtube_archives do
+    post :download_video
+    post :download_comments
+  end
 
   # mount RailsAdmin::Engine => '/adamin', :as => 'rails_admin'
 

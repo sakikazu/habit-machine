@@ -19,6 +19,7 @@ gem "rails_autolink"
 gem 'kaminari', github: 'kaminari/kaminari', ref: '55d6e40767442d206236d3718c5bdb32d01f2345'
 gem 'acts-as-taggable-on'
 gem 'rest-client'
+gem 'google-apis-youtube_v3'
 gem 'dotenv-rails'
 # used by ActiveStorage
 gem "image_processing", ">= 1.2"

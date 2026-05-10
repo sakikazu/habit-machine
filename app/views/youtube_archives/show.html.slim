@@ -1,0 +1,23 @@
+.row.justify-content-center
+  .col-md-8.col-lg-6
+    .card.mt-4
+      .card-body
+        h2.h4.mb-3 YouTubeアーカイブ
+        p.text-muted
+          | YouTubeのURLを入力すると、コメントMarkdownの取得または動画ダウンロードを実行できます
+
+        = form_with url: download_comments_youtube_archive_path, method: :post, local: true do
+          .form-group
+            label(for="youtube_archive_url") YouTube URL
+            = text_field_tag :url, params[:url], id: "youtube_archive_url", class: "form-control", placeholder: "https://www.youtube.com/watch?v=..."
+
+          .d-flex.flex-column.flex-sm-row
+            = button_tag "動画DL", type: :submit, class: "btn btn-primary mr-sm-2 mb-2 mb-sm-0", formaction: download_video_youtube_archive_path, formmethod: "post"
+            = button_tag "コメント取得", type: :submit, class: "btn btn-outline-primary"
+
+        hr
+
+        ul.text-muted.pl-3.mb-0
+          li コメント取得には `YOUTUBE_API_KEY` が必要です
+          li 動画DLには `yt-dlp` または `YT_DLP_PATH` の設定が必要です
+          li コメント取得ではMarkdownファイルを返し、同じ一時ディレクトリにJSONも保存します
