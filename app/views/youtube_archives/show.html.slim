@@ -4,20 +4,147 @@
       .card-body
         h2.h4.mb-3 YouTubeアーカイブ
         p.text-muted
-          | YouTubeのURLを入力すると、コメントMarkdownの取得または動画ダウンロードを実行できます
+          | YouTubeのURLを入力すると、動画DL、音声抽出、コメント取得を実行できます
 
-        = form_with url: download_comments_youtube_archive_path, method: :post, local: true do
+        = form_with url: download_comments_youtube_archive_path, method: :post, local: true, html: { id: "youtubeArchiveForm" } do
           .form-group
             label(for="youtube_archive_url") YouTube URL
             = text_field_tag :url, params[:url], id: "youtube_archive_url", class: "form-control", placeholder: "https://www.youtube.com/watch?v=..."
 
           .d-flex.flex-column.flex-sm-row
-            = button_tag "動画DL", type: :submit, class: "btn btn-primary mr-sm-2 mb-2 mb-sm-0", formaction: download_video_youtube_archive_path, formmethod: "post"
-            = button_tag "コメント取得", type: :submit, class: "btn btn-outline-primary"
+            = button_tag "動画DL", type: :submit, class: "btn btn-primary mr-sm-2 mb-2 mb-sm-0", formaction: download_video_youtube_archive_path, formmethod: "post", data: { loading_label: "動画をダウンロード中..." }
+            = button_tag "音声抽出", type: :submit, class: "btn btn-outline-primary mr-sm-2 mb-2 mb-sm-0", formaction: download_audio_youtube_archive_path, formmethod: "post", data: { loading_label: "音声を抽出中..." }
+            = button_tag "コメント取得", type: :submit, class: "btn btn-outline-primary", data: { loading_label: "コメントを取得中..." }
+
+          p#youtubeArchiveLoading.text-primary.small.mt-3.mb-0(style="display: none;")
+            | 処理を実行中です。しばらくお待ちください
 
         hr
 
         ul.text-muted.pl-3.mb-0
           li コメント取得には `YOUTUBE_API_KEY` が必要です
           li 動画DLには `yt-dlp` または `YT_DLP_PATH` の設定が必要です
+          li 動画DLと音声抽出には `ffmpeg` と `ffprobe` が必要です
+          li 動画DLは高画質優先で取得し、拡張子は配信形式に応じて変わります
           li コメント取得ではMarkdownファイルを返し、同じ一時ディレクトリにJSONも保存します
+
+javascript:
+  document.addEventListener("turbolinks:load", function() {
+    var form = document.getElementById("youtubeArchiveForm");
+    if (!form || form.dataset.loadingInitialized === "true") return;
+
+    var loadingMessage = document.getElementById("youtubeArchiveLoading");
+    var buttons = form.querySelectorAll('button[type="submit"]');
+    var csrfToken = document.querySelector('meta[name="csrf-token"]');
+
+    function resetLoadingState() {
+      buttons.forEach(function(button) {
+        button.disabled = false;
+        if (button.dataset.defaultLabel) {
+          button.textContent = button.dataset.defaultLabel;
+        }
+      });
+
+      if (loadingMessage) {
+        loadingMessage.style.display = "none";
+        loadingMessage.textContent = "処理を実行中です。しばらくお待ちください";
+      }
+    }
+
+    function buildFilename(response, fallbackName) {
+      var disposition = response.headers.get("Content-Disposition") || "";
+      var utf8Match = disposition.match(/filename\*=UTF-8''([^;]+)/i);
+      if (utf8Match && utf8Match[1]) {
+        return decodeURIComponent(utf8Match[1]);
+      }
+
+      var plainMatch = disposition.match(/filename="?([^"]+)"?/i);
+      if (plainMatch && plainMatch[1]) {
+        return plainMatch[1];
+      }
+
+      return fallbackName;
+    }
+
+    function triggerBrowserDownload(downloadUrl, filename) {
+      var link = document.createElement("a");
+      link.href = downloadUrl;
+      if (filename) link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    }
+
+    async function submitArchiveRequest(url, method, formData, loadingLabel) {
+      if (loadingMessage) {
+        loadingMessage.style.display = "block";
+        loadingMessage.textContent = loadingLabel || "処理を実行中です。しばらくお待ちください";
+      }
+
+      var response = await fetch(url, {
+        method: method,
+        body: formData,
+        headers: {
+          "X-CSRF-Token": csrfToken ? csrfToken.content : "",
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        credentials: "same-origin"
+      });
+
+      if (!response.ok) {
+        var errorMessage = "処理に失敗しました";
+
+        try {
+          var errorJson = await response.json();
+          if (errorJson.error) errorMessage = errorJson.error;
+        } catch (e) {}
+
+        throw new Error(errorMessage);
+      }
+
+      return response;
+    }
+
+    buttons.forEach(function(button) {
+      button.dataset.defaultLabel = button.textContent;
+    });
+
+    form.addEventListener("submit", async function(event) {
+      var submitter = event.submitter;
+      if (!submitter) return;
+      event.preventDefault();
+
+      buttons.forEach(function(button) {
+        button.disabled = true;
+      });
+
+      submitter.textContent = submitter.dataset.loadingLabel || "実行中...";
+
+      try {
+        var formData = new FormData(form);
+        var response = await submitArchiveRequest(
+          submitter.formAction || form.action,
+          submitter.formMethod || form.method || "post",
+          formData,
+          submitter.dataset.loadingLabel || "実行中..."
+        );
+
+        var blob = await response.blob();
+        var filename = buildFilename(response, "youtube_archive");
+        var objectUrl = window.URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = objectUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(objectUrl);
+      } catch (error) {
+        alert(error.message || "処理に失敗しました");
+      } finally {
+        resetLoadingState();
+      }
+    });
+
+    form.dataset.loadingInitialized = "true";
+  });

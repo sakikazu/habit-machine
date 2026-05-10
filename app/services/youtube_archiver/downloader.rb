@@ -6,18 +6,21 @@ require_relative "filename_helper"
 
 module YoutubeArchiver
   class Downloader
+    MODE_VIDEO = :video
+    MODE_AUDIO = :audio
+
     def initialize(executable: "yt-dlp")
       @executable = executable
     end
 
-    def download(url:, output_dir:)
+    def download(url:, output_dir:, mode: MODE_VIDEO)
       ensure_executable!
 
       temp_template = File.join(output_dir, "__download__.%(ext)s")
       FileUtils.rm_f(Dir.glob(File.join(output_dir, "__download__.*")))
 
-      stdout, stderr, status = Open3.capture3(*build_command(url, temp_template))
-      raise build_error(stderr, stdout) unless status.success?
+      stdout, stderr, status = Open3.capture3(*build_command(url, temp_template, mode))
+      raise build_error(stderr, stdout, mode) unless status.success?
 
       lines = stdout.lines.map(&:strip).reject(&:empty?)
       title = lines.first
@@ -33,16 +36,37 @@ module YoutubeArchiver
 
     private
 
-    def build_command(url, output_template)
-      [
+    def build_command(url, output_template, mode)
+      command = [
         @executable,
         "--no-progress",
         "--no-warnings",
         "-o", output_template,
         "--print", "title",
-        "--print", "after_move:filepath",
-        url
+        "--print", "after_move:filepath"
       ]
+
+      command.concat(mode_options(mode))
+      command << url
+      command
+    end
+
+    # 動画は高画質優先、音声は抽出専用の指定にする
+    def mode_options(mode)
+      case mode
+      when MODE_VIDEO
+        [
+          "-f", "bv*+ba/b"
+        ]
+      when MODE_AUDIO
+        [
+          "-x",
+          "--audio-format", "mp3",
+          "--audio-quality", "0"
+        ]
+      else
+        []
+      end
     end
 
     def ensure_executable!
@@ -59,11 +83,12 @@ module YoutubeArchiver
       end
     end
 
-    def build_error(stderr, stdout)
+    def build_error(stderr, stdout, mode)
       detail = [stderr, stdout].map(&:to_s).find { |text| !text.strip.empty? }
-      return "yt-dlp による動画ダウンロードに失敗しました" if detail.nil?
+      action = mode == MODE_AUDIO ? "音声抽出" : "動画ダウンロード"
+      return "yt-dlp による#{action}に失敗しました" if detail.nil?
 
-      "yt-dlp による動画ダウンロードに失敗しました: #{detail.lines.last.to_s.strip}"
+      "yt-dlp による#{action}に失敗しました: #{detail.lines.last.to_s.strip}"
     end
   end
 end

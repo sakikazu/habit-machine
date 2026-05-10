@@ -118,6 +118,7 @@ Rails.application.routes.draw do
   resources :tags
   resource :youtube_archive, only: [:show], controller: :youtube_archives do
     post :download_video
+    post :download_audio
     post :download_comments
   end
 

@@ -12,6 +12,13 @@ class YoutubeArchivesController < ApplicationController
     handle_error(e)
   end
 
+  def download_audio
+    result = YoutubeArchiver::AudioArchiver.new(url: archive_url).download
+    send_file result[:path], filename: result[:filename], disposition: :attachment
+  rescue StandardError => e
+    handle_error(e)
+  end
+
   def download_comments
     result = YoutubeArchiver::CommentsArchiver.new(url: archive_url).archive
     send_file result[:path], filename: result[:filename], disposition: :attachment
@@ -27,6 +34,11 @@ class YoutubeArchivesController < ApplicationController
   end
 
   def handle_error(error)
+    if request.xhr?
+      render json: { error: error.message }, status: :unprocessable_entity
+      return
+    end
+
     flash.now[:alert] = error.message
     @page_title = "YouTubeアーカイブ"
     render :show, status: :unprocessable_entity

@@ -26,7 +26,8 @@ module YoutubeArchiver
       output_dir = build_output_dir(video_id)
       path = Downloader.new(executable: ENV.fetch("YT_DLP_PATH", "yt-dlp")).download(
         url: "https://www.youtube.com/watch?v=#{video_id}",
-        output_dir:
+        output_dir:,
+        mode: Downloader::MODE_VIDEO
       )
 
       { path:, filename: File.basename(path) }
