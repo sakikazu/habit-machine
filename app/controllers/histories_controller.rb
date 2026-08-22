@@ -4,6 +4,10 @@ class HistoriesController < ApplicationController
 
   # Historyの詳細を表示する。
   def show
+    respond_to do |format|
+      format.html
+      format.json { render json: { history: build_history_detail_payload(@history) } }
+    end
   end
 
   # Historyの編集フォームを表示する。
@@ -86,6 +90,25 @@ class HistoriesController < ApplicationController
       target_date: history.target_date&.to_s,
       show_path: history_path(history),
       favorited: history.favorited_by?(current_user)
+    }
+  end
+
+  # 閲覧モーダル用のHistory詳細情報を組み立てる。
+  def build_history_detail_payload(history)
+    {
+      id: history.id,
+      title: history.title,
+      content_html: helpers.markdown(history.content),
+      target_date: history.target_date&.to_s,
+      target_date_label: helpers.dispdate(history.target_date, true),
+      about_date: history.about_date,
+      author_name: history.author&.dispname,
+      member_label: history.member_label,
+      member_names: history.member_names,
+      eyecatch_url: history.eyecatch_image.attached? ? url_for(history.eyecatch_image_large) : nil,
+      favorited: history.favorited_by?(current_user),
+      height: history.height,
+      weight: history.weight
     }
   end
 end

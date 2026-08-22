@@ -145,14 +145,15 @@
               <button
                 type="button"
                 class="family-dashboard__edit"
-                @click="openEditModal(history)"
+                aria-label="編集"
+                @click="openHistoryModal(history, 'edit')"
               >
                 <i class="fa fa-pencil-square-o"></i>
               </button>
             </div>
           </div>
           <h4 class="family-dashboard__card-title">
-            <a :href="history.show_path">{{ history.title }}</a>
+            <button type="button" class="family-dashboard__title-button" @click="openHistoryModal(history)">{{ history.title }}</button>
           </h4>
           <p v-if="history.height || history.weight" class="family-dashboard__metrics">
             <span v-if="history.height">{{ history.height }}cm</span>
@@ -163,9 +164,9 @@
         </article>
       </div>
       <div v-else class="family-dashboard__title-list">
-        <article v-for="history in histories" :key="history.id" class="family-dashboard__title-row">
+        <article v-for="history in histories" :key="history.id" :id="historyCardId(history)" class="family-dashboard__title-row">
           <div class="family-dashboard__title-row-main">
-            <a :href="history.show_path" class="family-dashboard__title-link">{{ history.title }}</a>
+            <button type="button" class="family-dashboard__title-link" @click="openHistoryModal(history)">{{ history.title }}</button>
             <div class="family-dashboard__title-meta">
               <span v-if="history.about_date" class="family-dashboard__approx">(だいたい)</span>
               <span class="family-dashboard__date">{{ history.target_date_label || history.target_date }}</span>
@@ -223,11 +224,43 @@
       </template>
     </Modal>
 
-    <Modal v-if="showEditModal" :no-padding="true" @on-close="closeEditModal">
+    <Modal v-if="showHistoryModal" :no-padding="true" @on-close="closeHistoryModal">
       <template #content>
-        <div class="family-dashboard__modal-body family-dashboard__modal-body--edit">
-          <div v-if="editLoading" class="family-dashboard__loading">フォームを読み込み中...</div>
-          <div v-else v-html="editHtml"></div>
+        <div class="family-dashboard__modal-body family-dashboard__modal-body--history">
+          <div v-if="historyModalLoading" class="family-dashboard__loading">記録を読み込み中...</div>
+          <template v-else-if="historyModalMode === 'view' && selectedHistory">
+            <div class="family-dashboard__detail-header">
+              <div class="family-dashboard__detail-meta">
+                <span v-if="selectedHistory.about_date" class="family-dashboard__approx">(だいたい)</span>
+                <span class="family-dashboard__date">{{ selectedHistory.target_date_label || selectedHistory.target_date }}</span>
+                <span
+                  v-for="name in memberNamePills(selectedHistory)"
+                  :key="`detail-${selectedHistory.id}-${name}`"
+                  class="family-dashboard__member"
+                >
+                  {{ name }}
+                </span>
+                <span v-if="selectedHistory.author_name" class="family-dashboard__author">by {{ selectedHistory.author_name }}</span>
+              </div>
+              <button type="button" class="family-dashboard__detail-edit" @click="switchHistoryModalToEdit">
+                編集
+              </button>
+            </div>
+            <h3 class="family-dashboard__detail-title">{{ selectedHistory.title }}</h3>
+            <p v-if="selectedHistory.height || selectedHistory.weight" class="family-dashboard__metrics">
+              <span v-if="selectedHistory.height">{{ selectedHistory.height }}cm</span>
+              <span v-if="selectedHistory.weight" class="family-dashboard__metric-separator">{{ selectedHistory.weight }}kg</span>
+            </p>
+            <img v-if="selectedHistory.eyecatch_url" :src="selectedHistory.eyecatch_url" alt="" class="family-dashboard__detail-image">
+            <div v-if="selectedHistory.content_html" class="family-dashboard__detail-content markdown" v-html="selectedHistory.content_html"></div>
+          </template>
+          <template v-else-if="historyModalMode === 'edit'">
+            <button type="button" class="family-dashboard__detail-back" @click="switchHistoryModalToView">
+              ← 閲覧に戻る
+            </button>
+            <div v-if="editLoading" class="family-dashboard__loading">フォームを読み込み中...</div>
+            <div v-else v-html="editHtml"></div>
+          </template>
         </div>
       </template>
     </Modal>
@@ -272,7 +305,10 @@ export default {
       showFormModal: false,
       formHtml: '',
       formLoading: false,
-      showEditModal: false,
+      showHistoryModal: false,
+      historyModalMode: 'view',
+      historyModalLoading: false,
+      selectedHistory: null,
       editHtml: '',
       editLoading: false,
       editingHistoryId: null,
@@ -332,6 +368,7 @@ export default {
         })
         .catch((error) => {
           console.log(error)
+          alert('作成フォームの読み込みに失敗しました')
         })
         .finally(() => {
           this.formLoading = false
@@ -343,19 +380,42 @@ export default {
           })
         })
     },
-    // 編集フォームをモーダルで開く。
-    openEditModal (history) {
+    // 記録詳細を取得して閲覧・編集共通モーダルを開く。
+    openHistoryModal (history, mode = 'view') {
       if (!history?.id) return
-      this.showEditModal = true
+      this.showHistoryModal = true
+      this.historyModalMode = 'view'
+      this.historyModalLoading = true
+      this.selectedHistory = null
+      this.editingHistoryId = history.id
+      HmAxios.get(`/histories/${history.id}.json`)
+        .then((res) => {
+          this.selectedHistory = res.data.history
+          if (mode === 'edit') this.switchHistoryModalToEdit()
+        })
+        .catch((error) => {
+          console.log(error)
+          alert('記録の読み込みに失敗しました')
+          this.closeHistoryModal()
+        })
+        .finally(() => {
+          this.historyModalLoading = false
+        })
+    },
+    // 同じモーダルを編集状態へ切り替えてフォームを読み込む。
+    switchHistoryModalToEdit () {
+      if (!this.editingHistoryId) return
+      this.historyModalMode = 'edit'
       this.editLoading = true
       this.editHtml = ''
-      this.editingHistoryId = history.id
-      HmAxios.get(`/histories/${history.id}/edit.json`)
+      HmAxios.get(`/histories/${this.editingHistoryId}/edit.json`)
         .then((res) => {
           this.editHtml = res.data.form_html
         })
         .catch((error) => {
           console.log(error)
+          alert('編集フォームの読み込みに失敗しました')
+          this.historyModalMode = 'view'
         })
         .finally(() => {
           this.editLoading = false
@@ -367,9 +427,16 @@ export default {
           })
         })
     },
-    // 編集モーダルを閉じる。
-    closeEditModal () {
-      this.showEditModal = false
+    // 編集状態から取得済みの閲覧状態へ戻る。
+    switchHistoryModalToView () {
+      this.historyModalMode = 'view'
+    },
+    // 閲覧・編集共通モーダルを閉じて状態を破棄する。
+    closeHistoryModal () {
+      this.showHistoryModal = false
+      this.historyModalMode = 'view'
+      this.historyModalLoading = false
+      this.selectedHistory = null
       this.editHtml = ''
       this.editingHistoryId = null
     },
@@ -512,7 +579,7 @@ export default {
     },
     // 編集フォームのsubmitをフックする。
     bindEditSubmit () {
-      const form = this.$el.querySelector('.family-dashboard__modal-body--edit form')
+      const form = this.$el.querySelector('.family-dashboard__modal-body--history form')
       if (!form || form.dataset.bound) return
 
       form.dataset.bound = 'true'
@@ -677,12 +744,13 @@ export default {
       HmAxios.post(form.action, formData, { headers: { Accept: 'application/json' } })
         .then((res) => {
           const history = res.data.history
+          const currentPage = this.pagination?.page || 1
+          const matchesCurrentFilter = this.shouldRefreshList(history?.target_date)
+          const scrollId = matchesCurrentFilter && history?.id ? `history-${history.id}` : null
+
           localStorage.removeItem(this.formDraftKey('edit'))
-          this.closeEditModal()
-          if (history?.target_date) {
-            const scrollId = history?.id ? `history-${history.id}` : null
-            this.fetchHistories(1, { scrollId })
-          }
+          this.closeHistoryModal()
+          this.fetchHistories(currentPage, { scrollId })
         })
         .catch((error) => {
           alert(error.response?.data?.errors?.join('\n') || '保存に失敗しました')

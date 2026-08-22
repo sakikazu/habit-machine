@@ -216,6 +216,74 @@
   border-radius: 8px;
 }
 
+.family-dashboard__modal-body--history {
+  max-width: 760px;
+  max-height: calc(100vh - 70px);
+  overflow-y: auto;
+}
+
+.family-dashboard__detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.family-dashboard__detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  color: #7b6d5a;
+  font-size: 12px;
+}
+
+.family-dashboard__detail-edit,
+.family-dashboard__detail-back {
+  border: 1px solid #e0d2c2;
+  border-radius: 999px;
+  background: #fff;
+  color: #1d4e89;
+  font-weight: 600;
+}
+
+.family-dashboard__detail-edit {
+  flex-shrink: 0;
+  min-height: 40px;
+  padding: 7px 18px;
+}
+
+.family-dashboard__detail-back {
+  min-height: 38px;
+  margin-bottom: 18px;
+  padding: 6px 14px;
+}
+
+.family-dashboard__detail-edit:hover,
+.family-dashboard__detail-back:hover {
+  background: #ebf5ff;
+}
+
+.family-dashboard__detail-title {
+  margin: 18px 0 12px;
+  color: #3b342a;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.family-dashboard__detail-content {
+  color: #4a3f32;
+  line-height: 1.7;
+}
+
+.family-dashboard__detail-image {
+  display: block;
+  width: 100%;
+  max-width: 620px;
+  margin: 12px 0 20px;
+  border-radius: 12px;
+}
+
 .family-dashboard__controls {
   display: grid;
   grid-template-columns: minmax(140px, 180px) 1fr;
@@ -456,16 +524,27 @@
   min-width: 0;
 }
 
-.family-dashboard__title-link {
+.family-dashboard__title-link,
+.family-dashboard__title-button {
   display: inline-block;
+  padding: 0;
+  border: 0;
+  background: transparent;
   color: #1d4e89;
   font-size: 15px;
   font-weight: 700;
   line-height: 1.4;
+  text-align: left;
   text-decoration: none;
+  cursor: pointer;
 }
 
-.family-dashboard__title-link:hover {
+.family-dashboard__title-button {
+  font-size: 18px;
+}
+
+.family-dashboard__title-link:hover,
+.family-dashboard__title-button:hover {
   text-decoration: underline;
 }
 
@@ -568,11 +647,6 @@
   background: #f7c062;
   border-color: #f7c062;
   color: #fff;
-}
-
-.family-dashboard__card-title a {
-  color: #1d4e89;
-  text-decoration: none;
 }
 
 .family-dashboard__card-body {
@@ -700,6 +774,14 @@
 
   .family-dashboard__title-row {
     align-items: flex-start;
+  }
+
+  .family-dashboard__modal-body--history {
+    padding: 18px;
+  }
+
+  .family-dashboard__detail-header {
+    flex-direction: column;
   }
 
   .family-dashboard__controls {
