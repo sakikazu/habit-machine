@@ -5,6 +5,7 @@ import HabitRecord from 'components/habits/HabitRecord'
 import Diary from 'components/diaries/Diary'
 import Toast from 'components/shared/toast'
 import Modal from 'components/shared/Modal'
+import DayDatePicker from 'components/general/DayDatePicker'
 
 document.addEventListener('turbolinks:load', () => {
   console.log('day_page.js: turbolinks:load')
@@ -15,6 +16,7 @@ document.addEventListener('turbolinks:load', () => {
       Diary,
       Toast,
       Modal,
+      DayDatePicker,
     },
     data: {
       targetDate: null,
@@ -75,7 +77,7 @@ document.addEventListener('turbolinks:load', () => {
       memoModalTitle () {
         const date = this.memoTargetRecordAt || this.targetDate
         return this.memoTargetType === 'History' ? `${date} の履歴に追記` : `${date} のメモ`
-      }
+      },
     },
     mounted () {
       this.setup()
@@ -126,12 +128,6 @@ document.addEventListener('turbolinks:load', () => {
         } else if (this.diaryTwoColumnsMediaQuery.addListener) {
           this.diaryTwoColumnsMediaQuery.addListener(this.diaryTwoColumnsMediaListener)
         }
-      },
-      moveSpecifiedDatePage (event) {
-        event.preventDefault()
-
-        const dayPageDateField = document.getElementById('day-page-date-field')
-        location.href = `/day/${dayPageDateField.value}`
       },
       setMemoForm () {
         $('#memo-form.modal').on('shown.bs.modal', () => {

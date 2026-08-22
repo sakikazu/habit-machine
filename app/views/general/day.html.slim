@@ -52,12 +52,7 @@
       = link_to day_path(@date - 1), class: 'nav-arrow prev-day', title: 'ショートカットキー: shift + <' do
         svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
           polyline points="15 18 9 12 15 6"
-      div(style="width:100%")
-        button.date-selector(@click="$refs.selectingDateForm.style.display = 'block'")
-          = "#{dispdate(@date, true)}"
-        form.form.form-inline.mt-2(style="display: none" @submit="moveSpecifiedDatePage" ref="selectingDateForm")
-          = date_field_tag 'day-page-date-field', @date, id: 'day-page-date-field', class: 'form-control'
-          input(type="submit" class="btn btn-light" value="移動")
+      day-date-picker(selected-date="#{@date}" display-date="#{dispdate(@date, true)}" day-path-template="#{day_path('__DATE__')}")
       = link_to day_path(@date + 1), class: 'nav-arrow next-day', title: 'ショートカットキー: shift + >' do
         svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
           polyline points="9 18 15 12 9 6"
@@ -149,6 +144,7 @@ sass:
     padding: 12px;
     box-sizing: border-box;
     margin: 7px auto 5px
+    position: relative
 
     .nav-container
       display: flex;
@@ -178,37 +174,6 @@ sass:
       width: 30px;
       height: 30px;
       stroke-width: 2.5;
-
-    .date-selector
-      flex: 1;
-      height: 50px;
-      width: 100%;
-      background: white;
-      border: 2px solid #2563eb;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      padding: 0 24px;
-      font-size: 20px;
-      font-weight: bold;
-      color: #374151;
-      cursor: pointer;
-      transition: background-color 0.2s;
-
-    .date-selector:hover
-      background: #ebf5ff;
-
-    .date-selector::after
-      content: "";
-      position: absolute;
-      right: 12px;
-      width: 8px;
-      height: 8px;
-      border-left: 2px solid #2563eb;
-      border-bottom: 2px solid #2563eb;
-      transform: rotate(-45deg) translateY(-2px);
 
     .action-buttons
       display: flex;
