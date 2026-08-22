@@ -41,4 +41,17 @@ RSpec.describe 'History details', type: :request do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  describe 'DELETE /histories/:id.json' do
+    it '家族の記録を削除してIDを返す' do
+      sign_in user
+      history_id = history.id
+
+      delete history_path(history, format: :json)
+
+      expect(response).to have_http_status(:success)
+      expect(response.parsed_body).to eq('deleted_id' => history_id)
+      expect(History.exists?(history_id)).to be(false)
+    end
+  end
 end

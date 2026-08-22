@@ -57,8 +57,12 @@ class HistoriesController < ApplicationController
 
   # Historyを削除する。
   def destroy
+    deleted_id = @history.id
     @history.destroy
-    redirect_to family_path, notice: '削除しました'
+    respond_to do |format|
+      format.html { redirect_to family_path, notice: '削除しました' }
+      format.json { render json: { deleted_id: deleted_id } }
+    end
   end
 
   private

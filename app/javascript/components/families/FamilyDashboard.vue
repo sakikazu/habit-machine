@@ -260,6 +260,16 @@
             </button>
             <div v-if="editLoading" class="family-dashboard__loading">フォームを読み込み中...</div>
             <div v-else v-html="editHtml"></div>
+            <div v-if="!editLoading" class="family-dashboard__danger-zone">
+              <button
+                type="button"
+                class="family-dashboard__delete"
+                :disabled="historyDeleting"
+                @click="deleteHistory"
+              >
+                {{ historyDeleting ? '削除中...' : 'この記録を削除' }}
+              </button>
+            </div>
           </template>
         </div>
       </template>
@@ -311,6 +321,7 @@ export default {
       selectedHistory: null,
       editHtml: '',
       editLoading: false,
+      historyDeleting: false,
       editingHistoryId: null,
       filtersOpen: true,
       displayMode: 'card'
@@ -439,6 +450,7 @@ export default {
       this.selectedHistory = null
       this.editHtml = ''
       this.editingHistoryId = null
+      this.historyDeleting = false
     },
     closeFormModal () {
       this.showFormModal = false
@@ -757,6 +769,29 @@ export default {
         })
         .finally(() => {
           this.editLoading = false
+        })
+    },
+    // 確認後に記録を削除し、表示中だったページを再取得する。
+    deleteHistory () {
+      if (!this.editingHistoryId || this.historyDeleting) return
+      if (!window.confirm('この記録を削除しますか？この操作は取り消せません。')) return
+
+      const deletedHistoryId = this.editingHistoryId
+      const currentPage = this.pagination?.page || 1
+      const targetPage = currentPage > 1 && this.histories.length <= 1 ? currentPage - 1 : currentPage
+      this.historyDeleting = true
+
+      HmAxios.delete(`/histories/${deletedHistoryId}.json`)
+        .then(() => {
+          this.closeHistoryModal()
+          this.fetchHistories(targetPage)
+        })
+        .catch((error) => {
+          console.log(error)
+          alert(error.response?.data?.errors?.join('\n') || '削除に失敗しました')
+        })
+        .finally(() => {
+          this.historyDeleting = false
         })
     },
     shouldRefreshList (targetDate) {

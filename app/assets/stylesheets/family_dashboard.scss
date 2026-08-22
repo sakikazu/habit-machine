@@ -284,6 +284,31 @@
   border-radius: 12px;
 }
 
+.family-dashboard__danger-zone {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid #ead8d8;
+}
+
+.family-dashboard__delete {
+  min-height: 40px;
+  padding: 7px 16px;
+  border: 1px solid #c94444;
+  border-radius: 8px;
+  background: #fff;
+  color: #a52d2d;
+  font-weight: 600;
+}
+
+.family-dashboard__delete:hover:not(:disabled) {
+  background: #fff0f0;
+}
+
+.family-dashboard__delete:disabled {
+  cursor: wait;
+  opacity: 0.6;
+}
+
 .family-dashboard__controls {
   display: grid;
   grid-template-columns: minmax(140px, 180px) 1fr;
