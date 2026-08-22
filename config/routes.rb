@@ -174,12 +174,6 @@ Rails.application.routes.draw do
     member do
       get :graph
     end
-
-    resources :child_histories, path: :histories, only: [] do
-      collection do
-        get 'y/:year', action: :year, as: :year
-      end
-    end
   end
 
   resource :family, only: %i[show edit update] do

@@ -13,7 +13,6 @@ Rails.application.config.assets.paths << Rails.root.join("node_modules")
 Rails.application.config.assets.precompile += %w[
   application.js
   categories.js
-  child_history_form.js
   day_page.js
   diaries_sidebar.js
   diary_show.js
