@@ -37,6 +37,7 @@ $ bin/dev
 ```
 
 `bin/dev`でRailsサーバーとJavaScriptのwatchビルドを同時に起動します。
+JavaScriptのwatchビルドだけを起動する場合は`bin/webpack-watch`を使用します。
 
 ### YouTubeアーカイブ用の環境変数
 `.env` に以下を設定

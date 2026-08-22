@@ -11,7 +11,7 @@
 ## 開発・ビルド・テスト
 - 依存起動: リポジトリ直下で`docker compose up`。
 - 依存インストール: Rubyは`bundle install`、JSは`yarn install`（Node 14.17.x前提）。
-- アプリ起動: `bin/rails s`（Web）＋`bin/webpack-dev-server`（Vue/webpackerのHMR）。
+- アプリ起動: `bin/rails s`（Web）＋`bin/webpack-watch`（Vue/Webpackのwatchビルド）。通常は両方を起動する`bin/dev`を使用。
 - DB: 初期化`bin/rails db:setup`、デモ投入`bin/rake db:seed_fu`。
 - テスト: `bundle exec rspec`。Lint: `bundle exec rubocop`。
 - デプロイ: `bundle exec cap production deploy`（linked_files/dirsは`config/deploy.rb`参照）。
