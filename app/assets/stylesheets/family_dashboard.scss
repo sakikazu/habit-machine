@@ -275,13 +275,15 @@
   border-radius: 12px;
 }
 
-.family-dashboard__danger-zone {
-  margin-top: 28px;
-  padding-top: 18px;
-  border-top: 1px solid #ead8d8;
+.history-form__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 40px;
 }
 
 .family-dashboard__delete {
+  margin-left: auto;
   min-height: 40px;
   padding: 7px 16px;
   border: 1px solid #c94444;

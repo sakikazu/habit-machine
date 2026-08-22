@@ -260,16 +260,6 @@
             </button>
             <div v-if="editLoading" class="family-dashboard__loading">フォームを読み込み中...</div>
             <div v-else v-html="editHtml"></div>
-            <div v-if="!editLoading" class="family-dashboard__danger-zone">
-              <button
-                type="button"
-                class="family-dashboard__delete"
-                :disabled="historyDeleting"
-                @click="deleteHistory"
-              >
-                {{ historyDeleting ? '削除中...' : 'この記録を削除' }}
-              </button>
-            </div>
           </template>
         </div>
       </template>
@@ -325,6 +315,7 @@ export default {
       editingHistoryId: null,
       historyRequestId: 0,
       editRequestId: 0,
+      historyFeedRequestId: 0,
       filtersOpen: true,
       displayMode: 'card'
     }
@@ -560,20 +551,33 @@ export default {
     },
     // 一覧APIを呼び出す。
     fetchHistories (page, options = {}) {
+      const requestId = ++this.historyFeedRequestId
+      const query = this.buildParams(page)
       this.loading = true
-      HmAxios.get(`/family/history_feed.json?${this.buildParams(page)}`)
+      HmAxios.get(`/family/history_feed.json?${query}`)
         .then((res) => {
+          if (requestId !== this.historyFeedRequestId) return
+
+          const pagination = res.data.pagination
+          const lastPage = Math.max(pagination?.total_pages || 0, 1)
+          if (options.ensureValidPage && page > lastPage) {
+            this.fetchHistories(lastPage, { ...options, ensureValidPage: false })
+            return
+          }
+
           this.histories = res.data.histories
-          this.pagination = res.data.pagination
+          this.pagination = pagination
           this.memberAges = res.data.member_ages || []
           if (options.scrollId) {
             this.scrollToHistory(options.scrollId)
           }
         })
         .catch((error) => {
+          if (requestId !== this.historyFeedRequestId) return
           console.log(error)
         })
         .finally(() => {
+          if (requestId !== this.historyFeedRequestId) return
           this.loading = false
         })
     },
@@ -617,7 +621,20 @@ export default {
         event.preventDefault()
         this.submitEditForm(form)
       })
+      this.addDeleteButton(form)
       this.enableFormDraft(form, 'edit')
+    },
+    // 編集フォームの操作行へ削除ボタンを追加する。
+    addDeleteButton (form) {
+      const actions = form.querySelector('.history-form__actions')
+      if (!actions || actions.querySelector('.family-dashboard__delete')) return
+
+      const button = document.createElement('button')
+      button.type = 'button'
+      button.className = 'family-dashboard__delete'
+      button.textContent = 'この記録を削除'
+      button.addEventListener('click', () => this.deleteHistory(button))
+      actions.appendChild(button)
     },
     // 追記に備えてフォーム入力をLocalStorageに保存・復元する。
     enableFormDraft (form, mode) {
@@ -788,7 +805,7 @@ export default {
 
           localStorage.removeItem(this.formDraftKey('edit'))
           this.closeHistoryModal()
-          this.fetchHistories(currentPage, { scrollId })
+          this.fetchHistories(currentPage, { scrollId, ensureValidPage: true })
         })
         .catch((error) => {
           alert(error.response?.data?.errors?.join('\n') || '保存に失敗しました')
@@ -798,7 +815,7 @@ export default {
         })
     },
     // 確認後に記録を削除し、表示中だったページを再取得する。
-    deleteHistory () {
+    deleteHistory (button = null) {
       if (!this.editingHistoryId || this.historyDeleting) return
       if (!window.confirm('この記録を削除しますか？この操作は取り消せません。')) return
 
@@ -806,6 +823,10 @@ export default {
       const currentPage = this.pagination?.page || 1
       const targetPage = currentPage > 1 && this.histories.length <= 1 ? currentPage - 1 : currentPage
       this.historyDeleting = true
+      if (button) {
+        button.disabled = true
+        button.textContent = '削除中...'
+      }
 
       HmAxios.delete(`/histories/${deletedHistoryId}.json`)
         .then(() => {
@@ -818,6 +839,10 @@ export default {
         })
         .finally(() => {
           this.historyDeleting = false
+          if (button?.isConnected) {
+            button.disabled = false
+            button.textContent = 'この記録を削除'
+          }
         })
     },
     shouldRefreshList (targetDate) {
