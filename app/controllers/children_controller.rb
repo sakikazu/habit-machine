@@ -2,7 +2,6 @@ class ChildrenController < ApplicationController
   before_action :authenticate_user!
   before_action :set_child, only: %i[edit update destroy graph]
   before_action :set_content_title, only: [:edit, :graph]
-  before_action :set_view_setting, only: %i(graph)
 
   def new
     @child = current_family.children.build
@@ -45,7 +44,6 @@ class ChildrenController < ApplicationController
 
   def graph
     @graph = Children::ChartBuilder.new(@child).run
-    @month = Time.zone.today
   end
 
   private
@@ -55,14 +53,11 @@ class ChildrenController < ApplicationController
   end
 
   def set_content_title
-    @content_title = @child.present? ? @child.name : 'こども'
+    child_name = @child.present? ? @child.name : 'こども'
+    @content_title = action_name == 'graph' ? "#{child_name}の身長・体重グラフ" : child_name
   end
 
   def child_params
     params.require(:child).permit(:name, :birthday, :gender)
-  end
-
-  def set_view_setting
-    @no_header_margin = true
   end
 end

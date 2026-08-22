@@ -1,0 +1,59 @@
+.child-graph {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 0 24px;
+}
+
+.child-graph__header {
+  margin-bottom: 20px;
+}
+
+.child-graph__label {
+  margin-bottom: 4px;
+  color: #6c757d;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.child-graph__title {
+  margin-bottom: 4px;
+  color: #2f2924;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.child-graph__description {
+  margin-bottom: 0;
+  color: #6c757d;
+  font-size: 16px;
+}
+
+.child-graph__chart {
+  overflow: hidden;
+  padding: 16px;
+  border: 1px solid #e4ded7;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(47, 41, 36, 0.08);
+}
+
+@media (max-width: 576px) {
+  .child-graph {
+    padding-top: 8px;
+  }
+
+  .child-graph__header {
+    margin-bottom: 12px;
+  }
+
+  .child-graph__title {
+    font-size: 24px;
+  }
+
+  .child-graph__chart {
+    margin: 0 -8px;
+    padding: 8px 0;
+    border-radius: 8px;
+  }
+}
