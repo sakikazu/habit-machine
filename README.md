@@ -33,8 +33,10 @@ HabitMachine
 ## 開発
 ```
 $ docker compose up
-$ bin/webpack-dev-server
+$ bin/dev
 ```
+
+`bin/dev`でRailsサーバーとJavaScriptのwatchビルドを同時に起動します。
 
 ### YouTubeアーカイブ用の環境変数
 `.env` に以下を設定

@@ -1,0 +1,9 @@
+#!/usr/bin/env sh
+
+# ポート未指定時はRails標準の3000番を利用する
+export PORT="${PORT:-3000}"
+
+# 前回の異常終了で残ったPIDファイルによる起動失敗を防ぐ
+rm -f tmp/pids/server.pid
+
+exec bundle exec foreman start -f Procfile.dev "$@"
