@@ -42,6 +42,19 @@ RSpec.describe 'History details', type: :request do
     end
   end
 
+  describe 'GET /histories/:id/edit.json' do
+    it 'モーダル用の操作ボタンを除いた編集フォームを返す' do
+      sign_in user
+
+      get edit_history_path(history, format: :json)
+
+      expect(response).to have_http_status(:success)
+      form_html = response.parsed_body.fetch('form_html')
+      expect(form_html).to include('<form', 'history[title]')
+      expect(form_html).not_to include('type="submit"')
+    end
+  end
+
   describe 'DELETE /histories/:id.json' do
     it '家族の記録を削除してIDを返す' do
       sign_in user

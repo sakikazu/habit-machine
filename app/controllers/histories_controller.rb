@@ -15,7 +15,8 @@ class HistoriesController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: { form_html: render_to_string(partial: 'histories/form', locals: { history: @history }, formats: [:html]) }
+        form_html = render_to_string(partial: 'histories/form', locals: { history: @history, modal: true }, formats: [:html])
+        render json: { form_html: form_html }
       end
     end
   end

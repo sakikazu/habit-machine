@@ -224,46 +224,15 @@
       </template>
     </Modal>
 
-    <Modal v-if="showHistoryModal" :no-padding="true" @on-close="closeHistoryModal">
-      <template #content>
-        <div class="family-dashboard__modal-body family-dashboard__modal-body--history">
-          <div v-if="historyModalLoading" class="family-dashboard__loading">記録を読み込み中...</div>
-          <template v-else-if="historyModalMode === 'view' && selectedHistory">
-            <div class="family-dashboard__detail-header">
-              <div class="family-dashboard__detail-meta">
-                <span v-if="selectedHistory.about_date" class="family-dashboard__approx">(だいたい)</span>
-                <span class="family-dashboard__date">{{ selectedHistory.target_date_label || selectedHistory.target_date }}</span>
-                <span
-                  v-for="name in memberNamePills(selectedHistory)"
-                  :key="`detail-${selectedHistory.id}-${name}`"
-                  class="family-dashboard__member"
-                >
-                  {{ name }}
-                </span>
-                <span v-if="selectedHistory.author_name" class="family-dashboard__author">by {{ selectedHistory.author_name }}</span>
-              </div>
-              <button type="button" class="family-dashboard__detail-edit" @click="switchHistoryModalToEdit">
-                編集
-              </button>
-            </div>
-            <h3 class="family-dashboard__detail-title">{{ selectedHistory.title }}</h3>
-            <p v-if="selectedHistory.height || selectedHistory.weight" class="family-dashboard__metrics">
-              <span v-if="selectedHistory.height">{{ selectedHistory.height }}cm</span>
-              <span v-if="selectedHistory.weight" class="family-dashboard__metric-separator">{{ selectedHistory.weight }}kg</span>
-            </p>
-            <img v-if="selectedHistory.eyecatch_url" :src="selectedHistory.eyecatch_url" alt="" class="family-dashboard__detail-image">
-            <div v-if="selectedHistory.content_html" class="family-dashboard__detail-content markdown" v-html="selectedHistory.content_html"></div>
-          </template>
-          <template v-else-if="historyModalMode === 'edit'">
-            <button type="button" class="family-dashboard__detail-back" @click="switchHistoryModalToView">
-              ← 閲覧に戻る
-            </button>
-            <div v-if="editLoading" class="family-dashboard__loading">フォームを読み込み中...</div>
-            <div v-else v-html="editHtml"></div>
-          </template>
-        </div>
-      </template>
-    </Modal>
+    <FamilyHistoryModal
+      v-if="historyModalId"
+      :key="historyModalId"
+      :history-id="historyModalId"
+      :initial-mode="historyModalInitialMode"
+      @close="closeHistoryModal"
+      @updated="handleHistoryUpdated"
+      @deleted="handleHistoryDeleted"
+    />
   </section>
 </template>
 
@@ -271,10 +240,12 @@
 import HmAxios from '../../hm_axios.js'
 import { nl2br } from '../../helper.js'
 import Modal from '../shared/Modal'
+import FamilyHistoryModal from './FamilyHistoryModal.vue'
 
 export default {
   components: {
-    Modal
+    Modal,
+    FamilyHistoryModal
   },
   props: {
     currentYear: {
@@ -305,16 +276,8 @@ export default {
       showFormModal: false,
       formHtml: '',
       formLoading: false,
-      showHistoryModal: false,
-      historyModalMode: 'view',
-      historyModalLoading: false,
-      selectedHistory: null,
-      editHtml: '',
-      editLoading: false,
-      historyDeleting: false,
-      editingHistoryId: null,
-      historyRequestId: 0,
-      editRequestId: 0,
+      historyModalId: null,
+      historyModalInitialMode: 'view',
       historyFeedRequestId: 0,
       filtersOpen: true,
       displayMode: 'card'
@@ -387,79 +350,30 @@ export default {
     // 記録詳細を取得して閲覧・編集共通モーダルを開く。
     openHistoryModal (history, mode = 'view') {
       if (!history?.id) return
-      const historyId = history.id
-      const requestId = ++this.historyRequestId
-      this.editRequestId += 1
-      this.showHistoryModal = true
-      this.historyModalMode = 'view'
-      this.historyModalLoading = true
-      this.selectedHistory = null
-      this.editingHistoryId = historyId
-      HmAxios.get(`/histories/${historyId}.json`)
-        .then((res) => {
-          if (requestId !== this.historyRequestId || this.editingHistoryId !== historyId) return
-          this.selectedHistory = res.data.history
-          if (mode === 'edit') this.switchHistoryModalToEdit()
-        })
-        .catch((error) => {
-          if (requestId !== this.historyRequestId || this.editingHistoryId !== historyId) return
-          console.log(error)
-          alert('記録の読み込みに失敗しました')
-          this.closeHistoryModal()
-        })
-        .finally(() => {
-          if (requestId !== this.historyRequestId || this.editingHistoryId !== historyId) return
-          this.historyModalLoading = false
-        })
+      this.historyModalInitialMode = mode
+      this.historyModalId = history.id
     },
-    // 同じモーダルを編集状態へ切り替えてフォームを読み込む。
-    switchHistoryModalToEdit () {
-      if (!this.editingHistoryId) return
-      const historyId = this.editingHistoryId
-      const requestId = ++this.editRequestId
-      this.historyModalMode = 'edit'
-      this.editLoading = true
-      this.editHtml = ''
-      HmAxios.get(`/histories/${historyId}/edit.json`)
-        .then((res) => {
-          if (requestId !== this.editRequestId || this.editingHistoryId !== historyId) return
-          this.editHtml = res.data.form_html
-        })
-        .catch((error) => {
-          if (requestId !== this.editRequestId || this.editingHistoryId !== historyId) return
-          console.log(error)
-          alert('編集フォームの読み込みに失敗しました')
-          this.historyModalMode = 'view'
-        })
-        .finally(() => {
-          if (requestId !== this.editRequestId || this.editingHistoryId !== historyId) return
-          this.editLoading = false
-          this.$nextTick(() => {
-            if (requestId !== this.editRequestId || this.editingHistoryId !== historyId) return
-            this.bindEditSubmit()
-            if (window.$ && window.$('#content-field').length > 0) {
-              window.$('#content-field').markdownEasily()
-            }
-          })
-        })
-    },
-    // 編集状態から取得済みの閲覧状態へ戻る。
-    switchHistoryModalToView () {
-      this.editRequestId += 1
-      this.editLoading = false
-      this.historyModalMode = 'view'
-    },
-    // 閲覧・編集共通モーダルを閉じて状態を破棄する。
+    // 閲覧・編集共通モーダルを閉じる
     closeHistoryModal () {
-      this.historyRequestId += 1
-      this.editRequestId += 1
-      this.showHistoryModal = false
-      this.historyModalMode = 'view'
-      this.historyModalLoading = false
-      this.selectedHistory = null
-      this.editHtml = ''
-      this.editingHistoryId = null
-      this.historyDeleting = false
+      this.historyModalId = null
+      this.historyModalInitialMode = 'view'
+    },
+    // 更新後に現在ページを再取得して対象カードへ戻す
+    handleHistoryUpdated (history) {
+      const currentPage = this.pagination?.page || 1
+      const matchesCurrentFilter = this.shouldRefreshList(history?.target_date)
+      const scrollId = matchesCurrentFilter && history?.id ? `history-${history.id}` : null
+
+      this.closeHistoryModal()
+      this.fetchHistories(currentPage, { scrollId, ensureValidPage: true })
+    },
+    // 削除後に必要なら一つ前のページを再取得する
+    handleHistoryDeleted () {
+      const currentPage = this.pagination?.page || 1
+      const targetPage = currentPage > 1 && this.histories.length <= 1 ? currentPage - 1 : currentPage
+
+      this.closeHistoryModal()
+      this.fetchHistories(targetPage)
     },
     closeFormModal () {
       this.showFormModal = false
@@ -471,9 +385,6 @@ export default {
     // 一覧カードのスクロール位置を安定させるIDを返す。
     historyCardId (history) {
       return history.id ? `history-${history.id}` : null
-    },
-    formatDate (dateString) {
-      return dateString || ''
     },
     memberNamePills (history) {
       if (history.member_names && history.member_names.length > 0) {
@@ -609,47 +520,14 @@ export default {
         event.preventDefault()
         this.submitForm(form)
       })
-      this.enableFormDraft(form, 'create')
-    },
-    // 編集フォームのsubmitをフックする。
-    bindEditSubmit () {
-      const form = this.$el.querySelector('.family-dashboard__modal-body--history form')
-      if (!form || form.dataset.bound) return
-
-      form.dataset.bound = 'true'
-      form.addEventListener('submit', (event) => {
-        event.preventDefault()
-        this.submitEditForm(form)
-      })
-      this.addDeleteButton(form)
-      this.enableFormDraft(form, 'edit')
-    },
-    // 編集フォームの操作行へ削除ボタンを追加する。
-    addDeleteButton (form) {
-      const actions = form.querySelector('.history-form__actions')
-      if (!actions || actions.querySelector('.family-dashboard__delete')) return
-
-      const button = document.createElement('button')
-      button.type = 'button'
-      button.className = 'family-dashboard__delete'
-      button.textContent = 'この記録を削除'
-      button.addEventListener('click', () => this.deleteHistory(button))
-      actions.appendChild(button)
+      this.enableFormDraft(form)
     },
     // 追記に備えてフォーム入力をLocalStorageに保存・復元する。
-    enableFormDraft (form, mode) {
+    enableFormDraft (form) {
       if (!form || form.dataset.draftBound) return
 
-      const storageKey = this.formDraftKey(mode)
-      if (mode === 'edit' && localStorage.getItem(storageKey)) {
-        if (window.confirm('未保存の編集内容があります。復元しますか？')) {
-          this.restoreFormDraft(form, storageKey)
-        } else {
-          localStorage.removeItem(storageKey)
-        }
-      } else {
-        this.restoreFormDraft(form, storageKey)
-      }
+      const storageKey = this.formDraftKey()
+      this.restoreFormDraft(form, storageKey)
 
       form.dataset.draftBound = 'true'
       const handler = () => {
@@ -658,10 +536,7 @@ export default {
       form.addEventListener('input', handler)
       form.addEventListener('change', handler)
     },
-    formDraftKey (mode) {
-      if (mode === 'edit' && this.editingHistoryId) {
-        return `history_form_draft_edit_${this.editingHistoryId}`
-      }
+    formDraftKey () {
       return 'history_form_draft_new'
     },
     saveFormDraft (form, storageKey) {
@@ -775,7 +650,7 @@ export default {
           const targetDate = history?.target_date
           const match = this.shouldRefreshList(targetDate)
 
-          localStorage.removeItem(this.formDraftKey('create'))
+          localStorage.removeItem(this.formDraftKey())
           this.closeFormModal()
 
           if (match) {
@@ -790,59 +665,6 @@ export default {
         })
         .finally(() => {
           this.formLoading = false
-        })
-    },
-    // 編集フォームをAPI経由で送信する。
-    submitEditForm (form) {
-      const formData = new FormData(form)
-      this.editLoading = true
-      HmAxios.post(form.action, formData, { headers: { Accept: 'application/json' } })
-        .then((res) => {
-          const history = res.data.history
-          const currentPage = this.pagination?.page || 1
-          const matchesCurrentFilter = this.shouldRefreshList(history?.target_date)
-          const scrollId = matchesCurrentFilter && history?.id ? `history-${history.id}` : null
-
-          localStorage.removeItem(this.formDraftKey('edit'))
-          this.closeHistoryModal()
-          this.fetchHistories(currentPage, { scrollId, ensureValidPage: true })
-        })
-        .catch((error) => {
-          alert(error.response?.data?.errors?.join('\n') || '保存に失敗しました')
-        })
-        .finally(() => {
-          this.editLoading = false
-        })
-    },
-    // 確認後に記録を削除し、表示中だったページを再取得する。
-    deleteHistory (button = null) {
-      if (!this.editingHistoryId || this.historyDeleting) return
-      if (!window.confirm('この記録を削除しますか？この操作は取り消せません。')) return
-
-      const deletedHistoryId = this.editingHistoryId
-      const currentPage = this.pagination?.page || 1
-      const targetPage = currentPage > 1 && this.histories.length <= 1 ? currentPage - 1 : currentPage
-      this.historyDeleting = true
-      if (button) {
-        button.disabled = true
-        button.textContent = '削除中...'
-      }
-
-      HmAxios.delete(`/histories/${deletedHistoryId}.json`)
-        .then(() => {
-          this.closeHistoryModal()
-          this.fetchHistories(targetPage)
-        })
-        .catch((error) => {
-          console.log(error)
-          alert(error.response?.data?.errors?.join('\n') || '削除に失敗しました')
-        })
-        .finally(() => {
-          this.historyDeleting = false
-          if (button?.isConnected) {
-            button.disabled = false
-            button.textContent = 'この記録を削除'
-          }
         })
     },
     shouldRefreshList (targetDate) {
