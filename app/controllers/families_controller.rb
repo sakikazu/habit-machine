@@ -61,6 +61,7 @@ class FamiliesController < ApplicationController
 
   # 検索条件に応じたHistory一覧を返す。
   def history_feed
+    display_mode = params[:display_mode] == 'title' ? 'title' : 'card'
     scope = filter_histories_scope.order(target_date: :desc)
     year = params[:year].presence&.to_i
     month = params[:month].presence&.to_i
@@ -74,16 +75,17 @@ class FamiliesController < ApplicationController
               scope
             end
     page = params[:page].presence || 1
-    per = params[:per].presence || 20
+    per = display_mode == 'title' ? 100 : 20
     histories = scope.page(page).per(per)
 
     render json: {
-      histories: histories.map { |history| build_history_payload(history) },
+      histories: histories.map { |history| build_history_payload(history, display_mode:) },
       pagination: build_pagination_payload(histories),
       member_ages: build_member_age_payload(year, month),
       filter: {
         year: year,
-        month: month
+        month: month,
+        display_mode: display_mode
       }
     }
   end
@@ -143,12 +145,10 @@ class FamiliesController < ApplicationController
   end
 
   # API用のHistory情報を組み立てる。
-  def build_history_payload(history)
-    {
+  def build_history_payload(history, display_mode: 'card')
+    payload = {
       id: history.id,
       title: history.title,
-      content: history.content,
-      content_html: helpers.markdown(history.content),
       target_date: history.target_date&.to_s,
       target_date_label: helpers.dispdate(history.target_date, true),
       about_date: history.about_date,
@@ -156,11 +156,17 @@ class FamiliesController < ApplicationController
       member_label: history.member_label,
       member_names: history.member_names,
       show_path: history_path(history),
+      favorited: history.favorited_by?(current_user)
+    }
+    return payload if display_mode == 'title'
+
+    payload.merge(
+      content: history.content,
+      content_html: helpers.markdown(history.content),
       eyecatch_url: history_eyecatch_url(history),
-      favorited: history.favorited_by?(current_user),
       height: history.height,
       weight: history.weight
-    }
+    )
   end
 
   # 月指定時のメンバー年齢情報を返す。

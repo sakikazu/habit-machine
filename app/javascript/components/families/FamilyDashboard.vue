@@ -13,6 +13,27 @@
       {{ filtersOpen ? '条件を閉じる' : '条件で絞り込む' }}
     </button>
 
+    <div class="family-dashboard__display-modes" aria-label="表示方法">
+      <button
+        type="button"
+        class="family-dashboard__display-mode"
+        :class="{ 'is-active': displayMode === 'card' }"
+        :aria-pressed="(displayMode === 'card').toString()"
+        @click="changeDisplayMode('card')"
+      >
+        通常表示
+      </button>
+      <button
+        type="button"
+        class="family-dashboard__display-mode"
+        :class="{ 'is-active': displayMode === 'title' }"
+        :aria-pressed="(displayMode === 'title').toString()"
+        @click="changeDisplayMode('title')"
+      >
+        タイトル一覧
+      </button>
+    </div>
+
     <div class="family-dashboard__controls" :class="{ 'is-open': filtersOpen }">
       <div class="family-dashboard__control">
         <label class="family-dashboard__label">メンバー</label>
@@ -97,7 +118,7 @@
     <div class="family-dashboard__list">
       <div v-if="loading" class="family-dashboard__loading">読み込み中...</div>
       <div v-else-if="histories.length === 0" class="family-dashboard__empty">記録はありません。</div>
-      <div v-else class="family-dashboard__cards">
+      <div v-else-if="displayMode === 'card'" class="family-dashboard__cards">
         <article v-for="history in histories" :key="history.id" :id="historyCardId(history)" class="family-dashboard__card">
           <div class="family-dashboard__card-header">
             <div class="family-dashboard__date-group">
@@ -139,6 +160,34 @@
           </p>
           <p v-if="history.content_html || history.content" class="family-dashboard__card-body" v-html="history.content_html || nl2br(history.content)"></p>
           <img v-if="history.eyecatch_url" :src="history.eyecatch_url" alt="" class="family-dashboard__card-image">
+        </article>
+      </div>
+      <div v-else class="family-dashboard__title-list">
+        <article v-for="history in histories" :key="history.id" class="family-dashboard__title-row">
+          <div class="family-dashboard__title-row-main">
+            <a :href="history.show_path" class="family-dashboard__title-link">{{ history.title }}</a>
+            <div class="family-dashboard__title-meta">
+              <span v-if="history.about_date" class="family-dashboard__approx">(だいたい)</span>
+              <span class="family-dashboard__date">{{ history.target_date_label || history.target_date }}</span>
+              <span
+                v-for="name in memberNamePills(history)"
+                :key="`${history.id}-${name}`"
+                class="family-dashboard__member"
+              >
+                {{ name }}
+              </span>
+              <span v-if="history.author_name" class="family-dashboard__author">by {{ history.author_name }}</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            class="family-dashboard__favorite"
+            :class="{ 'is-favorited': history.favorited }"
+            :aria-label="history.favorited ? 'お気に入りを解除' : 'お気に入りに追加'"
+            @click="toggleFavorite(history)"
+          >
+            <i :class="history.favorited ? 'fa fa-star' : 'fa fa-star-o'"></i>
+          </button>
         </article>
       </div>
 
@@ -227,7 +276,8 @@ export default {
       editHtml: '',
       editLoading: false,
       editingHistoryId: null,
-      filtersOpen: true
+      filtersOpen: true,
+      displayMode: 'card'
     }
   },
   computed: {
@@ -264,6 +314,12 @@ export default {
     // 検索条件の表示/非表示を切り替える。
     toggleFilters () {
       this.filtersOpen = !this.filtersOpen
+    },
+    // 検索条件を維持したまま表示モードを切り替える。
+    changeDisplayMode (mode) {
+      if (this.displayMode === mode) return
+      this.displayMode = mode
+      this.fetchHistories(1)
     },
     // モーダルでフォームHTMLを読み込む。
     openFormModal () {
@@ -402,7 +458,7 @@ export default {
         params.append('month', this.appliedMonth)
       }
       params.append('page', page)
-      params.append('per', 20)
+      params.append('display_mode', this.displayMode)
       return params.toString()
     },
     // 一覧APIを呼び出す。
