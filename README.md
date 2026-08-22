@@ -1,22 +1,20 @@
-HabitMachine
-====
+# HabitMachine
 
-日々のいろんな記録ができるサービス。
-基本プライベートで、特定機能は家族と共有できる。
-主な機能は、日記、登録した項目の記録、目次付きノート、家族の記録、検索。
-スマホView、PWA対応
+日記や習慣など、日々の記録をまとめるプライベート向けサービスです。
+一部の記録は家族と共有できます。レスポンシブ表示とPWAに対応しています。
 
-## 機能の詳細（技術についてを含む）
-* 日ごとのページに、日記、記録を設置して、日々の記録をやりやすく
-* 日記はタグ付け、画像添付、markdown対応（markdown入力補助あり）
-* 日記は多面的な閲覧が可能（「人生ハイライト」、「10年日記」、検索結果）
-* 日記を固定表示にすることで、簡易的なTODOリストを作成可能
-* 記録データはグラフ表示可能
-* turbolinksを使っているが、Vue.jsが入ったページではOFF
-* レスポンシブデザインによるスマホView対応
-* Vue.jsでSPA
-* 検索結果ページで検索ワードのハイライト
-* ノートページはContentEditableを使ってhタグをリアルタイム反映、markdown入力補助、hタグから目次生成
+## 主な機能
+
+- 日ごとの日記・習慣記録
+- 日記のタグ付け、画像添付、Markdown入力補助
+- 日記の固定表示、人生ハイライト、10年日記、全文検索
+- 記録データのグラフ表示
+- ContentEditableを使った目次付きノート
+- 家族の記録と一部データの共有
+- YouTube動画・音声・コメントのアーカイブ
+- レスポンシブ表示、PWA
+
+画面遷移にはTurbolinksを使用し、操作量の多い画面へVue 2コンポーネントをページ単位で組み込んでいます。全面的なSPAではありません。
 
 ## スクリーンキャプチャ
 ### 日ごとのページ
@@ -31,104 +29,130 @@ HabitMachine
 
 
 ## 開発
-```
-$ docker compose up
-$ bin/dev
+
+### 必要な環境
+
+- Ruby 3.2.6
+- Rails 7.2.3
+- Node.js 23.5.0
+- Yarn 1.x
+- MySQL
+
+RubyとNode.jsのバージョンは`.tool-versions`を参照してください。
+
+### セットアップ
+
+`.env.sample`をコピーして、環境に合わせた値を設定します。
+
+```bash
+cp .env.sample .env
+bin/setup
 ```
 
-`bin/dev`でRailsサーバーとJavaScriptのwatchビルドを同時に起動します。
-JavaScriptのwatchビルドだけを起動する場合は`bin/webpack-watch`を使用します。
+`config/database.yml`のdevelopment設定はローカルMySQLを使用します。ユーザー名やパスワードは必要に応じて調整してください。
 
-### YouTubeアーカイブ用の環境変数
-`.env` に以下を設定
+### 起動
+
+RailsサーバーとJavaScriptのwatchビルドを同時に起動します。
+
+```bash
+bin/dev
+```
+
+個別に起動する場合:
+
+```bash
+bin/rails server
+bin/webpack-watch
+```
+
+JavaScriptはWebpack 5でビルドし、`app/javascript/entrypoints`から`app/assets/builds`へ出力します。Webpackerは使用していません。
+
+### テスト・静的解析
+
+```bash
+bundle exec rspec
+bundle exec rubocop
+yarn build
+```
+
+テストDBの同期が必要な場合は、先に次を実行します。
+
+```bash
+bin/rails db:test:prepare
+```
+
+### 任意機能の設定
+
+YouTubeコメント取得には`YOUTUBE_API_KEY`が必要です。動画・音声ダウンロードには`yt-dlp`、`ffmpeg`、`ffprobe`をインストールしてください。`yt-dlp`がPATHにない場合は`YT_DLP_PATH`で実行ファイルを指定できます。
 
 ```dotenv
 YOUTUBE_API_KEY=your_youtube_api_key
+YT_DLP_PATH=/path/to/yt-dlp
 ```
 
-アプリ側では `config/settings.yml` 経由で `Settings.youtube_api.key` として参照する
-
-Capistranoデプロイでは `config/deploy.rb` の `linked_files` に `.env` が含まれているため、
-サーバー側の `shared/.env` に同じ `YOUTUBE_API_KEY` を設定すれば反映される
+Capistranoデプロイでは`.env`がlinked fileになっているため、本番環境の`shared/.env`へ必要な値を設定します。
 
 ## 本番デプロイ
-```
-# 意図せぬruby環境のcapを使用しないよう、bundle execをつける
-$ bundle exec cap production deploy
+
+```bash
+bundle exec cap production deploy
 ```
 
 ## デモ環境
+
 * ※現在は、必要なときにterraformでAWS ECSにデプロイしている
 
 テストユーザー
+
 | email            | password  |
 | ---------------- | --------- |
 | test@example.com | password  |
 
 
-## System dependencies
+## 主な技術
 
-* ruby 3.2系
-* rails 6.1系
-* Vue.js 2.6系
-* JavaScript ES2015以降
-* Node 14.17.0
-  * v16にするとエラーになる
-
-### 主なライブラリ
-* Twitter bootstrap 4: https://getbootstrap.jp/docs/4.2/getting-started/introduction/
-* Font Awesome: https://fontawesome.com/v4.7.0/icons/#
-* テンプレートエンジン: slim
-* altCSS: scss, sass
-
-### ミドルウェア
-* postfix（死活監視はなし）
-
-### サービス
-特になし
+- Rails 7.2
+- MySQL
+- Vue.js 2.6
+- Webpack 5 / jsbundling-rails
+- Turbolinks 5
+- Bootstrap 4.6
+- Font Awesome 4
+- Slim
+- Sass / SCSS
+- RSpec / factory_bot
 
 
-# 自分用メモ、古いメモ
+## 運用メモ
 
-## Knowhow
+### Knowhow
 
-* 日記のmarkdown入力補助はJSをjQueryモジュール化している
+* 日記のMarkdown入力補助はJavaScriptをjQueryモジュール化している
 * 各所にCSS flexboxを用いてレイアウト
 
 
-## Deployment instructions
-* config/deploy.rbに記載されているlinked_files, linkded_dirsに意識すればOK
+### Deployment instructions
+* `config/deploy.rb`に記載されているlinked_files、linked_dirsを確認する
 
-## Backup
+### Backup
 サーバー側のcronでDBのdumpを行い、
 ローカルPCのcronでDB dumpとアップロードファイルをローカルPC内部に保存している
 
-
-## Other
-
-### bitbucket's README.md
-https://bitbucket.org/tutorials/markdowndemo/src/master/
 
 ### エラー通知
 * エラー時はexception_notificationによって、sakikazuのGmailにExceptionメールが送信される
 * Exceptionメールが正しく動作しているかの確認は、「ActionController::InvalidAuthenticityToken」を出すのが手軽
 
-### webプッシュ通知
+### Webプッシュ通知
 * Firebase Cloud Messagingを使っている
 * Service Workerのこととか不明点が多く、一応は動作しているが、今後もっと簡潔になったらリファクタリングしたい
 * 柔軟にプッシュ通知を送るには（スケジュール機能作った場合にその期限日の通知など）、FCMのAPIにPOSTする仕組みを作ってやる必要あり
 * このためにpublic配下に置く必要があった静的ファイルがあり、それを本番で読み込めるようにNginx confに特定の設定がされている
 
-## よく使うコマンド
+### よく使うコマンド
 
-### デモデータ投入
+#### デモデータ投入
+```bash
+bin/rake db:seed_fu
 ```
-$ bin/rake db:seed_fu
-```
-
-
-## TODO
-* webpackerあたりでハマることが多いので脱却したい
-  * rails7のesbuildへの移行
-  * Viteの採用（HMR、Vue.jsとの相性が良い）
-    * `vite_rails` gem
