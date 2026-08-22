@@ -323,6 +323,8 @@ export default {
       editLoading: false,
       historyDeleting: false,
       editingHistoryId: null,
+      historyRequestId: 0,
+      editRequestId: 0,
       filtersOpen: true,
       displayMode: 'card'
     }
@@ -394,43 +396,55 @@ export default {
     // 記録詳細を取得して閲覧・編集共通モーダルを開く。
     openHistoryModal (history, mode = 'view') {
       if (!history?.id) return
+      const historyId = history.id
+      const requestId = ++this.historyRequestId
+      this.editRequestId += 1
       this.showHistoryModal = true
       this.historyModalMode = 'view'
       this.historyModalLoading = true
       this.selectedHistory = null
-      this.editingHistoryId = history.id
-      HmAxios.get(`/histories/${history.id}.json`)
+      this.editingHistoryId = historyId
+      HmAxios.get(`/histories/${historyId}.json`)
         .then((res) => {
+          if (requestId !== this.historyRequestId || this.editingHistoryId !== historyId) return
           this.selectedHistory = res.data.history
           if (mode === 'edit') this.switchHistoryModalToEdit()
         })
         .catch((error) => {
+          if (requestId !== this.historyRequestId || this.editingHistoryId !== historyId) return
           console.log(error)
           alert('記録の読み込みに失敗しました')
           this.closeHistoryModal()
         })
         .finally(() => {
+          if (requestId !== this.historyRequestId || this.editingHistoryId !== historyId) return
           this.historyModalLoading = false
         })
     },
     // 同じモーダルを編集状態へ切り替えてフォームを読み込む。
     switchHistoryModalToEdit () {
       if (!this.editingHistoryId) return
+      const historyId = this.editingHistoryId
+      const requestId = ++this.editRequestId
       this.historyModalMode = 'edit'
       this.editLoading = true
       this.editHtml = ''
-      HmAxios.get(`/histories/${this.editingHistoryId}/edit.json`)
+      HmAxios.get(`/histories/${historyId}/edit.json`)
         .then((res) => {
+          if (requestId !== this.editRequestId || this.editingHistoryId !== historyId) return
           this.editHtml = res.data.form_html
         })
         .catch((error) => {
+          if (requestId !== this.editRequestId || this.editingHistoryId !== historyId) return
           console.log(error)
           alert('編集フォームの読み込みに失敗しました')
           this.historyModalMode = 'view'
         })
         .finally(() => {
+          if (requestId !== this.editRequestId || this.editingHistoryId !== historyId) return
           this.editLoading = false
           this.$nextTick(() => {
+            if (requestId !== this.editRequestId || this.editingHistoryId !== historyId) return
             this.bindEditSubmit()
             if (window.$ && window.$('#content-field').length > 0) {
               window.$('#content-field').markdownEasily()
@@ -440,10 +454,14 @@ export default {
     },
     // 編集状態から取得済みの閲覧状態へ戻る。
     switchHistoryModalToView () {
+      this.editRequestId += 1
+      this.editLoading = false
       this.historyModalMode = 'view'
     },
     // 閲覧・編集共通モーダルを閉じて状態を破棄する。
     closeHistoryModal () {
+      this.historyRequestId += 1
+      this.editRequestId += 1
       this.showHistoryModal = false
       this.historyModalMode = 'view'
       this.historyModalLoading = false
@@ -606,7 +624,15 @@ export default {
       if (!form || form.dataset.draftBound) return
 
       const storageKey = this.formDraftKey(mode)
-      this.restoreFormDraft(form, storageKey)
+      if (mode === 'edit' && localStorage.getItem(storageKey)) {
+        if (window.confirm('未保存の編集内容があります。復元しますか？')) {
+          this.restoreFormDraft(form, storageKey)
+        } else {
+          localStorage.removeItem(storageKey)
+        }
+      } else {
+        this.restoreFormDraft(form, storageKey)
+      }
 
       form.dataset.draftBound = 'true'
       const handler = () => {
