@@ -286,12 +286,18 @@ document.addEventListener('turbolinks:load', () => {
       onContentChanged (formKey) {
         this.contentChanged.push(formKey)
       },
-      onSubmitted (formKey, _updatedDiary) {
+      onSubmitted (formKey, updatedDiary) {
         this.contentChanged = this.contentChanged.filter(content => content !== formKey)
+        this.refreshDiarySidebar(updatedDiary)
       },
-      // this.diariesの方には反映する必要性はあまりない
+      // モーダル内の日記更新をサイドバーへ反映する
       reflectPinnedDiaries (_formKey, updatedDiary) {
+        this.refreshDiarySidebar(updatedDiary)
+      },
+      // 日記の更新後に固定日記とお気に入りを最新化する
+      refreshDiarySidebar (updatedDiary) {
         window.dispatchEvent(new CustomEvent('sidebar-refresh', { detail: { diary: updatedDiary } }))
+        window.dispatchEvent(new CustomEvent('favorites-refresh', { detail: { diary: updatedDiary } }))
       },
       submitAppendingMemo (event) {
         event.preventDefault()

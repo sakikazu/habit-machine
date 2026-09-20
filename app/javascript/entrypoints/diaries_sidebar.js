@@ -3,16 +3,24 @@ import HmAxios from 'hm_axios.js'
 
 import TaskDiary from 'components/diaries/TaskDiary'
 
+// dayページの再マウント時にサイドバー用APIを再取得しないためのキャッシュ
+let pinnedDiariesCache = null
+let favoritesCache = null
+let sidebarVm = null
+
 document.addEventListener('turbolinks:load', () => {
   const el = document.getElementById('diariesSidebar')
   if (!el) return
   // NOTE: data-turbolinks-permanentで復元されたDOMには既にVueインスタンスがぶら下がっているので再マウントを避ける
   if (el.__vue__) return
 
-  new Vue({
+  // 親のdayPage VueがDOMを置換した場合、古いグローバルイベントリスナーを破棄する
+  if (sidebarVm) sidebarVm.$destroy()
+
+  sidebarVm = new Vue({
     el,
     template: `
-      <div id="diariesSidebar">
+      <div id="diariesSidebar" data-turbolinks-permanent>
         <div class="page-header">
           <h4>
             <span class="mr-2">
@@ -61,10 +69,10 @@ document.addEventListener('turbolinks:load', () => {
       historyFavoriteUpdating: false,
     },
     mounted () {
-      this.fetchPinned()
+      this.loadPinned()
       // main/day_page側へ依頼されたリフレッシュイベントを拾って最新の固定日記を取得
       window.addEventListener('sidebar-refresh', this.fetchPinned)
-      this.fetchFavorites()
+      this.loadFavorites()
       window.addEventListener('favorites-refresh', this.fetchFavorites)
       window.addEventListener('history-appended', this.onHistoryAppended)
     },
@@ -74,20 +82,39 @@ document.addEventListener('turbolinks:load', () => {
       window.removeEventListener('history-appended', this.onHistoryAppended)
     },
     methods: {
+      // キャッシュ済みの固定日記があればAPIを呼ばずに復元する
+      loadPinned () {
+        if (pinnedDiariesCache !== null) {
+          this.diaries = pinnedDiariesCache
+          return
+        }
+        this.fetchPinned()
+      },
       // 固定日記一覧をサーバーから再取得してサイドバーを更新
       fetchPinned () {
         HmAxios.get('/diaries/pinned.json')
           .then(res => {
-            this.diaries = res.data.diaries || res.data
+            pinnedDiariesCache = res.data.diaries || res.data
+            this.diaries = pinnedDiariesCache
           })
           .catch(error => {
             alert(error.message || error?.response?.data?.message)
           })
       },
+      // キャッシュ済みのお気に入りがあればAPIを呼ばずに復元する
+      loadFavorites () {
+        if (favoritesCache !== null) {
+          this.favorites = favoritesCache
+          return
+        }
+        this.fetchFavorites()
+      },
+      // お気に入り一覧をサーバーから再取得してキャッシュを更新する
       fetchFavorites () {
         HmAxios.get('/favorites.json')
           .then(res => {
-            this.favorites = res.data.favorites || []
+            favoritesCache = res.data.favorites || []
+            this.favorites = favoritesCache
           })
           .catch(error => {
             alert(error.message || error?.response?.data?.message)
