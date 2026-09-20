@@ -27,9 +27,3 @@ json.categories do
     json.partial! 'categories/category_node', category: category
   end
 end
-
-json.pinned_diaries do
-  json.array! @pinned_diaries do |diary|
-    json.extract! diary, :id, :title, :content, :record_at, :pin_priority
-  end
-end

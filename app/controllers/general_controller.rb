@@ -22,7 +22,6 @@ class GeneralController < ApplicationController
     return head :bad_request if date.blank?
     @habits = Habit.with_record_at_date(Habit.available_by_user(current_user), date)
     @diaries = current_user.diaries.includes(:tags, :favorites, backlinked_diaries: :tags).where(record_at: date).order(main_in_day: :desc)
-    @pinned_diaries = current_user.diaries.pinned.includes(:tags).order(id: :desc).limit(15)
     categories = current_user.all_categories(eager_load: :only_category)
     @categories = Category.sorted_tree(categories, include_diaries: false)
   end
