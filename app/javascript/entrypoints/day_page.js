@@ -22,6 +22,8 @@ document.addEventListener('turbolinks:load', () => {
       targetDate: null,
       targetDateSettingTimeout: null,
       habit_records: [],
+      // APIレスポンスを受け取るまで日記関連の表示を抑止する
+      diariesLoading: true,
       diariesWithOpsions: [],
       // ページ内の日記たちの中で編集中のものを保持する
       editModeDiaryIds: [],
@@ -237,6 +239,7 @@ document.addEventListener('turbolinks:load', () => {
         })
       },
       fetchData () {
+        this.diariesLoading = true
         HmAxios.get(`/day_data/${this.targetDate}.json`)
           .then(res => {
             this.habit_records = res.data.habit_records
@@ -248,8 +251,11 @@ document.addEventListener('turbolinks:load', () => {
             this.categories = res.data.categories || []
           })
           .catch(error => {
-            alert(error.message || error.response.data.message)
+            alert(error.message || error.response?.data?.message)
             console.error(error)
+          })
+          .finally(() => {
+            this.diariesLoading = false
           })
       },
       enablePopover () {

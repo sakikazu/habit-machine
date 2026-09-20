@@ -90,38 +90,40 @@
           / 「data-trigger="focus"」を与えることで、本buttonではなく、他の場所のクリック時に消えるようになる（逆に与えないと、他の場所クリックで消えないので不便だった）
           button.btn.btn-primary(v-show="diariesWithOpsions.length > 1" data-toggle="popover" data-trigger="focus" title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
       .diaries(ref="diariesBody")
-        p(v-if="diariesWithOpsions.length == 0") 日記はありません。
-        .diaries-grid(v-else :class="{ 'two-columns': secondaryDiaryObjs.length > 0 }")
-          .diary-main(v-if="mainDiaryObj")
-            .diary-wrapper
-              diary(
-                :diary="mainDiaryObj.diary"
-                :target-date-for-edit-mode="mainDiaryObj.targetDateForEditMode"
-                :highlight-for-a-moment="mainDiaryObj.highlightForAMoment"
-                :key="`diary-${mainDiaryObj.diary.id}`"
-                :categories="categories"
-                :collapsible-body="false"
-                @content-changed="onContentChanged"
-                @submitted="onSubmitted"
-                @on-edit-mode="onEditMode"
-                @append-memo="showMemoForm"
-              )
-          .diary-list
-            .diary-wrapper(v-for="obj in secondaryDiaryObjs")
-              diary(
-                :diary="obj.diary"
-                :target-date-for-edit-mode="obj.targetDateForEditMode"
-                :highlight-for-a-moment="obj.highlightForAMoment"
-                :key="`diary-${obj.diary.id}`"
-                :categories="categories"
-                :collapsible-body="true"
-                :collapse-by-default="shouldCollapseSecondaryDiary"
-                @content-changed="onContentChanged"
-                @submitted="onSubmitted"
-                @on-edit-mode="onEditMode"
-                @append-memo="showMemoForm"
-              )
-      p
+        p(v-if="diariesLoading") 読み込み中...
+        template(v-else)
+          p(v-if="diariesWithOpsions.length == 0") 日記はありません。
+          .diaries-grid(v-else :class="{ 'two-columns': secondaryDiaryObjs.length > 0 }")
+            .diary-main(v-if="mainDiaryObj")
+              .diary-wrapper
+                diary(
+                  :diary="mainDiaryObj.diary"
+                  :target-date-for-edit-mode="mainDiaryObj.targetDateForEditMode"
+                  :highlight-for-a-moment="mainDiaryObj.highlightForAMoment"
+                  :key="`diary-${mainDiaryObj.diary.id}`"
+                  :categories="categories"
+                  :collapsible-body="false"
+                  @content-changed="onContentChanged"
+                  @submitted="onSubmitted"
+                  @on-edit-mode="onEditMode"
+                  @append-memo="showMemoForm"
+                )
+            .diary-list
+              .diary-wrapper(v-for="obj in secondaryDiaryObjs")
+                diary(
+                  :diary="obj.diary"
+                  :target-date-for-edit-mode="obj.targetDateForEditMode"
+                  :highlight-for-a-moment="obj.highlightForAMoment"
+                  :key="`diary-${obj.diary.id}`"
+                  :categories="categories"
+                  :collapsible-body="true"
+                  :collapse-by-default="shouldCollapseSecondaryDiary"
+                  @content-changed="onContentChanged"
+                  @submitted="onSubmitted"
+                  @on-edit-mode="onEditMode"
+                  @append-memo="showMemoForm"
+                )
+      p(v-if="!diariesLoading")
         a.btn.btn-block.btn-warning.mb-2(v-if="!hasMainDiary" @click="newMainDiary")
           i.fa.fa-star
           | &nbsp;メイン日記を作成
