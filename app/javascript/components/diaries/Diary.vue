@@ -190,6 +190,8 @@ export default {
       // TODO: propsのdiaryではなく、localDiaryを使う必要性を忘れてしまったので、わかったらコメント書いておく
       localDiary: null,
       editMode: (!!this.targetDateForEditMode ? true : false),
+      // 新規日記は保存時にIDが付与されるため、編集開始時のIDを終了判定まで保持する
+      editModeDiaryId: this.diary?.id || this.diaryId || null,
       highlight: this.highlightForAMoment,
       changed_record_at: null,
       // 直接categoriesにカテゴリの選択状態を反映してしまうと他のDiary Componentにも影響してしまうので、Componentごとに持つ（選択モーダル用）
@@ -213,7 +215,13 @@ export default {
       }
     },
     editMode(newVal) {
-      this.$emit('on-edit-mode', this.localDiary.id, newVal)
+      if (newVal) {
+        this.editModeDiaryId = this.localDiary?.id || this.diary?.id || this.diaryId || null
+      }
+      this.$emit('on-edit-mode', this.editModeDiaryId, newVal)
+      if (!newVal) {
+        this.editModeDiaryId = null
+      }
     },
     // displayCategoriesはpropsまたは取得結果のどちらかなので、displayCategoriesとselectedCategoryIdsが揃った状態でlocalCategoriesを更新する
     displayCategories: {
@@ -452,7 +460,8 @@ export default {
       this.$emit('content-changed', formKey)
     },
     onSubmitted (formKey, updatedDiary) {
-      this.$emit('submitted', formKey, updatedDiary)
+      // 親が保持する保存前の日記を特定できるよう、現在のpropsも渡す
+      this.$emit('submitted', formKey, updatedDiary, this.diary)
       this.editMode = false
       this.highlight = true
       this.localDiary = updatedDiary

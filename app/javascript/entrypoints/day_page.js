@@ -286,8 +286,21 @@ document.addEventListener('turbolinks:load', () => {
       onContentChanged (formKey) {
         this.contentChanged.push(formKey)
       },
-      onSubmitted (formKey, updatedDiary) {
+      onSubmitted (formKey, updatedDiary, submittedDiary) {
         this.contentChanged = this.contentChanged.filter(content => content !== formKey)
+        // 保存前のオブジェクト参照から対象を特定し、親側の日記一覧も最新化する
+        const foundIdx = this.diariesWithOpsions.findIndex(obj => obj.diary === submittedDiary)
+        if (foundIdx >= 0) {
+          const target = this.diariesWithOpsions[foundIdx]
+          // 新規保存によるコンポーネント再生成より先に、作成時の編集フラグを確実に解除する
+          this.onEditMode(submittedDiary?.id || null, false)
+          this.$set(this.diariesWithOpsions, foundIdx, {
+            ...target,
+            diary: updatedDiary,
+            targetDateForEditMode: null,
+            highlightForAMoment: true,
+          })
+        }
         this.refreshDiarySidebar(updatedDiary)
       },
       // モーダル内の日記更新をサイドバーへ反映する
