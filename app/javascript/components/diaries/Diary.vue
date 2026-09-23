@@ -34,56 +34,57 @@ Diary
 .diaryWrapper(v-if="localDiary")
   .well.diary-card(v-if="!editMode" :class="{'highlight-border': highlight}")
     .page-header.mt0
-      .diary-topbar
-        .diary-actions
-          button.action-pill.primary(v-if="localDiary.id && hasAppendMemo" @click.prevent="$emit('append-memo', localDiary)")
-            i.fa.fa-sticky-note-o.mr-1
-            | 追記
-          button.action-pill(@click.prevent="edit")
-            i.fa.fa-pencil.mr-1
-            | 編集
-        .action-menu-wrapper(ref="actionMenuWrapper")
-          button.action-pill(@click.prevent="toggleActionMenu")
-            i.fa.fa-ellipsis-h.mr-1
-            | その他
-          .action-menu(v-if="showActionMenu")
-            button.action-menu__item(
-              type="button"
-              :class="isFavorited ? 'favorite-active' : 'favorite-inactive'"
-              :disabled="favoriting"
-              @click.prevent="toggleFavoriteFromMenu"
-            )
-              i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
-              | {{ favoriteLabel }}
-            url-copy-button.action-menu__item(v-if="diaryDetailUrl" :url="diaryDetailUrl")
-            button.action-menu__item(@click.prevent="openCategoryModalFromMenu")
-              i.fa.fa-folder-open.mr-1
-              | カテゴリ編集
-            a.action-menu__item(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
-              i.fa.fa-clock-o.mr-1
-              | 履歴 ({{ localDiary.history_count }})
-      .d-flex.justify-content-end
-        .flex-grow-1
+      .diary-header
+        .diary-heading
           h5.diary-title
             .noLinkTitle.text-secondary(v-if="modalMode")
               a.date.mr10(:href="`/day/${localDiary.record_at}`" :target="linkWithTargetBlankValue")
                 i.fa.fa-window-restore.mr-1(v-if="linkWithTargetBlank")
                 | {{ localDiary.disp_record_at }}
+              span.title(v-if="localDiary.title") {{ localDiary.title }}
+              span.no-title-yet(v-else) タイトル未設定
               span.main-badge.ml-2(v-if="localDiary.main_in_day")
                 span.main-dot
                 | メイン
-              span.title(v-if="localDiary.title") {{ localDiary.title }}
-              span.no-title-yet(v-else)
-                i.fa.fa-exclamation-triangle.mr-1
-                | タイトル未設定
-            span.title(v-else)
-              span.main-badge.mr-2(v-if="localDiary.main_in_day")
+            template(v-else)
+              a.diary-title-link(
+                :href="`/day/${localDiary.record_at}/diaries/${localDiary.id}`"
+                :class="{ 'is-untitled': !localDiary.title }"
+                :aria-label="localDiary.title || 'タイトル未設定の日記の詳細を開く'"
+              )
+                span.title {{ localDiary.title || 'タイトル未設定' }}
+                i.fa.fa-angle-right.diary-title-link__icon(aria-hidden="true")
+              span.main-badge.ml-2(v-if="localDiary.main_in_day")
                 span.main-dot
                 | メイン
-              a(v-if="localDiary.title" :href="`/day/${localDiary.record_at}/diaries/${localDiary.id}`" :aria-label="localDiary.title || 'タイトル未設定の日記'") {{ localDiary.title }}
-              span.no-title-yet(v-else)
-                i.fa.fa-exclamation-triangle.mr-1
-                | タイトル未設定
+        .diary-controls
+          .diary-actions
+            button.action-pill.primary(v-if="localDiary.id && hasAppendMemo" @click.prevent="$emit('append-memo', localDiary)")
+              i.fa.fa-sticky-note-o.mr-1
+              | 追記
+            button.action-pill(@click.prevent="edit")
+              i.fa.fa-pencil.mr-1
+              | 編集
+          .action-menu-wrapper(ref="actionMenuWrapper")
+            button.action-pill(@click.prevent="toggleActionMenu")
+              i.fa.fa-ellipsis-h.mr-1
+              | その他
+            .action-menu(v-if="showActionMenu")
+              button.action-menu__item(
+                type="button"
+                :class="isFavorited ? 'favorite-active' : 'favorite-inactive'"
+                :disabled="favoriting"
+                @click.prevent="toggleFavoriteFromMenu"
+              )
+                i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
+                | {{ favoriteLabel }}
+              url-copy-button.action-menu__item(v-if="diaryDetailUrl" :url="diaryDetailUrl")
+              button.action-menu__item(@click.prevent="openCategoryModalFromMenu")
+                i.fa.fa-folder-open.mr-1
+                | カテゴリ編集
+              a.action-menu__item(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
+                i.fa.fa-clock-o.mr-1
+                | 履歴 ({{ localDiary.history_count }})
       .meta-bar.mt-2(v-if="showMetaBar")
         .meta-block(v-if="hasTags")
           .meta-label
@@ -467,14 +468,9 @@ export default {
 .no-title-yet
   display: inline-flex
   align-items: center
-  gap: 6px
-  padding: 6px 10px
-  border-radius: 999px
-  background: linear-gradient(90deg, #fff5f5 0%, #ffecec 100%)
-  border: 1px dashed #fb7185
-  color: #b91c1c
-  font-weight: 800
-  font-size: 13px
+  color: #64748b
+  font-weight: 600
+  font-style: italic
 
 .highlight-border
   border: 1px solid #bbdfff
@@ -505,13 +501,21 @@ export default {
   padding-bottom: 6px
   position: relative
 
-.diary-topbar
+.diary-header
+  display: flex
+  align-items: flex-start
+  justify-content: space-between
+  gap: 16px
+
+.diary-heading
+  min-width: 0
+  padding-top: 4px
+
+.diary-controls
   display: flex
   align-items: center
-  justify-content: space-between
-  gap: 10px
-  margin-bottom: 10px
-  flex-wrap: wrap
+  gap: 8px
+  flex-shrink: 0
 
 .diary-actions
   display: flex
@@ -609,6 +613,8 @@ export default {
 
 .diary-card .diary-title
   padding-right: 0
+  margin: 0
+  line-height: 1.5
 
 .diary-card .diary-title .title
   font-size: 22px
@@ -634,19 +640,44 @@ export default {
   background: linear-gradient(135deg, #1d4ed8 0%, #60a5fa 100%)
   box-shadow: 0 0 0 3px rgba(226, 232, 240, 0.8)
 
-.diary-card .diary-title .title.no-title-yet
-  color: #b91c1c
-  font-weight: 800
-
-.diary-card .diary-title .title a
-  color: inherit
+.diary-title-link
+  display: inline-flex
+  align-items: center
+  gap: 8px
+  color: #0f172a
   text-decoration: none
-  border-bottom: 2px solid transparent
-  padding-bottom: 2px
-  transition: border-color 0.12s ease
+  border-radius: 6px
+  transition: color 0.12s ease, background-color 0.12s ease
 
-.diary-card .diary-title .title a:hover
-  border-color: #2563eb
+.diary-title-link:hover
+  color: #2563eb
+  text-decoration: none
+
+.diary-title-link:focus
+  outline: none
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18)
+
+.diary-title-link.is-untitled
+  padding: 3px 8px
+  border: 1px dashed #cbd5e1
+  background: #f8fafc
+  color: #64748b
+
+.diary-title-link.is-untitled .title
+  font-size: 15px
+  font-weight: 600
+  font-style: italic
+  color: inherit
+
+.diary-title-link:hover .title
+  color: inherit
+
+.diary-title-link__icon
+  color: #94a3b8
+  font-size: 16px
+
+.diary-title-link:hover .diary-title-link__icon
+  color: #2563eb
 
 .diary-card .tags
   margin-top: 4px
@@ -793,4 +824,19 @@ export default {
 .markdown-placeholder
   color: #94a3b8
   font-style: italic
+
+@media (max-width: 640px)
+  .diary-header
+    flex-direction: column
+    gap: 12px
+
+  .diary-controls
+    width: 100%
+    justify-content: space-between
+
+  .diary-actions
+    gap: 6px
+
+  .action-pill
+    padding: 6px 9px
 </style>
