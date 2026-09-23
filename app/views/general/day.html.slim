@@ -123,12 +123,13 @@
                   @on-edit-mode="onEditMode"
                   @append-memo="showMemoForm"
                 )
-      p(v-if="!diariesLoading")
-        a.btn.btn-block.btn-warning.mb-2(v-if="!hasMainDiary" @click="newMainDiary")
+      .diary-create-actions(v-if="!diariesLoading")
+        button.btn.btn-block.btn-main-diary.mb-2(type="button" v-if="!hasMainDiary" @click="newMainDiary")
           i.fa.fa-star
           | &nbsp;メイン日記を作成
-        a.btn.btn-block.btn-light.ignore-checking-changes.mb-3(@click="newDiary")
-          i.fa.fa-pencil &nbsp;日記を書く
+        button.btn.btn-block.btn-new-diary.ignore-checking-changes.mb-3(type="button" @click="newDiary")
+          i.fa.fa-pencil
+          | &nbsp;日記を書く
 
     .sectionPinnedDiaries.col-md-3
       / NOTE: turbolinks permanentで日付遷移時もDOMを保持し、サイドバーの再fetchを防ぐ
@@ -244,6 +245,34 @@ sass:
     display: flex
     flex-direction: column
     gap: 12px
+  // 日記作成の主操作を日付ナビゲーションと同じ青系で統一
+  .diary-create-actions
+    padding-top: 4px
+    .btn
+      min-height: 40px
+      border-radius: 6px
+      font-weight: 600
+      transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s
+    .btn-main-diary
+      color: #fff
+      background-color: #2563eb
+      border-color: #2563eb
+      &:hover
+        color: #fff
+        background-color: #1d4ed8
+        border-color: #1d4ed8
+      &:focus
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25)
+    .btn-new-diary
+      color: #2563eb
+      background-color: #fff
+      border-color: #bfdbfe
+      &:hover
+        color: #1d4ed8
+        background-color: #eff6ff
+        border-color: #93c5fd
+      &:focus
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.18)
   .sectionHabitRecords
     flex: 0 0 auto
     max-width: $habit-records-width
