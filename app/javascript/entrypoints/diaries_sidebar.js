@@ -21,15 +21,22 @@ document.addEventListener('turbolinks:load', () => {
     el,
     template: `
       <div id="diariesSidebar" data-turbolinks-permanent>
-        <div class="page-header">
-          <h4>
+        <div class="page-header sidebar-section-header">
+          <button
+            type="button"
+            class="sidebar-section-toggle"
+            :aria-expanded="String(!isMobileSidebar || favoritesOpen)"
+            aria-controls="favoriteDiaries"
+            @click="toggleFavorites"
+          >
             <span class="mr-2">
               <i class="fa fa-star"></i>
             </span>
             お気に入り
-          </h4>
+            <i class="fa sidebar-section-chevron" :class="favoritesOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </button>
         </div>
-        <div class="diaries mb-4 favorite-list">
+        <div id="favoriteDiaries" v-show="!isMobileSidebar || favoritesOpen" class="diaries mb-4 favorite-list">
           <div v-if="favorites.length === 0" class="text-muted small">まだお気に入りはありません</div>
           <div class="favorite-item mb-2 p-2 clickable" v-for="fav in favorites" :key="fav.type + '-' + fav.id" @click.prevent="openFavorite(fav)">
             <div class="d-flex align-items-start">
@@ -43,16 +50,23 @@ document.addEventListener('turbolinks:load', () => {
             </div>
           </div>
         </div>
-        <div class="page-header">
-          <h4>
+        <div class="page-header sidebar-section-header">
+          <button
+            type="button"
+            class="sidebar-section-toggle"
+            :aria-expanded="String(!isMobileSidebar || pinnedOpen)"
+            aria-controls="pinnedDiaries"
+            @click="togglePinned"
+          >
             <span class="mr-2">
               <i class="fa fa-thumb-tack"></i>
             </span>
             固定
-            <small class="ml-3"><a href="/diaries/pinned">[管理]</a></small>
-          </h4>
+            <i class="fa sidebar-section-chevron" :class="pinnedOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+          </button>
+          <small class="ml-3"><a href="/diaries/pinned">[管理]</a></small>
         </div>
-        <div class="diaries">
+        <div id="pinnedDiaries" v-show="!isMobileSidebar || pinnedOpen" class="diaries">
           <div class="mb-1" v-for="diary in diaries" :key="diary.id">
             <task-diary :diary="diary" @updated="onUpdated" @show-diary-modal="showDiaryModal" />
           </div>
@@ -67,8 +81,14 @@ document.addEventListener('turbolinks:load', () => {
       favorites: [],
       activeHistory: null,
       historyFavoriteUpdating: false,
+      isMobileSidebar: false,
+      favoritesOpen: true,
+      pinnedOpen: true,
+      sidebarMediaQuery: null,
+      sidebarMediaListener: null,
     },
     mounted () {
+      this.setupResponsiveSections()
       this.loadPinned()
       // main/day_page側へ依頼されたリフレッシュイベントを拾って最新の固定日記を取得
       window.addEventListener('sidebar-refresh', this.fetchPinned)
@@ -77,11 +97,41 @@ document.addEventListener('turbolinks:load', () => {
       window.addEventListener('history-appended', this.onHistoryAppended)
     },
     destroyed () {
+      if (this.sidebarMediaQuery && this.sidebarMediaListener) {
+        if (this.sidebarMediaQuery.removeEventListener) {
+          this.sidebarMediaQuery.removeEventListener('change', this.sidebarMediaListener)
+        } else if (this.sidebarMediaQuery.removeListener) {
+          this.sidebarMediaQuery.removeListener(this.sidebarMediaListener)
+        }
+      }
       window.removeEventListener('sidebar-refresh', this.fetchPinned)
       window.removeEventListener('favorites-refresh', this.fetchFavorites)
       window.removeEventListener('history-appended', this.onHistoryAppended)
     },
     methods: {
+      // スマホ表示では各セクションを初期状態で閉じ、PC表示では常に開く
+      setupResponsiveSections () {
+        this.sidebarMediaQuery = window.matchMedia('(max-width: 767.98px)')
+        this.sidebarMediaListener = (event) => {
+          this.isMobileSidebar = event.matches
+          this.favoritesOpen = !event.matches
+          this.pinnedOpen = !event.matches
+        }
+        this.sidebarMediaListener(this.sidebarMediaQuery)
+        if (this.sidebarMediaQuery.addEventListener) {
+          this.sidebarMediaQuery.addEventListener('change', this.sidebarMediaListener)
+        } else if (this.sidebarMediaQuery.addListener) {
+          this.sidebarMediaQuery.addListener(this.sidebarMediaListener)
+        }
+      },
+      // スマホ表示のお気に入り一覧を開閉する
+      toggleFavorites () {
+        if (this.isMobileSidebar) this.favoritesOpen = !this.favoritesOpen
+      },
+      // スマホ表示の固定日記一覧を開閉する
+      togglePinned () {
+        if (this.isMobileSidebar) this.pinnedOpen = !this.pinnedOpen
+      },
       // キャッシュ済みの固定日記があればAPIを呼ばずに復元する
       loadPinned () {
         if (pinnedDiariesCache !== null) {
@@ -247,6 +297,32 @@ document.addEventListener('turbolinks:load', () => {
 // Scoped styles for favorites list
 const style = document.createElement('style')
 style.innerHTML = `
+  .sectionPinnedDiaries .sidebar-section-header {
+    display: flex;
+    align-items: center;
+  }
+  .sectionPinnedDiaries .sidebar-section-toggle {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.2;
+    text-align: left;
+  }
+  .sectionPinnedDiaries .sidebar-section-toggle:focus {
+    outline: none;
+  }
+  .sectionPinnedDiaries .sidebar-section-chevron {
+    display: none;
+    margin-left: auto;
+    font-size: 0.875rem;
+  }
   .sectionPinnedDiaries .favorite-list .favorite-item {
     border: 1px solid #e5e7eb;
     border-radius: 6px;
@@ -304,6 +380,22 @@ style.innerHTML = `
   }
   .history-favorite-content--plain {
     white-space: pre-line;
+  }
+  @media (max-width: 767.98px) {
+    .sectionPinnedDiaries .sidebar-section-header {
+      min-height: 44px;
+    }
+    .sectionPinnedDiaries .sidebar-section-toggle {
+      min-height: 44px;
+      cursor: pointer;
+    }
+    .sectionPinnedDiaries .sidebar-section-toggle:focus-visible {
+      border-radius: 4px;
+      box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+    }
+    .sectionPinnedDiaries .sidebar-section-chevron {
+      display: inline-block;
+    }
   }
 `
 document.head.appendChild(style)
