@@ -164,7 +164,7 @@ Rails.application.routes.draw do
   end
 
   resources :habits
-  resources :records, only: [:create, :update]
+  resources :records, only: [:create, :update, :destroy]
   resources :histories, only: [:show, :create, :edit, :update, :destroy]
   resources :favorites, only: [:index, :create]
   post '/favorites/append_history', to: 'favorites#append_history'

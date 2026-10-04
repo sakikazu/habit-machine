@@ -128,8 +128,34 @@ export default {
         this.recordValue = summary
       }
     },
+    // 値とメモがどちらも空か判定する
+    recordIsEmpty () {
+      return (this.recordValue === null || String(this.recordValue).trim() === '') &&
+        (this.recordMemo === null || this.recordMemo.trim() === '')
+    },
+    // 保存済みの記録を削除して未登録状態へ戻す
+    deleteRecord () {
+      HmAxios.delete(`/records/${this.initialRecord.id}.json`)
+        .then(() => {
+          this.resetRecordVals({
+            id: null,
+            value: null,
+            memo: null,
+            markdowned_memo: '',
+          })
+          this.editMode = false
+        })
+        .catch(error => {
+          alert(error.response.data.message)
+        })
+    },
     save () {
       if (this.persisted) {
+        if (this.recordIsEmpty()) {
+          this.deleteRecord()
+          return
+        }
+
         // TODO: Axiosの設定で、json形式のリクエストにすれば、拡張子不要な気がする
         HmAxios.patch(`/records/${this.initialRecord.id}.json`, {
           record: {
