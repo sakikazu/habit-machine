@@ -1,9 +1,10 @@
 class RecordsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_record, only: %i[update destroy]
 
-  # TODO: ログインさえしてたら他人のRecordも記録できる状態なので修正する
   def create
-    @record = Record.new(record_params)
+    habit = Habit.available_by_user(current_user).find(record_params[:habit_id])
+    @record = habit.records.new(record_params.except(:habit_id))
 
     if @record.save
       render partial: 'show', locals: { record: @record }
@@ -13,9 +14,7 @@ class RecordsController < ApplicationController
   end
 
   def update
-    @record = Record.find(params[:id])
-
-    if @record.update(record_params)
+    if @record.update(record_params.except(:habit_id))
       render partial: 'show', locals: { record: @record }
     else
       render json: { message: @record.errors.full_messages.join("\n") }, status: :bad_request
@@ -24,7 +23,7 @@ class RecordsController < ApplicationController
 
   # 指定された記録を削除する
   def destroy
-    Record.find(params[:id]).destroy!
+    @record.destroy!
     head :no_content
   end
 
@@ -32,5 +31,10 @@ class RecordsController < ApplicationController
 
   def record_params
     params.require(:record).permit(:habit_id, :record_at, :value, :memo)
+  end
+
+  # 現在のユーザーが管理できる記録だけを取得する
+  def set_record
+    @record = Record.by_user_or_family(current_user).find(params[:id])
   end
 end
