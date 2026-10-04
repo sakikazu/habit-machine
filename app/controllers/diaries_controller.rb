@@ -2,6 +2,8 @@ class DiariesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_diary!, only: [:show, :edit, :update, :destroy, :delete_image, :create_image, :delete_sub_image, :update_categories, :histories]
   before_action :set_content_title, only: [:show, :edit]
+  after_action :close_optimized_image_files
+  rescue_from DiaryImageOptimizer::Error, with: :render_image_error
 
   # GET /diaries
   # GET /diaries.json
@@ -214,7 +216,7 @@ class DiariesController < ApplicationController
       render json: { message: "画像ファイルが見つかりません" }, status: :bad_request and return
     end
 
-    attachments = @diary.images.attach(params[:image])
+    attachments = @diary.images.attach(optimize_image(params[:image]))
     uploaded_image = attachments.last || @diary.images.last
     unless uploaded_image
       render json: { message: "画像の登録に失敗しました" }, status: :unprocessable_entity and return
@@ -284,6 +286,25 @@ class DiariesController < ApplicationController
       :content_is_html
     )
 
+    if permitted[:eyecatch_image].respond_to?(:tempfile)
+      permitted[:eyecatch_image] = optimize_image(permitted[:eyecatch_image])
+    end
+
     permitted
+  end
+
+  # 生成された一時ファイルをレスポンス後に確実に破棄する
+  def close_optimized_image_files
+    Array(@optimized_image_files).each(&:close!)
+  end
+
+  def optimize_image(uploaded_file)
+    optimized = DiaryImageOptimizer.call(uploaded_file)
+    (@optimized_image_files ||= []) << optimized[:io]
+    optimized
+  end
+
+  def render_image_error(error)
+    render json: { message: error.message }, status: :unprocessable_entity
   end
 end

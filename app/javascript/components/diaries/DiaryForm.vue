@@ -376,8 +376,8 @@ export default {
         alert('画像の貼り付けは、編集時のみ可能です。')
         return
       }
-      if (file.size > 5 * 1024 * 1024) {
-        alert('画像サイズは5MB以下にしてください')
+      if (file.size > 20 * 1024 * 1024) {
+        alert('画像サイズは20MB以下にしてください')
         return
       }
 
