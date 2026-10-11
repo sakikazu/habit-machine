@@ -18,9 +18,13 @@
           input.form-control.mb-3(type="date" name="diary[record_at]" :value="targetDate" v-if="persisted")
         input(type="hidden" name="diary[record_at]" :value="targetDate" v-else)
 
-      .form-group
-        input.form-control(type="text" name="diary[title]" placeholder="タイトル（未入力可）" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
+      .form-group.primary-field
+        label.primary-field-label タイトル
+        input.form-control.diary-title-input(type="text" name="diary[title]" placeholder="未入力でも保存できます" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
 
+      .content-field-heading
+        label.primary-field-label.mb-0 本文
+        a.markdown-help(v-if="!contentEditableMode" href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") Markdown記法
       .tab-container
         .tab(v-if="!persisted || !contentEditableMode" @click="switchNormal" :class="{'active': !contentEditableMode, 'unclickable': persisted}")
           | 通常モード
@@ -29,7 +33,6 @@
       .form-group
         content-editable(v-if="contentEditableMode" :content="diary.content" :tabindex="tabidxBase + 2" @content-updated="updateContent")
         div(v-else)
-          a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
           textarea.form-control.diary-content-textarea(
             name="diary[content]"
             ref="markdownable_textarea"
@@ -40,8 +43,8 @@
             @input="resizeContentTextarea"
             @paste="handlePaste"
           )
-      section.form-section
-        h5.form-section-title タグ
+      section.form-section.tag-section
+        label.secondary-section-title タグ
         p.form-section-description カンマ区切りで複数指定できます。使用するタグはタグ一覧から事前に作成してください
         input.form-control(type="text" name="diary[tag_list]" ref="taglist" placeholder="矢印キーで既存のタグを表示" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
 
@@ -74,102 +77,111 @@
               i.fa.fa-check.mr-1(v-if="isTagSelected(tag.name)")
               | {{ tag.name }}
 
-      section.form-section
-        h5.form-section-title 画像
-        .main-image-card
-          h6.mb-1 メイン画像
-          p.form-section-description 一覧や日記の先頭に表示する画像です
-          .main-image-preview(v-if="mainImageDisplayUrl")
-            img(:src="mainImageDisplayUrl" alt="メイン画像のプレビュー")
-          .main-image-empty(v-else) メイン画像は設定されていません
-          .main-image-filename(v-if="mainImageFilename" :title="mainImageFilename") {{ mainImageFilename }}
-          .main-image-actions
-            button.btn.btn-sm.btn-outline-primary(type="button" @click="triggerMainImageInput") {{ mainImageDisplayUrl ? '画像を変更' : '画像を選択' }}
-            button.btn.btn-sm.btn-outline-secondary(type="button" v-if="mainImagePreviewUrl" @click="clearSelectedMainImage") 選択を取り消す
-            button.btn.btn-sm.btn-outline-danger(type="button" v-else-if="diary.image_path" @click="deleteImage") 削除
-          input.visually-hidden-file(
-            ref="mainImageInput"
-            type="file"
-            accept="image/*"
-            name="diary[eyecatch_image]"
-            id="diary_image"
-            @change="handleMainImageSelect"
-          )
+      section.collapsible-section
+        button.section-toggle(type="button" @click="imagesExpanded = !imagesExpanded" :aria-expanded="imagesExpanded.toString()")
+          span.section-toggle-title
+            i.fa.mr-2(:class="imagesExpanded ? 'fa-chevron-down' : 'fa-chevron-right'" aria-hidden="true")
+            | 画像
+          small.section-summary {{ imageSectionSummary }}
+        .collapsible-content(v-show="imagesExpanded")
+          .main-image-card
+            h6.mb-1 メイン画像
+            p.form-section-description 一覧や日記の先頭に表示する画像です
+            .main-image-preview(v-if="mainImageDisplayUrl")
+              img(:src="mainImageDisplayUrl" alt="メイン画像のプレビュー")
+            .main-image-empty(v-else) メイン画像は設定されていません
+            .main-image-filename(v-if="mainImageFilename" :title="mainImageFilename") {{ mainImageFilename }}
+            .main-image-actions
+              button.btn.btn-sm.btn-outline-primary(type="button" @click="triggerMainImageInput") {{ mainImageDisplayUrl ? '画像を変更' : '画像を選択' }}
+              button.btn.btn-sm.btn-outline-secondary(type="button" v-if="mainImagePreviewUrl" @click="clearSelectedMainImage") 選択を取り消す
+              button.btn.btn-sm.btn-outline-danger(type="button" v-else-if="diary.image_path" @click="deleteImage") 削除
+            input.visually-hidden-file(
+              ref="mainImageInput"
+              type="file"
+              accept="image/*"
+              name="diary[eyecatch_image]"
+              id="diary_image"
+              @change="handleMainImageSelect"
+            )
 
-        //- 画像選択時にアップロードするため、日記を特定できる編集時のみ表示する
-        .image-manager-card(v-if="persisted")
-          h5.mb-1 サブ画像
-          p.image-manager-description 画像を追加すると、本文のカーソル位置に自動で挿入されます
+          //- 画像選択時にアップロードするため、日記を特定できる編集時のみ表示する
+          .image-manager-card(v-if="persisted")
+            h5.mb-1 サブ画像
+            p.image-manager-description 画像を追加すると、本文のカーソル位置に自動で挿入されます
 
-          button.image-upload-button(
-            type="button"
-            @click="triggerFileInput"
-            :disabled="uploading"
-          )
-            span.upload-icon(aria-hidden="true") 📁
-            span
-              strong {{ uploadButtonText }}
-              small JPG・PNG・GIFなど／1枚最大20MB／複数選択可
-          input.hidden(
-            ref="fileInput"
-            type="file"
-            accept="image/*"
-            multiple
-            @change="handleFileSelect"
-          )
+            button.image-upload-button(
+              type="button"
+              @click="triggerFileInput"
+              :disabled="uploading"
+            )
+              span.upload-icon(aria-hidden="true") 📁
+              span
+                strong {{ uploadButtonText }}
+                small JPG・PNG・GIFなど／1枚最大20MB／複数選択可
+            input.hidden(
+              ref="fileInput"
+              type="file"
+              accept="image/*"
+              multiple
+              @change="handleFileSelect"
+            )
 
-          div.no-images(v-if="images.length === 0") 画像はまだありません。上のボタンから追加できます
-          .image-grid(v-else)
-            .image-item(v-for="image in images" :key="image.id")
-              .image-container
-                button.image-preview-button(type="button" @click="openImagePreview(image)" :aria-label="`${image.filename}を拡大表示`")
-                  img(:src="image.url" :alt="image.filename")
-                span.image-usage-badge.in-use(v-if="!contentEditableMode && isImageUsed(image.id)") 本文内
-                span.image-usage-badge.not-in-use(v-else-if="!contentEditableMode") 未挿入
-              .image-filename(:title="image.filename") {{ image.filename }}
-              .image-actions
-                button.btn.btn-sm.btn-primary(type="button" @click="handleImageInsert(image)") 本文に挿入
-                button.btn.btn-sm.btn-outline-danger(type="button" @click="handleImageDelete(image.id)") 削除
+            div.no-images(v-if="images.length === 0") 画像はまだありません。上のボタンから追加できます
+            .image-grid(v-else)
+              .image-item(v-for="image in images" :key="image.id")
+                .image-container
+                  button.image-preview-button(type="button" @click="openImagePreview(image)" :aria-label="`${image.filename}を拡大表示`")
+                    img(:src="image.url" :alt="image.filename")
+                  span.image-usage-badge.in-use(v-if="!contentEditableMode && isImageUsed(image.id)") 本文内
+                  span.image-usage-badge.not-in-use(v-else-if="!contentEditableMode") 未挿入
+                .image-filename(:title="image.filename") {{ image.filename }}
+                .image-actions
+                  button.btn.btn-sm.btn-primary(type="button" @click="handleImageInsert(image)") 本文に挿入
+                  button.btn.btn-sm.btn-outline-danger(type="button" @click="handleImageDelete(image.id)") 削除
 
-          .image-preview-modal(
-            v-if="previewImage"
-            ref="imagePreviewModal"
-            role="dialog"
-            aria-modal="true"
-            :aria-label="`${previewImage.filename}の拡大表示`"
-            tabindex="-1"
-            @click.self="closeImagePreview"
-            @keydown.esc="closeImagePreview"
-          )
-            .image-preview-content
-              button.image-preview-close(type="button" @click="closeImagePreview" aria-label="拡大表示を閉じる") ×
-              img(:src="previewImage.orgUrl || previewImage.url" :alt="previewImage.filename")
-              .image-preview-filename {{ previewImage.filename }}
+            .image-preview-modal(
+              v-if="previewImage"
+              ref="imagePreviewModal"
+              role="dialog"
+              aria-modal="true"
+              :aria-label="`${previewImage.filename}の拡大表示`"
+              tabindex="-1"
+              @click.self="closeImagePreview"
+              @keydown.esc="closeImagePreview"
+            )
+              .image-preview-content
+                button.image-preview-close(type="button" @click="closeImagePreview" aria-label="拡大表示を閉じる") ×
+                img(:src="previewImage.orgUrl || previewImage.url" :alt="previewImage.filename")
+                .image-preview-filename {{ previewImage.filename }}
 
-      section.form-section
-        h5.form-section-title 表示設定
-        .setting-grid
+      section.collapsible-section
+        button.section-toggle(type="button" @click="settingsExpanded = !settingsExpanded" :aria-expanded="settingsExpanded.toString()")
+          span.section-toggle-title
+            i.fa.mr-2(:class="settingsExpanded ? 'fa-chevron-down' : 'fa-chevron-right'" aria-hidden="true")
+            | 表示設定
+          small.section-summary {{ settingSectionSummary }}
+        .setting-grid(v-show="settingsExpanded")
           label.setting-option
             input(type="hidden" name="diary[main_in_day]" value="0")
-            input.setting-checkbox(type="checkbox" id="mainInDay" name="diary[main_in_day]" value="1" :checked="diary.main_in_day")
+            input.setting-checkbox(type="checkbox" id="mainInDay" name="diary[main_in_day]" value="1" v-model="diary.main_in_day")
             span.setting-text
               strong 1日のメイン日記
               small その日の代表として表示します
           label.setting-option
             input(type="hidden" name="diary[pinned]" value="0")
-            input.setting-checkbox(type="checkbox" id="makePinned" name="diary[pinned]" value="1" :checked="diary.pinned")
+            input.setting-checkbox(type="checkbox" id="makePinned" name="diary[pinned]" value="1" v-model="diary.pinned")
             span.setting-text
               strong 固定表示にする
               small よく見返す日記として固定します
           label.setting-option
             input(type="hidden" name="diary[is_hilight]" value="0")
-            input.setting-checkbox(type="checkbox" id="makeHighlight" name="diary[is_hilight]" value="1" :checked="diary.is_hilight")
+            input.setting-checkbox(type="checkbox" id="makeHighlight" name="diary[is_hilight]" value="1" v-model="diary.is_hilight")
             span.setting-text
               strong 人生ハイライトにする
               small ハイライト一覧の対象にします
           label.setting-option
             input(type="hidden" name="diary[is_about_date]" value="0")
-            input.setting-checkbox(type="checkbox" id="makeAmbiguousDate" name="diary[is_about_date]" value="1" :checked="diary.is_about_date")
+            input.setting-checkbox(type="checkbox" id="makeAmbiguousDate" name="diary[is_about_date]" value="1" v-model="diary.is_about_date")
             span.setting-text
               strong 日付を曖昧にする
               small 正確な日付ではない記録として扱います
@@ -220,6 +232,8 @@ export default {
       previewImage: null,
       mainImagePreviewUrl: null,
       mainImageFilename: null,
+      imagesExpanded: false,
+      settingsExpanded: false,
       // NOTE: 通常/CEモードの切り替えについてはしっかり考慮はしていない段階
       contentEditableMode: false,
       htmlContent: "",
@@ -260,6 +274,22 @@ export default {
     latestTagsExcludingPinned () {
       const pinnedTagNames = this.pinned_tags.map(tag => tag.name)
       return this.latest_tags.filter(tag => !pinnedTagNames.includes(tag.name))
+    },
+    imageSectionSummary () {
+      const mainImageSummary = this.mainImageDisplayUrl ? 'メイン画像あり' : 'メイン画像なし'
+      if (!this.persisted) return mainImageSummary
+
+      return `${mainImageSummary}・サブ画像${this.images.length}枚`
+    },
+    settingSectionSummary () {
+      const selectedSettings = [
+        [this.diary.main_in_day, '1日のメイン'],
+        [this.diary.pinned, '固定表示'],
+        [this.diary.is_hilight, '人生ハイライト'],
+        [this.diary.is_about_date, '日付を曖昧にする'],
+      ].filter(setting => setting[0]).map(setting => setting[1])
+
+      return selectedSettings.length > 0 ? selectedSettings.join('・') : '設定なし'
     },
   },
   // NOTE: 親でv-ifで表示可否を切り替えているからか、編集キャンセルして再編集時もcreatedが走る。この表示切り替え時に何かpropsで渡してwatchしても発動しないので、フォーム表示時の処理はcreated, mountedに書くべき
@@ -683,18 +713,84 @@ export default {
     &.unclickable
       cursor: default
 
+.primary-field
+  margin-bottom: 20px
+
+.primary-field-label
+  color: #343a40
+  font-size: 1rem
+  font-weight: bold
+
+.diary-title-input
+  height: auto
+  padding: 10px 12px
+  font-size: 1.15rem
+
+.content-field-heading
+  display: flex
+  margin-bottom: 6px
+  align-items: center
+  justify-content: space-between
+
+  .markdown-help
+    color: #6c757d
+    font-size: 0.8rem
+
 .form-section
   margin-top: 24px
-  padding-top: 20px
+  padding-top: 16px
   border-top: 1px solid #dee2e6
 
-  .form-section-title
-    margin-bottom: 4px
-
   .form-section-description
-    margin-bottom: 12px
+    margin-bottom: 8px
     color: #6c757d
-    font-size: 0.875rem
+    font-size: 0.8rem
+
+.secondary-section-title
+  margin-bottom: 4px
+  color: #495057
+  font-size: 0.9rem
+  font-weight: bold
+
+.tag-section
+  margin-bottom: 16px
+
+.collapsible-section
+  border-top: 1px solid #dee2e6
+
+.section-toggle
+  display: flex
+  width: 100%
+  padding: 14px 2px
+  align-items: center
+  justify-content: space-between
+  gap: 16px
+  color: #495057
+  background: transparent
+  border: 0
+  cursor: pointer
+  text-align: left
+
+  &:hover, &:focus
+    color: #212529
+    background: #fafafa
+    outline: none
+
+  .section-toggle-title
+    flex: 0 0 auto
+    font-size: 0.95rem
+    font-weight: bold
+
+  .section-summary
+    overflow: hidden
+    color: #6c757d
+    font-size: 0.8rem
+    font-weight: normal
+    text-overflow: ellipsis
+    white-space: nowrap
+
+.collapsible-content
+  padding: 4px 0 16px
 
 .diary-content-textarea
   max-height: 70vh
@@ -702,7 +798,7 @@ export default {
   resize: vertical
 
 .tag-suggestions
-  margin-top: 14px
+  margin-top: 10px
 
   .tag-suggestion-title
     margin-bottom: 6px
@@ -732,10 +828,8 @@ export default {
 
 .main-image-card
   margin-bottom: 16px
-  padding: 16px
-  background: #f8f9fa
-  border: 1px solid #dee2e6
-  border-radius: 5px
+  padding: 12px 0 16px
+  border-bottom: 1px solid #e9ecef
 
   .main-image-preview
     display: flex
@@ -782,23 +876,23 @@ export default {
 .setting-grid
   display: grid
   grid-template-columns: repeat(2, minmax(0, 1fr))
-  gap: 12px
+  gap: 4px 20px
+  padding: 4px 0 16px
 
   .setting-option
     display: flex
     min-width: 0
     margin: 0
-    padding: 14px
+    padding: 10px 2px
     align-items: flex-start
     gap: 10px
-    background: #f8f9fa
-    border: 1px solid #dee2e6
-    border-radius: 5px
+    background: transparent
+    border: 0
+    border-bottom: 1px solid #f1f3f5
     cursor: pointer
 
     &:hover
-      background: #f1f3f5
-      border-color: #adb5bd
+      background: #fafafa
 
   .setting-checkbox
     width: 18px
@@ -817,8 +911,9 @@ export default {
       color: #6c757d
 
 .image-manager-card
-  padding: 16px
-  background: #FFF8E1
+  padding: 14px
+  background: #f8f9fa
+  border: 1px solid #e9ecef
   border-radius: 5px
   overflow: hidden
 
