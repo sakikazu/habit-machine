@@ -39,101 +39,139 @@
             :tabindex="tabidxBase + 2"
             @paste="handlePaste"
           )
-      .form-group
-        label
-          span.mr-1 タグ
-          small.desc カンマ区切りで複数指定可能 ／ 使用するタグはタグ一覧から事前作成が必要
-        input.form-control(type="text" name="diary[tag_list]" ref="taglist" placeholder="矢印キーを押下すれば既存のタグリストが表示されます" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
-      .form-group
-        | ピン留めタグ 
-        span.badge.mr5.cursor-pointer(v-for="tag in pinned_tags" @click="toggleTag(tag.name)" :style="tag.color_style")
-          i.fa.fa-thumb-tack
-          | &nbsp;
-          | {{ tag.name }}
-      .form-group
-        | 最近使ったタグ 
-        span.badge.mr5.cursor-pointer(v-for="tag in latest_tags" @click="toggleTag(tag.name)" :style="tag.color_style")
-          | {{ tag.name }}
-      .form-group
-        p メイン画像
-        .mb-3(v-if="persisted")
-          div(v-if="diary.image_path")
-            .image
-              img.img-thumbnail(:src="diary.image_path")
-              a(href='javascript:void(0)' @click="deleteImage") 画像削除する
-          p(v-else) メイン画像はありません
-        input(type="file" accept="image/*" name="diary[eyecatch_image]" id="diary_image")
+      section.form-section
+        h5.form-section-title タグ
+        p.form-section-description カンマ区切りで複数指定できます。使用するタグはタグ一覧から事前に作成してください
+        input.form-control(type="text" name="diary[tag_list]" ref="taglist" placeholder="矢印キーで既存のタグを表示" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
 
-      //- 画像管理エリア（画像選択時にアップロードを行うため、Diaryが特定できる必要があるので、編集時のみ）
-      .image-manager-card.mb-4(v-if="persisted")
-        h5.mb-1 サブ画像
-        p.image-manager-description 画像を追加すると、本文のカーソル位置に自動で挿入されます
+        .tag-suggestions(v-if="pinned_tags.length > 0")
+          .tag-suggestion-title
+            i.fa.fa-thumb-tack.mr-1
+            | ピン留め
+          .tag-list
+            button.tag-button(
+              v-for="tag in pinned_tags"
+              :key="`pinned-${tag.name}`"
+              type="button"
+              :class="{ selected: isTagSelected(tag.name) }"
+              :style="tag.color_style"
+              @click="toggleTag(tag.name)"
+            )
+              i.fa.fa-check.mr-1(v-if="isTagSelected(tag.name)")
+              | {{ tag.name }}
+        .tag-suggestions(v-if="latestTagsExcludingPinned.length > 0")
+          .tag-suggestion-title 最近使ったタグ
+          .tag-list
+            button.tag-button(
+              v-for="tag in latestTagsExcludingPinned"
+              :key="`latest-${tag.name}`"
+              type="button"
+              :class="{ selected: isTagSelected(tag.name) }"
+              :style="tag.color_style"
+              @click="toggleTag(tag.name)"
+            )
+              i.fa.fa-check.mr-1(v-if="isTagSelected(tag.name)")
+              | {{ tag.name }}
 
-        button.image-upload-button(
-          type="button"
-          @click="triggerFileInput"
-          :disabled="uploading"
-        )
-          span.upload-icon(aria-hidden="true") 📁
-          span
-            strong {{ uploadButtonText }}
-            small JPG・PNG・GIFなど／1枚最大20MB／複数選択可
-        input.hidden(
-          ref="fileInput"
-          type="file"
-          accept="image/*"
-          multiple
-          @change="handleFileSelect"
-        )
+      section.form-section
+        h5.form-section-title 画像
+        .main-image-card
+          h6.mb-1 メイン画像
+          p.form-section-description 一覧や日記の先頭に表示する画像です
+          .main-image-preview(v-if="mainImageDisplayUrl")
+            img(:src="mainImageDisplayUrl" alt="メイン画像のプレビュー")
+          .main-image-empty(v-else) メイン画像は設定されていません
+          .main-image-filename(v-if="mainImageFilename" :title="mainImageFilename") {{ mainImageFilename }}
+          .main-image-actions
+            button.btn.btn-sm.btn-outline-primary(type="button" @click="triggerMainImageInput") {{ mainImageDisplayUrl ? '画像を変更' : '画像を選択' }}
+            button.btn.btn-sm.btn-outline-secondary(type="button" v-if="mainImagePreviewUrl" @click="clearSelectedMainImage") 選択を取り消す
+            button.btn.btn-sm.btn-outline-danger(type="button" v-else-if="diary.image_path" @click="deleteImage") 削除
+          input.visually-hidden-file(
+            ref="mainImageInput"
+            type="file"
+            accept="image/*"
+            name="diary[eyecatch_image]"
+            id="diary_image"
+            @change="handleMainImageSelect"
+          )
 
-        div.no-images(v-if="images.length === 0") 画像はまだありません。上のボタンから追加できます
-        .image-grid(v-else)
-          .image-item(v-for="image in images" :key="image.id")
-            .image-container
-              button.image-preview-button(type="button" @click="openImagePreview(image)" :aria-label="`${image.filename}を拡大表示`")
-                img(:src="image.url" :alt="image.filename")
-              span.image-usage-badge.in-use(v-if="!contentEditableMode && isImageUsed(image.id)") 本文内
-              span.image-usage-badge.not-in-use(v-else-if="!contentEditableMode") 未挿入
-            .image-filename(:title="image.filename") {{ image.filename }}
-            .image-actions
-              button.btn.btn-sm.btn-primary(type="button" @click="handleImageInsert(image)") 本文に挿入
-              button.btn.btn-sm.btn-outline-danger(type="button" @click="handleImageDelete(image.id)") 削除
+        //- 画像選択時にアップロードするため、日記を特定できる編集時のみ表示する
+        .image-manager-card(v-if="persisted")
+          h5.mb-1 サブ画像
+          p.image-manager-description 画像を追加すると、本文のカーソル位置に自動で挿入されます
 
-        .image-preview-modal(
-          v-if="previewImage"
-          ref="imagePreviewModal"
-          role="dialog"
-          aria-modal="true"
-          :aria-label="`${previewImage.filename}の拡大表示`"
-          tabindex="-1"
-          @click.self="closeImagePreview"
-          @keydown.esc="closeImagePreview"
-        )
-          .image-preview-content
-            button.image-preview-close(type="button" @click="closeImagePreview" aria-label="拡大表示を閉じる") ×
-            img(:src="previewImage.orgUrl || previewImage.url" :alt="previewImage.filename")
-            .image-preview-filename {{ previewImage.filename }}
+          button.image-upload-button(
+            type="button"
+            @click="triggerFileInput"
+            :disabled="uploading"
+          )
+            span.upload-icon(aria-hidden="true") 📁
+            span
+              strong {{ uploadButtonText }}
+              small JPG・PNG・GIFなど／1枚最大20MB／複数選択可
+          input.hidden(
+            ref="fileInput"
+            type="file"
+            accept="image/*"
+            multiple
+            @change="handleFileSelect"
+          )
 
-      .form-group.form-check
-        input(type="hidden" name="diary[main_in_day]" value="0")
-        input.form-check-input(type="checkbox" id="mainInDay" name="diary[main_in_day]" value="1" :checked="diary.main_in_day")
-        label.form-check-label(for="mainInDay") 1日のメイン日記
-      .form-group.form-check
-        input(type="hidden" name="diary[pinned]" value="0")
-        input.form-check-input(type="checkbox" id="makePinned" name="diary[pinned]" value="1" :checked="diary.pinned")
-        label.form-check-label(for="makePinned") 固定表示にする
-      // TODO: とりあえずDiary.id降順のままでいいのでコメントアウト。やるならD&Dで順序変更できるUIかなぁ
-      // .form-group
-        // input.form-control(type="number" name="[diary]pin_priority" :value="diary.pin_priority")
-        // label 固定表示の順（降順）
-      .form-group.form-check
-        input(type="hidden" name="diary[is_hilight]" value="0")
-        input.form-check-input(type="checkbox" id="makeHighlight" name="diary[is_hilight]" value="1" :checked="diary.is_hilight")
-        label.form-check-label(for="makeHighlight") 人生ハイライトにする
-      .form-group.form-check
-        input(type="hidden" name="diary[is_about_date]" value="0")
-        input.form-check-input(type="checkbox" id="makeAmbiguousDate" name="diary[is_about_date]" value="1" :checked="diary.is_about_date")
-        label.form-check-label(for="makeAmbiguousDate") 日付を曖昧にする
+          div.no-images(v-if="images.length === 0") 画像はまだありません。上のボタンから追加できます
+          .image-grid(v-else)
+            .image-item(v-for="image in images" :key="image.id")
+              .image-container
+                button.image-preview-button(type="button" @click="openImagePreview(image)" :aria-label="`${image.filename}を拡大表示`")
+                  img(:src="image.url" :alt="image.filename")
+                span.image-usage-badge.in-use(v-if="!contentEditableMode && isImageUsed(image.id)") 本文内
+                span.image-usage-badge.not-in-use(v-else-if="!contentEditableMode") 未挿入
+              .image-filename(:title="image.filename") {{ image.filename }}
+              .image-actions
+                button.btn.btn-sm.btn-primary(type="button" @click="handleImageInsert(image)") 本文に挿入
+                button.btn.btn-sm.btn-outline-danger(type="button" @click="handleImageDelete(image.id)") 削除
+
+          .image-preview-modal(
+            v-if="previewImage"
+            ref="imagePreviewModal"
+            role="dialog"
+            aria-modal="true"
+            :aria-label="`${previewImage.filename}の拡大表示`"
+            tabindex="-1"
+            @click.self="closeImagePreview"
+            @keydown.esc="closeImagePreview"
+          )
+            .image-preview-content
+              button.image-preview-close(type="button" @click="closeImagePreview" aria-label="拡大表示を閉じる") ×
+              img(:src="previewImage.orgUrl || previewImage.url" :alt="previewImage.filename")
+              .image-preview-filename {{ previewImage.filename }}
+
+      section.form-section
+        h5.form-section-title 表示設定
+        .setting-grid
+          label.setting-option
+            input(type="hidden" name="diary[main_in_day]" value="0")
+            input.setting-checkbox(type="checkbox" id="mainInDay" name="diary[main_in_day]" value="1" :checked="diary.main_in_day")
+            span.setting-text
+              strong 1日のメイン日記
+              small その日の代表として表示します
+          label.setting-option
+            input(type="hidden" name="diary[pinned]" value="0")
+            input.setting-checkbox(type="checkbox" id="makePinned" name="diary[pinned]" value="1" :checked="diary.pinned")
+            span.setting-text
+              strong 固定表示にする
+              small よく見返す日記として固定します
+          label.setting-option
+            input(type="hidden" name="diary[is_hilight]" value="0")
+            input.setting-checkbox(type="checkbox" id="makeHighlight" name="diary[is_hilight]" value="1" :checked="diary.is_hilight")
+            span.setting-text
+              strong 人生ハイライトにする
+              small ハイライト一覧の対象にします
+          label.setting-option
+            input(type="hidden" name="diary[is_about_date]" value="0")
+            input.setting-checkbox(type="checkbox" id="makeAmbiguousDate" name="diary[is_about_date]" value="1" :checked="diary.is_about_date")
+            span.setting-text
+              strong 日付を曖昧にする
+              small 正確な日付ではない記録として扱います
 
     .card-footer
       .form-actions.d-flex.justify-content-between
@@ -179,6 +217,8 @@ export default {
       uploadCurrent: 0,
       uploadTotal: 0,
       previewImage: null,
+      mainImagePreviewUrl: null,
+      mainImageFilename: null,
       // NOTE: 通常/CEモードの切り替えについてはしっかり考慮はしていない段階
       contentEditableMode: false,
       htmlContent: "",
@@ -212,6 +252,13 @@ export default {
 
       return `画像をアップロード中... (${this.uploadCurrent}/${this.uploadTotal})`
     },
+    mainImageDisplayUrl () {
+      return this.mainImagePreviewUrl || this.diary.image_path
+    },
+    latestTagsExcludingPinned () {
+      const pinnedTagNames = this.pinned_tags.map(tag => tag.name)
+      return this.latest_tags.filter(tag => !pinnedTagNames.includes(tag.name))
+    },
   },
   // NOTE: 親でv-ifで表示可否を切り替えているからか、編集キャンセルして再編集時もcreatedが走る。この表示切り替え時に何かpropsで渡してwatchしても発動しないので、フォーム表示時の処理はcreated, mountedに書くべき
   created () {
@@ -222,6 +269,9 @@ export default {
     this.setCheckUnsavedEvent()
     this.formKey = this.generateKey()
     this.$refs.diaryTitle.focus()
+  },
+  beforeDestroy () {
+    this.revokeMainImagePreview()
   },
   methods: {
     // Diary::ACTIVE_STORAGE_URL_PLACEHOLDER と合わせる
@@ -267,6 +317,11 @@ export default {
     },
     setTagList (val) {
       this.diary.tag_list = val
+    },
+    // 現在のタグ入力に指定したタグが含まれるかを返す
+    isTagSelected(tagname) {
+      const inputtedTags = (this.diary.tag_list || '').split(/\s*,\s*/).filter(tag => tag)
+      return inputtedTags.includes(tagname)
     },
     setFromLocalStorage () {
       const lsTitle = localStorage.getItem(this.lsTitleKey)
@@ -341,6 +396,7 @@ export default {
     toggleTag (tagname) {
       if (this.diary.tag_list.length == 0) {
         this.diary.tag_list = tagname;
+        this.markFormChanged()
         return
       }
       let inputted_tags = this.diary.tag_list.split(/\s*,\s*/);
@@ -351,6 +407,7 @@ export default {
         inputted_tags.push(tagname);
       }
       this.diary.tag_list = inputted_tags.join(', ');
+      this.markFormChanged()
     },
     cancelEdit () {
       // todo メッセージ、共通化する？
@@ -365,10 +422,38 @@ export default {
       HmAxios.put(`/diaries/${this.diary.id}/delete_image.json`)
         .then((res) => {
           this.diary.image_path = null
+          this.mainImageFilename = null
         })
         .catch(error => {
           alert(error.message || error.response.data.message)
         })
+    },
+
+    triggerMainImageInput() {
+      this.$refs.mainImageInput.click()
+    },
+
+    // 保存前に選択したメイン画像をプレビューする
+    handleMainImageSelect(e) {
+      const file = e.target.files[0]
+      if (!file) return
+
+      this.revokeMainImagePreview()
+      this.mainImagePreviewUrl = URL.createObjectURL(file)
+      this.mainImageFilename = file.name
+    },
+
+    clearSelectedMainImage() {
+      this.revokeMainImagePreview()
+      this.mainImageFilename = null
+      this.$refs.mainImageInput.value = ''
+    },
+
+    revokeMainImagePreview() {
+      if (!this.mainImagePreviewUrl) return
+
+      URL.revokeObjectURL(this.mainImagePreviewUrl)
+      this.mainImagePreviewUrl = null
     },
 
     // サブ画像用
@@ -397,6 +482,11 @@ export default {
 
     // プログラムから本文を変更した場合も未保存状態として通知する
     markContentChanged() {
+      this.markFormChanged()
+    },
+
+    // DOMのchangeイベントを介さない変更を未保存状態として通知する
+    markFormChanged() {
       this.unsaved = true
       this.$emit('content-changed', this.formKey)
     },
@@ -571,6 +661,134 @@ export default {
       font-weight: bold
     &.unclickable
       cursor: default
+
+.form-section
+  margin-top: 24px
+  padding-top: 20px
+  border-top: 1px solid #dee2e6
+
+  .form-section-title
+    margin-bottom: 4px
+
+  .form-section-description
+    margin-bottom: 12px
+    color: #6c757d
+    font-size: 0.875rem
+
+.tag-suggestions
+  margin-top: 14px
+
+  .tag-suggestion-title
+    margin-bottom: 6px
+    color: #6c757d
+    font-size: 0.875rem
+    font-weight: bold
+
+  .tag-list
+    display: flex
+    flex-wrap: wrap
+    gap: 8px
+
+  .tag-button
+    padding: 5px 10px
+    border: 1px solid transparent
+    border-radius: 14px
+    cursor: pointer
+    font-size: 0.875rem
+    line-height: 1.2
+
+    &:hover, &:focus
+      filter: brightness(0.95)
+      outline: none
+
+    &.selected
+      box-shadow: 0 0 0 2px #007bff
+
+.main-image-card
+  margin-bottom: 16px
+  padding: 16px
+  background: #f8f9fa
+  border: 1px solid #dee2e6
+  border-radius: 5px
+
+  .main-image-preview
+    display: flex
+    min-height: 180px
+    max-height: 320px
+    margin-bottom: 10px
+    padding: 8px
+    align-items: center
+    justify-content: center
+    background: #fff
+    border: 1px solid #dee2e6
+    border-radius: 4px
+
+    img
+      max-width: 100%
+      max-height: 300px
+      object-fit: contain
+
+  .main-image-empty
+    margin-bottom: 10px
+    padding: 24px 16px
+    color: #6c757d
+    background: #fff
+    border: 2px dashed #ced4da
+    border-radius: 4px
+    text-align: center
+
+  .main-image-filename
+    margin-bottom: 10px
+    overflow: hidden
+    color: #495057
+    font-size: 0.875rem
+    text-overflow: ellipsis
+    white-space: nowrap
+
+  .main-image-actions
+    display: flex
+    flex-wrap: wrap
+    gap: 8px
+
+.visually-hidden-file
+  display: none
+
+.setting-grid
+  display: grid
+  grid-template-columns: repeat(2, minmax(0, 1fr))
+  gap: 12px
+
+  .setting-option
+    display: flex
+    min-width: 0
+    margin: 0
+    padding: 14px
+    align-items: flex-start
+    gap: 10px
+    background: #f8f9fa
+    border: 1px solid #dee2e6
+    border-radius: 5px
+    cursor: pointer
+
+    &:hover
+      background: #f1f3f5
+      border-color: #adb5bd
+
+  .setting-checkbox
+    width: 18px
+    height: 18px
+    margin-top: 2px
+    flex: 0 0 auto
+
+  .setting-text
+    min-width: 0
+
+    strong, small
+      display: block
+
+    small
+      margin-top: 3px
+      color: #6c757d
 
 .image-manager-card
   padding: 16px
@@ -747,6 +965,18 @@ export default {
     white-space: nowrap
 
 @media (max-width: 575.98px)
+  .setting-grid
+    grid-template-columns: 1fr
+
+  .main-image-card
+    padding: 12px
+
+    .main-image-actions
+      flex-direction: column
+
+      .btn
+        width: 100%
+
   .image-manager-card
     padding: 12px
 
