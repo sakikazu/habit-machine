@@ -89,13 +89,29 @@
         .image-grid(v-else)
           .image-item(v-for="image in images" :key="image.id")
             .image-container
-              img(:src="image.url" :alt="image.filename")
+              button.image-preview-button(type="button" @click="openImagePreview(image)" :aria-label="`${image.filename}を拡大表示`")
+                img(:src="image.url" :alt="image.filename")
               span.image-usage-badge.in-use(v-if="!contentEditableMode && isImageUsed(image.id)") 本文内
               span.image-usage-badge.not-in-use(v-else-if="!contentEditableMode") 未挿入
             .image-filename(:title="image.filename") {{ image.filename }}
             .image-actions
               button.btn.btn-sm.btn-primary(type="button" @click="handleImageInsert(image)") 本文に挿入
               button.btn.btn-sm.btn-outline-danger(type="button" @click="handleImageDelete(image.id)") 削除
+
+        .image-preview-modal(
+          v-if="previewImage"
+          ref="imagePreviewModal"
+          role="dialog"
+          aria-modal="true"
+          :aria-label="`${previewImage.filename}の拡大表示`"
+          tabindex="-1"
+          @click.self="closeImagePreview"
+          @keydown.esc="closeImagePreview"
+        )
+          .image-preview-content
+            button.image-preview-close(type="button" @click="closeImagePreview" aria-label="拡大表示を閉じる") ×
+            img(:src="previewImage.orgUrl || previewImage.url" :alt="previewImage.filename")
+            .image-preview-filename {{ previewImage.filename }}
 
       .form-group.form-check
         input(type="hidden" name="diary[main_in_day]" value="0")
@@ -159,6 +175,7 @@ export default {
       // サブ画像用
       images: [],
       uploading: false,
+      previewImage: null,
       // NOTE: 通常/CEモードの切り替えについてはしっかり考慮はしていない段階
       contentEditableMode: false,
       htmlContent: "",
@@ -376,6 +393,16 @@ export default {
       this.$emit('content-changed', this.formKey)
     },
 
+    // サブ画像をオーバーレイで拡大表示する
+    openImagePreview(image) {
+      this.previewImage = image
+      this.$nextTick(() => this.$refs.imagePreviewModal.focus())
+    },
+
+    closeImagePreview() {
+      this.previewImage = null
+    },
+
     // 指定画像のリンク付き画像タグと画像タグを本文からすべて削除する
     removeImageReferences(imageId) {
       const placeholder = this.activeStorageUrlPlaceholder()
@@ -579,14 +606,27 @@ export default {
     position: relative
     padding-top: 100%
 
-  .image-container img
+  .image-preview-button
     position: absolute
     top: 0
     left: 0
     width: 100%
     height: 100%
-    object-fit: cover
+    padding: 0
+    overflow: hidden
+    background: transparent
+    border: 0
     border-radius: 4px
+    cursor: zoom-in
+
+    &:focus
+      outline: 3px solid rgba(0, 123, 255, 0.5)
+      outline-offset: 2px
+
+  .image-preview-button img
+    width: 100%
+    height: 100%
+    object-fit: cover
 
   .image-usage-badge
     position: absolute
@@ -622,6 +662,56 @@ export default {
   .hidden
     display: none
 
+  .image-preview-modal
+    position: fixed
+    z-index: 1050
+    top: 0
+    right: 0
+    bottom: 0
+    left: 0
+    display: flex
+    padding: 24px
+    align-items: center
+    justify-content: center
+    background: rgba(0, 0, 0, 0.8)
+
+  .image-preview-content
+    position: relative
+    display: flex
+    max-width: 100%
+    max-height: 100%
+    padding: 40px 16px 12px
+    flex-direction: column
+    background: #fff
+    border-radius: 5px
+
+    img
+      max-width: 90vw
+      max-height: calc(90vh - 80px)
+      object-fit: contain
+
+  .image-preview-close
+    position: absolute
+    top: 2px
+    right: 8px
+    padding: 0 8px
+    color: #495057
+    background: transparent
+    border: 0
+    font-size: 2rem
+    line-height: 1
+    cursor: pointer
+
+  .image-preview-filename
+    max-width: 90vw
+    margin-top: 8px
+    overflow: hidden
+    color: #495057
+    font-size: 0.875rem
+    text-align: center
+    text-overflow: ellipsis
+    white-space: nowrap
+
 @media (max-width: 575.98px)
   .image-manager-card
     padding: 12px
@@ -638,5 +728,8 @@ export default {
 
       .btn
         width: 100%
+
+    .image-preview-modal
+      padding: 12px
 
 </style>
