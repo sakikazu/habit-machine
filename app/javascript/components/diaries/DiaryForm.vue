@@ -30,13 +30,14 @@
         content-editable(v-if="contentEditableMode" :content="diary.content" :tabindex="tabidxBase + 2" @content-updated="updateContent")
         div(v-else)
           a(href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") markdown記法
-          textarea.form-control(
+          textarea.form-control.diary-content-textarea(
             name="diary[content]"
             ref="markdownable_textarea"
-            rows="20"
+            rows="12"
             :placeholder="persisted ? '' : '日記の内容です。編集時に画像を貼り付けることができます'"
             v-model="diary.content"
             :tabindex="tabidxBase + 2"
+            @input="resizeContentTextarea"
             @paste="handlePaste"
           )
       section.form-section
@@ -235,6 +236,7 @@ export default {
       if (oldVal !== undefined) {
         localStorage.setItem(this.lsContentKey, newVal)
       }
+      this.$nextTick(this.resizeContentTextarea)
     },
   },
   computed: {
@@ -266,12 +268,15 @@ export default {
   },
   mounted () {
     this.setNormalContentElement()
+    this.resizeContentTextarea()
     this.setCheckUnsavedEvent()
     this.formKey = this.generateKey()
     this.$refs.diaryTitle.focus()
+    window.addEventListener('resize', this.resizeContentTextarea)
   },
   beforeDestroy () {
     this.revokeMainImagePreview()
+    window.removeEventListener('resize', this.resizeContentTextarea)
   },
   methods: {
     // Diary::ACTIVE_STORAGE_URL_PLACEHOLDER と合わせる
@@ -280,6 +285,20 @@ export default {
     },
     setNormalContentElement () {
       $(this.$refs.markdownable_textarea).markdownEasily()
+    },
+    // 本文量に合わせて入力欄を画面高の70%まで自動拡張する
+    resizeContentTextarea () {
+      const textarea = this.$refs.markdownable_textarea
+      if (!textarea) return
+
+      const minHeight = Number(textarea.dataset.minHeight) || textarea.offsetHeight
+      if (!textarea.dataset.minHeight) textarea.dataset.minHeight = minHeight
+
+      textarea.style.height = 'auto'
+      const maxHeight = window.innerHeight * 0.7
+      const contentHeight = Math.max(textarea.scrollHeight, minHeight)
+      textarea.style.height = `${Math.min(contentHeight, maxHeight)}px`
+      textarea.style.overflowY = contentHeight > maxHeight ? 'auto' : 'hidden'
     },
     generateKey () {
       // わかってないが10桁～11桁？で作られるな ref. https://qiita.com/fukasawah/items/db7f0405564bdc37820e
@@ -631,8 +650,10 @@ export default {
         }
       }
       this.contentEditableMode = false
-      // TODO: 効いてない。CEモードから帰って来るとMarkdown入力補助が効かない。この場合、v-showで切り替えるべきかなぁ
-      this.setNormalContentElement()
+      this.$nextTick(() => {
+        this.setNormalContentElement()
+        this.resizeContentTextarea()
+      })
     },
     switchContentEditable () {
       this.contentEditableMode = true
@@ -674,6 +695,11 @@ export default {
     margin-bottom: 12px
     color: #6c757d
     font-size: 0.875rem
+
+.diary-content-textarea
+  max-height: 70vh
+  overflow-y: hidden
+  resize: vertical
 
 .tag-suggestions
   margin-top: 14px
