@@ -66,31 +66,34 @@
 
       //- 画像管理エリア（画像選択時にアップロードを行うため、Diaryが特定できる必要があるので、編集時のみ）
       .image-manager-card.mb-4(v-if="persisted")
-        h5 サブ画像（日記中に配置できます）
-        div.no-images(v-if="images.length === 0") アップロードされた画像はありません
-        .image-grid(v-else)
-          .image-item(v-for="image in images" :key="image.id")
-            .image-container
-              img(:src="image.url" :alt="image.filename")
-              .image-actions
-                span.action-button.insert(@click="handleImageInsert(image)")
-                  i.icon 📥
-                span.action-button.delete(@click="handleImageDelete(image.id)")
-                  i.icon 🗑️
-            .image-filename {{ image.filename }}
+        h5.mb-1 サブ画像
+        p.image-manager-description 画像を追加すると、本文のカーソル位置に自動で挿入されます
 
-        .mt-3.btn.btn-light(
+        button.image-upload-button(
+          type="button"
           @click="triggerFileInput"
+          :disabled="uploading"
         )
-          p.upload-text
-            | 📁
-            | 画像を追加する
+          span.upload-icon(aria-hidden="true") 📁
+          span
+            strong {{ uploading ? '画像をアップロード中...' : '画像を追加する' }}
+            small JPG・PNG・GIFなど／最大20MB
         input.hidden(
           ref="fileInput"
           type="file"
           accept="image/*"
           @change="handleFileSelect"
         )
+
+        div.no-images(v-if="images.length === 0") 画像はまだありません。上のボタンから追加できます
+        .image-grid(v-else)
+          .image-item(v-for="image in images" :key="image.id")
+            .image-container
+              img(:src="image.url" :alt="image.filename")
+            .image-filename(:title="image.filename") {{ image.filename }}
+            .image-actions
+              button.btn.btn-sm.btn-primary(type="button" @click="handleImageInsert(image)") 本文に挿入
+              button.btn.btn-sm.btn-outline-danger(type="button" @click="handleImageDelete(image.id)") 削除
 
       .form-group.form-check
         input(type="hidden" name="diary[main_in_day]" value="0")
@@ -386,23 +389,22 @@ export default {
       const formData = new FormData()
       formData.append('image', file)
 
-      HmAxios.post(`/diaries/${this.diary.id}/create_image`, formData)
-        .then(res => {
-          const { imageUrl, imageOrgUrl, imageId } = res.data
-          this.images.push({
-            id: imageId,
-            url: imageUrl,
-            filename: file.name,
-            uploadedAt: new Date().toISOString()
-          })
-
-          this.handleImageInsert({ id: imageId, url: imageUrl, orgUrl: imageOrgUrl })
-        })
-        .catch(error => {
-          alert(error?.response?.data?.message || error.message)
+      try {
+        const res = await HmAxios.post(`/diaries/${this.diary.id}/create_image`, formData)
+        const { imageUrl, imageOrgUrl, imageId } = res.data
+        this.images.push({
+          id: imageId,
+          url: imageUrl,
+          filename: file.name,
+          uploadedAt: new Date().toISOString()
         })
 
-      this.uploading = false
+        this.handleImageInsert({ id: imageId, url: imageUrl, orgUrl: imageOrgUrl })
+      } catch (error) {
+        alert(error?.response?.data?.message || error.message)
+      } finally {
+        this.uploading = false
+      }
     },
     async handleImageDelete(imageId) {
       if (!confirm("本当に画像を削除してもいいですか？")) { return }
@@ -483,18 +485,68 @@ export default {
       cursor: default
 
 .image-manager-card
-  padding: 12px
+  padding: 16px
   background: #FFF8E1
   border-radius: 5px
   overflow: hidden
 
+  .image-manager-description
+    margin-bottom: 12px
+    color: #6c757d
+    font-size: 0.875rem
+
+  .image-upload-button
+    display: flex
+    width: 100%
+    min-height: 72px
+    margin-bottom: 16px
+    padding: 12px 16px
+    align-items: center
+    justify-content: center
+    gap: 12px
+    color: #495057
+    background: #fff
+    border: 2px dashed #adb5bd
+    border-radius: 5px
+    cursor: pointer
+    text-align: left
+
+    &:hover, &:focus
+      background: #f8f9fa
+      border-color: #6c757d
+
+    &:disabled
+      cursor: wait
+      opacity: 0.65
+
+    .upload-icon
+      font-size: 1.5rem
+
+    strong, small
+      display: block
+
+    small
+      margin-top: 2px
+      color: #6c757d
+
+  .no-images
+    padding: 16px
+    color: #6c757d
+    background: rgba(255, 255, 255, 0.6)
+    border-radius: 4px
+    text-align: center
+
   .image-grid
     display: grid
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr))
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr))
     gap: 1rem
 
   .image-item
-    position: relative
+    min-width: 0
+    padding: 8px
+    background: #fff
+    border: 1px solid #dee2e6
+    border-radius: 5px
 
   .image-container
     position: relative
@@ -509,24 +561,38 @@ export default {
     object-fit: cover
     border-radius: 4px
 
-  .image-actions
-    position: absolute
-    top: 0
-    left: 0
-    right: 0
-    bottom: 0
-    background: rgba(0, 0, 0, 0.5)
-    display: flex
-    align-items: center
-    justify-content: center
-    gap: 0.5rem
-    opacity: 0
-    transition: opacity 0.2s
+  .image-filename
+    margin: 8px 0
+    overflow: hidden
+    font-size: 0.875rem
+    text-overflow: ellipsis
+    white-space: nowrap
 
-  .image-container:hover .image-actions
-    opacity: 1
+  .image-actions
+    display: flex
+    gap: 8px
+
+    .btn
+      flex: 1
 
   .hidden
     display: none
+
+@media (max-width: 575.98px)
+  .image-manager-card
+    padding: 12px
+
+    .image-grid
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+      gap: 8px
+
+    .image-item
+      padding: 6px
+
+    .image-actions
+      flex-direction: column
+
+      .btn
+        width: 100%
 
 </style>
