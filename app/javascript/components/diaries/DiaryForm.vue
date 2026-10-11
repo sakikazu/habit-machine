@@ -43,39 +43,44 @@
             @input="resizeContentTextarea"
             @paste="handlePaste"
           )
-      section.form-section.tag-section
-        label.secondary-section-title タグ
-        p.form-section-description カンマ区切りで複数指定できます。使用するタグはタグ一覧から事前に作成してください
-        input.form-control(type="text" name="diary[tag_list]" ref="taglist" placeholder="矢印キーで既存のタグを表示" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
+      section.collapsible-section
+        button.section-toggle(type="button" @click="tagsExpanded = !tagsExpanded" :aria-expanded="tagsExpanded.toString()")
+          span.section-toggle-title
+            i.fa.mr-2(:class="tagsExpanded ? 'fa-chevron-down' : 'fa-chevron-right'" aria-hidden="true")
+            | タグ
+          small.section-summary {{ tagSectionSummary }}
+        .collapsible-content(v-show="tagsExpanded")
+          p.form-section-description カンマ区切りで複数指定できます。使用するタグはタグ一覧から事前に作成してください
+          input.form-control(type="text" name="diary[tag_list]" ref="taglist" placeholder="矢印キーで既存のタグを表示" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
 
-        .tag-suggestions(v-if="pinned_tags.length > 0")
-          .tag-suggestion-title
-            i.fa.fa-thumb-tack.mr-1
-            | ピン留め
-          .tag-list
-            button.tag-button(
-              v-for="tag in pinned_tags"
-              :key="`pinned-${tag.name}`"
-              type="button"
-              :class="{ selected: isTagSelected(tag.name) }"
-              :style="tag.color_style"
-              @click="toggleTag(tag.name)"
-            )
-              i.fa.fa-check.mr-1(v-if="isTagSelected(tag.name)")
-              | {{ tag.name }}
-        .tag-suggestions(v-if="latestTagsExcludingPinned.length > 0")
-          .tag-suggestion-title 最近使ったタグ
-          .tag-list
-            button.tag-button(
-              v-for="tag in latestTagsExcludingPinned"
-              :key="`latest-${tag.name}`"
-              type="button"
-              :class="{ selected: isTagSelected(tag.name) }"
-              :style="tag.color_style"
-              @click="toggleTag(tag.name)"
-            )
-              i.fa.fa-check.mr-1(v-if="isTagSelected(tag.name)")
-              | {{ tag.name }}
+          .tag-suggestions(v-if="pinned_tags.length > 0")
+            .tag-suggestion-title
+              i.fa.fa-thumb-tack.mr-1
+              | ピン留め
+            .tag-list
+              button.tag-button(
+                v-for="tag in pinned_tags"
+                :key="`pinned-${tag.name}`"
+                type="button"
+                :class="{ selected: isTagSelected(tag.name) }"
+                :style="tag.color_style"
+                @click="toggleTag(tag.name)"
+              )
+                i.fa.fa-check.mr-1(v-if="isTagSelected(tag.name)")
+                | {{ tag.name }}
+          .tag-suggestions(v-if="latestTagsExcludingPinned.length > 0")
+            .tag-suggestion-title 最近使ったタグ
+            .tag-list
+              button.tag-button(
+                v-for="tag in latestTagsExcludingPinned"
+                :key="`latest-${tag.name}`"
+                type="button"
+                :class="{ selected: isTagSelected(tag.name) }"
+                :style="tag.color_style"
+                @click="toggleTag(tag.name)"
+              )
+                i.fa.fa-check.mr-1(v-if="isTagSelected(tag.name)")
+                | {{ tag.name }}
 
       section.collapsible-section
         button.section-toggle(type="button" @click="imagesExpanded = !imagesExpanded" :aria-expanded="imagesExpanded.toString()")
@@ -232,6 +237,7 @@ export default {
       previewImage: null,
       mainImagePreviewUrl: null,
       mainImageFilename: null,
+      tagsExpanded: false,
       imagesExpanded: false,
       settingsExpanded: false,
       // NOTE: 通常/CEモードの切り替えについてはしっかり考慮はしていない段階
@@ -274,6 +280,10 @@ export default {
     latestTagsExcludingPinned () {
       const pinnedTagNames = this.pinned_tags.map(tag => tag.name)
       return this.latest_tags.filter(tag => !pinnedTagNames.includes(tag.name))
+    },
+    tagSectionSummary () {
+      const tags = (this.diary.tag_list || '').split(/\s*,\s*/).filter(tag => tag)
+      return tags.length > 0 ? tags.join('・') : 'タグなし'
     },
     imageSectionSummary () {
       const mainImageSummary = this.mainImageDisplayUrl ? 'メイン画像あり' : 'メイン画像なし'
@@ -736,24 +746,10 @@ export default {
     color: #6c757d
     font-size: 0.8rem
 
-.form-section
-  margin-top: 24px
-  padding-top: 16px
-  border-top: 1px solid #dee2e6
-
-  .form-section-description
-    margin-bottom: 8px
-    color: #6c757d
-    font-size: 0.8rem
-
-.secondary-section-title
-  margin-bottom: 4px
-  color: #495057
-  font-size: 0.9rem
-  font-weight: bold
-
-.tag-section
-  margin-bottom: 16px
+.form-section-description
+  margin-bottom: 8px
+  color: #6c757d
+  font-size: 0.8rem
 
 .collapsible-section
   border-top: 1px solid #dee2e6
