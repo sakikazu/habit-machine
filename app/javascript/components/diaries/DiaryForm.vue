@@ -76,12 +76,13 @@
         )
           span.upload-icon(aria-hidden="true") 📁
           span
-            strong {{ uploading ? '画像をアップロード中...' : '画像を追加する' }}
-            small JPG・PNG・GIFなど／最大20MB
+            strong {{ uploadButtonText }}
+            small JPG・PNG・GIFなど／1枚最大20MB／複数選択可
         input.hidden(
           ref="fileInput"
           type="file"
           accept="image/*"
+          multiple
           @change="handleFileSelect"
         )
 
@@ -175,6 +176,8 @@ export default {
       // サブ画像用
       images: [],
       uploading: false,
+      uploadCurrent: 0,
+      uploadTotal: 0,
       previewImage: null,
       // NOTE: 通常/CEモードの切り替えについてはしっかり考慮はしていない段階
       contentEditableMode: false,
@@ -203,6 +206,11 @@ export default {
     },
     lsContentKey () {
       return this.persisted ? `diary-content-${this.diary.id}` : 'diary-content-new'
+    },
+    uploadButtonText () {
+      if (!this.uploading) return '画像を追加する'
+
+      return `画像をアップロード中... (${this.uploadCurrent}/${this.uploadTotal})`
     },
   },
   // NOTE: 親でv-ifで表示可否を切り替えているからか、編集キャンセルして再編集時もcreatedが走る。この表示切り替え時に何かpropsで渡してwatchしても発動しないので、フォーム表示時の処理はcreated, mountedに書くべき
@@ -416,48 +424,73 @@ export default {
     },
 
     async handlePaste(e) {
-      const items = e.clipboardData.items
+      const imageFiles = Array.from(e.clipboardData.items)
+        .filter(item => item.type.includes('image'))
+        .map(item => item.getAsFile())
+        .filter(file => file)
 
-      for (const item of items) {
-        if (item.type.includes('image')) {
-          e.preventDefault()
-          const file = item.getAsFile()
-          await this.handleImageUpload(file)
-        }
-      }
+      if (imageFiles.length === 0) return
+
+      e.preventDefault()
+      await this.handleImageUploads(imageFiles)
     },
 
-    async handleImageUpload(file) {
+    // 複数画像を選択順にアップロードして本文へ挿入する
+    async handleImageUploads(files) {
+      if (this.uploading) {
+        alert('画像のアップロード完了後に再度お試しください')
+        return
+      }
       if (!this.persisted) {
         alert('画像の貼り付けは、編集時のみ可能です。')
         return
       }
-      if (file.size > 20 * 1024 * 1024) {
-        alert('画像サイズは20MB以下にしてください')
-        return
+
+      const oversizedFiles = files.filter(file => file.size > 20 * 1024 * 1024)
+      const uploadFiles = files.filter(file => file.size <= 20 * 1024 * 1024)
+      if (oversizedFiles.length > 0) {
+        const filenames = oversizedFiles.map(file => file.name).join('\n')
+        alert(`次の画像は20MB以下にしてください\n${filenames}`)
       }
+      if (uploadFiles.length === 0) return
 
       this.uploading = true
+      this.uploadCurrent = 0
+      this.uploadTotal = uploadFiles.length
 
+      try {
+        for (const [index, file] of uploadFiles.entries()) {
+          this.uploadCurrent = index + 1
+          try {
+            await this.uploadImage(file)
+          } catch (error) {
+            const message = error?.response?.data?.message || error.message
+            alert(`${file.name}のアップロードに失敗しました\n${message}`)
+          }
+        }
+      } finally {
+        this.uploading = false
+        this.uploadCurrent = 0
+        this.uploadTotal = 0
+      }
+    },
+
+    // 1枚の画像をアップロードして一覧と本文に追加する
+    async uploadImage(file) {
       const formData = new FormData()
       formData.append('image', file)
 
-      try {
-        const res = await HmAxios.post(`/diaries/${this.diary.id}/create_image`, formData)
-        const { imageUrl, imageOrgUrl, imageId } = res.data
-        this.images.push({
-          id: imageId,
-          url: imageUrl,
-          filename: file.name,
-          uploadedAt: new Date().toISOString()
-        })
-
-        this.handleImageInsert({ id: imageId, url: imageUrl, orgUrl: imageOrgUrl })
-      } catch (error) {
-        alert(error?.response?.data?.message || error.message)
-      } finally {
-        this.uploading = false
+      const res = await HmAxios.post(`/diaries/${this.diary.id}/create_image`, formData)
+      const { imageUrl, imageOrgUrl, imageId } = res.data
+      const image = {
+        id: imageId,
+        url: imageUrl,
+        orgUrl: imageOrgUrl,
+        filename: file.name,
+        uploadedAt: new Date().toISOString()
       }
+      this.images.push(image)
+      this.handleImageInsert(image)
     },
     async handleImageDelete(imageId) {
       const usedInContent = !this.contentEditableMode && this.isImageUsed(imageId)
@@ -492,11 +525,12 @@ export default {
       this.$refs.fileInput.click()
     },
 
-    handleFileSelect(e) {
-      const file = e.target.files[0]
-      if (file) {
-        this.handleImageUpload(file)
-      }
+    async handleFileSelect(e) {
+      const files = Array.from(e.target.files)
+      if (files.length > 0) await this.handleImageUploads(files)
+
+      // 同じ画像を続けて選択できるように選択状態をリセットする
+      e.target.value = ''
     },
     switchNormal() {
       if (this.htmlContent) {
