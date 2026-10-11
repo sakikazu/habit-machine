@@ -90,6 +90,8 @@
           .image-item(v-for="image in images" :key="image.id")
             .image-container
               img(:src="image.url" :alt="image.filename")
+              span.image-usage-badge.in-use(v-if="!contentEditableMode && isImageUsed(image.id)") 本文内
+              span.image-usage-badge.not-in-use(v-else-if="!contentEditableMode") 未挿入
             .image-filename(:title="image.filename") {{ image.filename }}
             .image-actions
               button.btn.btn-sm.btn-primary(type="button" @click="handleImageInsert(image)") 本文に挿入
@@ -354,12 +356,36 @@ export default {
       const afterText = this.diary.content.substring(endPos)
 
       this.diary.content = beforeText + text + afterText
+      this.markContentChanged()
 
       this.$nextTick(() => {
         textarea.focus()
         const newCursorPos = startPos + text.length
         textarea.setSelectionRange(newCursorPos, newCursorPos)
       })
+    },
+
+    // 現在編集中のMarkdown本文に指定画像が含まれるかを返す
+    isImageUsed(imageId) {
+      return (this.diary.content || '').includes(`![image-${imageId}](`)
+    },
+
+    // プログラムから本文を変更した場合も未保存状態として通知する
+    markContentChanged() {
+      this.unsaved = true
+      this.$emit('content-changed', this.formKey)
+    },
+
+    // 指定画像のリンク付き画像タグと画像タグを本文からすべて削除する
+    removeImageReferences(imageId) {
+      const placeholder = this.activeStorageUrlPlaceholder()
+      const linkedPattern = new RegExp(`\\[!\\[image-${imageId}\\]\\(${placeholder}\\)\\]\\(${placeholder}\\)(?:\\r?\\n)?`, 'g')
+      const imagePattern = new RegExp(`!\\[image-${imageId}\\]\\(${placeholder}\\)(?:\\r?\\n)?`, 'g')
+      const content = this.diary.content || ''
+
+      this.diary.content = content
+        .replace(linkedPattern, '')
+        .replace(imagePattern, '')
     },
 
     async handlePaste(e) {
@@ -407,17 +433,18 @@ export default {
       }
     },
     async handleImageDelete(imageId) {
-      if (!confirm("本当に画像を削除してもいいですか？")) { return }
+      const usedInContent = !this.contentEditableMode && this.isImageUsed(imageId)
+      const confirmMessage = usedInContent
+        ? 'この画像は本文内で使用されています。画像と本文中の記述を削除しますか？'
+        : '本当に画像を削除してもいいですか？'
+      if (!confirm(confirmMessage)) { return }
+
       HmAxios.put(`/diaries/${this.diary.id}/delete_sub_image/${imageId}.json`)
         .then((res) => {
-          // テキストエリア内の画像参照も削除
-          // TODO: これは削除できてない
-          const placeholder = this.activeStorageUrlPlaceholder()
-          const linkedPattern = new RegExp(`\\[!\\[image-${imageId}\\]\\(${placeholder}\\)\\]\\(${placeholder}\\)\\n?`, 'g')
-          const imagePattern = new RegExp(`!\\[image-${imageId}\\]\\(${placeholder}\\)\\n?`, 'g')
-          this.diary.content = this.diary.content
-            .replace(linkedPattern, '')
-            .replace(imagePattern, '')
+          if (usedInContent) {
+            this.removeImageReferences(imageId)
+            this.markContentChanged()
+          }
           this.images = this.images.filter(img => img.id !== imageId)
         })
         .catch(error => {
@@ -560,6 +587,23 @@ export default {
     height: 100%
     object-fit: cover
     border-radius: 4px
+
+  .image-usage-badge
+    position: absolute
+    top: 6px
+    right: 6px
+    padding: 3px 7px
+    border-radius: 10px
+    font-size: 0.75rem
+    font-weight: bold
+
+    &.in-use
+      color: #fff
+      background: rgba(40, 167, 69, 0.9)
+
+    &.not-in-use
+      color: #495057
+      background: rgba(255, 255, 255, 0.9)
 
   .image-filename
     margin: 8px 0
