@@ -19,7 +19,32 @@
         .recordValueInputRight
           i.button.addTemplate.fa.fa-plus-circle.fa-1_5x(@click="addTemplate" v-if="habit.template !== null")
       .card-text.mt10
-        textarea.form-control(placeholder="メモ入力" v-model="recordMemo" @input="onInputRecordMemo($event)" ref="markdownable_textarea" rows="5")
+        textarea.form-control(
+          placeholder="メモ入力"
+          v-model="recordMemo"
+          @input="onInputRecordMemo($event)"
+          @click="updateActiveExample"
+          @keyup="updateActiveExample"
+          @select="updateActiveExample"
+          @compositionstart="composing = true"
+          @compositionend="onCompositionEnd"
+          ref="markdownable_textarea"
+          rows="5"
+        )
+        .template-examples.mt-2(v-if="templateExampleGroups.length > 0")
+          .template-examples-title 入力例
+          .template-example-group(v-for="group in templateExampleGroups" :key="group.key")
+            .template-example-heading(v-if="group.heading") {{ group.heading }}
+            button.template-example-item(
+              v-for="entry in group.entries"
+              :key="entry.id"
+              :class="{ active: entry.id === activeExampleId }"
+              type="button"
+              @mousedown.prevent
+              @click="applyTemplateExample(entry)"
+            )
+              span.template-example-label {{ entry.label }}：
+              span {{ entry.example }}
     template(v-else-if="persisted")
       span.badge.badge-light
         // todo: valueないとき、（未入力）とか入れる？
@@ -32,6 +57,13 @@
 <script>
 import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
+import {
+  headingPathAtEnd,
+  lineIndexAt,
+  matchHabitTemplateEntries,
+  parseHabitTemplate,
+  replacementFor,
+} from 'habit_template_examples.js'
 
 export default {
   inheritAttrs: false, // 非prop属性をルート要素に適用したくない場合
@@ -63,6 +95,9 @@ export default {
       initialRecord: null,
       recordValue: null,
       recordMemo: null,
+      templateExamples: [],
+      activeExampleId: null,
+      composing: false,
     }
   },
   computed: {
@@ -77,6 +112,19 @@ export default {
     },
     dataChanged () {
       return this.valueChanged  || this.memoChanged
+    },
+    templateExampleGroups () {
+      const groups = []
+      this.templateExamples.forEach((entry) => {
+        const key = entry.headingPath.join('\u001f')
+        let group = groups[groups.length - 1]
+        if (!group || group.key !== key) {
+          group = { key, heading: entry.heading, entries: [] }
+          groups.push(group)
+        }
+        group.entries.push(entry)
+      })
+      return groups
     },
   },
   created () {
@@ -101,13 +149,31 @@ export default {
       if (this.recordMemo === null) {
         this.recordMemo = ''
       }
+      const initialHeadingPath = headingPathAtEnd(this.recordMemo)
       if (this.recordMemo !== '' && this.recordMemo.slice(-1) !== "\n") {
         this.recordMemo = this.recordMemo + "\n"
       }
-      this.recordMemo = this.recordMemo + this.habit.template
+      const parsedTemplate = parseHabitTemplate(this.habit.template, initialHeadingPath)
+      this.recordMemo = this.recordMemo + parsedTemplate.text
+      this.templateExamples = parsedTemplate.entries
+      this.activeExampleId = null
+      this.$nextTick(() => {
+        this.updateActiveExample()
+        this.expandMemoTextarea()
+      })
+    },
+    // テンプレート挿入後に本文全体が見える高さまで入力欄を拡張する
+    expandMemoTextarea () {
+      const textarea = this.$refs.markdownable_textarea
+      if (!textarea) return
+
+      const currentHeight = textarea.offsetHeight
+      textarea.style.height = 'auto'
+      textarea.style.height = `${Math.max(textarea.scrollHeight, currentHeight)}px`
     },
     // TODO: JS的にリファクタリングしたいな
     onInputRecordMemo (event) {
+      if (!this.composing) this.updateActiveExample()
       if (this.habit.template === null) { return }
       // NOTE: Android Chrome の場合、数字を入力時でもこのreturnにひっかかってしまったのでコメントアウト
       // この処理を復活させるなら Backspace の時もreturnしないようにしないと
@@ -127,6 +193,47 @@ export default {
       if (summary !== null) {
         this.recordValue = summary
       }
+    },
+    // IME確定後にカーソル行との対応を更新する
+    onCompositionEnd () {
+      this.composing = false
+      this.updateActiveExample()
+    },
+    // 現在の本文とテンプレートの対応が一意な場合だけ入力例を選択する
+    updateActiveExample () {
+      if (this.composing || this.templateExamples.length === 0) return
+      const textarea = this.$refs.markdownable_textarea
+      if (!textarea) return
+
+      const matches = matchHabitTemplateEntries(this.recordMemo, this.templateExamples)
+      const match = matches[lineIndexAt(this.recordMemo, textarea.selectionStart)]
+      this.activeExampleId = match ? match.entry.id : null
+    },
+    // カーソル行の未入力記号だけを入力例へ置換する
+    applyTemplateExample (entry) {
+      const textarea = this.$refs.markdownable_textarea
+      if (!textarea) return
+
+      const lineIndex = lineIndexAt(this.recordMemo, textarea.selectionStart)
+      const match = matchHabitTemplateEntries(this.recordMemo, this.templateExamples)[lineIndex]
+      if (!match || match.entry.id !== entry.id) return
+
+      const replacement = replacementFor(this.recordMemo, lineIndex, match)
+      if (!replacement) return
+
+      textarea.focus()
+      textarea.setSelectionRange(replacement.start, replacement.end)
+      const inserted = document.execCommand('insertText', false, replacement.replacement)
+      if (!inserted) {
+        textarea.setRangeText(replacement.replacement, replacement.start, replacement.end, 'select')
+        textarea.dispatchEvent(new Event('input', { bubbles: true }))
+      }
+
+      this.$nextTick(() => {
+        textarea.focus()
+        textarea.setSelectionRange(replacement.start, replacement.start + replacement.replacement.length)
+        this.updateActiveExample()
+      })
     },
     // 値とメモがどちらも空か判定する
     recordIsEmpty () {
@@ -244,4 +351,41 @@ export default {
     .recordValueInputLeft
       display: flex
       align-items: center
+
+  .template-examples
+    border: 1px solid #dee2e6
+    border-radius: 5px
+    background-color: #f8f9fa
+    padding: 8px
+
+  .template-examples-title
+    color: #6c757d
+    font-size: .8rem
+    font-weight: bold
+    margin-bottom: 4px
+
+  .template-example-group + .template-example-group
+    margin-top: 6px
+
+  .template-example-heading
+    color: #495057
+    font-size: .85rem
+    font-weight: bold
+
+  .template-example-item
+    display: block
+    width: 100%
+    border: 0
+    border-radius: 3px
+    background: transparent
+    color: #495057
+    cursor: pointer
+    padding: 3px 6px
+    text-align: left
+
+    &:hover, &.active
+      background-color: #d9edf7
+
+  .template-example-label
+    font-weight: bold
 </style>
