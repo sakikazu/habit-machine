@@ -160,11 +160,6 @@ footer > p {
     text-align: left;
   }
 
-  div.description {
-    font-size: 80%;
-    color: #666;
-  }
-
   .habit-template-row > th,
   .habit-template-row > td {
     padding: 0.45rem;
@@ -188,7 +183,7 @@ footer > p {
 }
 
 // 習慣レコード内のMarkdownを一覧向けの密度で表示する
-.habit-record-content {
+.markdown.habit-record-content {
   margin: 0 0 0.5rem;
   padding: 0.55rem 0.7rem;
   color: #4f5963;
