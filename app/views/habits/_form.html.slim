@@ -30,8 +30,16 @@
     = f.label :reminder, "リマインダ（未実装）"
     = f.check_box :reminder
   .form-group
-    = f.label :memo, "テンプレート文"
-    = f.text_area :template, rows: 3, class: 'form-control'
+    = f.label :template, "テンプレート文"
+    = f.text_area :template, rows: 6, class: 'form-control'
+    small.form-text.text-muted
+      | 「本日の記録」のプラスボタンから挿入します。Markdownを使用できます。
+      br
+      code = '[[入力例]]'
+      |  は挿入時に「-」となり、入力補助から例を入力できます。
+      br
+      code = '[[選択:候補1/候補2]]'
+      |  は候補ごとの選択ボタンを表示します。
   .form-group
     = f.label :memo, "メモ"
     = f.text_area :memo, rows: 4, class: 'form-control'
