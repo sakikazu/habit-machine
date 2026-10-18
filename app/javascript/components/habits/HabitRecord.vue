@@ -62,7 +62,7 @@
         span.text-140.mr-1 {{ initialRecord.value }}
         span {{ habit.value_unit }}
       .card-text.mt10
-        span.text-danger.markdown(v-html="initialRecord.markdowned_memo")
+        .markdown.habit-record-content(v-html="initialRecord.markdowned_memo")
 </template>
 
 <script>
