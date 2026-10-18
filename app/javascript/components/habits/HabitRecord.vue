@@ -35,16 +35,27 @@
           .template-examples-title 入力例
           .template-example-group(v-for="group in templateExampleGroups" :key="group.key")
             .template-example-heading(v-if="group.heading") {{ group.heading }}
-            button.template-example-item(
+            .template-example-item(
               v-for="entry in group.entries"
               :key="entry.id"
               :class="{ active: entry.id === activeExampleId }"
-              type="button"
-              @mousedown.prevent
-              @click="applyTemplateExample(entry)"
             )
               span.template-example-label {{ entry.label }}：
-              span {{ entry.example }}
+              .template-example-choices(v-if="entry.choices.length > 0")
+                button.template-example-choice(
+                  v-for="choice in entry.choices"
+                  :key="choice"
+                  :class="{ selected: entry.id === activeExampleId && choice === activeExampleValue }"
+                  type="button"
+                  @mousedown.prevent
+                  @click="applyTemplateChoice(entry, choice)"
+                ) {{ choice }}
+              button.template-example-value(
+                v-else
+                type="button"
+                @mousedown.prevent
+                @click="applyTemplateExample(entry)"
+              ) {{ entry.example }}
     template(v-else-if="persisted")
       span.badge.badge-light
         // todo: valueないとき、（未入力）とか入れる？
@@ -63,6 +74,7 @@ import {
   matchHabitTemplateEntries,
   parseHabitTemplate,
   replacementFor,
+  replacementForChoice,
 } from 'habit_template_examples.js'
 
 export default {
@@ -97,6 +109,7 @@ export default {
       recordMemo: null,
       templateExamples: [],
       activeExampleId: null,
+      activeExampleValue: null,
       composing: false,
     }
   },
@@ -157,6 +170,7 @@ export default {
       this.recordMemo = this.recordMemo + parsedTemplate.text
       this.templateExamples = parsedTemplate.entries
       this.activeExampleId = null
+      this.activeExampleValue = null
       this.$nextTick(() => {
         this.updateActiveExample()
         this.expandMemoTextarea()
@@ -208,6 +222,7 @@ export default {
       const matches = matchHabitTemplateEntries(this.recordMemo, this.templateExamples)
       const match = matches[lineIndexAt(this.recordMemo, textarea.selectionStart)]
       this.activeExampleId = match ? match.entry.id : null
+      this.activeExampleValue = match ? match.value : null
     },
     // カーソル行の未入力記号だけを入力例へ置換する
     applyTemplateExample (entry) {
@@ -221,17 +236,35 @@ export default {
       const replacement = replacementFor(this.recordMemo, lineIndex, match)
       if (!replacement) return
 
+      this.replaceMemoSelection(replacement.start, replacement.end, replacement.replacement)
+    },
+    // カーソル行が未入力または選択肢の値である場合だけ候補へ置換する
+    applyTemplateChoice (entry, choice) {
+      const textarea = this.$refs.markdownable_textarea
+      if (!textarea) return
+
+      const lineIndex = lineIndexAt(this.recordMemo, textarea.selectionStart)
+      const match = matchHabitTemplateEntries(this.recordMemo, this.templateExamples)[lineIndex]
+      if (!match || match.entry.id !== entry.id) return
+
+      const replacement = replacementForChoice(this.recordMemo, lineIndex, match, choice)
+      if (!replacement) return
+      this.replaceMemoSelection(replacement.start, replacement.end, replacement.replacement)
+    },
+    // ブラウザの編集履歴を維持して文字列を置換し、置換内容を選択する
+    replaceMemoSelection (start, end, replacement) {
+      const textarea = this.$refs.markdownable_textarea
       textarea.focus()
-      textarea.setSelectionRange(replacement.start, replacement.end)
-      const inserted = document.execCommand('insertText', false, replacement.replacement)
+      textarea.setSelectionRange(start, end)
+      const inserted = document.execCommand('insertText', false, replacement)
       if (!inserted) {
-        textarea.setRangeText(replacement.replacement, replacement.start, replacement.end, 'select')
+        textarea.setRangeText(replacement, start, end, 'select')
         textarea.dispatchEvent(new Event('input', { bubbles: true }))
       }
 
       this.$nextTick(() => {
         textarea.focus()
-        textarea.setSelectionRange(replacement.start, replacement.start + replacement.replacement.length)
+        textarea.setSelectionRange(start, start + replacement.length)
         this.updateActiveExample()
       })
     },
@@ -373,19 +406,36 @@ export default {
     font-weight: bold
 
   .template-example-item
-    display: block
+    display: flex
+    flex-wrap: wrap
+    align-items: center
+    gap: 4px
     width: 100%
-    border: 0
     border-radius: 3px
-    background: transparent
     color: #495057
-    cursor: pointer
     padding: 3px 6px
-    text-align: left
 
-    &:hover, &.active
+    &.active
       background-color: #d9edf7
 
   .template-example-label
     font-weight: bold
+
+  .template-example-choices
+    display: flex
+    flex-wrap: wrap
+    gap: 4px
+
+  .template-example-choice, .template-example-value
+    border: 1px solid #adb5bd
+    border-radius: 3px
+    background-color: white
+    color: #495057
+    cursor: pointer
+    padding: 2px 7px
+
+    &:hover, &.selected
+      color: white
+      background-color: #17a2b8
+      border-color: #17a2b8
 </style>

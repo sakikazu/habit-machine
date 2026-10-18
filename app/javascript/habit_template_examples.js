@@ -42,6 +42,8 @@ function parseHabitTemplate (template, initialHeadingPath = []) {
     if (matches.length !== 1 || !/^\s*[-*+]\s+/.test(row)) return convertedRow
 
     const match = matches[0]
+    const choiceMatch = match[1].match(/^選択:(.+)$/)
+    const choices = choiceMatch ? choiceMatch[1].split('/').map(choice => choice.trim()).filter(Boolean) : []
     const linePrefix = row.slice(0, match.index)
     const lineSuffix = row.slice(match.index + match[0].length)
     const key = itemKey(headingPath, linePrefix, lineSuffix)
@@ -54,7 +56,8 @@ function parseHabitTemplate (template, initialHeadingPath = []) {
       headingPath: headingPath.slice(),
       heading: headingPath[headingPath.length - 1] || '',
       label: linePrefix.replace(/^\s*[-*+]\s+/, '').replace(/[：:]\s*$/, '').trim(),
-      example: match[1],
+      example: choiceMatch ? choiceMatch[1] : match[1],
+      choices: choices.length > 1 ? choices : [],
       linePrefix,
       lineSuffix,
       occurrence,
@@ -116,7 +119,20 @@ function replacementFor (text, lineIndex, match) {
   if (!rows[lineIndex]) return null
   const rowStart = rows.slice(0, lineIndex).reduce((length, row) => length + row.length + 1, 0)
   const start = rowStart + match.entry.linePrefix.length
-  return { start, end: start + 1, replacement: match.entry.example }
+  const replacement = match.entry.choices.length > 0 ? match.entry.choices[0] : match.entry.example
+  return { start, end: start + 1, replacement }
+}
+
+// 未入力または定義済み候補の値だけを指定候補へ置換する
+function replacementForChoice (text, lineIndex, match, choice) {
+  if (!match || !match.entry.choices.includes(choice)) return null
+  if (match.value !== '-' && !match.entry.choices.includes(match.value)) return null
+
+  const rows = (text || '').split(/\r?\n/)
+  if (!rows[lineIndex]) return null
+  const rowStart = rows.slice(0, lineIndex).reduce((length, row) => length + row.length + 1, 0)
+  const start = rowStart + match.entry.linePrefix.length
+  return { start, end: start + match.value.length, replacement: choice }
 }
 
 module.exports = {
@@ -125,4 +141,5 @@ module.exports = {
   matchHabitTemplateEntries,
   parseHabitTemplate,
   replacementFor,
+  replacementForChoice,
 }

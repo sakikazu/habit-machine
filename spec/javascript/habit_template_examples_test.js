@@ -5,6 +5,7 @@ const {
   matchHabitTemplateEntries,
   parseHabitTemplate,
   replacementFor,
+  replacementForChoice,
 } = require('../../app/javascript/habit_template_examples.js')
 
 function test (description, callback) {
@@ -73,4 +74,35 @@ test('未入力記号だけを置換対象にする', () => {
 
 test('カーソル位置から行番号を取得する', () => {
   assert.strictEqual(lineIndexAt('一行目\n二行目', 5), 1)
+})
+
+test('選択式入力例を解析し、先頭候補を置換値にする', () => {
+  const parsed = parseHabitTemplate('- 寝起き：[[選択:1悪い/2普通 / 3良い]]')
+  const entry = parsed.entries[0]
+  const match = matchHabitTemplateEntries(parsed.text, parsed.entries)[0]
+
+  assert.deepStrictEqual(entry.choices, ['1悪い', '2普通', '3良い'])
+  assert.strictEqual(replacementFor(parsed.text, 0, match).replacement, '1悪い')
+})
+
+test('候補ボタンは未入力または定義済み候補だけを置換する', () => {
+  const parsed = parseHabitTemplate('- 寝起き：[[選択:1悪い/2普通/3良い]]')
+  const emptyMatch = matchHabitTemplateEntries(parsed.text, parsed.entries)[0]
+  assert.deepStrictEqual(replacementForChoice(parsed.text, 0, emptyMatch, '2普通'), {
+    start: 6,
+    end: 7,
+    replacement: '2普通',
+  })
+
+  const selected = '- 寝起き：1悪い'
+  const selectedMatch = matchHabitTemplateEntries(selected, parsed.entries)[0]
+  assert.deepStrictEqual(replacementForChoice(selected, 0, selectedMatch, '3良い'), {
+    start: 6,
+    end: 9,
+    replacement: '3良い',
+  })
+
+  const entered = '- 寝起き：自由入力'
+  const enteredMatch = matchHabitTemplateEntries(entered, parsed.entries)[0]
+  assert.strictEqual(replacementForChoice(entered, 0, enteredMatch, '1悪い'), null)
 })
