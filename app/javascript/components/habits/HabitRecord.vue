@@ -23,38 +23,38 @@
           placeholder="メモ入力"
           v-model="recordMemo"
           @input="onInputRecordMemo($event)"
-          @click="updateActiveExample"
-          @keyup="updateActiveExample"
-          @select="updateActiveExample"
+          @click="updateActiveInputHelper"
+          @keyup="updateActiveInputHelper"
+          @select="updateActiveInputHelper"
           @compositionstart="composing = true"
           @compositionend="onCompositionEnd"
           ref="markdownable_textarea"
           rows="5"
         )
-        .template-examples.mt-2(v-if="templateExampleGroups.length > 0")
-          .template-examples-title 入力例
-          .template-example-group(v-for="group in templateExampleGroups" :key="group.key")
-            .template-example-heading(v-if="group.heading") {{ group.heading }}
-            .template-example-item(
+        .template-input-helpers.mt-2(v-if="templateInputHelperGroups.length > 0")
+          .template-input-helpers-title 入力補助
+          .template-input-helper-group(v-for="group in templateInputHelperGroups" :key="group.key")
+            .template-input-helper-heading(v-if="group.heading") {{ group.heading }}
+            .template-input-helper-item(
               v-for="entry in group.entries"
               :key="entry.id"
-              :class="{ active: entry.id === activeExampleId }"
+              :class="{ active: entry.id === activeInputHelperId }"
             )
-              span.template-example-label {{ entry.label }}：
-              .template-example-choices(v-if="entry.choices.length > 0")
-                button.template-example-choice(
+              span.template-input-helper-label {{ entry.label }}：
+              .template-input-helper-choices(v-if="entry.choices.length > 0")
+                button.template-input-helper-choice(
                   v-for="choice in entry.choices"
                   :key="choice"
-                  :class="{ selected: entry.id === activeExampleId && choice === activeExampleValue }"
+                  :class="{ selected: entry.id === activeInputHelperId && choice === activeInputHelperValue }"
                   type="button"
                   @mousedown.prevent
                   @click="applyTemplateChoice(entry, choice)"
                 ) {{ choice }}
-              button.template-example-value(
+              button.template-input-helper-value(
                 v-else
                 type="button"
                 @mousedown.prevent
-                @click="applyTemplateExample(entry)"
+                @click="applyTemplateInputHelper(entry)"
               ) {{ entry.example }}
     template(v-else-if="persisted")
       span.badge.badge-light
@@ -107,9 +107,9 @@ export default {
       initialRecord: null,
       recordValue: null,
       recordMemo: null,
-      templateExamples: [],
-      activeExampleId: null,
-      activeExampleValue: null,
+      templateInputHelpers: [],
+      activeInputHelperId: null,
+      activeInputHelperValue: null,
       composing: false,
     }
   },
@@ -126,9 +126,9 @@ export default {
     dataChanged () {
       return this.valueChanged  || this.memoChanged
     },
-    templateExampleGroups () {
+    templateInputHelperGroups () {
       const groups = []
-      this.templateExamples.forEach((entry) => {
+      this.templateInputHelpers.forEach((entry) => {
         const key = entry.headingPath.join('\u001f')
         let group = groups[groups.length - 1]
         if (!group || group.key !== key) {
@@ -168,11 +168,11 @@ export default {
       }
       const parsedTemplate = parseHabitTemplate(this.habit.template, initialHeadingPath)
       this.recordMemo = this.recordMemo + parsedTemplate.text
-      this.templateExamples = parsedTemplate.entries
-      this.activeExampleId = null
-      this.activeExampleValue = null
+      this.templateInputHelpers = parsedTemplate.entries
+      this.activeInputHelperId = null
+      this.activeInputHelperValue = null
       this.$nextTick(() => {
-        this.updateActiveExample()
+        this.updateActiveInputHelper()
         this.expandMemoTextarea()
       })
     },
@@ -187,7 +187,7 @@ export default {
     },
     // TODO: JS的にリファクタリングしたいな
     onInputRecordMemo (event) {
-      if (!this.composing) this.updateActiveExample()
+      if (!this.composing) this.updateActiveInputHelper()
       if (this.habit.template === null) { return }
       // NOTE: Android Chrome の場合、数字を入力時でもこのreturnにひっかかってしまったのでコメントアウト
       // この処理を復活させるなら Backspace の時もreturnしないようにしないと
@@ -211,26 +211,26 @@ export default {
     // IME確定後にカーソル行との対応を更新する
     onCompositionEnd () {
       this.composing = false
-      this.updateActiveExample()
+      this.updateActiveInputHelper()
     },
     // 現在の本文とテンプレートの対応が一意な場合だけ入力例を選択する
-    updateActiveExample () {
-      if (this.composing || this.templateExamples.length === 0) return
+    updateActiveInputHelper () {
+      if (this.composing || this.templateInputHelpers.length === 0) return
       const textarea = this.$refs.markdownable_textarea
       if (!textarea) return
 
-      const matches = matchHabitTemplateEntries(this.recordMemo, this.templateExamples)
+      const matches = matchHabitTemplateEntries(this.recordMemo, this.templateInputHelpers)
       const match = matches[lineIndexAt(this.recordMemo, textarea.selectionStart)]
-      this.activeExampleId = match ? match.entry.id : null
-      this.activeExampleValue = match ? match.value : null
+      this.activeInputHelperId = match ? match.entry.id : null
+      this.activeInputHelperValue = match ? match.value : null
     },
     // カーソル行の未入力記号だけを入力例へ置換する
-    applyTemplateExample (entry) {
+    applyTemplateInputHelper (entry) {
       const textarea = this.$refs.markdownable_textarea
       if (!textarea) return
 
       const lineIndex = lineIndexAt(this.recordMemo, textarea.selectionStart)
-      const match = matchHabitTemplateEntries(this.recordMemo, this.templateExamples)[lineIndex]
+      const match = matchHabitTemplateEntries(this.recordMemo, this.templateInputHelpers)[lineIndex]
       if (!match || match.entry.id !== entry.id) return
 
       const replacement = replacementFor(this.recordMemo, lineIndex, match)
@@ -244,7 +244,7 @@ export default {
       if (!textarea) return
 
       const lineIndex = lineIndexAt(this.recordMemo, textarea.selectionStart)
-      const match = matchHabitTemplateEntries(this.recordMemo, this.templateExamples)[lineIndex]
+      const match = matchHabitTemplateEntries(this.recordMemo, this.templateInputHelpers)[lineIndex]
       if (!match || match.entry.id !== entry.id) return
 
       const replacement = replacementForChoice(this.recordMemo, lineIndex, match, choice)
@@ -265,7 +265,7 @@ export default {
       this.$nextTick(() => {
         textarea.focus()
         textarea.setSelectionRange(start, start + replacement.length)
-        this.updateActiveExample()
+        this.updateActiveInputHelper()
       })
     },
     // 値とメモがどちらも空か判定する
@@ -385,27 +385,27 @@ export default {
       display: flex
       align-items: center
 
-  .template-examples
+  .template-input-helpers
     border: 1px solid #dee2e6
     border-radius: 5px
     background-color: #f8f9fa
     padding: 8px
 
-  .template-examples-title
+  .template-input-helpers-title
     color: #6c757d
     font-size: .8rem
     font-weight: bold
     margin-bottom: 4px
 
-  .template-example-group + .template-example-group
+  .template-input-helper-group + .template-input-helper-group
     margin-top: 6px
 
-  .template-example-heading
+  .template-input-helper-heading
     color: #495057
     font-size: .85rem
     font-weight: bold
 
-  .template-example-item
+  .template-input-helper-item
     display: flex
     flex-wrap: wrap
     align-items: center
@@ -418,15 +418,15 @@ export default {
     &.active
       background-color: #d9edf7
 
-  .template-example-label
+  .template-input-helper-label
     font-weight: bold
 
-  .template-example-choices
+  .template-input-helper-choices
     display: flex
     flex-wrap: wrap
     gap: 4px
 
-  .template-example-choice, .template-example-value
+  .template-input-helper-choice, .template-input-helper-value
     border: 1px solid #adb5bd
     border-radius: 3px
     background-color: white
