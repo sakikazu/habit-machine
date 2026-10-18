@@ -32,7 +32,7 @@
             small.ml10
               = "#{record.displaying_value} #{@habit.value_unit}"
           - if record.memo.present?
-            .markdown.description.well.well-narrow.p-2
+            .markdown.description.well.habit-record-content
               = markdown(record.memo)
           hr
       .mt30

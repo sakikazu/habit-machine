@@ -165,6 +165,50 @@ footer > p {
     color: #666;
   }
 
+  // 習慣レコード内のMarkdownを一覧向けの密度で表示する
+  .habit-record-content {
+    margin: 0 0 0.5rem;
+    padding: 0.55rem 0.7rem;
+    color: #4f5963;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+    box-shadow: none;
+    font-size: 0.85rem;
+    line-height: 1.45;
+
+    h1,
+    h2,
+    h3 {
+      margin: 0.7rem 0 0.35rem;
+      padding: 0.2rem 0.45rem;
+      color: #495057;
+      background: transparent;
+      border-left: 3px solid #adb5bd;
+      border-bottom: 0;
+      border-radius: 0;
+      box-shadow: none;
+      font-size: 1rem;
+      line-height: 1.35;
+    }
+
+    h1:first-child,
+    h2:first-child,
+    h3:first-child {
+      margin-top: 0;
+    }
+
+    p,
+    ul,
+    ol {
+      margin-top: 0.25rem;
+      margin-bottom: 0.35rem;
+    }
+
+    > :last-child {
+      margin-bottom: 0;
+    }
+  }
+
   .habit-template-row > th,
   .habit-template-row > td {
     padding: 0.45rem;
