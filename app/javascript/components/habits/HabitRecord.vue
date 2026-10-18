@@ -24,7 +24,7 @@
           v-model="recordMemo"
           @input="onInputRecordMemo($event)"
           @click="updateActiveInputHelper"
-          @keyup="updateActiveInputHelper"
+          @keyup="onMemoKeyup"
           @select="updateActiveInputHelper"
           @compositionstart="composing = true"
           @compositionend="onCompositionEnd"
@@ -46,6 +46,7 @@
                   v-for="choice in entry.choices"
                   :key="choice"
                   :class="{ selected: entry.id === activeInputHelperId && choice === activeInputHelperValue }"
+                  :disabled="!canApplyInputHelper(entry)"
                   type="button"
                   @mousedown.prevent
                   @click="applyTemplateChoice(entry, choice)"
@@ -53,6 +54,7 @@
               button.template-input-helper-value(
                 v-else
                 type="button"
+                :disabled="!canApplyInputHelper(entry)"
                 @mousedown.prevent
                 @click="applyTemplateInputHelper(entry)"
               ) {{ entry.example }}
@@ -75,6 +77,7 @@ import {
   parseHabitTemplate,
   replacementFor,
   replacementForChoice,
+  restoreHabitTemplateEntries,
 } from 'habit_template_examples.js'
 
 export default {
@@ -213,7 +216,12 @@ export default {
       this.composing = false
       this.updateActiveInputHelper()
     },
-    // 現在の本文とテンプレートの対応が一意な場合だけ入力例を選択する
+    // カーソル移動キーの場合だけ入力補助との対応を更新する
+    onMemoKeyup (event) {
+      const navigationKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End', 'PageUp', 'PageDown']
+      if (navigationKeys.includes(event.key)) this.updateActiveInputHelper()
+    },
+    // 現在の本文とテンプレートの対応が一意な場合だけ入力補助を選択する
     updateActiveInputHelper () {
       if (this.composing || this.templateInputHelpers.length === 0) return
       const textarea = this.$refs.markdownable_textarea
@@ -224,7 +232,15 @@ export default {
       this.activeInputHelperId = match ? match.entry.id : null
       this.activeInputHelperValue = match ? match.value : null
     },
-    // カーソル行の未入力記号だけを入力例へ置換する
+    // カーソル行の値を安全に置換できる入力補助か判定する
+    canApplyInputHelper (entry) {
+      if (entry.id !== this.activeInputHelperId) return false
+      if (entry.choices.length > 0) {
+        return this.activeInputHelperValue === '-' || entry.choices.includes(this.activeInputHelperValue)
+      }
+      return this.activeInputHelperValue === '-'
+    },
+    // カーソル行の未入力記号だけを入力補助の内容へ置換する
     applyTemplateInputHelper (entry) {
       const textarea = this.$refs.markdownable_textarea
       if (!textarea) return
@@ -332,6 +348,9 @@ export default {
       this.initialRecord = record
       this.recordValue = record.value
       this.recordMemo = record.memo
+      this.templateInputHelpers = restoreHabitTemplateEntries(this.recordMemo, this.habit.template)
+      this.activeInputHelperId = null
+      this.activeInputHelperValue = null
     }
   }
 }
@@ -434,8 +453,12 @@ export default {
     cursor: pointer
     padding: 2px 7px
 
-    &:hover, &.selected
+    &:not(:disabled):hover, &.selected
       color: white
       background-color: #17a2b8
       border-color: #17a2b8
+
+    &:disabled
+      cursor: default
+      opacity: .45
 </style>

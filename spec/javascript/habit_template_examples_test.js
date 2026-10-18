@@ -6,6 +6,7 @@ const {
   parseHabitTemplate,
   replacementFor,
   replacementForChoice,
+  restoreHabitTemplateEntries,
 } = require('../../app/javascript/habit_template_examples.js')
 
 function test (description, callback) {
@@ -105,4 +106,30 @@ test('候補ボタンは未入力または定義済み候補だけを置換す�
   const entered = '- 寝起き：自由入力'
   const enteredMatch = matchHabitTemplateEntries(entered, parsed.entries)[0]
   assert.strictEqual(replacementForChoice(entered, 0, enteredMatch, '1悪い'), null)
+})
+
+test('保存済み本文から入力補助を復元する', () => {
+  const template = '### 朝\n- 眠気：[[選択:1なし/2普通/3強い]]'
+  const text = '### 朝\n- 眠気：2普通'
+  const entries = restoreHabitTemplateEntries(text, template)
+
+  assert.strictEqual(entries.length, 1)
+  assert.deepStrictEqual(entries[0].choices, ['1なし', '2普通', '3強い'])
+})
+
+test('親見出しがある保存済み本文から入力補助を復元する', () => {
+  const template = '### 朝\n- 眠気：[[0〜4]]'
+  const text = '# 健康\n## 今日\n### 朝\n- 眠気：3'
+  const entries = restoreHabitTemplateEntries(text, template)
+
+  assert.strictEqual(entries.length, 1)
+  assert.deepStrictEqual(entries[0].headingPath, ['健康', '今日', '朝'])
+})
+
+test('保存済み本文との対応が曖昧または不完全な場合は復元しない', () => {
+  const template = '### 朝\n- 眠気：[[0〜4]]'
+  const duplicated = '### 朝\n- 眠気：1\n- 眠気：2'
+
+  assert.deepStrictEqual(restoreHabitTemplateEntries(duplicated, template), [])
+  assert.deepStrictEqual(restoreHabitTemplateEntries('### 朝\n- 疲労：3', template), [])
 })

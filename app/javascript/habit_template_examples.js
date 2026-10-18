@@ -26,7 +26,23 @@ function headingPathAtEnd (text) {
   return headingPath
 }
 
-// テンプレートを挿入用本文と入力例の対応情報へ分解する
+// 本文内に現れる見出し階層を重複なく取得する
+function headingPathsIn (text) {
+  const paths = [[]]
+  const seen = new Set([''])
+  let headingPath = []
+
+  ;(text || '').split(/\r?\n/).forEach((row) => {
+    headingPath = updateHeadingPath(headingPath, row)
+    const key = headingPath.join('\u001f')
+    if (seen.has(key)) return
+    seen.add(key)
+    paths.push(headingPath.slice())
+  })
+  return paths
+}
+
+// テンプレートを挿入用本文と入力補助の対応情報へ分解する
 function parseHabitTemplate (template, initialHeadingPath = []) {
   const source = template || ''
   const entries = []
@@ -69,7 +85,7 @@ function parseHabitTemplate (template, initialHeadingPath = []) {
   return { text, entries }
 }
 
-// 本文の行と入力例を照合し、曖昧さがない場合だけ対応を返す
+// 本文の行と入力補助を照合し、曖昧さがない場合だけ対応を返す
 function matchHabitTemplateEntries (text, entries) {
   const rows = (text || '').split(/\r?\n/)
   const candidates = {}
@@ -106,21 +122,48 @@ function matchHabitTemplateEntries (text, entries) {
   return matchesByLine
 }
 
+// 保存済み本文とテンプレートが一意に対応する場合だけ入力補助情報を復元する
+function restoreHabitTemplateEntries (text, template) {
+  const restored = new Map()
+
+  headingPathsIn(text).forEach((initialHeadingPath) => {
+    const parsed = parseHabitTemplate(template, initialHeadingPath)
+    if (parsed.entries.length === 0) return
+
+    const matches = matchHabitTemplateEntries(text, parsed.entries)
+    if (Object.keys(matches).length !== parsed.entries.length) return
+
+    const signature = Object.keys(matches).sort((a, b) => Number(a) - Number(b)).join(',')
+    if (!restored.has(signature)) restored.set(signature, parsed.entries)
+  })
+
+  return restored.size === 1 ? Array.from(restored.values())[0] : []
+}
+
 // selectionStartからカーソルがある行番号を取得する
 function lineIndexAt (text, selectionStart) {
   return (text || '').slice(0, selectionStart).split(/\r?\n/).length - 1
+}
+
+// 対応行の値部分に対する置換範囲を返す
+function replacementRangeFor (text, lineIndex, match) {
+  if (!match) return null
+
+  const rows = (text || '').split(/\r?\n/)
+  if (!rows[lineIndex]) return null
+  const rowStart = rows.slice(0, lineIndex).reduce((length, row) => length + row.length + 1, 0)
+  const start = rowStart + match.entry.linePrefix.length
+  return { start, end: start + match.value.length }
 }
 
 // 未入力記号だけを置換するための選択範囲を返す
 function replacementFor (text, lineIndex, match) {
   if (!match || match.value !== '-') return null
 
-  const rows = (text || '').split(/\r?\n/)
-  if (!rows[lineIndex]) return null
-  const rowStart = rows.slice(0, lineIndex).reduce((length, row) => length + row.length + 1, 0)
-  const start = rowStart + match.entry.linePrefix.length
+  const range = replacementRangeFor(text, lineIndex, match)
+  if (!range) return null
   const replacement = match.entry.choices.length > 0 ? match.entry.choices[0] : match.entry.example
-  return { start, end: start + 1, replacement }
+  return { ...range, replacement }
 }
 
 // 未入力または定義済み候補の値だけを指定候補へ置換する
@@ -128,11 +171,8 @@ function replacementForChoice (text, lineIndex, match, choice) {
   if (!match || !match.entry.choices.includes(choice)) return null
   if (match.value !== '-' && !match.entry.choices.includes(match.value)) return null
 
-  const rows = (text || '').split(/\r?\n/)
-  if (!rows[lineIndex]) return null
-  const rowStart = rows.slice(0, lineIndex).reduce((length, row) => length + row.length + 1, 0)
-  const start = rowStart + match.entry.linePrefix.length
-  return { start, end: start + match.value.length, replacement: choice }
+  const range = replacementRangeFor(text, lineIndex, match)
+  return range ? { ...range, replacement: choice } : null
 }
 
 module.exports = {
@@ -142,4 +182,5 @@ module.exports = {
   parseHabitTemplate,
   replacementFor,
   replacementForChoice,
+  restoreHabitTemplateEntries,
 }
