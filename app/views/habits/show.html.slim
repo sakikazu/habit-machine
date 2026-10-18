@@ -68,10 +68,10 @@
           br
           | (未実装)
         td = @habit.reminder
-      tr
+      tr.habit-template-row
         th テンプレート文
-        td
-          p = sani_custom_br(@habit.template)
+        td.habit-template-cell
+          p.habit-template-text = sani_custom_br(@habit.template)
       tr
         th メモ
         td

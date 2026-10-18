@@ -164,6 +164,27 @@ footer > p {
     font-size: 80%;
     color: #666;
   }
+
+  .habit-template-row > th,
+  .habit-template-row > td {
+    padding: 0.45rem;
+  }
+
+  .habit-template-cell {
+    background-color: #f8f9fa;
+  }
+
+  .habit-template-text {
+    margin: 0;
+    padding: 0.45rem 0.55rem;
+    color: #5f6770;
+    background-color: #fff;
+    border-left: 3px solid #ced4da;
+    border-radius: 2px;
+    font-size: 0.8rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
 }
 
 /**********************************************
