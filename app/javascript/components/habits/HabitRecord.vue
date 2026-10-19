@@ -63,7 +63,7 @@
         // todo: valueないとき、（未入力）とか入れる？
         span.text-140.mr-1 {{ initialRecord.value }}
         span {{ habit.value_unit }}
-      .card-text.mt10
+      .card-text.mt10(v-if="initialRecord.memo && initialRecord.memo.trim()")
         .markdown.habit-record-content(v-html="initialRecord.markdowned_memo")
 </template>
 
