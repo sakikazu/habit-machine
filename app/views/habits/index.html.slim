@@ -1,21 +1,25 @@
 .row.justify-content-center
-  .col-sm-9
-    .form_actions
-      = link_to '習慣を登録する', new_habit_path, class: "btn btn-info"
-    .page-header
-      h2 習慣一覧
-    .row
-      - @enable_habits.each do |habit|
-        .col-sm-4.mt15
-          = render partial: 'index_detail', locals: {habit: habit}
-    h2.btn.btn-block.btn-danger.disabled.mt30 無効
-    .row
-      - @disable_habits.each do |habit|
-        .col-sm-4.mt15
-          = render partial: 'index_detail', locals: {habit: habit}
-    h2.btn.btn-block.btn-info.disabled.mt30 完了（目標達成／習慣化済み）
-    .row
-      - @close_habits.each do |habit|
-        .col-sm-4.mt15
-          = render partial: 'index_detail', locals: {habit: habit}
+  .col-lg-10.col-xl-9
+    .habit-index-header
+      div
+        h2.mb-1 習慣一覧
+        p.text-muted.mb-0 現在取り組んでいる習慣
+      .habit-index-actions
+        = link_to archive_habits_path, class: 'btn btn-light' do
+          = fa_icon 'archive', text: '過去の習慣'
+          span.badge.badge-secondary.ml-1 = @disabled_habits_count + @done_habits_count
+        = link_to new_habit_path, class: 'btn btn-info' do
+          = fa_icon 'plus', text: '習慣を登録する'
+
+    - if @personal_habits.empty? && @family_habits.empty?
+      .habit-empty-state
+        = fa_icon 'check-circle-o', class: 'habit-empty-icon'
+        h4 有効な習慣はありません
+        p.text-muted 新しい習慣を登録すると、ここに表示されます
+        = link_to '最初の習慣を登録する', new_habit_path, class: 'btn btn-info'
+    - else
+      = render 'habit_group', title: '個人の習慣', icon: 'user', habits: @personal_habits, empty_message: '個人の習慣はありません'
+      = render 'habit_group', title: '家族の習慣', icon: 'users', habits: @family_habits, empty_message: '家族の習慣はありません'
+
+= render 'management_styles'
 

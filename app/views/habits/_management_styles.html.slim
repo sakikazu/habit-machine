@@ -1,0 +1,96 @@
+sass:
+  .habit-index-header
+    display: flex
+    align-items: center
+    justify-content: space-between
+    gap: 16px
+    margin: 20px 0 28px
+
+  .habit-index-actions
+    display: flex
+    gap: 8px
+
+  .habit-group
+    margin-bottom: 32px
+
+  .habit-group-heading
+    display: flex
+    align-items: center
+    gap: 10px
+    margin-bottom: 12px
+    padding-bottom: 8px
+    border-bottom: 1px solid #e9ecef
+
+    h3
+      margin: 0
+      color: #343a40
+      font-size: 1.15rem
+
+  .habit-count
+    color: #6c757d
+    font-size: .8rem
+
+  .habit-card
+    height: 100%
+    border: 1px solid #dee2e6
+    box-shadow: 0 2px 7px rgba(0, 0, 0, .04)
+
+  .habit-card-header
+    display: flex
+    align-items: flex-start
+    justify-content: space-between
+    gap: 8px
+    background: #fff
+
+  .habit-card-title
+    color: #343a40
+    font-size: 1rem
+    font-weight: bold
+
+  .habit-owner-label
+    flex-shrink: 0
+    border-radius: 999px
+    padding: 3px 8px
+    font-size: .72rem
+    font-weight: bold
+
+    .fa
+      margin-right: 4px
+
+    &.is-personal
+      color: #376b8c
+      background: #eaf4fb
+
+    &.is-family
+      color: #8a641c
+      background: #fff3cd
+
+  .habit-group-empty
+    border: 1px dashed #ced4da
+    border-radius: 6px
+    padding: 18px
+    color: #6c757d
+    text-align: center
+
+  .habit-empty-state
+    margin: 40px 0
+    padding: 44px 20px
+    border: 1px dashed #ced4da
+    border-radius: 8px
+    text-align: center
+
+  .habit-empty-icon
+    margin-bottom: 12px
+    color: #adb5bd
+    font-size: 2.5rem
+
+  @media (max-width: 575.98px)
+    .habit-index-header
+      align-items: stretch
+      flex-direction: column
+
+    .habit-index-actions
+      flex-direction: column-reverse
+
+      .btn
+        width: 100%

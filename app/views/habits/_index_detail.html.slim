@@ -1,8 +1,10 @@
-.card(class="#{'text-dark bg-warning' if habit.for_family?}")
-  h5.card-header
-    = link_to habit_path(habit.id) do
-      => fa_icon 'users' if habit.for_family?
+.card.habit-card
+  .card-header.habit-card-header
+    = link_to habit_path(habit.id), class: 'habit-card-title' do
       = habit.title
+    span.habit-owner-label(class="#{habit.for_family? ? 'is-family' : 'is-personal'}")
+      = fa_icon(habit.for_family? ? 'users' : 'user')
+      = habit.for_family? ? '家族用' : '個人用'
   .card-body
     - if habit.goal.present?
       .card-text

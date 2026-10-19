@@ -163,7 +163,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :habits
+  resources :habits do
+    collection do
+      get :archive
+    end
+  end
   resources :records, only: [:create, :update, :destroy]
   resources :histories, only: [:show, :create, :edit, :update, :destroy]
   resources :favorites, only: [:index, :create]

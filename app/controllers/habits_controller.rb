@@ -6,9 +6,19 @@ class HabitsController < ApplicationController
   # GET /habits
   # GET /habits.json
   def index
-    @enable_habits = Habit.available_by_user(current_user).status_enabled
-    @disable_habits = Habit.available_by_user(current_user).status_disabled
-    @close_habits = Habit.available_by_user(current_user).status_done
+    available_habits = Habit.available_by_user(current_user)
+    @personal_habits, @family_habits = available_habits.status_enabled.partition do |habit|
+      !habit.for_family?
+    end
+    @disabled_habits_count = available_habits.status_disabled.count
+    @done_habits_count = available_habits.status_done.count
+  end
+
+  # 無効・完了にした習慣を通常の一覧から分離して表示
+  def archive
+    available_habits = Habit.available_by_user(current_user)
+    @disabled_habits = available_habits.status_disabled
+    @done_habits = available_habits.status_done
   end
 
   # GET /habits/1

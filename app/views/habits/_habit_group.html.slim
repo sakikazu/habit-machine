@@ -1,0 +1,13 @@
+.habit-group
+  .habit-group-heading
+    h3
+      = fa_icon icon, class: 'mr-2'
+      = title
+    span.habit-count = "#{habits.size}件"
+  - if habits.any?
+    .row
+      - habits.each do |habit|
+        .col-md-6.col-lg-4.mb-3
+          = render 'index_detail', habit: habit
+  - else
+    p.habit-group-empty = empty_message
