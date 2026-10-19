@@ -158,6 +158,7 @@ export default {
         Vue.nextTick().then(function() {
           vm.$refs.inputValue.focus()
           $(vm.$refs.markdownable_textarea).markdownEasily()
+          vm.resizeMemoTextarea()
         })
       }
     },
@@ -176,17 +177,31 @@ export default {
       this.activeInputHelperValue = null
       this.$nextTick(() => {
         this.updateActiveInputHelper()
-        this.expandMemoTextarea()
+        this.resizeMemoTextarea()
       })
     },
-    // テンプレート挿入後に本文全体が見える高さまで入力欄を拡張する
-    expandMemoTextarea () {
+    // 本文量に応じて入力欄を拡張し、10行分の高さを上限にする
+    resizeMemoTextarea () {
       const textarea = this.$refs.markdownable_textarea
       if (!textarea) return
 
-      const currentHeight = textarea.offsetHeight
+      const defaultHeight = Number(textarea.dataset.defaultHeight) || textarea.offsetHeight
+      if (!textarea.dataset.defaultHeight) textarea.dataset.defaultHeight = defaultHeight
+
+      let maxHeight = Number(textarea.dataset.maxHeight)
+      if (!maxHeight) {
+        const defaultRows = textarea.rows
+        textarea.rows = 10
+        maxHeight = textarea.offsetHeight
+        textarea.rows = defaultRows
+        textarea.dataset.maxHeight = maxHeight
+      }
+
       textarea.style.height = 'auto'
-      textarea.style.height = `${Math.max(textarea.scrollHeight, currentHeight)}px`
+      const contentHeight = Math.max(textarea.scrollHeight, defaultHeight)
+      textarea.style.height = `${Math.min(contentHeight, maxHeight)}px`
+      textarea.style.maxHeight = `${maxHeight}px`
+      textarea.style.overflowY = contentHeight > maxHeight ? 'auto' : 'hidden'
     },
     // TODO: JS的にリファクタリングしたいな
     onInputRecordMemo (event) {
