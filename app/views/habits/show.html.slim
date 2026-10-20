@@ -51,6 +51,13 @@
         th ステータス
         td = @habit.status_i18n
       tr
+        th 本日の記録
+        td
+          - if @habit.pinned?
+            span.badge.badge-warning = fa_icon('thumb-tack', text: 'ピン留め中')
+          - else
+            span.text-muted ピン留めなし
+      tr
         th 目標
         td = @habit.goal
       tr
