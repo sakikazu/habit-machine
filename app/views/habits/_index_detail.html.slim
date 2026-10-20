@@ -2,9 +2,12 @@
   .card-header.habit-card-header
     = link_to habit_path(habit.id), class: 'habit-card-title' do
       = habit.title
-    span.habit-owner-label(class="#{habit.for_family? ? 'is-family' : 'is-personal'}")
-      = fa_icon(habit.for_family? ? 'users' : 'user')
-      = habit.for_family? ? '家族用' : '個人用'
+    .habit-card-actions
+      span.habit-owner-label(class="#{habit.for_family? ? 'is-family' : 'is-personal'}")
+        = fa_icon(habit.for_family? ? 'users' : 'user')
+        = habit.for_family? ? '家族用' : '個人用'
+      = link_to edit_habit_path(habit), class: 'habit-edit-link', title: '習慣を編集' do
+        = fa_icon 'pencil', text: '編集'
   .card-body
     - if habit.goal.present?
       .card-text

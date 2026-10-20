@@ -22,6 +22,9 @@ RSpec.describe 'Habit permissions', type: :request do
       expect(response.body).to include(
         personal_habit.title, family_habit.title, '個人用', '家族用'
       )
+      expect(response.body).to include(
+        edit_habit_path(personal_habit), edit_habit_path(family_habit)
+      )
       expect(response.body).not_to include('無効な習慣', '他人の習慣')
     end
   end
