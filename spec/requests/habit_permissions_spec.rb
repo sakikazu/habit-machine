@@ -74,4 +74,26 @@ RSpec.describe 'Habit permissions', type: :request do
       expect(response).to have_http_status(:not_found)
     end
   end
+
+  describe 'PATCH /habits/:id' do
+    it '参照できる習慣をピン留めできる' do
+      habit = create(:habit, source: owner)
+      sign_in owner
+
+      patch habit_path(habit, format: :json), params: { habit: { pinned: true } }
+
+      expect(response).to have_http_status(:no_content)
+      expect(habit.reload).to be_pinned
+    end
+
+    it '参照できない習慣はピン留めできない' do
+      habit = create(:habit, source: owner)
+      sign_in outsider
+
+      patch habit_path(habit, format: :json), params: { habit: { pinned: true } }
+
+      expect(response).to have_http_status(:not_found)
+      expect(habit.reload).not_to be_pinned
+    end
+  end
 end

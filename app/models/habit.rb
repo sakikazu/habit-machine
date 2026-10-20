@@ -6,6 +6,7 @@
 #  deleted_at  :datetime
 #  goal        :text(16777215)
 #  memo        :text(16777215)
+#  pinned      :boolean          default(FALSE), not null
 #  reminder    :boolean
 #  result_type :integer
 #  source_type :string(255)      not null
@@ -24,6 +25,7 @@
 #
 
 class Habit < ApplicationRecord
+  # NOTE: 本来ピン留めはユーザーごとの表示設定だが、利用者が少ない現状では簡潔さを優先してHabitに保持する
   acts_as_paranoid
 
   belongs_to :source, polymorphic: true

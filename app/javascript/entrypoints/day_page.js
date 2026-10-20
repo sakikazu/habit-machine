@@ -42,14 +42,30 @@ document.addEventListener('turbolinks:load', () => {
       toastError: false,
       toastMessage: '',
       modalableDiaryId: null,
-      // mobileでは「本日の記録」の未記入のものはデフォルト非表示にしているので、それを表示するためのフラグ
-      openRecordContents: false,
+      showAllHabitRecords: false,
       categories: [],
       isDiaryTwoColumns: false,
       diaryTwoColumnsMediaQuery: null,
       diaryTwoColumnsMediaListener: null,
     },
     computed: {
+      // ピン留めを先頭にし、記録済みはピン留めされていなくても常に表示する
+      orderedHabitRecords () {
+        const pinned = this.habit_records.filter(item => item.habit.pinned)
+        const recorded = this.habit_records.filter(item => !item.habit.pinned && item.record.id !== null)
+        const others = this.habit_records.filter(item => !item.habit.pinned && item.record.id === null)
+        return [...pinned, ...recorded, ...others]
+      },
+      visibleHabitRecords () {
+        if (this.showAllHabitRecords) return this.orderedHabitRecords
+        return this.orderedHabitRecords.filter(item => item.habit.pinned || item.record.id !== null)
+      },
+      collapsibleHabitRecordsCount () {
+        return this.habit_records.filter(item => !item.habit.pinned && item.record.id === null).length
+      },
+      hiddenHabitRecordsCount () {
+        return this.showAllHabitRecords ? 0 : this.collapsibleHabitRecordsCount
+      },
       // ページ内のすべてのフォームからデータ変更をチェック
       existsChangedForm () {
         return this.contentChanged.length > 0

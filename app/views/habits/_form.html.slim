@@ -14,6 +14,11 @@
   .form-group
     = f.label :status, "ステータス"
     = f.select :status, Habit.statuses.keys.map { |key| [Habit.statuses_i18n[key], key] }, { include_blank: true }, class: 'form-control'
+  .form-group.form-check
+    = f.check_box :pinned, class: 'form-check-input'
+    = f.label :pinned, "「本日の記録」にピン留めする", class: 'form-check-label'
+    small.form-text.text-muted
+      | オフの場合、未記録のときは「もっと見る」の中に表示されます。
   .form-group
     = f.label :goal, "目標"
     = f.text_area :goal, rows: 3, class: 'form-control'

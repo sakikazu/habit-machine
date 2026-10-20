@@ -1,5 +1,5 @@
 <template lang="pug">
-.card.mb15(v-if="!mobile || persisted || openRecordContents")
+.card.mb15
   h5.card-header.p-2
     .habit-title
       a(:href="`/habits/${habit.id}`")
@@ -94,14 +94,6 @@ export default {
     targetDate: {
       type: String,
       required: true,
-    },
-    mobile: {
-      type: Boolean,
-      required: true
-    },
-    openRecordContents: {
-      type: Boolean,
-      required: true
     },
   },
   data () {
