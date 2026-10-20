@@ -4,6 +4,7 @@
     .habit-title
       a(:href="`/habits/${habit.id}`")
         | {{ habit.title }}
+        i.fa.fa-thumb-tack.ml-2.pinned-icon(v-if="habit.pinned" title="ピン留め中" aria-label="ピン留め中")
         // TODO: 共有アイコンは、アイコンの右に「共有」というラベルがあり、それらが枠線で囲まれているのが良さそう
         i.fa.fa-users.ml-2(v-if="habit.for_family" style="color:orange")
     i.button.saveButton.fa.fa-floppy-o(@click="save" v-if="dataChanged")
@@ -394,6 +395,9 @@ export default {
       a
         font-size: 1rem
         font-weight: bold
+
+      .pinned-icon
+        color: #f59e0b
 
   .recordValueInput
     display: flex
