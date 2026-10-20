@@ -134,7 +134,10 @@ class Habit < ApplicationRecord
     end
     # Habitが有効でなく、そのRecordも未登録なら除外する
     habits = habits.delete_if { |h| !h.status_enabled? && h.record_at_date.new_record? }
-    # Recordが登録されているHabitを前方に持ってくる
-    habits.partition { |h| !h.record_at_date.new_record? }.flatten
+    # 個人用を家族用より前にし、それぞれの中では記録済みを前方に持ってくる
+    personal_habits, family_habits = habits.partition { |habit| !habit.for_family? }
+    [personal_habits, family_habits].flat_map do |group|
+      group.partition { |habit| !habit.record_at_date.new_record? }.flatten
+    end
   end
 end
