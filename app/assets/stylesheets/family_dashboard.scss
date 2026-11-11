@@ -513,7 +513,7 @@
 
 .family-dashboard__cards {
   display: grid;
-  gap: 0;
+  gap: 8px;
   margin-right: -24px;
   margin-left: -24px;
 }
@@ -585,10 +585,6 @@
   border-radius: 0;
   padding: 16px 24px;
   box-shadow: none;
-}
-
-.family-dashboard__card + .family-dashboard__card {
-  border-top: 0;
 }
 
 .family-dashboard__card-header {
@@ -667,9 +663,22 @@
 }
 
 .family-dashboard__card-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
   font-size: 18px;
   font-weight: 700;
   margin: 10px 0 6px;
+}
+
+.family-dashboard__card-title-members {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-left: auto;
 }
 
 .family-dashboard__card-actions {

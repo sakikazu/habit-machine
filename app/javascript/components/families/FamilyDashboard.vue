@@ -122,14 +122,6 @@
         <article v-for="history in histories" :key="history.id" :id="historyCardId(history)" class="family-dashboard__card">
           <div class="family-dashboard__card-header">
             <div class="family-dashboard__card-heading">
-              <span
-                v-for="name in memberNamePills(history)"
-                :key="`${history.id}-${name}`"
-                class="family-dashboard__member family-dashboard__member--prominent"
-              >
-                <i class="fa fa-child" aria-hidden="true"></i>
-                {{ name }}
-              </span>
               <div class="family-dashboard__date-group">
                 <span v-if="history.about_date" class="family-dashboard__approx">(だいたい)</span>
                 <span class="family-dashboard__date">{{ history.target_date_label || history.target_date }}</span>
@@ -157,6 +149,16 @@
           </div>
           <h4 class="family-dashboard__card-title">
             <button type="button" class="family-dashboard__title-button" @click="openHistoryModal(history)">{{ history.title }}</button>
+            <span class="family-dashboard__card-title-members">
+              <span
+                v-for="name in memberNamePills(history)"
+                :key="`${history.id}-${name}`"
+                class="family-dashboard__member family-dashboard__member--prominent"
+              >
+                <i class="fa fa-child" aria-hidden="true"></i>
+                {{ name }}
+              </span>
+            </span>
           </h4>
           <p v-if="history.height || history.weight" class="family-dashboard__metrics">
             <span v-if="history.height">{{ history.height }}cm</span>
