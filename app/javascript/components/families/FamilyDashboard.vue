@@ -121,17 +121,20 @@
       <div v-else-if="displayMode === 'card'" class="family-dashboard__cards">
         <article v-for="history in histories" :key="history.id" :id="historyCardId(history)" class="family-dashboard__card">
           <div class="family-dashboard__card-header">
-            <div class="family-dashboard__date-group">
-              <span v-if="history.about_date" class="family-dashboard__approx">(だいたい)</span>
-              <span class="family-dashboard__date">{{ history.target_date_label || history.target_date }}</span>
+            <div class="family-dashboard__card-heading">
               <span
                 v-for="name in memberNamePills(history)"
                 :key="`${history.id}-${name}`"
-                class="family-dashboard__member"
+                class="family-dashboard__member family-dashboard__member--prominent"
               >
+                <i class="fa fa-child" aria-hidden="true"></i>
                 {{ name }}
               </span>
-              <span v-if="history.author_name" class="family-dashboard__author">by {{ history.author_name }}</span>
+              <div class="family-dashboard__date-group">
+                <span v-if="history.about_date" class="family-dashboard__approx">(だいたい)</span>
+                <span class="family-dashboard__date">{{ history.target_date_label || history.target_date }}</span>
+                <span v-if="history.author_name" class="family-dashboard__author">by {{ history.author_name }}</span>
+              </div>
             </div>
             <div class="family-dashboard__card-actions">
               <button

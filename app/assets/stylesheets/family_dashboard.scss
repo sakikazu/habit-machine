@@ -586,10 +586,19 @@
 
 .family-dashboard__card-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  gap: 12px;
   font-size: 12px;
   color: #7b6d5a;
+}
+
+.family-dashboard__card-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  min-width: 0;
 }
 
 .family-dashboard__date-group {
@@ -621,6 +630,17 @@
   border-radius: 999px;
   font-size: 11px;
   color: #5a4630;
+}
+
+.family-dashboard__member--prominent {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  background: #f7c062;
+  color: #3f2d16;
+  font-size: 14px;
+  font-weight: 700;
 }
 
 .family-dashboard__edit {
