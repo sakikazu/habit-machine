@@ -162,7 +162,21 @@
             <span v-if="history.height">{{ history.height }}cm</span>
             <span v-if="history.weight" class="family-dashboard__metric-separator">{{ history.weight }}kg</span>
           </p>
-          <p v-if="history.content_html || history.content" class="family-dashboard__card-body" v-html="history.content_html || nl2br(history.content)"></p>
+          <p
+            v-if="history.content_html || history.content"
+            :ref="`historyContent-${history.id}`"
+            class="family-dashboard__card-body"
+            v-html="history.content_html || nl2br(history.content)"
+          ></p>
+          <button
+            v-if="truncatedHistoryIds[history.id]"
+            type="button"
+            class="family-dashboard__read-more"
+            @click="openHistoryModal(history)"
+          >
+            続きを読む
+            <span aria-hidden="true">→</span>
+          </button>
           <img v-if="history.eyecatch_url" :src="history.eyecatch_url" alt="" class="family-dashboard__card-image">
         </article>
       </div>
@@ -283,7 +297,8 @@ export default {
       historyModalInitialMode: 'view',
       historyFeedRequestId: 0,
       filtersOpen: true,
-      displayMode: 'card'
+      displayMode: 'card',
+      truncatedHistoryIds: {}
     }
   },
   computed: {
@@ -310,6 +325,10 @@ export default {
   mounted () {
     this.fetchMeta()
     this.filtersOpen = !this.isMobile()
+    window.addEventListener('resize', this.measureTruncatedContents)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.measureTruncatedContents)
   },
   methods: {
     nl2br,
@@ -388,6 +407,20 @@ export default {
     // 一覧カードのスクロール位置を安定させるIDを返す。
     historyCardId (history) {
       return history.id ? `history-${history.id}` : null
+    },
+    // 4行を超える本文を判定して続きを読むボタンを表示する
+    measureTruncatedContents () {
+      this.$nextTick(() => {
+        const truncatedHistoryIds = {}
+        this.histories.forEach((history) => {
+          const contentRef = this.$refs[`historyContent-${history.id}`]
+          const element = Array.isArray(contentRef) ? contentRef[0] : contentRef
+          if (element && element.scrollHeight > element.clientHeight + 1) {
+            truncatedHistoryIds[history.id] = true
+          }
+        })
+        this.truncatedHistoryIds = truncatedHistoryIds
+      })
     },
     memberNamePills (history) {
       if (history.member_names && history.member_names.length > 0) {
@@ -493,6 +526,7 @@ export default {
         .finally(() => {
           if (requestId !== this.historyFeedRequestId) return
           this.loading = false
+          this.measureTruncatedContents()
         })
     },
     fetchMonthCounts (year) {

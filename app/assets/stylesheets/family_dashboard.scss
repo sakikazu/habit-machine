@@ -695,9 +695,28 @@
 }
 
 .family-dashboard__card-body {
+  display: -webkit-box;
+  overflow: hidden;
   margin: 0;
   color: #4a3f32;
   line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.family-dashboard__read-more {
+  margin-top: 5px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #1d4e89;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.family-dashboard__read-more:hover {
+  text-decoration: underline;
 }
 
 .family-dashboard__metrics {
@@ -721,8 +740,10 @@
 }
 
 .family-dashboard__card-image {
+  display: block;
   width: 100%;
   max-width: 460px;
+  max-height: 260px;
   border-radius: 12px;
   margin-top: 12px;
   object-fit: cover;
