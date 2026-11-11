@@ -20,7 +20,7 @@
 
       .form-group.primary-field
         label.primary-field-label タイトル
-        input.form-control.diary-title-input(type="text" name="diary[title]" placeholder="未入力でも保存できます" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
+        input.form-control(type="text" name="diary[title]" placeholder="未入力でも保存できます" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
 
       .content-field-heading
         label.primary-field-label.mb-0 本文
@@ -730,11 +730,6 @@ export default {
   color: #343a40
   font-size: 1rem
   font-weight: bold
-
-.diary-title-input
-  height: auto
-  padding: 10px 12px
-  font-size: 1.15rem
 
 .content-field-heading
   display: flex
