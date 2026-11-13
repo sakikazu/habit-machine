@@ -64,7 +64,7 @@ class Diary < ApplicationRecord
   ACTIVE_STORAGE_URL_PLACEHOLDER = "ACTIVE_STORAGE_URL".freeze
 
   # TODO: これもrails7.1以降にvariant定義できるようになれば置き換えることができる
-  SUB_IMAGE_VARIANT_HASH = { resize_to_limit: [650, 650], saver: { quality: 80 } }.freeze
+  SUB_IMAGE_VARIANT_HASH = { resize_to_limit: [650, 650], quality: 80 }.freeze
 
   validates_presence_of :record_at
   validate :exists_tags?
@@ -107,11 +107,11 @@ class Diary < ApplicationRecord
 
   # ActiveStorageのファイルパス（Diskのみ）を取得する場合は、 `ActiveStorage::Blob.service.path_for(blob.key)` でOK
   def eyecatch_image_small
-    eyecatch_image.variant(resize_to_limit: [180, 180], saver: { quality: 80 })
+    eyecatch_image.variant(resize_to_limit: [180, 180], quality: 80)
   end
 
   def eyecatch_image_large
-    eyecatch_image.variant(resize_to_limit: [1600, 1600], saver: { quality: 80 })
+    eyecatch_image.variant(resize_to_limit: [1600, 1600], quality: 80)
   end
 
   def title_mod

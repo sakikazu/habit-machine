@@ -48,11 +48,11 @@ class History < ApplicationRecord
   has_one_attached :eyecatch_image
 
   def eyecatch_image_small
-    eyecatch_image.variant(resize_to_limit: [350, 350], saver: { quality: 80 })
+    eyecatch_image.variant(resize_to_limit: [350, 350], quality: 80)
   end
 
   def eyecatch_image_large
-    eyecatch_image.variant(resize_to_limit: [1600, 1600], saver: { quality: 80 })
+    eyecatch_image.variant(resize_to_limit: [1600, 1600], quality: 80)
   end
 
   def favorited_by?(user)

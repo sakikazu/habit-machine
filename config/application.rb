@@ -19,6 +19,9 @@ module HabitMachine
     config.i18n.default_locale = :ja
     config.time_zone = "Asia/Tokyo"
 
+    # Active Storageの画像変換には導入済みのImageMagickを使用する
+    config.active_storage.variant_processor = :mini_magick
+
     config.generators do |g|
       g.view_specs false
       g.request_specs false

@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 ruby '3.2.6'
-gem 'rails', '~> 7.2.0'
+gem 'rails', '~> 7.2.4'
 gem 'bootsnap', require: false # railsの起動を速くする
 
 # Bundle edge Rails instead:
@@ -21,7 +21,8 @@ gem 'rest-client'
 gem 'google-apis-youtube_v3'
 gem 'dotenv-rails'
 # used by ActiveStorage
-gem "image_processing", ">= 1.2"
+gem "image_processing", "~> 2.0"
+gem "mini_magick", "~> 5.0"
 # todo deleteしたいがform_withより楽だなぁ
 gem 'simple_form'
 gem 'font-awesome-rails'
