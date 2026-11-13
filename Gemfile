@@ -13,7 +13,6 @@ gem 'devise', '~> 4.9'
 gem "paranoia", "~> 3.0"
 gem 'exception_notification'
 gem "sanitize"
-gem 'exifr'
 gem "rails_autolink"
 # rails7.2にしたら動作しなくなり、新バージョンも出ていないので、コミットベースで参照して動作した
 gem 'kaminari', github: 'kaminari/kaminari', ref: '55d6e40767442d206236d3718c5bdb32d01f2345'
@@ -46,8 +45,6 @@ gem 'sassc-rails'
 # TODO: moment.jsも含め、JSファイルサイズが大きいので、TimePickerだけができるライブラリに置き換えたい
 # https://github.com/Bialogs/bootstrap4-datetime-picker-rails
 gem 'bootstrap4-datetime-picker-rails'
-
-gem 'uglifier', '>= 1.3.0'
 
 # Gems used only for assets and not required
 # in production environments by default.
