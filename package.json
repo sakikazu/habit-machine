@@ -30,7 +30,6 @@
     "sass": "^1.83.1",
     "sass-loader": "10.1.1",
     "scss-tokenizer": "^0.4.3",
-    "tar": "^6.1.13",
     "trim-newlines": "^4.0.2",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.2",
