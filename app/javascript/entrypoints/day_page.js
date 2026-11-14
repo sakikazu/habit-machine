@@ -49,7 +49,10 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       categories: [],
       isDiaryTwoColumns: false,
       diaryTwoColumnsMediaQuery: null,
-        diaryTwoColumnsMediaListener: null,
+      diaryTwoColumnsMediaListener: null,
+      openDiaryModalListener: null,
+      sidebarToastListener: null,
+      openHistoryAppendListener: null,
       }
     },
     computed: {
@@ -112,6 +115,10 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
     beforeUnmount () {
       $(document).off('.dayPage')
       $(window).off('.dayPage')
+      $('#memo-form.modal').off('.dayPage')
+      window.removeEventListener('open-diary-modal', this.openDiaryModalListener)
+      window.removeEventListener('sidebar-toast', this.sidebarToastListener)
+      window.removeEventListener('open-history-append', this.openHistoryAppendListener)
       if (this.diaryTwoColumnsMediaQuery && this.diaryTwoColumnsMediaListener) {
         if (this.diaryTwoColumnsMediaQuery.removeEventListener) {
           this.diaryTwoColumnsMediaQuery.removeEventListener('change', this.diaryTwoColumnsMediaListener)
@@ -123,16 +130,19 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
     methods: {
       // Sidebar Vueインスタンスからのイベントでモーダル表示／トースト表示を橋渡しする
       setupGlobalListeners () {
-        window.addEventListener('open-diary-modal', (event) => {
+        this.openDiaryModalListener = (event) => {
           if (event?.detail?.diaryId) this.showDiaryModal(event.detail.diaryId)
-        })
-        window.addEventListener('sidebar-toast', (event) => {
+        }
+        this.sidebarToastListener = (event) => {
           if (event?.detail) this.showToast(event.detail)
-        })
-        window.addEventListener('open-history-append', (event) => {
+        }
+        this.openHistoryAppendListener = (event) => {
           const history = event?.detail?.history
           if (history) this.showMemoFormForHistory(history)
-        })
+        }
+        window.addEventListener('open-diary-modal', this.openDiaryModalListener)
+        window.addEventListener('sidebar-toast', this.sidebarToastListener)
+        window.addEventListener('open-history-append', this.openHistoryAppendListener)
       },
       setup () {
         this.setupTimepicker()
@@ -154,13 +164,13 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         }
       },
       setMemoForm () {
-        $('#memo-form.modal').on('shown.bs.modal', () => {
+        $('#memo-form.modal').off('.dayPage').on('shown.bs.modal.dayPage', () => {
           if (this.memoOverHistoryModal) {
             this.stackMemoModalOverHistory()
           }
           $('#memo-form.modal').find('.first-focus').focus()
         })
-        $('#memo-form.modal').on('hidden.bs.modal', () => {
+        $('#memo-form.modal').on('hidden.bs.modal.dayPage', () => {
           this.memoTargetDiaryId = null
           this.memoTargetDiaryTitle = ''
           this.memoTargetRecordAt = null

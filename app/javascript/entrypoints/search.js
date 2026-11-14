@@ -26,6 +26,9 @@ mountVueOnTurbolinks('#searchResult', (element) => createApp({
       this.setStickyNav()
       this.setFocus()
     },
+    beforeUnmount () {
+      $(window).off('.searchPage')
+    },
     methods: {
       nl2br,
       searchContent(contentType, searchWord) {
@@ -80,7 +83,7 @@ mountVueOnTurbolinks('#searchResult', (element) => createApp({
       setStickyNav () {
         const resultHeader = document.querySelector('.searchResult-header')
         const globalHeaderHeight = document.querySelector('nav.navbar').clientHeight
-        $(window).on('scroll', () => {
+        $(window).off('scroll.searchPage').on('scroll.searchPage', () => {
           if($(window).scrollTop() > globalHeaderHeight) {
             resultHeader.classList.add('fixed')
           } else {

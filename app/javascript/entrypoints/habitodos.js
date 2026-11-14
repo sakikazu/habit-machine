@@ -43,6 +43,10 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
 
     //$(this.$el).find('#editor').markdownEasily();
   },
+  beforeUnmount: function () {
+    $(document).off('.habitodos')
+    $(window).off('.habitodos')
+  },
   updated: function() {
   },
   // Vue: methodsでやる場合と違い、引数が取れないが、キャッシュしてくれるので、ReadOnlyならこっち使う
