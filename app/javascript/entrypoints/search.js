@@ -27,7 +27,7 @@ mountVueOnTurbolinks('#searchResult', (element) => createApp({
       this.setFocus()
     },
     beforeUnmount () {
-      $(window).off('.searchPage')
+      window.removeEventListener('scroll', this.searchScrollListener)
     },
     methods: {
       nl2br,
@@ -83,16 +83,17 @@ mountVueOnTurbolinks('#searchResult', (element) => createApp({
       setStickyNav () {
         const resultHeader = document.querySelector('.searchResult-header')
         const globalHeaderHeight = document.querySelector('nav.navbar').clientHeight
-        $(window).off('scroll.searchPage').on('scroll.searchPage', () => {
-          if($(window).scrollTop() > globalHeaderHeight) {
+        this.searchScrollListener = () => {
+          if(window.scrollY > globalHeaderHeight) {
             resultHeader.classList.add('fixed')
           } else {
             resultHeader.classList.remove('fixed')
           }
-        })
+        }
+        window.addEventListener('scroll', this.searchScrollListener)
         // 途中までスクロールしている状態でリロードされた時のために、スクロールイベントを発生させる
         // 当ページについてはリロードで検索結果が消えるので不要だが
-        $(window).trigger('scroll')
+        this.searchScrollListener()
       },
       setFocus () {
         if (location.search === '') {

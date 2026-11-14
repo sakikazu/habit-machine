@@ -124,8 +124,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       this.fetchData()
     },
     beforeUnmount () {
-      $(document).off('.dayPage')
-      $(window).off('.dayPage')
+      this.dayPageEventController?.abort()
       window.removeEventListener('open-diary-modal', this.openDiaryModalListener)
       window.removeEventListener('sidebar-toast', this.sidebarToastListener)
       window.removeEventListener('open-history-append', this.openHistoryAppendListener)
@@ -162,6 +161,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         window.addEventListener('open-history-append', this.openHistoryAppendListener)
       },
       setup () {
+        this.dayPageEventController = new AbortController()
         this.shortcutOfPagingLink('prev-day', 'next-day') // ショートカットで日にち移動
         this.setMovePageConfirm()
       },
@@ -184,26 +184,29 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         const page = this
 
         // リンク押下時、いずれかのフォームのデータが変更されていたら確認メッセージを表示する
-        $(document).off('click.dayPage').on('click.dayPage', 'a', function(e) {
-          let href = $(this).attr('href')
+        document.addEventListener('click', function(e) {
+          const link = e.target.closest('a')
+          if (!link) return
+          const href = link.getAttribute('href')
           if (
-            typeof(href) === "undefined" ||
+            href === null ||
             href == '#' ||
             !page.existsChangedForm ||
-            $(this).hasClass('ignore-checking-changes')
+            link.classList.contains('ignore-checking-changes')
           ) { return; }
 
           if(!confirm(formWarningMessage)) {
             e.preventDefault()
           }
-        })
+        }, { signal: this.dayPageEventController.signal })
 
         // ブラウザのタブを閉じようとした時、またはturbolinks以外のリンクをクリックした時の警告
-        $(window).off('beforeunload.dayPage').on('beforeunload.dayPage', function() {
+        window.addEventListener('beforeunload', function(event) {
           if (page.existsChangedForm) {
-            return formWarningMessage
+            event.preventDefault()
+            event.returnValue = formWarningMessage
           }
-        })
+        }, { signal: this.dayPageEventController.signal })
       },
       // 追記モーダルの下書きを保存するキーを作成
       memoLocalStorageKey () {
@@ -290,21 +293,19 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         const PREV_KEY = 188;
         const NEXT_KEY = 190;
 
-        // NOTE: イベントリスナの重複登録を防ぐためにoffしておく。他のkeydownイベントリスナを削除しないように名前をつけておく
-        $(document).off('keydown.movePage')
-        $(document).on('keydown.movePage', function(e) {
+        document.addEventListener('keydown', function(e) {
           if (!e.shiftKey) { return; }
           if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) { return; }
           switch (e.which || e.keyCode) {
             case PREV_KEY:
               // NOTE: これが2019年版のクリックのさせ方らしい
-              $('a.' + prev_class)[0].click();
+              document.querySelector('a.' + prev_class)?.click()
               break;
             case NEXT_KEY:
-              $('a.' + next_class)[0].click();
+              document.querySelector('a.' + next_class)?.click()
               break;
           }
-        });
+        }, { signal: this.dayPageEventController.signal })
       },
       onContentChanged (formKey) {
         this.contentChanged.push(formKey)
