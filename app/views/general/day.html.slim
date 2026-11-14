@@ -89,8 +89,9 @@
       .page-header.day-section-header
         h4
           | 本日の日記&nbsp;
-          / 「data-trigger="focus"」を与えることで、本buttonではなく、他の場所のクリック時に消えるようになる（逆に与えないと、他の場所クリックで消えないので不便だった）
-          button.day-count-button(v-show="diariesWithOpsions.length > 1" data-toggle="popover" data-trigger="focus" title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
+          .day-diary-list-control(ref="diaryListControl" v-show="diariesWithOpsions.length > 1")
+            button.day-count-button(type="button" :aria-expanded="diaryListOpen.toString()" aria-label="日記リストを表示" @click="diaryListOpen = !diaryListOpen") {{ diariesWithOpsions.length }}
+            .day-diary-popover(v-if="diaryListOpen" v-html="diary_links_list")
       .diaries(ref="diariesBody")
         p(v-if="diariesLoading") 読み込み中...
         template(v-else)
@@ -457,6 +458,20 @@ sass:
     color: #fff
     &:hover
       background: #1d4ed8
+  .day-diary-list-control
+    position: relative
+  .day-diary-popover
+    position: absolute
+    z-index: 30
+    top: calc(100% + 6px)
+    right: 0
+    width: 360px
+    max-width: 80vw
+    padding: 10px 12px
+    border: 1px solid #d1d5db
+    border-radius: 7px
+    background: #fff
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14)
 
   @media (min-width: $desktop-breakpoint)
     .day-layout

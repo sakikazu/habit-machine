@@ -37,6 +37,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       // ページ内の日記たちの中で編集中のものを保持する
       editModeDiaryIds: [],
       diary_links_list: null,
+      diaryListOpen: false,
       tabidx: 0,
       contentChanged: [],
       memoCategories: ['', '体調', '作業', 'メモ', '休息', 'TODO'],
@@ -59,6 +60,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       isDiaryTwoColumns: false,
       diaryTwoColumnsMediaQuery: null,
       diaryTwoColumnsMediaListener: null,
+      closeDiaryListListener: null,
       openDiaryModalListener: null,
       sidebarToastListener: null,
       openHistoryAppendListener: null,
@@ -116,10 +118,10 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
     mounted () {
       this.setup()
       this.setupGlobalListeners()
+      this.setupDiaryListListener()
       this.setupDiaryTwoColumnsWatcher()
       this.targetDate = targetDate
       this.fetchData()
-      this.enablePopover()
     },
     beforeUnmount () {
       $(document).off('.dayPage')
@@ -127,6 +129,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       window.removeEventListener('open-diary-modal', this.openDiaryModalListener)
       window.removeEventListener('sidebar-toast', this.sidebarToastListener)
       window.removeEventListener('open-history-append', this.openHistoryAppendListener)
+      document.removeEventListener('click', this.closeDiaryListListener)
       if (this.diaryTwoColumnsMediaQuery && this.diaryTwoColumnsMediaListener) {
         if (this.diaryTwoColumnsMediaQuery.removeEventListener) {
           this.diaryTwoColumnsMediaQuery.removeEventListener('change', this.diaryTwoColumnsMediaListener)
@@ -136,6 +139,12 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       }
     },
     methods: {
+      setupDiaryListListener () {
+        this.closeDiaryListListener = (event) => {
+          if (!this.$refs.diaryListControl?.contains(event.target)) this.diaryListOpen = false
+        }
+        document.addEventListener('click', this.closeDiaryListListener)
+      },
       // Sidebar Vueインスタンスからのイベントでモーダル表示／トースト表示を橋渡しする
       setupGlobalListeners () {
         this.openDiaryModalListener = (event) => {
@@ -274,9 +283,6 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
           .finally(() => {
             this.diariesLoading = false
           })
-      },
-      enablePopover () {
-        $('[data-toggle="popover"]').popover({ html: true });
       },
       // ショートカットキー
       // shift + < : 日戻し / shift + > : 日送り
