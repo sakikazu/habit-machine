@@ -36,7 +36,8 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
     this.fetchData()
   },
   mounted: function () {
-    $('footer').css('margin-top', 0);
+    this.habitodoEventController = new AbortController()
+    document.querySelector('footer').style.marginTop = '0'
     this.setHeightForScroll()
     this.setConfirmUnsavingEvent()
     this.setShortcutOfSave()
@@ -45,11 +46,9 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
     // NOTE: Enter押下時の挿入タグをbrに変更したかったが、デフォルトのdivになってしまう。pに変更はできるので、brがダメなんだろう
     //document.execCommand("DefaultParagraphSeparator", false, "br");
 
-    //$(this.$el).find('#editor').markdownEasily();
   },
   beforeUnmount: function () {
-    $(document).off('.habitodos')
-    $(window).off('.habitodos')
+    this.habitodoEventController?.abort()
   },
   updated: function() {
   },
@@ -74,8 +73,7 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
     setShortcutOfSave: function() {
       const S_KEY = 83
       const page = this
-      // TODO: Vue.jsではこういう全体のイベントハンドリングはどうするのがセオリー？
-      $(document).off('keydown.habitodos').on('keydown.habitodos', function(e) {
+      document.addEventListener('keydown', function(e) {
         // Macのcmdはe.metaKey、Winのctrlはe.ctrlKey（でもこれはMacのcontrolも含むだろうからMacではそっちでもいける）
         if ((e.ctrlKey || e.metaKey) && e.keyCode === S_KEY) {
           // ブラウザの「ページを別名で保存」を抑制
@@ -85,7 +83,7 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
             page.saveBody(current.uuid)
           }
         }
-      });
+      }, { signal: this.habitodoEventController.signal })
     },
     // todo media queryでやれそう
     // BodyのFontSize基準を設定：スマホではBodyのテキストは相対的に小さくしたかったので、remで一律設定はできなかった
@@ -164,12 +162,8 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
 
         // Caretの位置にScrollを移動
         // todo まだ位置が不安定
-        const rootOffsetTop = $(this.$el).offset().top;
-        console.log(rootOffsetTop);
-        // todo なぜこれはundefined？jqueryのoffset().topだと取得できた
-        //console.log(document.getSelection().getRangeAt(0).startContainer.offsetTop);
-        const offsetTop = $(document.getSelection().getRangeAt(0).startContainer).offset().top + rootOffsetTop;
-        console.log(offsetTop);
+        const range = document.getSelection().getRangeAt(0)
+        const offsetTop = range.getBoundingClientRect().top + window.scrollY
         scrollTo({ top: offsetTop, behavior: "smooth" });
       });
     },
@@ -232,21 +226,23 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
     setConfirmUnsavingEvent: function() {
       const formWarningMessage = "未保存の内容が破棄されますがよろしいですか？";
       const page = this
-      $(document).off('click.habitodos').on('click.habitodos', 'a', function(e) {
+      document.addEventListener('click', function(e) {
+        if (!e.target.closest('a')) return
         const unsaved = page.isAnyUnsaved();
         if (!unsaved) { return; }
         if (!confirm(formWarningMessage)) {
           e.preventDefault();
         }
-      });
+      }, { signal: this.habitodoEventController.signal })
 
       // ブラウザのタブを閉じようとした時、またはturbolinks以外のリンクをクリックした時の警告
-      $(window).off('beforeunload.habitodos').on('beforeunload.habitodos', function() {
+      window.addEventListener('beforeunload', function(event) {
         const unsaved = page.isAnyUnsaved();
         if (unsaved) {
-          return formWarningMessage;
+          event.preventDefault()
+          event.returnValue = formWarningMessage
         }
-      });
+      }, { signal: this.habitodoEventController.signal })
     },
     isAnyUnsaved: function() {
       return this.habitodos.some(d => d.unsaved == true )
@@ -333,19 +329,20 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
     scrollableMokuji: function() {
       const headerHeight = document.getElementsByTagName('nav')[0].clientHeight
         + document.getElementById('habitodo-header').clientHeight;
-      $(window).on('scroll', function() {
+      window.addEventListener('scroll', function() {
+        const mokujis = document.getElementById('mokujis')
         if (window.scrollY > headerHeight) {
-          $('#mokujis').css('top', window.scrollY - headerHeight);
+          mokujis.style.top = `${window.scrollY - headerHeight}px`
         } else {
-          $('#mokujis').css('top', 0);
+          mokujis.style.top = '0'
         }
-      });
+      }, { signal: this.habitodoEventController.signal })
     },
     // event.currentTargetのメモのため
     addHilightOnList: function(event) {
       // NOTE: event.targetにしてしまうと、子要素が対象になりうるので、イベント登録されている要素を取得するためにevent.currentTargetを指定する
       // 通常はthisでそれが取得できるようだが、ここでのthisはVueオブジェクトになってしまっていた
-      $(event.currentTarget).addClass('hilight')
+      event.currentTarget.classList.add('hilight')
     },
     markdownTextAnotherPattern: function() {
       // これはブロック行の場合は「- 」のみ挿入して、そうでなければ改行など自分で挿入するパターン
@@ -372,20 +369,19 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
     // changeイベントを発生させるやり方
     setContentEditableChangeEvent: function() {
       const page = this
-      $(".editor").each(function () {
-        const $this = $(this);
+      document.querySelectorAll('.editor').forEach(editor => {
         // NOTE: こういう変数って、ちゃんとイベント発生時にそれぞれ保持して比較できるんだな。クロージャか？
-        const htmlOld = $this.html();
+        let htmlOld = editor.innerHTML
         // remove: blur,mouseup
-        $this.on('keyup paste copy cut', function(e) {
-          const htmlNew = $this.html();
+        ;['keyup', 'paste', 'copy', 'cut'].forEach(eventName => editor.addEventListener(eventName, function() {
+          const htmlNew = editor.innerHTML
           if (htmlOld !== htmlNew) {
-            $this.trigger('change');
-            htmlOld = htmlNew;
-            page.currentData.unsaved = true;
+            editor.dispatchEvent(new Event('change', { bubbles: true }))
+            htmlOld = htmlNew
+            page.currentData.unsaved = true
           }
-        })
-      });
+        }, { signal: this.habitodoEventController.signal }))
+      })
     },
     getPosForContentEditable: function() {
       range = document.getSelection().getRangeAt(0);
