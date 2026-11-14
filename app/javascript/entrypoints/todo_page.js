@@ -2,9 +2,9 @@ import { createApp } from 'vue'
 import HmAxios from 'hm_axios.js'
 
 import draggable from 'vuedraggable'
+import { mountVueOnTurbolinks } from 'vue_turbolinks.js'
 
-document.addEventListener('turbolinks:load', () => {
-  createApp({
+mountVueOnTurbolinks('#todoPage', (element) => createApp({
     components: {
       'draggable': draggable,
     },
@@ -60,5 +60,4 @@ document.addEventListener('turbolinks:load', () => {
         console.log(customEvent);
       }
     }
-  }).mount('#todoPage')
-})
+}))

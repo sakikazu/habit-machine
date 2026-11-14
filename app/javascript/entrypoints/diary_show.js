@@ -1,13 +1,12 @@
 import { createApp } from 'vue'
 import Diary from 'components/diaries/Diary'
+import { mountVueOnTurbolinks } from 'vue_turbolinks.js'
 
-document.addEventListener('turbolinks:load', () => {
-  createApp({
+mountVueOnTurbolinks('#diaryShow', (element) => createApp({
     components: {
       Diary,
     },
     data () {
       return { categories: [] }
     },
-  }).mount('#diaryShow')
-})
+}))

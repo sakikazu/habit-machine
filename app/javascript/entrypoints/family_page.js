@@ -1,27 +1,18 @@
 import { createApp, h } from 'vue'
 import FamilyPage from '../components/families/FamilyPage.vue'
+import { mountVueOnTurbolinks } from 'vue_turbolinks.js'
 
 // turbolinksでの二重初期化を避けるため、マウント済み判定を入れて初期化する
-const mountFamilyPage = () => {
-  const pageElement = document.getElementById('family-page')
-  if (!pageElement || pageElement.dataset.vueMounted === 'true') return
-  pageElement.dataset.vueMounted = 'true'
-
+mountVueOnTurbolinks('#family-page', (pageElement) => {
   const overview = JSON.parse(pageElement.dataset.overview || '{}')
   const currentYear = Number(pageElement.dataset.currentYear)
   const currentMonth = Number(pageElement.dataset.currentMonth)
 
-  createApp({
+  return createApp({
     render: () => h(FamilyPage, {
       overview,
       currentYear,
       currentMonth
     })
-  }).mount(pageElement)
-}
-
-document.addEventListener('turbolinks:load', mountFamilyPage)
-// turbolinks:load発火後にscriptが読み込まれた場合の保険
-if (document.readyState !== 'loading') {
-  mountFamilyPage()
-}
+  })
+})

@@ -6,14 +6,13 @@ import Diary from 'components/diaries/Diary'
 import Toast from 'components/shared/toast'
 import Modal from 'components/shared/Modal'
 import DayDatePicker from 'components/general/DayDatePicker'
+import { mountVueOnTurbolinks } from 'vue_turbolinks.js'
 
-document.addEventListener('turbolinks:load', () => {
-  const pageElement = document.getElementById('dayPage')
-  if (!pageElement) return
+mountVueOnTurbolinks('#dayPage', (pageElement) => {
   const targetDate = pageElement.dataset.targetDate
 
   console.log('day_page.js: turbolinks:load')
-  const vm = createApp({
+  return createApp({
     components: {
       HabitRecord,
       Diary,
@@ -466,5 +465,5 @@ document.addEventListener('turbolinks:load', () => {
         this.modalableDiaryId = null
       },
     },
-  }).mount(pageElement)
+  })
 })

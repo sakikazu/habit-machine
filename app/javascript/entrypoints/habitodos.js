@@ -10,9 +10,9 @@ import HmAxios from 'hm_axios.js'
 import ContentEditor from 'components/habitodos/ContentEditor.vue'
 import CreateForm from 'components/habitodos/CreateForm.vue'
 import { isSmartPhone, moveCaret } from 'helper.js'
+import { mountVueOnTurbolinks } from 'vue_turbolinks.js'
 
-document.addEventListener('turbolinks:load', () => {
-const vm = createApp({
+mountVueOnTurbolinks('#habitodo', (element) => createApp({
   components: {
     ContentEditor,
     CreateForm,
@@ -395,6 +395,4 @@ const vm = createApp({
       return json.data;
     },
   }
-}).mount('#habitodo')
-
-})
+}))

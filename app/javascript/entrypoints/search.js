@@ -4,9 +4,9 @@ import { nl2br } from '../helper.js'
 
 import Diary from 'components/diaries/Diary'
 import Modal from 'components/shared/Modal'
+import { mountVueOnTurbolinks } from 'vue_turbolinks.js'
 
-document.addEventListener('turbolinks:load', () => {
-  createApp({
+mountVueOnTurbolinks('#searchResult', (element) => createApp({
     components: {
       Diary,
       Modal,
@@ -97,5 +97,4 @@ document.addEventListener('turbolinks:load', () => {
         }
       },
     }
-  }).mount('#searchResult')
-})
+}))
