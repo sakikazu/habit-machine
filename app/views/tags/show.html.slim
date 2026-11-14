@@ -14,7 +14,7 @@
       ul.list-group.list-group-flush
         - @diaries.each do |diary|
           li.list-group-item
-            = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
+            = link_to lucide_icon('calendar', size: 16, text: dispdate(diary.record_at, true)), day_path(diary.record_at)
             span.ml10
               = link_to diary.title_mod, diary_with_date_path(diary.record_at, diary)
       = paginate @diaries, window: 3, outer_window: 2

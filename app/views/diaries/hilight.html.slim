@@ -13,7 +13,7 @@
         .d-flex.justify-content-end
           .flex-grow-1
             h5.diary-title id="diary#{diary.id}"
-              span.date = link_to fa_icon('calendar', text: dispdate(diary.record_at, true)), day_path(diary.record_at)
+              span.date = link_to lucide_icon('calendar', size: 16, text: dispdate(diary.record_at, true)), day_path(diary.record_at)
               = " ほど" if diary.is_about_date.present?
               span.title.ml10 = link_to diary.title_mod, diary_with_date_path(diary.record_at, diary)
           .tags.ml-3 = tags_link(diary)

@@ -14,7 +14,7 @@
         tr
           td = tag.name
           td = content_tag('span', tag.color, class: 'badge badge-big', style: tag.color_style)
-          td.text-center = fa_icon('thumb-tack') if tag.pinned?
+          td.text-center = lucide_icon('pin', size: 16) if tag.pinned?
           td = truncate_30_link(tag.description)
           td = tag.taggings_count
           td

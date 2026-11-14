@@ -28,7 +28,7 @@
       - @records.each do |record|
         .record
           h5
-            = link_to fa_icon('calendar', text: dispdate(record.record_at, true)), day_path(record.record_at)
+            = link_to lucide_icon('calendar', size: 16, text: dispdate(record.record_at, true)), day_path(record.record_at)
             small.ml10
               = "#{record.displaying_value} #{@habit.value_unit}"
           - if record.memo.present?
@@ -54,7 +54,7 @@
         th 本日の記録
         td
           - if @habit.pinned?
-            span.badge.badge-warning = fa_icon('thumb-tack', text: 'ピン留め中')
+            span.badge.badge-warning = lucide_icon('pin', size: 15, text: 'ピン留め中')
           - else
             span.text-muted ピン留めなし
       tr

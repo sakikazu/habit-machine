@@ -1,19 +1,30 @@
 module ApplicationHelper
   LUCIDE_ICON_NODES = {
+    'calendar' => [
+      [:path, { d: 'M8 2v4' }],
+      [:path, { d: 'M16 2v4' }],
+      [:rect, { width: '18', height: '18', x: '3', y: '4', rx: '2' }],
+      [:path, { d: 'M3 10h18' }],
+    ],
     'chevron-left' => [[:polyline, { points: '15 18 9 12 15 6' }]],
     'chevron-right' => [[:polyline, { points: '9 18 15 12 9 6' }]],
     'message-circle' => [[:path, { d: 'M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z' }]],
+    'pin' => [
+      [:path, { d: 'M12 17v5' }],
+      [:path, { d: 'M5 17h14' }],
+      [:path, { d: 'M6 3h12l-1 7 3 3H4l3-3-1-7z' }],
+    ],
     'square' => [[:rect, { width: '18', height: '18', x: '3', y: '3', rx: '2' }]],
     'star' => [[:polygon, { points: '12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2' }]],
   }.freeze
 
   # RailsビューでLucide互換のインラインSVGを描画する
-  def lucide_icon(name, size: 18, **options)
+  def lucide_icon(name, size: 18, text: nil, **options)
     nodes = LUCIDE_ICON_NODES.fetch(name.to_s)
     css_class = ['lucide', "lucide-#{name}", options.delete(:class)].compact.join(' ')
     content = safe_join(nodes.map { |tag_name, attributes| tag.public_send(tag_name, **attributes) })
 
-    tag.svg(content, **options.merge(
+    svg = tag.svg(content, **options.merge(
       class: css_class,
       width: size,
       height: size,
@@ -25,6 +36,7 @@ module ApplicationHelper
       'stroke-linejoin': 'round',
       'aria-hidden': options[:'aria-label'].blank?
     ))
+    text.nil? ? svg : safe_join([svg, text], ' ')
   end
 
   def current_family
