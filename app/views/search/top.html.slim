@@ -21,7 +21,7 @@
             = f.submit '検索', class: 'btn btn-outline-success'
 
       / section.mb40.senses
-      /   h3 #{fa_icon('info-circle')} 意識付け
+      /   h3 意識付け
       /   .result
       /     - if @result_senses.blank?
       /       p データなし
@@ -29,7 +29,9 @@
       /       = link_to "#{@result_senses.size}件を表示", root_path, class: 'btn btn-info'
 
       section#history.mb40
-        h3 #{fa_icon('home')} ヒストリー
+        h3
+          = lucide_icon('home', size: 21, class: 'search-heading-icon')
+          | ヒストリー
         .result
           - if @result_histories_size.to_i.zero?
             p データなし
@@ -44,7 +46,9 @@
       section#diary.mb40
         h3.d-flex.align-items-center
           span.d-flex.align-items-center
-            span.mr-4 #{fa_icon('book')} 日記
+            span.mr-4
+              = lucide_icon('notebook', size: 21, class: 'search-heading-icon')
+              | 日記
             = link_to '日記ページで検索', diaries_path(diary: { search_word: @search_word }), class: 'btn btn-sm btn-outline-primary'
         .result
           - if @result_diaries_size.to_i.zero?
@@ -59,7 +63,9 @@
 
       / 「記録ページで検索」を設ける場合は、Habitを横断した検索ページを作る必要がある。そのページ自体は特に必要ないので、リンクは不要と判断
       section#record.mb40
-        h3 #{fa_icon('bar-chart')} 記録
+        h3
+          = lucide_icon('chart-column', size: 21, class: 'search-heading-icon')
+          | 記録
         .result
           - if @result_records_size.to_i.zero?
             p データなし
@@ -72,7 +78,9 @@
                 p(v-html="data.highlighted")
 
       section#habitodo.mb40
-        h3 #{fa_icon('file-text')} ノート
+        h3
+          = lucide_icon('file-text', size: 21, class: 'search-heading-icon')
+          | ノート
         .result
           - if @result_habitodos_size.to_i.zero?
             p データなし
@@ -100,11 +108,16 @@
               a(:href="selectedDetailData?.show_path" v-text="selectedDetailData?.title" target="_blank")
             .closeButton
               span(@click="closeDetail" role="button")
-                = fa_icon('times')
+                = lucide_icon('x', size: 20, 'aria-label': '閉じる')
           .detailContent
             p(v-html="nl2br(selectedDetailData?.body)")
 
 sass:
+  .search-heading-icon
+    display: inline-block
+    margin-right: 7px
+    vertical-align: -3px
+
   #searchResult
     @at-root
       &

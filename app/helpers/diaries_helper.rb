@@ -20,7 +20,6 @@ module DiariesHelper
     output += lucide_icon('star', size: 16, class: 'text-danger') if diary.main_in_day.present?
     output += "<strong>" + (link_to diary.title_mod, diary_with_date_path(diary.record_at, diary), class: 'diary-title') + "</strong>"
     # ここから日記編集は不要かなー（編集画面をなくしたのでUIを作るのもメンドイし）
-    # output += " " + (link_to fa_icon('pencil'), edit_diary_path(diary)) + "<br>"
     output += image_tag(diary.eyecatch_image_small, class: "img-thumbnail") + "<br>".html_safe if diary.eyecatch_image.attached?
     return output.html_safe
   end
