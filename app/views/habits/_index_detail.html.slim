@@ -1,5 +1,5 @@
-.card.habit-card
-  .card-header.habit-card-header
+.habit-card
+  .habit-card-header
     = link_to habit_path(habit.id), class: 'habit-card-title' do
       = habit.title
     .habit-card-actions
@@ -8,11 +8,11 @@
         = habit.for_family? ? '家族用' : '個人用'
       = link_to edit_habit_path(habit), class: 'habit-edit-link', title: '習慣を編集' do
         = lucide_icon 'pencil', size: 15, text: '編集'
-  .card-body
+  .habit-card-body
     - if habit.goal.present?
-      .card-text
+      .habit-card-text
         = sani_custom_br(habit.goal)
     - if habit.memo.present?
-      p.text-muted.mt20
+      p.habit-card-memo
         = lucide_icon 'sticky-note', size: 15, text: sani_custom_br(habit.memo)
 

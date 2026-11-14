@@ -1,13 +1,12 @@
-.row.justify-content-center
-  .col-lg-10.col-xl-9
-    .habit-index-header
-      div
-        h2.mb-1 過去の習慣
-        p.text-muted.mb-0 休止中または達成済みの習慣
-      = link_to habits_path, class: 'btn btn-light' do
-        = lucide_icon 'arrow-left', size: 16, text: '有効な習慣へ'
+.habit-page
+  .habit-index-header
+    div
+      h2 過去の習慣
+      p.habit-index-description 休止中または達成済みの習慣
+    = link_to habits_path, class: 'habit-button habit-button--neutral' do
+      = lucide_icon 'arrow-left', size: 16, text: '有効な習慣へ'
 
-    = render 'habit_group', title: '無効', icon: 'circle-pause', habits: @disabled_habits, empty_message: '無効にした習慣はありません'
-    = render 'habit_group', title: '完了', icon: 'circle-check', habits: @done_habits, empty_message: '完了した習慣はありません'
+  = render 'habit_group', title: '無効', icon: 'circle-pause', habits: @disabled_habits, empty_message: '無効にした習慣はありません'
+  = render 'habit_group', title: '完了', icon: 'circle-check', habits: @done_habits, empty_message: '完了した習慣はありません'
 
 = render 'management_styles'

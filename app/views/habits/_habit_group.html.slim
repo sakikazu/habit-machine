@@ -5,9 +5,9 @@
       = title
     span.habit-count = "#{habits.size}件"
   - if habits.any?
-    .row
+    .habit-grid
       - habits.each do |habit|
-        .col-md-6.col-lg-4.mb-3
+        .habit-grid-item
           = render 'index_detail', habit: habit
   - else
     p.habit-group-empty = empty_message
