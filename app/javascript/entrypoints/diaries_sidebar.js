@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import HmAxios from 'hm_axios.js'
 
 import TaskDiary from 'components/diaries/TaskDiary'
@@ -6,21 +6,20 @@ import TaskDiary from 'components/diaries/TaskDiary'
 // dayページの再マウント時にサイドバー用APIを再取得しないためのキャッシュ
 let pinnedDiariesCache = null
 let favoritesCache = null
-let sidebarVm = null
+let sidebarApp = null
 
 document.addEventListener('turbolinks:load', () => {
   const el = document.getElementById('diariesSidebar')
   if (!el) return
   // NOTE: data-turbolinks-permanentで復元されたDOMには既にVueインスタンスがぶら下がっているので再マウントを避ける
-  if (el.__vue__) return
+  if (el.dataset.vueMounted === 'true') return
 
   // 親のdayPage VueがDOMを置換した場合、古いグローバルイベントリスナーを破棄する
-  if (sidebarVm) sidebarVm.$destroy()
+  if (sidebarApp) sidebarApp.unmount()
 
-  sidebarVm = new Vue({
-    el,
+  sidebarApp = createApp({
     template: `
-      <div id="diariesSidebar" data-turbolinks-permanent>
+      <div class="diaries-sidebar-content">
         <div class="page-header sidebar-section-header">
           <button
             type="button"
@@ -76,16 +75,18 @@ document.addEventListener('turbolinks:load', () => {
     components: {
       TaskDiary,
     },
-    data: {
-      diaries: [],
-      favorites: [],
-      activeHistory: null,
-      historyFavoriteUpdating: false,
-      isMobileSidebar: false,
-      favoritesOpen: true,
-      pinnedOpen: true,
-      sidebarMediaQuery: null,
-      sidebarMediaListener: null,
+    data () {
+      return {
+        diaries: [],
+        favorites: [],
+        activeHistory: null,
+        historyFavoriteUpdating: false,
+        isMobileSidebar: false,
+        favoritesOpen: true,
+        pinnedOpen: true,
+        sidebarMediaQuery: null,
+        sidebarMediaListener: null,
+      }
     },
     mounted () {
       this.setupResponsiveSections()
@@ -96,7 +97,7 @@ document.addEventListener('turbolinks:load', () => {
       window.addEventListener('favorites-refresh', this.fetchFavorites)
       window.addEventListener('history-appended', this.onHistoryAppended)
     },
-    destroyed () {
+    unmounted () {
       if (this.sidebarMediaQuery && this.sidebarMediaListener) {
         if (this.sidebarMediaQuery.removeEventListener) {
           this.sidebarMediaQuery.removeEventListener('change', this.sidebarMediaListener)
@@ -292,6 +293,8 @@ document.addEventListener('turbolinks:load', () => {
       }
     }
   })
+  sidebarApp.mount(el)
+  el.dataset.vueMounted = 'true'
 })
 
 // Scoped styles for favorites list

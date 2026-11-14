@@ -9,19 +9,22 @@ ul.alert.alert-danger
   .row
     .col
       h3 直近
-      draggable(tag="ul" class="todo-block" v-model="todos_p0" @change="bulkUpdate" :group="{ name: 'ITEMS' }" @end="onEnd")
-        li(v-for="todo, index in todos_p0" :key="todo.id")
-          | {{ todo.title }}
+      draggable(tag="ul" class="todo-block" v-model="todos_p0" item-key="id" @change="bulkUpdate" :group="{ name: 'ITEMS' }" @end="onEnd")
+        template(v-slot:item="{ element }")
+          li
+            | {{ element.title }}
     .col
       h3 P1
-      draggable(tag="ul" class="todo-block" v-model="todos_p1" @change="bulkUpdate1" :group="{ name: 'ITEMS' }" @end="onEnd")
-        li(v-for="todo, index in todos_p1" :key="todo.id")
-          | {{ todo.title }}
+      draggable(tag="ul" class="todo-block" v-model="todos_p1" item-key="id" @change="bulkUpdate1" :group="{ name: 'ITEMS' }" @end="onEnd")
+        template(v-slot:item="{ element }")
+          li
+            | {{ element.title }}
     .col
       h3 P2
-      draggable(tag="ul" class="todo-block" v-model="todos_p2" @change="bulkUpdate2" :group="{ name: 'ITEMS' }" @end="onEnd")
-        li(v-for="todo, index in todos_p2" :key="todo.id")
-          | {{ todo.title }}
+      draggable(tag="ul" class="todo-block" v-model="todos_p2" item-key="id" @change="bulkUpdate2" :group="{ name: 'ITEMS' }" @end="onEnd")
+        template(v-slot:item="{ element }")
+          li
+            | {{ element.title }}
 
 .alert.alert-dark.mt-5
   h3 TODO管理

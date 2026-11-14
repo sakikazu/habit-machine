@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import HmAxios from 'hm_axios.js'
 
 import HabitRecord from 'components/habits/HabitRecord'
@@ -9,8 +9,7 @@ import DayDatePicker from 'components/general/DayDatePicker'
 
 document.addEventListener('turbolinks:load', () => {
   console.log('day_page.js: turbolinks:load')
-  const vm = new Vue({
-    el: '#dayPage',
+  const vm = createApp({
     components: {
       HabitRecord,
       Diary,
@@ -18,7 +17,8 @@ document.addEventListener('turbolinks:load', () => {
       Modal,
       DayDatePicker,
     },
-    data: {
+    data () {
+      return {
       targetDate: null,
       targetDateSettingTimeout: null,
       habit_records: [],
@@ -46,7 +46,8 @@ document.addEventListener('turbolinks:load', () => {
       categories: [],
       isDiaryTwoColumns: false,
       diaryTwoColumnsMediaQuery: null,
-      diaryTwoColumnsMediaListener: null,
+        diaryTwoColumnsMediaListener: null,
+      }
     },
     computed: {
       // ピン留めを先頭にし、記録済みはピン留めされていなくても常に表示する
@@ -105,7 +106,7 @@ document.addEventListener('turbolinks:load', () => {
       this.fetchData()
       this.enablePopover()
     },
-    beforeDestroy () {
+    beforeUnmount () {
       if (this.diaryTwoColumnsMediaQuery && this.diaryTwoColumnsMediaListener) {
         if (this.diaryTwoColumnsMediaQuery.removeEventListener) {
           this.diaryTwoColumnsMediaQuery.removeEventListener('change', this.diaryTwoColumnsMediaListener)
@@ -310,12 +311,12 @@ document.addEventListener('turbolinks:load', () => {
           const target = this.diariesWithOpsions[foundIdx]
           // 新規保存によるコンポーネント再生成より先に、作成時の編集フラグを確実に解除する
           this.onEditMode(submittedDiary?.id || null, false)
-          this.$set(this.diariesWithOpsions, foundIdx, {
+          this.diariesWithOpsions[foundIdx] = {
             ...target,
             diary: updatedDiary,
             targetDateForEditMode: null,
             highlightForAMoment: true,
-          })
+          }
         }
         this.refreshDiarySidebar(updatedDiary)
       },
@@ -461,5 +462,5 @@ document.addEventListener('turbolinks:load', () => {
         this.modalableDiaryId = null
       },
     },
-  })
+  }).mount('#dayPage')
 })

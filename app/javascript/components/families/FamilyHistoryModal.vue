@@ -104,7 +104,7 @@ export default {
   mounted () {
     this.fetchDetail()
   },
-  beforeDestroy () {
+  beforeUnmount () {
     this.active = false
     this.detailRequestId += 1
     this.formRequestId += 1

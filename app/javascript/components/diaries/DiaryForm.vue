@@ -199,7 +199,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
 import { deleteKeysWithPrefix } from 'local_storage_manager.js'
 import ContentEditable from 'components/diaries/ContentEditable'
@@ -314,7 +313,7 @@ export default {
     this.$refs.diaryTitle.focus()
     window.addEventListener('resize', this.resizeContentTextarea)
   },
-  beforeDestroy () {
+  beforeUnmount () {
     this.revokeMainImagePreview()
     window.removeEventListener('resize', this.resizeContentTextarea)
   },

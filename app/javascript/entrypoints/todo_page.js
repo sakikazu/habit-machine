@@ -1,19 +1,20 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import HmAxios from 'hm_axios.js'
 
 import draggable from 'vuedraggable'
 
 document.addEventListener('turbolinks:load', () => {
-  const vm = new Vue({
-    el: '#todoPage',
+  createApp({
     components: {
       'draggable': draggable,
     },
-    data: {
-      todos: [],
-      todos_p0: [],
-      todos_p1: [],
-      todos_p2: [],
+    data () {
+      return {
+        todos: [],
+        todos_p0: [],
+        todos_p1: [],
+        todos_p2: [],
+      }
     },
     mounted () {
       this.fetchData()
@@ -59,5 +60,5 @@ document.addEventListener('turbolinks:load', () => {
         console.log(customEvent);
       }
     }
-  })
+  }).mount('#todoPage')
 })

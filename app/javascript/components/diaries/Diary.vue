@@ -125,7 +125,6 @@ Diary
 </template>
 
 <script>
-import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
 // Diary内にDiaryFormを含んでいたほうが、diaryコンポーネントを記載しておくだけでその編集も可能なので手軽になる。が、無駄に依存が増えて複雑になってる方が良くないかも
 import DiaryForm from 'components/diaries/DiaryForm'
@@ -313,7 +312,7 @@ export default {
   mounted () {
     document.addEventListener('click', this.onClickOutside)
   },
-  beforeDestroy () {
+  beforeUnmount () {
     document.removeEventListener('click', this.onClickOutside)
   },
   methods: {
@@ -604,7 +603,7 @@ export default {
 .action-menu__item.favorite-active:hover
   background: #1e40af
 
-::v-deep .action-menu .copy-button
+:deep(.action-menu .copy-button)
   width: 100%
   justify-content: flex-start
   background: transparent
@@ -613,10 +612,10 @@ export default {
   border-radius: 10px
   font-weight: 600
 
-::v-deep .action-menu .copy-button:hover
+:deep(.action-menu .copy-button:hover)
   background: #f1f5f9
 
-::v-deep .action-menu .copy-button.copied
+:deep(.action-menu .copy-button.copied)
   background: #dcfce7
   color: #059669
 
@@ -694,8 +693,8 @@ export default {
   flex-wrap: wrap
   gap: 6px
 
-::v-deep .diary-card .tags a,
-::v-deep .diary-card .tags span
+:deep(.diary-card .tags a),
+:deep(.diary-card .tags span)
   display: inline-flex
   align-items: center
   padding: 4px 10px
@@ -762,7 +761,7 @@ export default {
   flex-wrap: wrap
   gap: 8px
 
-::v-deep .tag-list a
+:deep(.tag-list a)
   display: inline-flex
   align-items: center
   padding: 4px 9px
@@ -773,19 +772,19 @@ export default {
   border: 1px solid #e2e8f0
   text-decoration: none
 
-::v-deep .tag-list a:hover
+:deep(.tag-list a:hover)
   background: #e2e8f0
 
-::v-deep .diary-categories
+:deep(.diary-categories)
   margin-top: 2px
   padding: 0
   gap: 6px
   align-items: flex-start
 
-::v-deep .diary-categories .category-list
+:deep(.diary-categories .category-list)
   gap: 6px
 
-::v-deep .diary-categories .category-link
+:deep(.diary-categories .category-link)
   font-size: 12px
   padding: 3px 9px
   background: #f1f5f9
@@ -794,7 +793,7 @@ export default {
   font-weight: 700
   border-radius: 999px
 
-::v-deep .diary-categories .category-link:hover
+:deep(.diary-categories .category-link:hover)
   background: #e2e8f0
 
 .category-edit
@@ -817,9 +816,8 @@ export default {
 .category-edit:active
   transform: translateY(0)
 
-::v-deep
-  .highlight-word
-    background-color: orangered
+:deep(.highlight-word)
+  background-color: orangered
 
 @keyframes BlinkBorder
   0%

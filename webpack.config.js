@@ -1,5 +1,6 @@
 const path = require('path')
 const fs = require('fs')
+const webpack = require('webpack')
 const { VueLoaderPlugin } = require('vue-loader')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
@@ -99,12 +100,17 @@ module.exports = {
   resolve: {
     extensions: ['.vue', '.js', '.jsx', '.mjs', '.ts', '.tsx'],
     alias: {
-      vue$: 'vue/dist/vue.esm.js'
+      vue$: 'vue/dist/vue.esm-bundler.js'
     },
     modules: [path.resolve(__dirname, 'app/javascript'), 'node_modules']
   },
   plugins: [
     new VueLoaderPlugin(),
+    new webpack.DefinePlugin({
+      __VUE_OPTIONS_API__: JSON.stringify(true),
+      __VUE_PROD_DEVTOOLS__: JSON.stringify(false),
+      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: JSON.stringify(false)
+    }),
     ...(isProduction ? [new MiniCssExtractPlugin()] : [])
   ]
 }

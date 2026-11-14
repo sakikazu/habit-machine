@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
-ruby '3.2.6'
-gem 'rails', '~> 7.2.4'
+ruby '3.4.12'
+gem 'rails', '~> 8.1.4', '>= 8.1.4.1'
 gem 'bootsnap', require: false # railsの起動を速くする
 
 # Bundle edge Rails instead:
@@ -91,7 +91,6 @@ group :development do
   gem 'listen'
   gem 'slim-rails'                # generator時にslim対応可能になる
   gem 'view_source_map'           # webページ中に使用されているviewファイル名が見れる
-  gem 'annotate'
   gem 'rubocop', require: false
   gem 'rack-mini-profiler', require: false        # 処理時間を表示
   gem 'letter_opener_web', '~> 2.0'

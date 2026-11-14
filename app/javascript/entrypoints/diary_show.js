@@ -1,14 +1,13 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import Diary from 'components/diaries/Diary'
 
 document.addEventListener('turbolinks:load', () => {
-  const vm = new Vue({
-    el: '#diaryShow',
+  createApp({
     components: {
       Diary,
     },
-    data: {
-      categories: [],
+    data () {
+      return { categories: [] }
     },
-  })
+  }).mount('#diaryShow')
 })

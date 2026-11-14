@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
+import { nextTick } from 'vue'
 import HmAxios from 'hm_axios.js'
 import {
   headingPathAtEnd,
@@ -148,7 +148,7 @@ export default {
       this.editMode = !this.editMode
       if (this.editMode) {
         const vm = this
-        Vue.nextTick().then(function() {
+        nextTick().then(function() {
           vm.$refs.inputValue.focus()
           $(vm.$refs.markdownable_textarea).markdownEasily()
           vm.resizeMemoTextarea()

@@ -1,4 +1,4 @@
-import Vue from 'vue/dist/vue.esm'
+import { createApp, h } from 'vue'
 import FamilyPage from '../components/families/FamilyPage.vue'
 
 // turbolinksでの二重初期化を避けるため、マウント済み判定を入れて初期化する
@@ -11,15 +11,13 @@ const mountFamilyPage = () => {
   const currentYear = Number(pageElement.dataset.currentYear)
   const currentMonth = Number(pageElement.dataset.currentMonth)
 
-  new Vue({
-    render: (h) => h(FamilyPage, {
-      props: {
-        overview,
-        currentYear,
-        currentMonth
-      }
+  createApp({
+    render: () => h(FamilyPage, {
+      overview,
+      currentYear,
+      currentMonth
     })
-  }).$mount(pageElement)
+  }).mount(pageElement)
 }
 
 document.addEventListener('turbolinks:load', mountFamilyPage)

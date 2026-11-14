@@ -32,8 +32,8 @@
 
 ### 必要な環境
 
-- Ruby 3.2.6
-- Rails 7.2.3
+- Ruby 3.4.12
+- Rails 8.1.4.1
 - Node.js 23.5.0
 - Yarn 1.x
 - MySQL

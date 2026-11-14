@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import Vue from 'vue'
+import { nextTick } from 'vue'
 import { debounce, moveCaret, nl2br } from 'helper.js'
 
 export default {
@@ -94,7 +94,7 @@ export default {
         } else if (currentLine.match(/^\s*\-\s/)) {
           // Caretを行の先頭に移動し、formatblockで現在行をpタグで囲む
           // その後、Caretを行の末尾に移動し、insertParagraphで改行して「- 」を挿入する
-          Vue.nextTick().then(() => {
+          nextTick().then(() => {
             this.moveCaret(window.getSelection().getRangeAt(0).startContainer, 0);
             document.execCommand('formatblock', false, 'p');
             this.moveCaret(window.getSelection().getRangeAt(0).startContainer, window.getSelection().getRangeAt(0).startContainer.length);
@@ -113,7 +113,7 @@ export default {
         } else if (currentLine.match(/^(#{1,5})\s/)) {
           // TODO: 条件式の中でconstつけて変数代入が怒られるようになったけど、こういうケースのうまい書き方は？
           const matched = currentLine.match(/^(#{1,5})\s/)
-          Vue.nextTick().then(() => {
+          nextTick().then(() => {
             const hTag = 'h' + matched[1].length;
             this.moveCaret(window.getSelection().getRangeAt(0).startContainer, 0);
             document.execCommand('formatblock', false, hTag);
@@ -121,7 +121,7 @@ export default {
           });
 
         } else {
-          Vue.nextTick().then(() => {
+          nextTick().then(() => {
             this.moveCaret(window.getSelection().getRangeAt(0).startContainer, 0);
             document.execCommand('formatblock', false, 'p');
             this.moveCaret(window.getSelection().getRangeAt(0).startContainer, window.getSelection().getRangeAt(0).startContainer.length);
@@ -132,7 +132,7 @@ export default {
       // tabキー
       } else if (!event.shiftKey && event.keyCode === 9) {
         if (currentLine.match(/^\s*\-\s/)) {
-          Vue.nextTick().then(() => {
+          nextTick().then(() => {
             this.moveCaret(window.getSelection().getRangeAt(0).startContainer, 0);
             document.execCommand('insertText', false, '    ');
             // 行の右端にCaretを移動
@@ -199,7 +199,7 @@ export default {
       // v-htmlだからかcontentEditableだからか、明らかにしておきたい
       this.markdownedBody = newText
 
-      Vue.nextTick().then(() => {
+      nextTick().then(() => {
         // contentEditableで内容変更したときに、それとDB保存されている内容を比較するため、originalTextContentにDB保存されている内容でレンダリングしたtextContentを保持している
         // そうしないと、contentEditableで内容変更して、switchDocで切り替えて戻ったら変更した内容でtextContentが格納されてしまう
         if (!this.originalTextContent) {

@@ -329,7 +329,7 @@ export default {
     this.filtersOpen = !this.isMobile()
     window.addEventListener('resize', this.measureTruncatedContents)
   },
-  beforeDestroy () {
+  beforeUnmount () {
     window.removeEventListener('resize', this.measureTruncatedContents)
   },
   methods: {

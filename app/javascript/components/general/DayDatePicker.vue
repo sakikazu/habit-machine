@@ -90,7 +90,7 @@ export default {
   mounted () {
     document.addEventListener('click', this.closeCalendarOnOutsideClick)
   },
-  beforeDestroy () {
+  beforeUnmount () {
     document.removeEventListener('click', this.closeCalendarOnOutsideClick)
   },
   methods: {

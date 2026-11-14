@@ -5,27 +5,28 @@
 // 内容の保存時、DOMの内容を保存していることから、想定しない内容を保存するリスクは普通の仕組みよりも高い。そこをうまい処理にしたいし、適切なコメントを書きたい
 //
 
-import Vue from 'vue/dist/vue.esm'
+import { createApp, nextTick } from 'vue'
 import HmAxios from 'hm_axios.js'
 import ContentEditor from 'components/habitodos/ContentEditor.vue'
 import CreateForm from 'components/habitodos/CreateForm.vue'
 import { isSmartPhone, moveCaret } from 'helper.js'
 
 document.addEventListener('turbolinks:load', () => {
-const vm = new Vue({
-  el: '#habitodo',
+const vm = createApp({
   components: {
     ContentEditor,
     CreateForm,
   },
   // TODO: ライフサイクルの共通処理があれば。ログインチェック処理とかに適しているかな？
   mixins: [],
-  data: {
-    habitodos: [],
-    mokuji: [],
-    searchWord: '',
-    searchResult: [],
-    searchBtnColor: '',
+  data () {
+    return {
+      habitodos: [],
+      mokuji: [],
+      searchWord: '',
+      searchResult: [],
+      searchBtnColor: '',
+    }
   },
   created: function () {
     this.fetchData()
@@ -132,7 +133,7 @@ const vm = new Vue({
     // todo caretが適切に移動しないが、まあ重要ではないか
     selectFoundData: function(uuid, rows) {
       this.switchDoc(uuid);
-      Vue.nextTick().then(() => {
+      nextTick().then(() => {
         // caretを指定行に移動
         const el = document.getElementById(`editor-${uuid}`);
         let kaigyoCount = 1;
@@ -170,7 +171,7 @@ const vm = new Vue({
     buildMokuji: function(uuid) {
       // NOTE: DOMにアクセスする処理はすべてnextTick内で行うこと
       // また、これをやったからといって、この後の処理はDOM構築後というわけではないので、都度、囲む
-      Vue.nextTick().then(() => {
+      nextTick().then(() => {
         this.mokuji = [];
         // htmlタグを評価するのでhtmlを取得する。改行は含まず1行で取得されるので注意
         const text = document.getElementById(`editor-${uuid}`).innerHTML;
@@ -195,13 +196,13 @@ const vm = new Vue({
       const idx = this.findIndex(uuid)
       const habitodo = this.habitodos[idx]
       habitodo.isCurrent = true
-      Vue.set(this.habitodos, idx, habitodo)
+      this.habitodos[idx] = habitodo
       // todo updateMarkdownedBodyの後に実行する必要があるが、現状はbuildMokujiのnextTick内で処理しているから順序がうまくできてるだけ
       this.buildMokuji(uuid);
     },
     updateHabitodo (habitodo) {
       const idx = this.findIndex(habitodo.uuid)
-      Vue.set(this.habitodos, idx, habitodo)
+      this.habitodos[idx] = habitodo
     },
     // 長いコンテンツの場合はスクロールさせるようにする（overflow-y:scroll 適用済みであること）
     setHeightForScroll: function() {
@@ -276,7 +277,7 @@ const vm = new Vue({
         // todo currentDataを変更するだけで配列内も変更されそうだが、Vue.setを使う必要があった。consoleからcurrentDataを変更すると配列も反映されるが、ナゾ
         // todo switchDocはこの後に実行しなきゃという制限あるし、良い感じにしたい
         const idx = this.findIndex(res.data.uuid)
-        Vue.set(this.habitodos, idx, res.data)
+        this.habitodos[idx] = res.data
         this.switchDoc(res.data.uuid);
       })
       .catch(error => {
@@ -394,6 +395,6 @@ const vm = new Vue({
       return json.data;
     },
   }
-})
+}).mount('#habitodo')
 
 })

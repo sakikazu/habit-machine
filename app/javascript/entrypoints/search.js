@@ -1,4 +1,4 @@
-import Vue from 'vue/dist/vue.esm'
+import { createApp } from 'vue'
 import HmAxios from '../hm_axios.js'
 import { nl2br } from '../helper.js'
 
@@ -6,18 +6,19 @@ import Diary from 'components/diaries/Diary'
 import Modal from 'components/shared/Modal'
 
 document.addEventListener('turbolinks:load', () => {
-  const vm = new Vue({
-    el: '#searchResult',
+  createApp({
     components: {
       Diary,
       Modal,
     },
-    data: {
-      resultHistories: [],
-      resultHabitodos: [],
-      resultDiaries: [],
-      resultRecords: [],
-      selectedDetailData: null,
+    data () {
+      return {
+        resultHistories: [],
+        resultHabitodos: [],
+        resultDiaries: [],
+        resultRecords: [],
+        selectedDetailData: null,
+      }
     },
     computed: {
     },
@@ -96,5 +97,5 @@ document.addEventListener('turbolinks:load', () => {
         }
       },
     }
-  })
+  }).mount('#searchResult')
 })

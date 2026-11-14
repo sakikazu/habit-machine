@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import HmAxios from 'hm_axios.js'
 import { truncate } from 'helper.js'
 

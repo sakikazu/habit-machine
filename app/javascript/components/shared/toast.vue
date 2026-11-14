@@ -13,8 +13,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
-
 export default {
   inheritAttrs: false, // 非prop属性をルート要素に適用したくない場合
   props: {
