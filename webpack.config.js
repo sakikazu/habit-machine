@@ -58,8 +58,9 @@ module.exports = {
           {
             loader: 'sass-loader',
             options: {
+              api: 'modern',
               sassOptions: {
-                indentedSyntax: true
+                syntax: 'indented'
               }
             }
           }

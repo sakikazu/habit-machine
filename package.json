@@ -28,7 +28,7 @@
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
     "sass": "^1.83.1",
-    "sass-loader": "10.1.1",
+    "sass-loader": "^16.0.0",
     "scss-tokenizer": "^0.4.3",
     "trim-newlines": "^4.0.2",
     "@vue/compiler-sfc": "3.5.45",
