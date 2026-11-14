@@ -1,4 +1,4 @@
-lock '3.19.2'
+lock '3.20.1'
 
 require 'dotenv/load'
 Dotenv.load
