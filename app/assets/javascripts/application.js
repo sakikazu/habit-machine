@@ -16,11 +16,6 @@
 //= require turbolinks
 //= require popper
 //= require bootstrap-sprockets
-// used by tempusdominus-bootstrap-4.js
-//= require moment.js
-//= require moment-ja.js
-// timepicker for bootstrap
-//= require tempusdominus-bootstrap-4.js
 //= require jquery.selection
 //= require jquery.markdown-easily
 //= require_tree .

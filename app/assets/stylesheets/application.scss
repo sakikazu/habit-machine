@@ -18,9 +18,6 @@
 
 // Custom bootstrap variables must be set or imported *before* bootstrap.
 @import "bootstrap";
-// timepicker for bootstrap
-@import "tempusdominus-bootstrap-4";
-
 body {
   // footerを下部固定するため
   display: flex;

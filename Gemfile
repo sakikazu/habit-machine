@@ -41,11 +41,6 @@ gem 'bootstrap', '~> 4.6', '>= 4.6.2.1' # twitter bootstrap4
 # 多分bootstrapに必要
 gem 'sassc-rails'
 
-# todo 削除したいが、UIが結構良いので、できるだけ使い続ける
-# TODO: moment.jsも含め、JSファイルサイズが大きいので、TimePickerだけができるライブラリに置き換えたい
-# https://github.com/Bialogs/bootstrap4-datetime-picker-rails
-gem 'bootstrap4-datetime-picker-rails'
-
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
