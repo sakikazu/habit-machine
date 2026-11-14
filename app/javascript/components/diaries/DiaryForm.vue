@@ -4,36 +4,35 @@
 </comment>
 
 <template lang="pug">
-.card.border-secondary.mb-5
-  h5.card-header(v-if="diary")
-    .d-flex.justify-content-end
-      .flex-grow-1 {{ `日記の${persisted ?  '編集' : '作成'}` }}
-      a.btn.btn-light.ignore-checking-changes(@click="cancelEdit") キャンセル
+.diary-form-card
+  h5.diary-form-header(v-if="diary")
+    span.diary-form-title {{ `日記の${persisted ?  '編集' : '作成'}` }}
+    button.form-button.form-button--neutral.ignore-checking-changes(type="button" @click="cancelEdit") キャンセル
 
   form.diary-form(ref="form" @submit="submit")
-    .card-body
+    .diary-form-body
       .date-field
         .edit-date(v-if="persisted")
-          label.mr-2 日付
-          input.form-control.mb-3(type="date" name="diary[record_at]" :value="targetDate" v-if="persisted")
+          label 日付
+          input.form-input.date-input(type="date" name="diary[record_at]" :value="targetDate" v-if="persisted")
         input(type="hidden" name="diary[record_at]" :value="targetDate" v-else)
 
-      .form-group.primary-field
+      .form-field.primary-field
         label.primary-field-label タイトル
-        input.form-control(type="text" name="diary[title]" placeholder="未入力でも保存できます" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
+        input.form-input(type="text" name="diary[title]" placeholder="未入力でも保存できます" ref="diaryTitle" v-model="diary.title" :tabindex="tabidxBase + 1")
 
       .content-field-heading
-        label.primary-field-label.mb-0 本文
+        label.primary-field-label 本文
         a.markdown-help(v-if="!contentEditableMode" href="https://qiita.com/tbpgr/items/989c6badefff69377da7" target="_blank") Markdown記法
       .tab-container
         .tab(v-if="!persisted || !contentEditableMode" @click="switchNormal" :class="{'active': !contentEditableMode, 'unclickable': persisted}")
           | 通常モード
         .tab(v-if="!persisted || contentEditableMode" @click="switchContentEditable" :class="{'active': contentEditableMode, 'unclickable': persisted}")
           | webページコピペモード
-      .form-group
+      .form-field
         content-editable(v-if="contentEditableMode" :content="diary.content" :tabindex="tabidxBase + 2" @content-updated="updateContent")
         div(v-else)
-          textarea.form-control.diary-content-textarea(
+          textarea.form-input.diary-content-textarea(
             name="diary[content]"
             ref="markdownable_textarea"
             rows="12"
@@ -52,7 +51,7 @@
           small.section-summary {{ tagSectionSummary }}
         .collapsible-content(v-show="tagsExpanded")
           p.form-section-description カンマ区切りで複数指定できます。使用するタグはタグ一覧から事前に作成してください
-          input.form-control(type="text" name="diary[tag_list]" ref="taglist" placeholder="矢印キーで既存のタグを表示" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
+          input.form-input(type="text" name="diary[tag_list]" ref="taglist" placeholder="矢印キーで既存のタグを表示" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
 
           .tag-suggestions(v-if="pinned_tags.length > 0")
             .tag-suggestion-title
@@ -92,16 +91,16 @@
           small.section-summary {{ imageSectionSummary }}
         .collapsible-content(v-show="imagesExpanded")
           .main-image-card
-            h6.mb-1 メイン画像
+            h6 メイン画像
             p.form-section-description 一覧や日記の先頭に表示する画像です
             .main-image-preview(v-if="mainImageDisplayUrl")
               img(:src="mainImageDisplayUrl" alt="メイン画像のプレビュー")
             .main-image-empty(v-else) メイン画像は設定されていません
             .main-image-filename(v-if="mainImageFilename" :title="mainImageFilename") {{ mainImageFilename }}
             .main-image-actions
-              button.btn.btn-sm.btn-outline-primary(type="button" @click="triggerMainImageInput") {{ mainImageDisplayUrl ? '画像を変更' : '画像を選択' }}
-              button.btn.btn-sm.btn-outline-secondary(type="button" v-if="mainImagePreviewUrl" @click="clearSelectedMainImage") 選択を取り消す
-              button.btn.btn-sm.btn-outline-danger(type="button" v-else-if="diary.image_path" @click="deleteImage") 削除
+              button.form-button.form-button--outline-primary(type="button" @click="triggerMainImageInput") {{ mainImageDisplayUrl ? '画像を変更' : '画像を選択' }}
+              button.form-button.form-button--neutral(type="button" v-if="mainImagePreviewUrl" @click="clearSelectedMainImage") 選択を取り消す
+              button.form-button.form-button--outline-danger(type="button" v-else-if="diary.image_path" @click="deleteImage") 削除
             input.visually-hidden-file(
               ref="mainImageInput"
               type="file"
@@ -113,7 +112,7 @@
 
           //- 画像選択時にアップロードするため、日記を特定できる編集時のみ表示する
           .image-manager-card(v-if="persisted")
-            h5.mb-1 サブ画像
+            h5 サブ画像
             p.image-manager-description 画像を追加すると、本文のカーソル位置に自動で挿入されます
 
             button.image-upload-button(
@@ -143,8 +142,8 @@
                   span.image-usage-badge.not-in-use(v-else-if="!contentEditableMode") 未挿入
                 .image-filename(:title="image.filename") {{ image.filename }}
                 .image-actions
-                  button.btn.btn-sm.btn-primary(type="button" @click="handleImageInsert(image)") 本文に挿入
-                  button.btn.btn-sm.btn-outline-danger(type="button" @click="handleImageDelete(image.id)") 削除
+                  button.form-button.form-button--primary(type="button" @click="handleImageInsert(image)") 本文に挿入
+                  button.form-button.form-button--outline-danger(type="button" @click="handleImageDelete(image.id)") 削除
 
             .image-preview-modal(
               v-if="previewImage"
@@ -194,11 +193,11 @@
               strong 日付を曖昧にする
               small 正確な日付ではない記録として扱います
 
-    .card-footer
-      .form-actions.d-flex.justify-content-between
-        button.btn.btn-primary(type="submit" :tabindex="tabidxBase + 4" :disabled="uploading")
+    .diary-form-footer
+      .form-actions
+        button.form-button.form-button--primary(type="submit" :tabindex="tabidxBase + 4" :disabled="uploading")
           | {{ uploading ? '画像アップロード中...' : '保存する' }}
-        a.btn.btn-danger(@click="deleteDiary" v-if="persisted") 削除
+        button.form-button.form-button--danger(type="button" @click="deleteDiary" v-if="persisted") 削除
 </template>
 
 <script>
@@ -710,6 +709,111 @@ export default {
 </script>
 
 <style scoped lang="sass">
+.diary-form-card
+  margin-bottom: 48px
+  overflow: hidden
+  border: 1px solid #6b7280
+  border-radius: 6px
+  background: #fff
+
+.diary-form-header
+  display: flex
+  margin: 0
+  padding: 10px 14px
+  align-items: center
+  justify-content: flex-end
+  gap: 12px
+  border-bottom: 1px solid #d1d5db
+  background: #f8fafc
+
+.diary-form-title
+  flex-grow: 1
+
+.diary-form-body
+  padding: 16px
+
+.diary-form-footer
+  padding: 12px 16px
+  border-top: 1px solid #d1d5db
+  background: #f8fafc
+
+.form-actions
+  display: flex
+  align-items: center
+  justify-content: space-between
+
+.form-field
+  margin-bottom: 16px
+
+.form-input
+  display: block
+  width: 100%
+  padding: 7px 11px
+  border: 1px solid #ced4da
+  border-radius: 4px
+  background: #fff
+  color: #212529
+  line-height: 1.5
+  transition: border-color 0.15s, box-shadow 0.15s
+
+  &:focus
+    border-color: #80bdff
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2)
+    outline: none
+
+.edit-date
+  label
+    margin-right: 8px
+
+  .date-input
+    margin-bottom: 16px
+
+.form-button
+  display: inline-flex
+  padding: 6px 11px
+  align-items: center
+  justify-content: center
+  border: 1px solid transparent
+  border-radius: 4px
+  cursor: pointer
+  font-size: 14px
+  font-weight: 600
+  line-height: 1.4
+  text-decoration: none
+
+  &:disabled
+    cursor: wait
+    opacity: 0.65
+
+.form-button--primary
+  border-color: #007bff
+  background: #007bff
+  color: #fff
+
+  &:hover
+    border-color: #0069d9
+    background: #0069d9
+
+.form-button--danger
+  border-color: #dc3545
+  background: #dc3545
+  color: #fff
+
+.form-button--neutral
+  border-color: #d1d5db
+  background: #f8f9fa
+  color: #343a40
+
+.form-button--outline-primary
+  border-color: #007bff
+  background: #fff
+  color: #007bff
+
+.form-button--outline-danger
+  border-color: #dc3545
+  background: #fff
+  color: #dc3545
+
 .section-toggle-icon
   display: inline-block
   flex-shrink: 0
@@ -1038,7 +1142,7 @@ export default {
     display: flex
     gap: 8px
 
-    .btn
+    .form-button
       flex: 1
 
   .hidden
@@ -1104,7 +1208,7 @@ export default {
     .main-image-actions
       flex-direction: column
 
-      .btn
+      .form-button
         width: 100%
 
   .image-manager-card
@@ -1120,7 +1224,7 @@ export default {
     .image-actions
       flex-direction: column
 
-      .btn
+      .form-button
         width: 100%
 
     .image-preview-modal
