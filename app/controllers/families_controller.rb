@@ -2,6 +2,7 @@ class FamiliesController < ApplicationController
   before_action :authenticate_user!
 
   def show
+    @no_header_margin = true
     @users = current_family.users
     @children = current_family.children
     @overview_json = build_family_overview_data.to_json
