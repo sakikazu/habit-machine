@@ -11,16 +11,12 @@ html[lang="ja"]
     = stylesheet_link_tag 'tailwind', 'data-turbolinks-track': 'reload'
     = favicon_link_tag 'logo/favicon.ico', :rel => 'icon'
   body
-    nav.navbar.navbar-expand-lg.navbar-light.bg-light.mb20
-      a.navbar-brand[href="/"]
+    nav.auth-navigation
+      a.auth-navigation__brand[href="/"]
         = inline_svg_tag('logo/white-diary.svg', width: '35px', style: 'margin: -5px 0')
-    .container-fluid
-      .row.justify-content-center
-        .col-sm-3
-          - if notice.present?
-            p.alert.alert-info
-              = notice
-          - if alert.present?
-            p.alert.alert-danger
-              = alert
-          = yield
+    main.auth-container
+      - if notice.present?
+        p.auth-alert.auth-alert--info = notice
+      - if alert.present?
+        p.auth-alert.auth-alert--error = alert
+      = yield

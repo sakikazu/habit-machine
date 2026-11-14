@@ -1,22 +1,17 @@
-.card
-  .card-header
+.auth-card
+  .auth-card__header
     h2 パスワードの変更
-  .card-body
-    = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
-      = f.error_notification
-      = f.input :reset_password_token, :as => :hidden
-      = f.full_error :reset_password_token
-      .form-inputs
-        = f.input :password,
-          label: "新しいパスワード",
-          required: true,
-          autofocus: true,
-          hint: ("最低 #{@minimum_password_length} 文字以上" if @minimum_password_length),
-          input_html: { autocomplete: "new-password" }
-        = f.input :password_confirmation,
-          label: "新しいパスワードの確認",
-          required: true,
-          input_html: { autocomplete: "new-password" }
-      .form-actions.mb-3
-        = f.button :submit, "更新する", class: 'btn btn-primary'
+  .auth-card__body
+    = form_with model: resource, as: resource_name, url: password_path(resource_name), method: :put, local: true, class: 'auth-form' do |f|
+      = render 'devise/shared/error_messages', resource: resource
+      = f.hidden_field :reset_password_token
+      .auth-field
+        = f.label :password, '新しいパスワード'
+        = f.password_field :password, required: true, autofocus: true, autocomplete: 'new-password'
+        - if @minimum_password_length
+          small = "最低 #{@minimum_password_length}文字以上"
+      .auth-field
+        = f.label :password_confirmation, '新しいパスワードの確認'
+        = f.password_field :password_confirmation, required: true, autocomplete: 'new-password'
+      = f.submit '更新する', class: 'auth-submit'
     = render "devise/shared/links"

@@ -1,0 +1,151 @@
+.auth-navigation {
+  display: flex;
+  min-height: 56px;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  align-items: center;
+  background: #f8f9fa;
+}
+
+.auth-navigation__brand {
+  display: inline-flex;
+  align-items: center;
+}
+
+.auth-container {
+  width: calc(100% - 30px);
+  max-width: 480px;
+  margin: 0 auto 40px;
+}
+
+.auth-alert,
+.auth-errors {
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+}
+
+.auth-alert--info {
+  border-color: #bee5eb;
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
+.auth-alert--error,
+.auth-errors {
+  border-color: #f5c6cb;
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.auth-errors ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.auth-card {
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, 0.05);
+}
+
+.auth-card__header {
+  padding: 14px 18px;
+  border-bottom: 1px solid #dee2e6;
+  background: #f8f9fa;
+}
+
+.auth-card__header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+
+.auth-card__body {
+  padding: 18px;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.auth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.auth-field label {
+  margin: 0;
+  font-weight: 600;
+}
+
+.auth-field input {
+  display: block;
+  width: 100%;
+  padding: 8px 11px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  background: #fff;
+}
+
+.auth-field input:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.18);
+  outline: none;
+}
+
+.auth-field input:disabled {
+  background: #e9ecef;
+}
+
+.auth-field small {
+  color: #6c757d;
+}
+
+.auth-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+}
+
+.auth-submit,
+.auth-back-link a {
+  display: inline-flex;
+  padding: 8px 14px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #2563eb;
+  border-radius: 5px;
+  background: #2563eb;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-submit--success {
+  border-color: #16a34a;
+  background: #16a34a;
+}
+
+.auth-back-link {
+  margin-bottom: 16px;
+}
+
+.auth-back-link a {
+  border-color: #dee2e6;
+  background: #f8f9fa;
+  color: #343a40;
+}
+
+.auth-card__body > a,
+.auth-card__body > br + a {
+  display: inline-block;
+  margin-top: 12px;
+}

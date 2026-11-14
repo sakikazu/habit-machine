@@ -1,0 +1,6 @@
+- if resource.errors.any?
+  .auth-errors[role="alert"]
+    strong 入力内容を確認してください
+    ul
+      - resource.errors.full_messages.each do |message|
+        li = message
