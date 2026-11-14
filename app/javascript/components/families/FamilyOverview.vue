@@ -4,11 +4,12 @@
       <div class="family-overview__title-row">
         <h3 class="family-overview__title">家族の一覧</h3>
         <button type="button" class="family-overview__toggle" @click="toggleMembers">
-          <i :class="membersOpen ? 'fa fa-chevron-up' : 'fa fa-chevron-down'"></i>
+          <ChevronUp v-if="membersOpen" :size="18" aria-hidden="true" />
+          <ChevronDown v-else :size="18" aria-hidden="true" />
         </button>
       </div>
       <a :href="overview.settings_path" :class="['family-overview__settings', { 'is-open': membersOpen }]">
-        <i class="fa fa-cog"></i>
+        <Settings :size="17" aria-hidden="true" />
         設定
       </a>
     </header>
@@ -39,14 +40,14 @@
           <div class="family-overview__meta">
             <p class="family-overview__name">
               <span v-if="member.type === 'Child'" class="family-overview__child-icon">
-                <i class="fa fa-child"></i>
+                <UserRound :size="16" aria-hidden="true" />
               </span>
               {{ member.name }}
             </p>
             <p v-if="member.age_label" class="family-overview__age">{{ member.age_label }}</p>
           </div>
           <a v-if="member.graph_path" :href="member.graph_path" class="family-overview__graph">
-            <i class="fa fa-line-chart"></i>
+            <ChartLine :size="18" aria-hidden="true" />
           </a>
         </article>
         <p v-if="overview.members.length === 0" class="family-overview__empty">登録された家族がいません。</p>
@@ -56,7 +57,16 @@
 </template>
 
 <script>
+import { ChartLine, ChevronDown, ChevronUp, Settings, UserRound } from '@lucide/vue'
+
 export default {
+  components: {
+    ChartLine,
+    ChevronDown,
+    ChevronUp,
+    Settings,
+    UserRound
+  },
   props: {
     overview: {
       type: Object,

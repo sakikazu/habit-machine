@@ -140,7 +140,7 @@
                 :class="{ 'is-favorited': history.favorited }"
                 @click="toggleFavorite(history)"
               >
-                <i :class="history.favorited ? 'fa fa-star' : 'fa fa-star-o'"></i>
+                <Star :size="18" :fill="history.favorited ? 'currentColor' : 'none'" aria-hidden="true" />
               </button>
               <button
                 type="button"
@@ -148,7 +148,7 @@
                 aria-label="編集"
                 @click="openHistoryModal(history, 'edit')"
               >
-                <i class="fa fa-pencil-square-o"></i>
+                <SquarePen :size="18" aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -161,7 +161,7 @@
                   :key="`${history.id}-${name}`"
                   class="family-dashboard__member family-dashboard__member--prominent"
                 >
-                  <i class="fa fa-child" aria-hidden="true"></i>
+                  <UserRound :size="15" aria-hidden="true" />
                   {{ name }}
                 </span>
               </span>
@@ -213,7 +213,7 @@
             :aria-label="history.favorited ? 'お気に入りを解除' : 'お気に入りに追加'"
             @click="toggleFavorite(history)"
           >
-            <i :class="history.favorited ? 'fa fa-star' : 'fa fa-star-o'"></i>
+            <Star :size="18" :fill="history.favorited ? 'currentColor' : 'none'" aria-hidden="true" />
           </button>
         </article>
       </div>
@@ -263,6 +263,7 @@
 </template>
 
 <script>
+import { SquarePen, Star, UserRound } from '@lucide/vue'
 import HmAxios from '../../hm_axios.js'
 import { nl2br } from '../../helper.js'
 import Modal from '../shared/Modal'
@@ -270,6 +271,9 @@ import FamilyHistoryModal from './FamilyHistoryModal.vue'
 
 export default {
   components: {
+    SquarePen,
+    Star,
+    UserRound,
     Modal,
     FamilyHistoryModal
   },

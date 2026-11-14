@@ -11,7 +11,7 @@
                 :key="`detail-${history.id}-${name}`"
                 class="family-dashboard__member family-dashboard__member--prominent"
               >
-                <i class="fa fa-child" aria-hidden="true"></i>
+                <UserRound :size="15" aria-hidden="true" />
                 {{ name }}
               </span>
               <div class="family-dashboard__date-group">
@@ -60,12 +60,14 @@
 </template>
 
 <script>
+import { UserRound } from '@lucide/vue'
 import HmAxios from '../../hm_axios.js'
 import Modal from '../shared/Modal'
 
 export default {
   name: 'FamilyHistoryModal',
   components: {
+    UserRound,
     Modal
   },
   props: {

@@ -20,6 +20,7 @@
   "license": "ISC",
   "homepage": "https://bitbucket.org/sakikazu15/habit-machine#readme",
   "dependencies": {
+    "@lucide/vue": "^1.73.0",
     "axios": "^1.20.0",
     "vue": "3.5.45",
     "vuedraggable": "4.1.0"
