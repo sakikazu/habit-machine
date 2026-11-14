@@ -96,15 +96,15 @@ GEM
     acts-as-taggable-on (13.0.0)
       activerecord (>= 7.1, < 8.2)
       zeitwerk (>= 2.4, < 3.0)
-    addressable (2.8.9)
+    addressable (2.9.2)
       public_suffix (>= 2.0.2, < 8.0)
-    airbrussh (1.4.1)
+    airbrussh (1.6.2)
       sshkit (>= 1.6.1, != 1.7.0)
     ast (2.4.2)
     autoprefixer-rails (10.4.19.0)
       execjs (~> 2)
     base64 (0.3.0)
-    bcrypt (3.1.20)
+    bcrypt (3.1.22)
     bcrypt_pbkdf (1.1.0)
     better_errors (2.9.1)
       coderay (>= 1.0.0)
@@ -125,7 +125,7 @@ GEM
     browser (5.3.1)
     builder (3.3.0)
     byebug (11.1.3)
-    capistrano (3.17.0)
+    capistrano (3.20.1)
       airbrussh (>= 1.0.0)
       i18n
       rake (>= 10.0.0)
@@ -138,13 +138,13 @@ GEM
     capistrano-rails (1.6.1)
       capistrano (~> 3.1)
       capistrano-bundler (>= 1.1, < 3)
-    capistrano3-puma (6.0.0)
+    capistrano3-puma (8.1.0)
       capistrano (~> 3.7)
       capistrano-bundler
-      puma (>= 5.1, < 7.0)
+      puma (>= 6.1, < 9.0)
     choice (0.2.0)
     coderay (1.1.3)
-    concurrent-ruby (1.3.4)
+    concurrent-ruby (1.3.8)
     config (5.6.1)
       deep_merge (~> 1.2, >= 1.2.1)
       ostruct
@@ -154,10 +154,10 @@ GEM
     debug_inspector (1.1.0)
     declarative (0.0.20)
     deep_merge (1.2.2)
-    devise (4.9.4)
+    devise (5.0.4)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
-      railties (>= 4.1.0)
+      railties (>= 7.0)
       responders
       warden (~> 1.2.3)
     diff-lcs (1.6.2)
@@ -182,13 +182,13 @@ GEM
       railties (>= 6.1.0)
     faker (2.14.0)
       i18n (>= 1.6, < 2)
-    faraday (2.14.1)
-      faraday-net_http (>= 2.0, < 3.5)
+    faraday (2.15.1)
+      faraday-net_http (>= 2.0, < 3.6)
       json
       logger
     faraday-follow_redirects (0.5.0)
       faraday (>= 1, < 3)
-    faraday-net_http (3.4.2)
+    faraday-net_http (3.5.0)
       net-http (~> 0.5)
     ffi (1.17.4-x86_64-linux-gnu)
     font-awesome-rails (4.7.0.9)
@@ -246,10 +246,10 @@ GEM
       railties (>= 3.2.16)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
-    json (2.9.1)
-    jwt (3.1.2)
+    json (2.21.2)
+    jwt (3.3.0)
       base64
-    language_server-protocol (3.17.0.3)
+    language_server-protocol (3.17.0.6)
     launchy (2.5.0)
       addressable (~> 2.7)
     lazy_high_charts (1.6.1)
@@ -289,10 +289,11 @@ GEM
       momentjs-rails (>= 2.10.5, <= 3.0.0)
     momentjs-rails (2.20.1)
       railties (>= 3.1)
-    msgpack (1.7.5)
+    msgpack (1.8.7)
     multi_json (1.19.1)
     mysql2 (0.5.4)
-    net-http (0.9.1)
+    net-http (0.10.0)
+      net-protocol (>= 0.3.0)
       uri (>= 0.11.1)
     net-imap (0.6.8)
       date
@@ -301,15 +302,20 @@ GEM
       net-protocol
     net-protocol (0.4.0)
       timeout
-    net-scp (1.2.1)
-      net-ssh (>= 2.6.5)
+    net-scp (4.2.2)
+      net-ssh (>= 2.6.5, < 9.0.0)
+    net-sftp (4.1.1)
+      net-ssh (>= 5.0.0, < 9.0.0)
     net-smtp (0.5.2)
       net-protocol
-    net-ssh (7.0.1)
+    net-ssh (8.1.2)
+      logger
+      openssl (>= 3.2.0)
     netrc (0.11.0)
     nio4r (2.7.5)
     nokogiri (1.19.7-x86_64-linux-gnu)
       racc (~> 1.4)
+    openssl (4.0.2)
     orm_adapter (0.5.0)
     os (1.1.4)
     ostruct (0.6.3)
@@ -334,8 +340,8 @@ GEM
       pry (>= 0.13, < 0.15)
     pry-rails (0.3.9)
       pry (>= 0.10.4)
-    public_suffix (5.0.0)
-    puma (6.5.0)
+    public_suffix (7.0.5)
+    puma (8.0.3)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.8)
@@ -407,7 +413,7 @@ GEM
       declarative (< 0.1.0)
       trailblazer-option (>= 0.1.1, < 0.2.0)
       uber (< 0.2.0)
-    responders (3.2.0)
+    responders (3.2.1)
       actionpack (>= 7.0)
       railties (>= 7.0)
     rest-client (2.1.0)
@@ -448,7 +454,7 @@ GEM
       parser (>= 3.3.1.0)
     ruby-graphviz (1.2.5)
       rexml
-    ruby-lsp (0.26.1)
+    ruby-lsp (0.26.11)
       language_server-protocol (~> 3.17.0)
       prism (>= 1.2, < 2.0)
       rbs (>= 3, < 5)
@@ -492,9 +498,13 @@ GEM
       actionpack (>= 6.1)
       activesupport (>= 6.1)
       sprockets (>= 3.0.0)
-    sshkit (1.21.2)
+    sshkit (1.25.1)
+      base64
+      logger
       net-scp (>= 1.1.2)
+      net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
+      ostruct
     temple (0.8.2)
     thor (1.5.0)
     tilt (2.0.11)
@@ -523,7 +533,7 @@ GEM
     unicode-display_width (3.1.3)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
-    uri (1.1.1)
+    uri (1.1.2)
     useragent (0.16.11)
     view_source_map (0.3.0)
       rails (>= 5)
@@ -553,9 +563,9 @@ DEPENDENCIES
   capistrano-bundler
   capistrano-rails
   capistrano3-puma
-  concurrent-ruby (= 1.3.4)
+  concurrent-ruby (>= 1.3.7)
   config
-  devise (~> 4.9)
+  devise (~> 5.0, >= 5.0.4)
   dotenv-rails
   ed25519
   exception_notification
@@ -580,7 +590,7 @@ DEPENDENCIES
   paranoia (~> 3.0)
   pry-byebug
   pry-rails
-  puma
+  puma (>= 7.2.1)
   rack-mini-profiler
   rails (~> 8.1.4, >= 8.1.4.1)
   rails-erd

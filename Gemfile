@@ -9,7 +9,7 @@ gem 'bootsnap', require: false # railsの起動を速くする
 
 gem 'mysql2'
 
-gem 'devise', '~> 4.9'
+gem 'devise', '~> 5.0', '>= 5.0.4'
 gem "paranoia", "~> 3.0"
 gem 'exception_notification'
 gem "sanitize"
@@ -65,10 +65,10 @@ gem 'turbolinks', '~> 5'
 
 gem 'jbuilder'
 
-gem 'puma'
+gem 'puma', '>= 7.2.1'
 
 # 起動時の `uninitialized constant ActiveSupport::LoggerThreadSafeLevel::Logger (NameError)` 対策
-gem 'concurrent-ruby', '1.3.4'
+gem 'concurrent-ruby', '>= 1.3.7'
 
 # unicorn関連？
 gem 'foreman'
