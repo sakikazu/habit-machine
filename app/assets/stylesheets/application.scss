@@ -16,8 +16,6 @@
  *= require_tree .
  */
 
-// Custom bootstrap variables must be set or imported *before* bootstrap.
-@import "bootstrap";
 body {
   // footerを下部固定するため
   display: flex;

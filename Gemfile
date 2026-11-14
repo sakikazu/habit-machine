@@ -37,10 +37,6 @@ gem 'bcrypt_pbkdf'
 
 gem 'faker'
 
-gem 'bootstrap', '~> 4.6', '>= 4.6.2.1' # twitter bootstrap4
-# 多分bootstrapに必要
-gem 'sassc-rails'
-
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -72,8 +68,8 @@ gem 'config'
 
 # NOTE: View handlerの設定で使用されるのでどの環境でも必要
 gem 'slim'
-# for scss; NOTE: 2.4にすると、VPSでbundle installが終わらなくなる
-gem 'sassc', '2.1.0'
+# SCSSをSprocketsでコンパイルする
+gem 'dartsass-sprockets'
 
 gem 'jsbundling-rails'
 gem 'tailwindcss-rails'
