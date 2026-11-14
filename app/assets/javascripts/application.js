@@ -14,8 +14,6 @@
 //= require jquery-ui/widgets/autocomplete
 //= require rails-ujs
 //= require turbolinks
-//= require popper
-//= require bootstrap-sprockets
 //= require jquery.selection
 //= require jquery.markdown-easily
 //= require_tree .
