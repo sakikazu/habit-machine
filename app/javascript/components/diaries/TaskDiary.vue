@@ -1,7 +1,7 @@
 <template lang="pug">
 .TaskDiary
   a(@click="showModal" href="javascript:void(0)")
-    i.fa.fa-window-maximize
+    panel-top-open-icon.task-diary-icon(:size="16" aria-hidden="true")
     | &nbsp;
     | {{ diary.title }}
   .check-block(v-if="hasTask")
@@ -15,12 +15,15 @@
 </template>
 
 <script>
+import { PanelTopOpen } from '@lucide/vue'
 import HmAxios from 'hm_axios.js'
 import { truncate } from 'helper.js'
 
 export default {
   inheritAttrs: false,
-  components: {},
+  components: {
+    PanelTopOpenIcon: PanelTopOpen,
+  },
   props: {
     diary: {
       type: Object,
@@ -110,6 +113,11 @@ export default {
 </script>
 
 <style scoped lang="sass">
+  .task-diary-icon
+    display: inline-block
+    margin-right: 4px
+    vertical-align: -3px
+
   .check-block
     padding: 7px 9px
     border: 1px solid gray

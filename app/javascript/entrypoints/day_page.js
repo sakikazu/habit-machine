@@ -1,5 +1,5 @@
 import { createApp, nextTick } from 'vue'
-import { Pencil, Star } from '@lucide/vue'
+import { CircleAlert, Clock3, Pencil, Star, StickyNote } from '@lucide/vue'
 import HmAxios from 'hm_axios.js'
 
 import HabitRecord from 'components/habits/HabitRecord'
@@ -20,8 +20,11 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       Toast,
       Modal,
       DayDatePicker,
+      CircleAlertIcon: CircleAlert,
+      ClockIcon: Clock3,
       PencilIcon: Pencil,
       StarIcon: Star,
+      StickyNoteIcon: StickyNote,
     },
     data () {
       return {

@@ -46,7 +46,8 @@
       section.collapsible-section
         button.section-toggle(type="button" @click="tagsExpanded = !tagsExpanded" :aria-expanded="tagsExpanded.toString()")
           span.section-toggle-title
-            i.fa.mr-2(:class="tagsExpanded ? 'fa-chevron-down' : 'fa-chevron-right'" aria-hidden="true")
+            chevron-down-icon.section-toggle-icon(v-if="tagsExpanded" :size="17" aria-hidden="true")
+            chevron-right-icon.section-toggle-icon(v-else :size="17" aria-hidden="true")
             | タグ
           small.section-summary {{ tagSectionSummary }}
         .collapsible-content(v-show="tagsExpanded")
@@ -55,7 +56,7 @@
 
           .tag-suggestions(v-if="pinned_tags.length > 0")
             .tag-suggestion-title
-              i.fa.fa-thumb-tack.mr-1
+              pin-icon.inline-icon(:size="15" aria-hidden="true")
               | ピン留め
             .tag-list
               button.tag-button(
@@ -66,7 +67,7 @@
                 :style="tag.color_style"
                 @click="toggleTag(tag.name)"
               )
-                i.fa.fa-check.mr-1(v-if="isTagSelected(tag.name)")
+                check-icon.inline-icon(v-if="isTagSelected(tag.name)" :size="15" aria-hidden="true")
                 | {{ tag.name }}
           .tag-suggestions(v-if="latestTagsExcludingPinned.length > 0")
             .tag-suggestion-title 最近使ったタグ
@@ -79,13 +80,14 @@
                 :style="tag.color_style"
                 @click="toggleTag(tag.name)"
               )
-                i.fa.fa-check.mr-1(v-if="isTagSelected(tag.name)")
+                check-icon.inline-icon(v-if="isTagSelected(tag.name)" :size="15" aria-hidden="true")
                 | {{ tag.name }}
 
       section.collapsible-section
         button.section-toggle(type="button" @click="imagesExpanded = !imagesExpanded" :aria-expanded="imagesExpanded.toString()")
           span.section-toggle-title
-            i.fa.mr-2(:class="imagesExpanded ? 'fa-chevron-down' : 'fa-chevron-right'" aria-hidden="true")
+            chevron-down-icon.section-toggle-icon(v-if="imagesExpanded" :size="17" aria-hidden="true")
+            chevron-right-icon.section-toggle-icon(v-else :size="17" aria-hidden="true")
             | 画像
           small.section-summary {{ imageSectionSummary }}
         .collapsible-content(v-show="imagesExpanded")
@@ -162,7 +164,8 @@
       section.collapsible-section
         button.section-toggle(type="button" @click="settingsExpanded = !settingsExpanded" :aria-expanded="settingsExpanded.toString()")
           span.section-toggle-title
-            i.fa.mr-2(:class="settingsExpanded ? 'fa-chevron-down' : 'fa-chevron-right'" aria-hidden="true")
+            chevron-down-icon.section-toggle-icon(v-if="settingsExpanded" :size="17" aria-hidden="true")
+            chevron-right-icon.section-toggle-icon(v-else :size="17" aria-hidden="true")
             | 表示設定
           small.section-summary {{ settingSectionSummary }}
         .setting-grid(v-show="settingsExpanded")
@@ -199,6 +202,7 @@
 </template>
 
 <script>
+import { Check, ChevronDown, ChevronRight, Pin } from '@lucide/vue'
 import HmAxios from 'hm_axios.js'
 import { deleteKeysWithPrefix } from 'local_storage_manager.js'
 import ContentEditable from 'components/diaries/ContentEditable'
@@ -206,7 +210,11 @@ import ContentEditable from 'components/diaries/ContentEditable'
 export default {
   inheritAttrs: false,
   components: {
+    CheckIcon: Check,
+    ChevronDownIcon: ChevronDown,
+    ChevronRightIcon: ChevronRight,
     ContentEditable,
+    PinIcon: Pin,
   },
   props: {
     diaryId: {
@@ -702,6 +710,17 @@ export default {
 </script>
 
 <style scoped lang="sass">
+.section-toggle-icon
+  display: inline-block
+  flex-shrink: 0
+  margin-right: 8px
+
+.inline-icon
+  display: inline-block
+  flex-shrink: 0
+  margin-right: 4px
+  vertical-align: -3px
+
 .tab-container
   display: flex
   border-bottom: 2px solid #ddd
