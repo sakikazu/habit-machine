@@ -1,18 +1,21 @@
 - content_for :addjs_in_head
   = javascript_include_tag 'categories', 'data-turbolinks-track': 'reload', defer: true
 #categories
-  .row.justify-content-center
-    .col-sm-8
+  div[class="tw:mx-auto tw:w-full tw:max-w-4xl"]
       .page-header
         h2 カテゴリ表示
-      details.mb30
-        summary.text-primary.font-weight-bold.cursor-pointer
+      details[class="tw:mb-8"]
+        summary[class="tw:cursor-pointer tw:font-bold tw:text-blue-600"]
           | ℹ️ カテゴリの使い方（クリックで表示）
-        ul.bd-callout.bd-callout-warning.pl-5
+        ul[class="tw:mt-3 tw:list-disc tw:rounded-lg tw:border-l-4 tw:border-amber-400 tw:bg-amber-50 tw:py-3 tw:pr-4 tw:pl-9"]
           li 日記をカテゴライズすると情報を体系的に整理でき、ノートのように使えます
           li
             | 家族共有のカテゴリは家族内で共有・編集できます（
-            i.fa.fa-users(style="color:orange")
+            svg[class="tw:inline-block tw:size-4 tw:text-orange-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="共有"]
+              path[d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"]
+              circle[cx="9" cy="7" r="4"]
+              path[d="M22 21v-2a4 4 0 0 0-3-3.87"]
+              path[d="M16 3.13a4 4 0 0 1 0 7.75"]
             | が目印）
           li
             | カテゴリの管理は
