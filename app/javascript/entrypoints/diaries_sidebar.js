@@ -1,4 +1,5 @@
-import { createApp } from 'vue'
+import { createApp, nextTick } from 'vue'
+import { BookOpen, ChevronDown, ChevronUp, Clock3, Pin, Star } from '@lucide/vue'
 import HmAxios from 'hm_axios.js'
 
 import TaskDiary from 'components/diaries/TaskDiary'
@@ -28,22 +29,22 @@ document.addEventListener('turbolinks:load', () => {
             aria-controls="favoriteDiaries"
             @click="toggleFavorites"
           >
-            <span class="mr-2">
-              <i class="fa fa-star"></i>
-            </span>
+            <Star :size="20" aria-hidden="true" />
             お気に入り
-            <i class="fa sidebar-section-chevron" :class="favoritesOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            <ChevronUp v-if="favoritesOpen" class="sidebar-section-chevron" :size="17" aria-hidden="true" />
+            <ChevronDown v-else class="sidebar-section-chevron" :size="17" aria-hidden="true" />
           </button>
         </div>
-        <div id="favoriteDiaries" v-show="!isMobileSidebar || favoritesOpen" class="diaries mb-4 favorite-list">
-          <div v-if="favorites.length === 0" class="text-muted small">まだお気に入りはありません</div>
-          <div class="favorite-item mb-2 p-2 clickable" v-for="fav in favorites" :key="fav.type + '-' + fav.id" @click.prevent="openFavorite(fav)">
-            <div class="d-flex align-items-start">
-              <i class="mr-2 mt-1" :class="iconClass(fav)"></i>
+        <div id="favoriteDiaries" v-show="!isMobileSidebar || favoritesOpen" class="diaries favorite-list">
+          <div v-if="favorites.length === 0" class="sidebar-empty">まだお気に入りはありません</div>
+          <div class="favorite-item" v-for="fav in favorites" :key="fav.type + '-' + fav.id" @click.prevent="openFavorite(fav)">
+            <div class="favorite-item__content">
+              <Clock3 v-if="fav.type === 'History'" class="favorite-item__icon" :size="17" aria-hidden="true" />
+              <BookOpen v-else class="favorite-item__icon" :size="17" aria-hidden="true" />
               <div>
-                <div class="font-weight-bold">{{ fav.title }}</div>
-                <div class="text-muted small">
-                  <span v-if="fav.member" class="mr-1">({{ fav.member }})</span>{{ fav.date }}
+                <div class="favorite-item__title">{{ fav.title }}</div>
+                <div class="favorite-item__meta">
+                  <span v-if="fav.member">({{ fav.member }}) </span>{{ fav.date }}
                 </div>
               </div>
             </div>
@@ -57,22 +58,50 @@ document.addEventListener('turbolinks:load', () => {
             aria-controls="pinnedDiaries"
             @click="togglePinned"
           >
-            <span class="mr-2">
-              <i class="fa fa-thumb-tack"></i>
-            </span>
+            <Pin :size="20" aria-hidden="true" />
             固定
-            <i class="fa sidebar-section-chevron" :class="pinnedOpen ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+            <ChevronUp v-if="pinnedOpen" class="sidebar-section-chevron" :size="17" aria-hidden="true" />
+            <ChevronDown v-else class="sidebar-section-chevron" :size="17" aria-hidden="true" />
           </button>
-          <small class="ml-3"><a href="/diaries/pinned">[管理]</a></small>
+          <small class="sidebar-manage-link"><a href="/diaries/pinned">[管理]</a></small>
         </div>
         <div id="pinnedDiaries" v-show="!isMobileSidebar || pinnedOpen" class="diaries">
-          <div class="mb-1" v-for="diary in diaries" :key="diary.id">
+          <div class="pinned-diary-item" v-for="diary in diaries" :key="diary.id">
             <task-diary :diary="diary" @updated="onUpdated" @show-diary-modal="showDiaryModal" />
+          </div>
+        </div>
+        <div v-if="activeHistory" ref="historyModal" class="history-favorite-modal" role="dialog" aria-modal="true" :aria-label="activeHistory.title" tabindex="-1" @keydown.esc="closeHistoryModal">
+          <div class="history-favorite-modal__backdrop" @click="closeHistoryModal"></div>
+          <div class="history-favorite-modal__dialog">
+            <header class="history-favorite-modal__header">
+              <h5><Clock3 :size="19" aria-hidden="true" />{{ activeHistory.title }}</h5>
+              <button type="button" class="history-favorite-modal__close" aria-label="閉じる" @click="closeHistoryModal">×</button>
+            </header>
+            <div class="history-favorite-modal__body">
+              <div class="history-favorite-modal__meta">{{ historyMeta }}</div>
+              <div v-if="activeHistory.content_html" class="history-favorite-content" v-html="activeHistory.content_html"></div>
+              <div v-else class="history-favorite-content history-favorite-content--plain">{{ activeHistory.content }}</div>
+            </div>
+            <footer class="history-favorite-actions">
+              <button type="button" class="history-action history-favorite-actions__append" @click="appendToHistory">追記</button>
+              <button type="button" class="history-action history-favorite-actions__favorite" :class="{ 'is-favorited': activeHistory.favorited }" :disabled="historyFavoriteUpdating" @click="toggleHistoryFavorite">
+                <Star :size="16" :fill="activeHistory.favorited ? 'currentColor' : 'none'" aria-hidden="true" />
+                {{ activeHistory.favorited ? 'お気に入り解除' : 'お気に入り' }}
+              </button>
+              <a v-if="activeHistory.path" :href="activeHistory.path" class="history-action history-favorite-actions__secondary" target="_blank" rel="noopener">履歴ページへ</a>
+              <a v-if="activeHistory.edit_path" :href="activeHistory.edit_path" class="history-action history-favorite-actions__primary">編集</a>
+            </footer>
           </div>
         </div>
       </div>
     `,
     components: {
+      BookOpen,
+      ChevronDown,
+      ChevronUp,
+      Clock3,
+      Pin,
+      Star,
       TaskDiary,
     },
     data () {
@@ -87,6 +116,12 @@ document.addEventListener('turbolinks:load', () => {
         sidebarMediaQuery: null,
         sidebarMediaListener: null,
       }
+    },
+    computed: {
+      historyMeta () {
+        if (!this.activeHistory) return ''
+        return `${this.activeHistory.member ? '(' + this.activeHistory.member + ') ' : ''}${this.activeHistory.date || ''}`
+      },
     },
     mounted () {
       this.setupResponsiveSections()
@@ -187,63 +222,15 @@ document.addEventListener('turbolinks:load', () => {
           this.showHistoryModal(fav)
         }
       },
-      openHistoryEdit (fav) {
-        if (fav.edit_path) {
-          window.location.href = fav.edit_path
-        }
-      },
-      iconClass (fav) {
-        return fav.type === 'History' ? 'fa fa-history' : 'fa fa-book'
-      },
       showHistoryModal (fav) {
         this.activeHistory = Object.assign({}, fav, { favorited: true })
-        this.renderHistoryModal()
+        nextTick(() => this.$refs.historyModal?.focus())
       },
       closeHistoryModal () {
         this.activeHistory = null
-        $('#historyFavoriteModal').modal('hide')
       },
-      renderHistoryModal () {
-        if (!this.activeHistory) return
-        const titleEl = document.getElementById('historyFavoriteTitle')
-        const metaEl = document.getElementById('historyFavoriteMeta')
-        const contentEl = document.getElementById('historyFavoriteContent')
-        const anchorEl = document.getElementById('historyFavoriteAnchor')
-        const editEl = document.getElementById('historyFavoriteEdit')
-        const appendEl = document.getElementById('historyFavoriteAppend')
-        const favoriteToggleEl = document.getElementById('historyFavoriteToggle')
-
-        if (titleEl) titleEl.textContent = this.activeHistory.title
-        if (metaEl) metaEl.textContent = `${this.activeHistory.member ? '(' + this.activeHistory.member + ') ' : ''}${this.activeHistory.date || ''}`
-        this.updateHistoryContent(contentEl)
-        if (anchorEl) {
-          anchorEl.href = this.activeHistory.path || '#'
-          anchorEl.classList.toggle('disabled', !this.activeHistory.path)
-        }
-        if (editEl) {
-          editEl.href = this.activeHistory.edit_path || '#'
-          editEl.classList.toggle('disabled', !this.activeHistory.edit_path)
-        }
-        if (appendEl) {
-          appendEl.onclick = (e) => {
-            e.preventDefault()
-            window.dispatchEvent(new CustomEvent('open-history-append', { detail: { history: this.activeHistory } }))
-          }
-        }
-        if (favoriteToggleEl) {
-          favoriteToggleEl.onclick = (e) => {
-            e.preventDefault()
-            this.toggleHistoryFavorite()
-          }
-          this.updateHistoryFavoriteButton(favoriteToggleEl, this.activeHistory.favorited)
-        }
-        $('#historyFavoriteModal').modal('show')
-      },
-      // 履歴モーダルのお気に入り状態を反映する
-      updateHistoryFavoriteButton (element, favorited) {
-        if (!element) return
-        element.classList.toggle('is-favorited', favorited)
-        element.innerHTML = favorited ? '<i class="fa fa-star mr-1"></i>お気に入り解除' : '<i class="fa fa-star-o mr-1"></i>お気に入り'
+      appendToHistory () {
+        window.dispatchEvent(new CustomEvent('open-history-append', { detail: { history: this.activeHistory } }))
       },
       // 履歴のお気に入りを切り替える
       toggleHistoryFavorite () {
@@ -261,8 +248,6 @@ document.addEventListener('turbolinks:load', () => {
           .then(res => {
             const favorited = !!res.data?.favorited
             this.activeHistory.favorited = favorited
-            const favoriteToggleEl = document.getElementById('historyFavoriteToggle')
-            this.updateHistoryFavoriteButton(favoriteToggleEl, favorited)
             window.dispatchEvent(new CustomEvent('favorites-refresh'))
           })
           .catch(error => {
@@ -272,24 +257,11 @@ document.addEventListener('turbolinks:load', () => {
             this.historyFavoriteUpdating = false
           })
       },
-      // 履歴モーダル本文の描画を統一する
-      updateHistoryContent (contentEl) {
-        if (!contentEl) return
-        const contentHtml = this.activeHistory?.content_html
-        contentEl.classList.toggle('history-favorite-content--plain', !contentHtml)
-        if (contentHtml) {
-          contentEl.innerHTML = contentHtml
-        } else {
-          contentEl.textContent = this.activeHistory?.content || ''
-        }
-      },
       onHistoryAppended (event) {
         const updated = event?.detail
         if (!updated?.id || !this.activeHistory || this.activeHistory.id !== updated.id) return
         this.activeHistory.content = updated.content || ''
         this.activeHistory.content_html = updated.content_html || ''
-        const contentEl = document.getElementById('historyFavoriteContent')
-        this.updateHistoryContent(contentEl)
       }
     }
   })
@@ -317,6 +289,7 @@ style.innerHTML = `
     font-weight: 500;
     line-height: 1.2;
     text-align: left;
+    gap: 8px;
   }
   .sectionPinnedDiaries .sidebar-section-toggle:focus {
     outline: none;
@@ -324,15 +297,41 @@ style.innerHTML = `
   .sectionPinnedDiaries .sidebar-section-chevron {
     display: none;
     margin-left: auto;
+  }
+  .sectionPinnedDiaries .sidebar-manage-link {
+    margin-left: 12px;
+  }
+  .sectionPinnedDiaries .favorite-list {
+    margin-bottom: 24px;
+  }
+  .sectionPinnedDiaries .sidebar-empty,
+  .sectionPinnedDiaries .favorite-item__meta {
+    color: #6b7280;
     font-size: 0.875rem;
   }
   .sectionPinnedDiaries .favorite-list .favorite-item {
+    margin-bottom: 8px;
+    padding: 8px;
     border: 1px solid #e5e7eb;
     border-radius: 6px;
     background: #f9fafb;
     transition: background-color 0.15s ease, box-shadow 0.15s ease;
     display: block;
     cursor: pointer;
+  }
+  .sectionPinnedDiaries .favorite-item__content {
+    display: flex;
+    align-items: flex-start;
+  }
+  .sectionPinnedDiaries .favorite-item__icon {
+    flex-shrink: 0;
+    margin: 4px 8px 0 0;
+  }
+  .sectionPinnedDiaries .favorite-item__title {
+    font-weight: 700;
+  }
+  .sectionPinnedDiaries .pinned-diary-item {
+    margin-bottom: 4px;
   }
   .sectionPinnedDiaries .favorite-list .favorite-item:hover {
     background: #fff;
@@ -348,8 +347,75 @@ style.innerHTML = `
   /* お気に入り履歴モーダルの操作ボタンを整理 */
   .history-favorite-actions {
     display: flex;
+    padding: 14px 18px;
     flex-wrap: wrap;
     gap: 8px;
+    border-top: 1px solid #e5e7eb;
+  }
+  .history-action {
+    display: inline-flex;
+    padding: 7px 12px;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .history-favorite-modal {
+    position: fixed;
+    z-index: 20010;
+    inset: 0;
+    display: flex;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+  }
+  .history-favorite-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+  }
+  .history-favorite-modal__dialog {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+  }
+  .history-favorite-modal__header {
+    display: flex;
+    padding: 14px 18px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  .history-favorite-modal__header h5 {
+    display: inline-flex;
+    margin: 0;
+    align-items: center;
+    gap: 7px;
+    font-size: 18px;
+  }
+  .history-favorite-modal__close {
+    border: 0;
+    background: transparent;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 28px;
+    line-height: 1;
+  }
+  .history-favorite-modal__body {
+    padding: 18px;
+  }
+  .history-favorite-modal__meta {
+    margin-bottom: 8px;
+    color: #6b7280;
   }
   .history-favorite-actions__primary {
     background: #2563eb;
@@ -399,41 +465,15 @@ style.innerHTML = `
     .sectionPinnedDiaries .sidebar-section-chevron {
       display: inline-block;
     }
+    .history-favorite-modal {
+      padding: 10px;
+    }
+    .history-favorite-actions {
+      flex-direction: column;
+    }
+    .history-action {
+      width: 100%;
+    }
   }
 `
 document.head.appendChild(style)
-
-// Append a simple modal container for history view
-const modalTemplate = `
-  <div class="modal fade" id="historyFavoriteModal" tabindex="-1" role="dialog" aria-hidden="true" style="display:none;">
-    <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">
-            <i class="fa fa-history mr-2"></i>
-            <span id="historyFavoriteTitle"></span>
-          </h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="text-muted mb-2" id="historyFavoriteMeta"></div>
-          <div id="historyFavoriteContent"></div>
-        </div>
-        <div class="modal-footer history-favorite-actions">
-          <a id="historyFavoriteAppend" class="btn history-favorite-actions__append">追記</a>
-          <a id="historyFavoriteToggle" class="btn history-favorite-actions__favorite">お気に入り解除</a>
-          <a id="historyFavoriteAnchor" class="btn history-favorite-actions__secondary" target="_blank" rel="noopener">履歴ページへ</a>
-          <a id="historyFavoriteEdit" class="btn history-favorite-actions__primary">編集</a>
-        </div>
-      </div>
-    </div>
-  </div>
-`
-
-document.addEventListener('turbolinks:load', () => {
-  if (!document.getElementById('historyFavoriteModal')) {
-    document.body.insertAdjacentHTML('beforeend', modalTemplate)
-  }
-})
