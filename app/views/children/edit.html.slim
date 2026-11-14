@@ -1,7 +1,7 @@
-.row.justify-content-center
-  .col-sm(style="max-width: 700px")
-    .mb-3 = link_to '戻る', settings_family_path, class: 'btn btn-light'
-    h2 編集
-    = render partial: 'form'
-    .alert.alert-danger.text-center.mt-5
-      = link_to '削除する', child_path(@child), method: :delete, class: 'btn btn-danger', data: { confirm: "本当に削除しますか？ #{@child.name}のこれまでのデータがすべて削除されます" }
+.child-form-page
+  .child-page-actions
+    = link_to '戻る', settings_family_path, class: 'child-button child-button--neutral'
+  h2 編集
+  = render partial: 'form'
+  .child-delete-area
+    = link_to '削除する', child_path(@child), method: :delete, class: 'child-button child-button--danger', data: { confirm: "本当に削除しますか？ #{@child.name}のこれまでのデータがすべて削除されます" }

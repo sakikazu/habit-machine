@@ -1,7 +1,6 @@
-.row.justify-content-center
-  .col-sm(style="max-width: 700px")
-    .form-actions.mb30
-      = link_to '設定へ', settings_family_path, class: "btn btn-light"
-    .page-header
-      h4 こどもデータ作成
-    = render 'form'
+.child-form-page
+  .child-page-actions
+    = link_to '設定へ', settings_family_path, class: 'child-button child-button--neutral'
+  .page-header
+    h4 こどもデータ作成
+  = render 'form'
