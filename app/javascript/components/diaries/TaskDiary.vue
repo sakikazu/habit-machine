@@ -11,7 +11,7 @@
         input.form-check-input(type="checkbox" :id="`task-${diary.id}-${idx}`" v-model="tasks[idx].state")
         label.form-check-label(:for="`task-${diary.id}-${idx}`" v-text="task.label")
     .saveButton
-      button.btn.btn-danger.btn-sm(@click="saveDiary" :disabled="!saveButtonEnabled") 更新
+      button.task-save-button(type="button" @click="saveDiary" :disabled="!saveButtonEnabled") 更新
 </template>
 
 <script>
@@ -129,8 +129,18 @@ export default {
       margin-top: 10px
     .saveButton
       margin-top: 15px
-      button
+      .task-save-button
         width: 100px
+        padding: 6px 12px
+        border: 1px solid #dc3545
+        border-radius: 4px
+        background: #dc3545
+        color: #fff
+        cursor: pointer
+        font-weight: 600
+        &:disabled
+          cursor: not-allowed
+          opacity: 0.65
   .check-field
     font-size: 0.9rem
     margin-bottom: 7px

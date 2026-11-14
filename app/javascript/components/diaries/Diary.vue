@@ -32,18 +32,18 @@ Diary
 
 <template lang="pug">
 .diaryWrapper(v-if="localDiary")
-  .well.diary-card(v-if="!editMode" :class="{'highlight-border': highlight}")
-    .page-header.mt0
+  .diary-card(v-if="!editMode" :class="{'highlight-border': highlight}")
+    .page-header.diary-card-header
       .diary-header
         .diary-heading
           h5.diary-title
-            .noLinkTitle.text-secondary(v-if="modalMode")
+            .noLinkTitle(v-if="modalMode")
               a.date.mr10(:href="`/day/${localDiary.record_at}`" :target="linkWithTargetBlankValue")
                 external-link-icon.action-icon(v-if="linkWithTargetBlank" :size="15" aria-hidden="true")
                 | {{ localDiary.disp_record_at }}
               span.title(v-if="localDiary.title") {{ localDiary.title }}
               span.no-title-yet(v-else) タイトル未設定
-              span.main-badge.ml-2(v-if="localDiary.main_in_day")
+              span.main-badge(v-if="localDiary.main_in_day")
                 span.main-dot
                 | メイン
             template(v-else)
@@ -54,7 +54,7 @@ Diary
               )
                 span.title {{ localDiary.title || 'タイトル未設定' }}
                 chevron-right-icon.diary-title-link__icon(:size="17" aria-hidden="true")
-              span.main-badge.ml-2(v-if="localDiary.main_in_day")
+              span.main-badge(v-if="localDiary.main_in_day")
                 span.main-dot
                 | メイン
         .diary-controls
@@ -85,7 +85,7 @@ Diary
               a.action-menu__item(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
                 clock-icon.action-icon(:size="16" aria-hidden="true")
                 | 履歴 ({{ localDiary.history_count }})
-      .meta-bar.mt-2(v-if="showMetaBar")
+      .meta-bar(v-if="showMetaBar")
         .meta-block(v-if="hasTags")
           .meta-label
             tag-icon.action-icon(:size="15" aria-hidden="true")
@@ -96,27 +96,27 @@ Diary
             .meta-label
               folder-open-icon.action-icon(:size="15" aria-hidden="true")
               | カテゴリ
-          category-links.mt-1(v-if="displayCategories.length > 0" :categories="displayCategories" :savedCategoryIds="localDiary.category_ids" :show-edit-button="false" @edit-category="openCategoryModal")
-      .diary-collapse-actions.mt-2(v-if="collapsibleBody")
-        button.btn.btn-sm.btn-outline-primary(@click.prevent="toggleDiaryBody")
+          category-links(v-if="displayCategories.length > 0" :categories="displayCategories" :savedCategoryIds="localDiary.category_ids" :show-edit-button="false" @edit-category="openCategoryModal")
+      .diary-collapse-actions(v-if="collapsibleBody")
+        button.diary-collapse-button(type="button" @click.prevent="toggleDiaryBody")
           | {{ bodyCollapsed ? '続きを表示' : '折りたたむ' }}
     template(v-if="!bodyCollapsed")
-      .backlinks.mt-2.mb-2(v-if="hasBacklinks")
-        .d-flex.align-items-center.mb-1
+      .backlinks(v-if="hasBacklinks")
+        .backlinks-heading
           share-icon.action-icon(:size="16" aria-hidden="true")
-          span.font-weight-bold バックリンク
-        ul.pl-3.mb-0
+          strong バックリンク
+        ul.backlinks-list
           li(v-for="link in localDiary.backlinks" :key="link.id")
             a(:href="link.path")
               | 🔗 {{ backlinkLabel(link) }} 🔗
       .diary-body(v-if="!changed_record_at")
-        p(v-if="localDiary.is_secret" class='btn btn-block btn-danger disabled mb5') シークレット日記
-        p(v-if="localDiary.is_hilight" class='btn btn-block btn-warning disabled mb5') ハイライト日記
-        .text-center.mt20(v-if="!!localDiary.image_path")
+        p.diary-status.diary-status--secret(v-if="localDiary.is_secret") シークレット日記
+        p.diary-status.diary-status--highlight(v-if="localDiary.is_hilight") ハイライト日記
+        .diary-main-image(v-if="!!localDiary.image_path")
           // TODO: !modalMode の時は、divで囲んで中の画像がはみ出した分はhiddenにするやつにする？縦が一覧できなくなるが
-          img.img-thumbnail(:src="localDiary.image_path" :class="{ 'w-50': !modalMode }")
-        .markdown.mb-4(v-if="hasContent" v-html="organizedContent")
-        .markdown-placeholder.mb-4(v-else)
+          img(:src="localDiary.image_path" :class="{ 'is-compact': !modalMode }")
+        .markdown.diary-markdown(v-if="hasContent" v-html="organizedContent")
+        .markdown-placeholder.diary-markdown(v-else)
           | (日記の内容)
       .diary-recordat-changed(v-else)
         a(:href="`/day/${changed_record_at}`" v-text="`この日記の日付が変更されました(${changed_record_at})`")
@@ -505,6 +505,12 @@ export default {
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05)
   overflow: visible
 
+.diary-card-header
+  margin-top: 0
+
+.noLinkTitle
+  color: #6c757d
+
 .diary-card::before
   content: ""
   position: absolute
@@ -655,6 +661,23 @@ export default {
   color: #1d4ed8
   font-weight: 700
   font-size: 12px
+  margin-left: 8px
+
+.diary-collapse-actions
+  margin-top: 8px
+
+.diary-collapse-button
+  padding: 4px 9px
+  border: 1px solid #2563eb
+  border-radius: 4px
+  background: #fff
+  color: #2563eb
+  cursor: pointer
+  font-size: 14px
+  font-weight: 600
+
+  &:hover
+    background: #eff6ff
 
 .main-dot
   width: 8px
@@ -727,6 +750,49 @@ export default {
   padding: 8px 10px
   margin-top: 6px
   margin-bottom: 8px
+
+.backlinks-heading
+  display: flex
+  margin-bottom: 4px
+  align-items: center
+
+.backlinks-list
+  margin: 0
+  padding-left: 16px
+
+.diary-status
+  display: block
+  width: 100%
+  margin-bottom: 5px
+  padding: 8px 12px
+  border-radius: 4px
+  color: #fff
+  text-align: center
+
+.diary-status--secret
+  background: #dc3545
+
+.diary-status--highlight
+  background: #ffc107
+  color: #212529
+
+.diary-main-image
+  margin-top: 20px
+  text-align: center
+
+  img
+    max-width: 100%
+    height: auto
+    padding: 4px
+    border: 1px solid #dee2e6
+    border-radius: 4px
+    background: #fff
+
+    &.is-compact
+      width: 50%
+
+.diary-markdown
+  margin-bottom: 24px
 
 .meta-bar
   position: relative
