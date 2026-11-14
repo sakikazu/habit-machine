@@ -4,9 +4,7 @@
   .MemberModal_wrapper(ref="wrapper")
     .MemberModal_controls
       a(href="javascript:void(0)" @click="expandWidth")
-        i.fa.fa-expand
-      // a(href="javascript:void(0)" @click="closeModal")
-        // i.fa.fa-times
+        Maximize2(:size="24" aria-label="幅を広げる")
     .MemberModal_contentWrapper
       template(v-if="noPadding")
         slot(name="content")
@@ -19,8 +17,13 @@
 </template>
 
 <script>
+import { Maximize2 } from '@lucide/vue'
+
 export default {
   name: "Modal",
+  components: {
+    Maximize2
+  },
   props: {
     noPadding: {
       type: Boolean,

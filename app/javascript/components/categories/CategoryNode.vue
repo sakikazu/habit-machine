@@ -3,7 +3,7 @@
     <div :class="['category-header', { 'shared-category': category.shared }]" @click="toggleOpen">
       <span class="toggle-icon">{{ isOpen ? "▼" : "▶" }}</span>
       <span class="category-name">{{ category.name }}</span>
-      <i v-if="category.shared" class="fa fa-users ml-2" style="color:orange"></i>
+      <Users v-if="category.shared" class="shared-icon" :size="16" aria-label="共有" />
     </div>
 
     <transition name="fade">
@@ -29,8 +29,13 @@
 </template>
 
 <script>
+import { Users } from '@lucide/vue'
+
 export default {
   name: 'CategoryNode',
+  components: {
+    Users,
+  },
   props: {
     category: Object,
   },
@@ -79,6 +84,10 @@ export default {
 .category-name
   font-size: 16px
   font-weight: bold
+
+.shared-icon
+  margin-left: 0.5rem
+  color: orange
 
 .diary-list
   padding-left: 20px

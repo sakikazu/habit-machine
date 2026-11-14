@@ -3,7 +3,7 @@
     <button v-if="showEditButton" class="category-button" style="min-width: 105px" @click="$emit('edit-category')">カテゴリ ✎</button>
     <div class="category-list">
       <a v-for="category in savedCategories" :key="category.id" href="/categories" class="category-link">
-        <i v-if="category.shared" class="fa fa-users mr-2" style="color:orange"></i>
+        <Users v-if="category.shared" class="shared-icon" :size="16" aria-label="共有" />
         {{ category.path.join(' > ') }}
       </a>
     </div>
@@ -11,7 +11,12 @@
 </template>
 
 <script>
+import { Users } from '@lucide/vue'
+
 export default {
+  components: {
+    Users
+  },
   props: {
     categories: Array,
     savedCategoryIds: Array,
@@ -58,6 +63,9 @@ export default {
   gap: 8px
 
 .category-link
+  display: inline-flex
+  align-items: center
+  gap: 0.5rem
   text-decoration: none
   color: #4338ca
   font-weight: 700
@@ -68,6 +76,9 @@ export default {
 
   &:hover
     background: #e0e7ff
+
+.shared-icon
+  color: orange
 
 .category-button
   background-color: #eef2ff
