@@ -8,6 +8,7 @@
     template(v-slot:content)
       diary(
         :diary-id="modalableDiaryId"
+                  :can-append-memo="true"
         :modal-mode="true"
         ref="modalDiary"
         @submitted="reflectPinnedDiaries"
@@ -104,6 +105,7 @@
                   :key="`diary-${mainDiaryObj.diary.id}`"
                   :categories="categories"
                   :collapsible-body="false"
+                  :can-append-memo="true"
                   @content-changed="onContentChanged"
                   @submitted="onSubmitted"
                   @on-edit-mode="onEditMode"
@@ -118,6 +120,7 @@
                   :key="`diary-${obj.diary.id}`"
                   :categories="categories"
                   :collapsible-body="true"
+                  :can-append-memo="true"
                   :collapse-by-default="shouldCollapseSecondaryDiary"
                   @content-changed="onContentChanged"
                   @submitted="onSubmitted"

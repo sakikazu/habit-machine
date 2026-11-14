@@ -59,7 +59,7 @@ Diary
                 | メイン
         .diary-controls
           .diary-actions
-            button.action-pill.primary(v-if="localDiary.id && hasAppendMemo" @click.prevent="$emit('append-memo', localDiary)")
+            button.action-pill.primary(v-if="localDiary.id && canAppendMemo" @click.prevent="$emit('append-memo', localDiary)")
               i.fa.fa-sticky-note-o.mr-1
               | 追記
             button.action-pill(@click.prevent="edit")
@@ -141,6 +141,10 @@ export default {
     UrlCopyButton,
   },
   props: {
+    canAppendMemo: {
+      type: Boolean,
+      default: false,
+    },
     diary: {
       type: Object,
       default: null,
@@ -251,10 +255,6 @@ export default {
     },
     isFavorited () {
       return !!this.localDiary?.favorited
-    },
-    hasAppendMemo () {
-      // 親側にappend-memoが実装されている場合のみ追記を出す
-      return !!this.$listeners['append-memo']
     },
     favoriteLabel () {
       return this.isFavorited ? 'お気に入り解除' : 'お気に入り'
@@ -382,7 +382,7 @@ export default {
       request
         .then(res => {
           const favorited = !!res.data.favorited
-          this.$set(this.localDiary, 'favorited', favorited)
+          this.localDiary.favorited = favorited
           window.dispatchEvent(new CustomEvent('favorites-refresh'))
         })
         .catch(error => {

@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+import { createApp, nextTick } from 'vue'
 import HmAxios from 'hm_axios.js'
 
 import HabitRecord from 'components/habits/HabitRecord'
@@ -8,6 +8,10 @@ import Modal from 'components/shared/Modal'
 import DayDatePicker from 'components/general/DayDatePicker'
 
 document.addEventListener('turbolinks:load', () => {
+  const pageElement = document.getElementById('dayPage')
+  if (!pageElement) return
+  const targetDate = pageElement.dataset.targetDate
+
   console.log('day_page.js: turbolinks:load')
   const vm = createApp({
     components: {
@@ -102,7 +106,7 @@ document.addEventListener('turbolinks:load', () => {
       this.setup()
       this.setupGlobalListeners()
       this.setupDiaryTwoColumnsWatcher()
-      this.targetDate = this.$el.dataset.targetDate
+      this.targetDate = targetDate
       this.fetchData()
       this.enablePopover()
     },
@@ -357,11 +361,11 @@ document.addEventListener('turbolinks:load', () => {
                   const target = this.diariesWithOpsions[foundIdx]
                   target.diary = res.data.diary
                   target.highlightForAMoment = true
-                  this.$set(this.diariesWithOpsions, foundIdx, target)
+                  this.diariesWithOpsions[foundIdx] = target
                 }
               }
               if (this.modalableDiaryId && this.modalableDiaryId == res.data.diary.id) {
-                this.$nextTick(() => {
+                nextTick(() => {
                   this.$refs.modalDiary?.updateDiary?.(res.data.diary)
                 })
               }
@@ -462,5 +466,5 @@ document.addEventListener('turbolinks:load', () => {
         this.modalableDiaryId = null
       },
     },
-  }).mount('#dayPage')
+  }).mount(pageElement)
 })
