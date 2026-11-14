@@ -65,15 +65,16 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
     // 保存ボタンのショートカット。Macはcmd + s, Winはctrl + s
     setShortcutOfSave: function() {
       const S_KEY = 83
+      const page = this
       // TODO: Vue.jsではこういう全体のイベントハンドリングはどうするのがセオリー？
-      $(document).on('keydown', function(e) {
+      $(document).off('keydown.habitodos').on('keydown.habitodos', function(e) {
         // Macのcmdはe.metaKey、Winのctrlはe.ctrlKey（でもこれはMacのcontrolも含むだろうからMacではそっちでもいける）
         if ((e.ctrlKey || e.metaKey) && e.keyCode === S_KEY) {
           // ブラウザの「ページを別名で保存」を抑制
           e.preventDefault()
-          const current = vm.findCurrentData()
+          const current = page.findCurrentData()
           if (current.unsaved) {
-            vm.saveBody(current.uuid)
+            page.saveBody(current.uuid)
           }
         }
       });
@@ -222,8 +223,9 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
     },
     setConfirmUnsavingEvent: function() {
       const formWarningMessage = "未保存の内容が破棄されますがよろしいですか？";
-      $('a').on('click', function(e) {
-        const unsaved = vm.isAnyUnsaved();
+      const page = this
+      $(document).off('click.habitodos').on('click.habitodos', 'a', function(e) {
+        const unsaved = page.isAnyUnsaved();
         if (!unsaved) { return; }
         if (!confirm(formWarningMessage)) {
           e.preventDefault();
@@ -231,8 +233,8 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
       });
 
       // ブラウザのタブを閉じようとした時、またはturbolinks以外のリンクをクリックした時の警告
-      $(window).on('beforeunload', function() {
-        const unsaved = vm.isAnyUnsaved();
+      $(window).off('beforeunload.habitodos').on('beforeunload.habitodos', function() {
+        const unsaved = page.isAnyUnsaved();
         if (unsaved) {
           return formWarningMessage;
         }
@@ -361,6 +363,7 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
     },
     // changeイベントを発生させるやり方
     setContentEditableChangeEvent: function() {
+      const page = this
       $(".editor").each(function () {
         const $this = $(this);
         // NOTE: こういう変数って、ちゃんとイベント発生時にそれぞれ保持して比較できるんだな。クロージャか？
@@ -371,7 +374,7 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
           if (htmlOld !== htmlNew) {
             $this.trigger('change');
             htmlOld = htmlNew;
-            vm.currentData.unsaved = true;
+            page.currentData.unsaved = true;
           }
         })
       });

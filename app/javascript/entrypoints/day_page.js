@@ -110,6 +110,8 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       this.enablePopover()
     },
     beforeUnmount () {
+      $(document).off('.dayPage')
+      $(window).off('.dayPage')
       if (this.diaryTwoColumnsMediaQuery && this.diaryTwoColumnsMediaListener) {
         if (this.diaryTwoColumnsMediaQuery.removeEventListener) {
           this.diaryTwoColumnsMediaQuery.removeEventListener('change', this.diaryTwoColumnsMediaListener)
@@ -190,14 +192,15 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       // LocalStorageによる一時保存があるので、下記対策の重要性は低くはなる
       setMovePageConfirm () {
         const formWarningMessage = "登録・保存していない入力内容は破棄されますがよろしいですか？"
+        const page = this
 
         // リンク押下時、いずれかのフォームのデータが変更されていたら確認メッセージを表示する
-        $('a').on('click', function(e) {
+        $(document).off('click.dayPage').on('click.dayPage', 'a', function(e) {
           let href = $(this).attr('href')
           if (
             typeof(href) === "undefined" ||
             href == '#' ||
-            !vm.existsChangedForm ||
+            !page.existsChangedForm ||
             $(this).hasClass('ignore-checking-changes')
           ) { return; }
 
@@ -207,8 +210,8 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         })
 
         // ブラウザのタブを閉じようとした時、またはturbolinks以外のリンクをクリックした時の警告
-        $(window).on('beforeunload', function() {
-          if (vm.existsChangedForm) {
+        $(window).off('beforeunload.dayPage').on('beforeunload.dayPage', function() {
+          if (page.existsChangedForm) {
             return formWarningMessage
           }
         })
