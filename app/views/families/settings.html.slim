@@ -1,15 +1,14 @@
-.row.justify-content-center
-  .col-sm(style="max-width: 700px")
-    .page-header
-      h2 家族設定
+div[class="tw:mx-auto tw:w-full tw:max-w-[700px]"]
+  .page-header
+    h2 家族設定
 
-    .mb-4
-      = link_to '家族を編集', edit_family_path, class: 'btn btn-light btn-block'
+  div[class="tw:mb-4"]
+    = link_to '家族を編集', edit_family_path, class: 'tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-300 tw:bg-white tw:px-4 tw:py-3 tw:text-center tw:font-semibold tw:text-stone-700 tw:no-underline hover:tw:bg-stone-50'
 
-    .mb-4
-      = link_to '子供を追加', new_child_path, class: 'btn btn-light btn-block'
+  div[class="tw:mb-4"]
+    = link_to '子供を追加', new_child_path, class: 'tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-300 tw:bg-white tw:px-4 tw:py-3 tw:text-center tw:font-semibold tw:text-stone-700 tw:no-underline hover:tw:bg-stone-50'
 
-    - if @children.present?
-      h5.mt-4.mb-2.text-muted 子供の編集
-      - @children.each do |child|
-        = link_to "編集: #{child.name}", edit_child_path(child), class: 'btn btn-outline-secondary btn-block mb-2'
+  - if @children.present?
+    h5[class="tw:mt-6 tw:mb-2 tw:text-sm tw:font-semibold tw:text-stone-500"] 子供の編集
+    - @children.each do |child|
+      = link_to "編集: #{child.name}", edit_child_path(child), class: 'tw:mb-2 tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-400 tw:bg-transparent tw:px-4 tw:py-2 tw:text-center tw:font-semibold tw:text-stone-700 tw:no-underline hover:tw:bg-stone-100'

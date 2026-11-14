@@ -40,7 +40,7 @@
           <template v-else>
             <div v-html="formHtml"></div>
             <div class="history-form__actions">
-              <button type="button" class="btn btn-primary" :disabled="saving || deleting" @click="submitEdit">
+              <button type="button" class="tw:inline-flex tw:cursor-pointer tw:rounded-lg tw:border-0 tw:bg-blue-600 tw:px-5 tw:py-2 tw:font-semibold tw:text-white hover:tw:bg-blue-700 disabled:tw:cursor-wait disabled:tw:opacity-60" :disabled="saving || deleting" @click="submitEdit">
                 {{ saving ? '送信中...' : '送信' }}
               </button>
               <button

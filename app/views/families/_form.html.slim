@@ -1,12 +1,12 @@
 = form_with(model: current_family, class: 'form') do |f|
   - if current_family.errors.any?
-    .alert.alert-danger
-      ul
+    div[class="tw:mb-4 tw:rounded-lg tw:border tw:border-solid tw:border-red-300 tw:bg-red-50 tw:p-4 tw:text-red-800"]
+      ul[class="tw:list-disc tw:pl-5"]
         - current_family.errors.full_messages.each do |msg|
           li = msg
 
-  .form-group
-    = f.label :name, "表示名"
-    = f.text_field :name, class: 'form-control'
+  div[class="tw:mb-4"]
+    = f.label :name, "表示名", class: 'tw:mb-1 tw:block tw:font-semibold tw:text-stone-700'
+    = f.text_field :name, class: 'tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-300 tw:bg-white tw:px-3 tw:py-2 tw:text-stone-900 focus:tw:border-blue-500 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-200'
 
-  = f.submit '登録する', class: "btn btn-primary"
+  = f.submit '登録する', class: 'tw:inline-flex tw:cursor-pointer tw:rounded-lg tw:border-0 tw:bg-blue-600 tw:px-5 tw:py-2 tw:font-semibold tw:text-white hover:tw:bg-blue-700'

@@ -1,46 +1,46 @@
 - url = history.persisted? ? history_path(history) : histories_path
 = form_with model: history, url: url, class: 'form' do |f|
   - if history && history.errors.any?
-    .alert.alert-danger
-      ul
+    div[class="tw:mb-4 tw:rounded-lg tw:border tw:border-solid tw:border-red-300 tw:bg-red-50 tw:p-4 tw:text-red-800"]
+      ul[class="tw:list-disc tw:pl-5"]
         - history.errors.full_messages.each do |msg|
           li = msg
 
   - member_options = current_family.children.order(:id).map { |child| [child.name, "Child:#{child.id}"] }
   - member_options += current_family.users.order(:id).map { |user| [user.dispname, "User:#{user.id}"] }
   - selected_member_keys = history.member_histories.map { |mh| "#{mh.member_type}:#{mh.member_id}" }
-  .form-group
+  div[class="tw:mb-4"]
     .member-pill-list
       - member_options.each do |name, value|
         - checked = selected_member_keys.include?(value)
         label.member-pill
           = check_box_tag 'member_keys[]', value, checked, class: 'member-pill__input'
           span.member-pill__label = name
-  .row.form-group
-    .col
-      = f.date_field :target_date, placeholder: '日付', class: 'form-control', required: true
-    .col(style="align-self: center")
-      = f.check_box :about_date, class: 'form-check-input', id: 'about_date'
-      = f.label :about_date, 'だいたい', class: 'form-check-label', for: 'about_date'
-  .form-group
-    = f.text_field :title, class: 'form-control', placeholder: 'タイトル', required: true
-  .form-group
-    = f.text_area :content, id: 'content-field', class: 'form-control', placeholder: 'この時のパパ、ママの想いも書いてみて', rows: 5
-  .form-group.mb-4
-    = f.file_field :eyecatch_image, class: 'form-control', accept: 'image/*'
-    = image_tag history.eyecatch_image_large, class: 'img-thumbnail' if history.eyecatch_image.attached?
-    .custom-control.custom-checkbox
-      = f.check_box :as_profile_image, class: 'custom-control-input', id: 'as_profile_image'
-      = f.label :as_profile_image, 'プロフィール画像にする', class: 'custom-control-label', for: 'as_profile_image'
-    small.desc
+  div[class="tw:mb-4 tw:grid tw:grid-cols-1 tw:items-center tw:gap-3 tw:sm:grid-cols-2"]
+    div
+      = f.date_field :target_date, placeholder: '日付', class: 'tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-300 tw:bg-white tw:px-3 tw:py-2 focus:tw:border-blue-500 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-200', required: true
+    label[class="tw:inline-flex tw:items-center tw:gap-2"]
+      = f.check_box :about_date, class: 'tw:size-4 tw:accent-blue-600', id: 'about_date'
+      span だいたい
+  div[class="tw:mb-4"]
+    = f.text_field :title, class: 'tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-300 tw:bg-white tw:px-3 tw:py-2 focus:tw:border-blue-500 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-200', placeholder: 'タイトル', required: true
+  div[class="tw:mb-4"]
+    = f.text_area :content, id: 'content-field', class: 'tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-300 tw:bg-white tw:px-3 tw:py-2 focus:tw:border-blue-500 focus:tw:outline-none focus:tw:ring-2 focus:tw:ring-blue-200', placeholder: 'この時のパパ、ママの想いも書いてみて', rows: 5
+  div[class="tw:mb-4"]
+    = f.file_field :eyecatch_image, class: 'tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-300 tw:bg-white tw:px-3 tw:py-2', accept: 'image/*'
+    = image_tag history.eyecatch_image_large, class: 'tw:mt-3 tw:h-auto tw:max-w-full tw:rounded-lg' if history.eyecatch_image.attached?
+    label[class="tw:mt-3 tw:inline-flex tw:items-center tw:gap-2"]
+      = f.check_box :as_profile_image, class: 'tw:size-4 tw:accent-blue-600', id: 'as_profile_image'
+      span プロフィール画像にする
+    small.desc[class="tw:mt-1 tw:block tw:text-stone-500"]
       | 一番最近プロフィール画像にしたものが使用されます
-  .row.mb-3
-    .col
-      = f.number_field :height, step: '0.1', class: 'form-control', placeholder: "#{History.human_attribute_name("data.height")} (cm)"
-    .col
-      = f.number_field :weight, step: '0.1', class: 'form-control', placeholder: "#{History.human_attribute_name("data.weight")} (kg)"
+  div[class="tw:mb-3 tw:grid tw:grid-cols-1 tw:gap-3 tw:sm:grid-cols-2"]
+    div
+      = f.number_field :height, step: '0.1', class: 'tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-300 tw:bg-white tw:px-3 tw:py-2', placeholder: "#{History.human_attribute_name("data.height")} (cm)"
+    div
+      = f.number_field :weight, step: '0.1', class: 'tw:block tw:w-full tw:rounded-lg tw:border tw:border-solid tw:border-stone-300 tw:bg-white tw:px-3 tw:py-2', placeholder: "#{History.human_attribute_name("data.weight")} (kg)"
   - unless local_assigns.fetch(:modal, false)
-    .form-group.history-form__actions
-      = f.submit '送信', class: 'btn btn-primary'
+    .history-form__actions
+      = f.submit '送信', class: 'tw:inline-flex tw:cursor-pointer tw:rounded-lg tw:border-0 tw:bg-blue-600 tw:px-5 tw:py-2 tw:font-semibold tw:text-white hover:tw:bg-blue-700'
 
 = javascript_tag "$('#content-field').markdownEasily()"
