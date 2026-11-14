@@ -376,9 +376,7 @@ export default {
           this.formLoading = false
           this.$nextTick(() => {
             this.bindFormSubmit()
-            if (window.$ && window.$('#content-field').length > 0) {
-              window.$('#content-field').markdownEasily()
-            }
+            window.markdownEasily(document.getElementById('content-field'))
           })
         })
     },

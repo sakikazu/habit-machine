@@ -158,7 +158,7 @@ export default {
         const vm = this
         nextTick().then(function() {
           vm.$refs.inputValue.focus()
-          $(vm.$refs.markdownable_textarea).markdownEasily()
+          window.markdownEasily(vm.$refs.markdownable_textarea)
           vm.resizeMemoTextarea()
         })
       }

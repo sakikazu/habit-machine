@@ -1,7 +1,7 @@
 - content_for :addjs
   javascript:
-    $(function() {
-      $('#markdownable_textarea').markdownEasily();
+    document.addEventListener('turbolinks:load', function() {
+      window.markdownEasily(document.getElementById('markdownable_textarea'))
     })
 
 = simple_form_for(@sense) do |f|

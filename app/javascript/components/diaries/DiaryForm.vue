@@ -51,7 +51,10 @@
           small.section-summary {{ tagSectionSummary }}
         .collapsible-content(v-show="tagsExpanded")
           p.form-section-description カンマ区切りで複数指定できます。使用するタグはタグ一覧から事前に作成してください
-          input.form-input(type="text" name="diary[tag_list]" ref="taglist" placeholder="矢印キーで既存のタグを表示" v-model="diary.tag_list" :tabindex="tabidxBase + 3")
+          .tag-autocomplete
+            input.form-input(type="text" name="diary[tag_list]" ref="taglist" placeholder="タグ名を入力すると候補を表示" v-model="diary.tag_list" :tabindex="tabidxBase + 3" @focus="openTagSuggestions" @input="openTagSuggestions" @blur="closeTagSuggestions" @keydown.down.prevent="moveTagSuggestion(1)" @keydown.up.prevent="moveTagSuggestion(-1)" @keydown.enter.prevent="selectActiveTagSuggestion" @keydown.esc="tagSuggestionsOpen = false")
+            .tag-autocomplete-list(v-if="tagSuggestionsOpen && filteredTagNames.length > 0")
+              button.tag-autocomplete-option(v-for="(tagname, index) in filteredTagNames" :key="tagname" type="button" :class="{ active: index === activeTagSuggestionIndex }" @mousedown.prevent="selectTagSuggestion(tagname)") {{ tagname }}
 
           .tag-suggestions(v-if="pinned_tags.length > 0")
             .tag-suggestion-title
@@ -231,6 +234,8 @@ export default {
       pinned_tags: [],
       latest_tags: [],
       tagnames: [],
+      tagSuggestionsOpen: false,
+      activeTagSuggestionIndex: -1,
       formKey: null,
       unsaved: false,
       // フォームが複数表示している場合でもtabindexがかぶらないように、フォームごとのベース値を設ける
@@ -287,6 +292,15 @@ export default {
       const pinnedTagNames = this.pinned_tags.map(tag => tag.name)
       return this.latest_tags.filter(tag => !pinnedTagNames.includes(tag.name))
     },
+    filteredTagNames () {
+      const values = (this.diary.tag_list || '').split(',')
+      const fragment = values.pop().trim().toLowerCase()
+      const selected = values.map(tag => tag.trim())
+      return this.tagnames
+        .filter(tag => !selected.includes(tag))
+        .filter(tag => !fragment || tag.toLowerCase().includes(fragment))
+        .slice(0, 12)
+    },
     tagSectionSummary () {
       const tags = (this.diary.tag_list || '').split(/\s*,\s*/).filter(tag => tag)
       return tags.length > 0 ? tags.join('・') : 'タグなし'
@@ -330,7 +344,7 @@ export default {
       return 'ACTIVE_STORAGE_URL'
     },
     setNormalContentElement () {
-      $(this.$refs.markdownable_textarea).markdownEasily()
+      window.markdownEasily(this.$refs.markdownable_textarea)
     },
     // 本文量に合わせて入力欄を画面高の70%まで自動拡張する
     resizeContentTextarea () {
@@ -377,11 +391,36 @@ export default {
       this.pinned_tags = resData.pinned_tags
       this.latest_tags = resData.latest_tags
       this.tagnames = resData.tagnames
-      $(this.$refs.taglist).autocompleteMultiple(this.tagnames, this.setTagList);
       this.setFromLocalStorage()
     },
     setTagList (val) {
       this.diary.tag_list = val
+    },
+    openTagSuggestions () {
+      this.tagSuggestionsOpen = true
+      this.activeTagSuggestionIndex = -1
+    },
+    closeTagSuggestions () {
+      this.tagSuggestionsOpen = false
+      this.activeTagSuggestionIndex = -1
+    },
+    moveTagSuggestion (direction) {
+      if (!this.tagSuggestionsOpen) this.tagSuggestionsOpen = true
+      const count = this.filteredTagNames.length
+      if (count === 0) return
+      this.activeTagSuggestionIndex = (this.activeTagSuggestionIndex + direction + count) % count
+    },
+    selectActiveTagSuggestion () {
+      const tagname = this.filteredTagNames[this.activeTagSuggestionIndex]
+      if (tagname) this.selectTagSuggestion(tagname)
+    },
+    selectTagSuggestion (tagname) {
+      const values = (this.diary.tag_list || '').split(',')
+      values.pop()
+      values.push(tagname, '')
+      this.setTagList(values.map(tag => tag.trim()).join(', '))
+      this.closeTagSuggestions()
+      this.$nextTick(() => this.$refs.taglist?.focus())
     },
     // 現在のタグ入力に指定したタグが含まれるかを返す
     isTagSelected(tagname) {
@@ -406,7 +445,7 @@ export default {
       }
     },
     setCheckUnsavedEvent () {
-      $(this.$refs.form).find('input, textarea, select').on('change', () => {
+      this.$refs.form.addEventListener('change', () => {
         this.unsaved = true
         this.$emit('content-changed', this.formKey)
       })
@@ -1197,6 +1236,36 @@ export default {
     text-align: center
     text-overflow: ellipsis
     white-space: nowrap
+
+.tag-autocomplete
+  position: relative
+
+.tag-autocomplete-list
+  position: absolute
+  z-index: 20
+  top: calc(100% + 4px)
+  right: 0
+  left: 0
+  max-height: 220px
+  overflow-y: auto
+  border: 1px solid #d1d5db
+  border-radius: 6px
+  background: #fff
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .12)
+
+.tag-autocomplete-option
+  display: block
+  width: 100%
+  padding: 8px 12px
+  border: 0
+  background: transparent
+  color: #343a40
+  cursor: pointer
+  text-align: left
+
+  &:hover,
+  &.active
+    background: #eaf4fb
 
 @media (max-width: 575.98px)
   .setting-grid

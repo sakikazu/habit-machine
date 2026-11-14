@@ -8,10 +8,6 @@
  * You're free to add application-wide styles to this file and they'll appear at the top of the
  * compiled file, but it's generally better to create a new file per style scope.
  *
- *= require jquery-ui/core
- *= require jquery-ui/theme
- *= require jquery-ui/menu
- *= require jquery-ui/autocomplete
  *= require legacy_utilities
  *= require_self
  *= require_tree .
@@ -614,15 +610,4 @@ hr {
 }
 .btn-light {
   border-color: #ccc;
-}
-
-
-/**********************************************
- for vendor plugins
-**********************************************/
-
-// jQuery UI autocomplete
-ul.ui-menu.ui-widget.ui-widget-content.ui-autocomplete {
-  height: 250px;
-  overflow-y: scroll;
 }

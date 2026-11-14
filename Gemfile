@@ -44,9 +44,6 @@ group :assets do
   # gem 'therubyracer', :platforms => :ruby
 end
 
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
-
 # Turbolinks makes navigating your web application faster. Read more: https://github.com/turbolinks/turbolinks
 gem 'turbolinks', '~> 5'
 

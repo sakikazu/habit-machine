@@ -177,9 +177,7 @@ export default {
       form.addEventListener('input', saveDraft)
       form.addEventListener('change', saveDraft)
 
-      if (window.$ && window.$(form).find('#content-field').length > 0) {
-        window.$(form).find('#content-field').markdownEasily()
-      }
+      window.markdownEasily(form.querySelector('#content-field'))
     },
     editForm () {
       return this.$el.querySelector('.family-dashboard__modal-body--history form')

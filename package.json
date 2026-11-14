@@ -10,7 +10,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "build:watch": "webpack --watch --config webpack.config.js",
-    "test": "node spec/javascript/habit_template_examples_test.js"
+    "test": "node spec/javascript/habit_template_examples_test.js && node spec/javascript/markdown_easily_test.js"
   },
   "repository": {
     "type": "git",

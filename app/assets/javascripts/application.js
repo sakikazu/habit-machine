@@ -10,12 +10,9 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
-//= require jquery
-//= require jquery-ui/widgets/autocomplete
 //= require rails-ujs
 //= require turbolinks
-//= require jquery.selection
-//= require jquery.markdown-easily
+//= require markdown-easily
 //= require_tree .
 // for lazy_high_charts
 // NOTE: highchartsはhighstock内でincludeされてるから不要。-moreの方はわからないが動作に異常はないので無効にしとく

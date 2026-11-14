@@ -43,4 +43,4 @@
     .history-form__actions
       = f.submit '送信', class: 'tw:inline-flex tw:cursor-pointer tw:rounded-lg tw:border-0 tw:bg-blue-600 tw:px-5 tw:py-2 tw:font-semibold tw:text-white hover:tw:bg-blue-700'
 
-= javascript_tag "$('#content-field').markdownEasily()"
+= javascript_tag "window.markdownEasily(document.getElementById('content-field'))"
