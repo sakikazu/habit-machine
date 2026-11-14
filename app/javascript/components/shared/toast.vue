@@ -3,13 +3,12 @@
 </comment>
 
 <template lang="pug">
-  .toast(v-show="showable" :class="{'toast-error': isError}" data-autohide="true" :data-delay="delaySecond" style="width: 300px; z-index: 2000; position: fixed; top: 30px; right: 30px;")
-    .toast-header
-      strong.mr-auto 通知
+  .app-toast(v-if="showable" :class="{'app-toast--error': isError}" role="status" aria-live="polite")
+    .app-toast__header
+      strong 通知
       small たったいま
-      button.ml-2.mb-1.close(type="button" data-dismiss="toast" aria-label="Close")
-        span(aria-hidden="true") &times;
-    .toast-body {{ message }}
+      button.app-toast__close(type="button" aria-label="閉じる" @click="hide") ×
+    .app-toast__body {{ message }}
 </template>
 
 <script>
@@ -32,32 +31,75 @@ export default {
   watch: {
     showable(newVal) {
       if (newVal) {
-        $('.toast').toast('show')
+        this.startTimer()
       } else {
-        $('.toast').toast('hide')
+        this.clearTimer()
       }
     },
   },
-  computed: {
-    delaySecond () {
-      // NOTE: エラー時だけ長い時間にしたかったが、多分toastの作りのせいで、初回表示時の設定が効いてしまって変わらないので、デフォルトで長い時間にしておく
-      return 4000 // this.isError ? 4000 : 2000
+  data () {
+    return {
+      hideTimer: null,
     }
   },
   mounted () {
-    $('.toast').on('hidden.bs.toast', () => {
+    if (this.showable) this.startTimer()
+  },
+  beforeUnmount () {
+    this.clearTimer()
+  },
+  methods: {
+    startTimer () {
+      this.clearTimer()
+      this.hideTimer = window.setTimeout(this.hide, 4000)
+    },
+    clearTimer () {
+      if (this.hideTimer) window.clearTimeout(this.hideTimer)
+      this.hideTimer = null
+    },
+    hide () {
+      this.clearTimer()
       this.$emit('toast-hidden')
-    })
+    },
   },
 }
 </script>
 
 <style scoped lang="sass">
-  .toast
-    // NOTE: Bootstrapのcolorの使用方法
-    background-color: var(--primary)
+  .app-toast
+    position: fixed
+    z-index: 2000
+    top: 30px
+    right: 30px
+    width: 300px
+    max-width: calc(100vw - 30px)
+    overflow: hidden
+    border-radius: 6px
+    background-color: #2563eb
     color: #fff
-    &.toast-error
-      background-color: red
+
+    &.app-toast--error
+      background-color: #dc2626
       color: white
+
+  .app-toast__header
+    display: flex
+    padding: 8px 12px
+    align-items: center
+    gap: 10px
+    background: rgba(255, 255, 255, 0.12)
+
+    strong
+      flex-grow: 1
+
+  .app-toast__close
+    border: 0
+    background: transparent
+    color: inherit
+    cursor: pointer
+    font-size: 22px
+    line-height: 1
+
+  .app-toast__body
+    padding: 12px
 </style>
