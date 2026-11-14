@@ -1,26 +1,26 @@
 <template lang="pug">
-.card.mb15
-  h5.card-header.p-2
+.habit-record-card
+  h5.habit-record-header
     .habit-title
       a(:href="`/habits/${habit.id}`")
         | {{ habit.title }}
-        i.fa.fa-thumb-tack.ml-2.pinned-icon(v-if="habit.pinned" title="ピン留め中" aria-label="ピン留め中")
+        pin-icon.pinned-icon(v-if="habit.pinned" :size="16" title="ピン留め中" aria-label="ピン留め中")
         // TODO: 共有アイコンは、アイコンの右に「共有」というラベルがあり、それらが枠線で囲まれているのが良さそう
-        i.fa.fa-users.ml-2(v-if="habit.for_family" style="color:orange")
-    i.button.saveButton.fa.fa-floppy-o(@click="save" v-if="dataChanged")
-    i.button.editButton.fa.fa-pencil(@click="toggleEdit" v-else)
-  .card-body.p-2(v-if="editMode || persisted")
+        users-icon.shared-icon(v-if="habit.for_family" :size="16" aria-label="家族で共有")
+    save-icon.button.saveButton(:size="18" @click="save" v-if="dataChanged" aria-label="保存")
+    pencil-icon.button.editButton(:size="18" @click="toggleEdit" v-else aria-label="編集")
+  .habit-record-body(v-if="editMode || persisted")
     template(v-if="editMode")
       .recordValueInput
         .recordValueInputLeft
-          select.form-control.mr-2(v-model="recordValue" ref="inputValue" v-if="habit.value_type === 'collection'")
+          select.habit-record-input(v-model="recordValue" ref="inputValue" v-if="habit.value_type === 'collection'")
             option(v-for="opt in habit.value_collection" v-text="opt[0]" :value="opt[1]")
-          input.form-control.mr-2(type="text" v-model="recordValue" ref="inputValue" v-else)
+          input.habit-record-input(type="text" v-model="recordValue" ref="inputValue" v-else)
           span {{ habit.value_unit }}
         .recordValueInputRight
-          i.button.addTemplate.fa.fa-plus-circle.fa-1_5x(@click="addTemplate" v-if="habit.template !== null")
-      .card-text.mt10
-        textarea.form-control(
+          circle-plus-icon.button.addTemplate(:size="24" @click="addTemplate" v-if="habit.template !== null" aria-label="テンプレートを追加")
+      .habit-record-text
+        textarea.habit-record-textarea(
           placeholder="メモ入力"
           v-model="recordMemo"
           @input="onInputRecordMemo($event)"
@@ -32,7 +32,7 @@
           ref="markdownable_textarea"
           rows="5"
         )
-        .template-input-helpers.mt-2(v-if="templateInputHelperGroups.length > 0")
+        .template-input-helpers(v-if="templateInputHelperGroups.length > 0")
           .template-input-helpers-title 入力補助
           .template-input-helper-group(v-for="group in templateInputHelperGroups" :key="group.key")
             .template-input-helper-heading(v-if="group.heading") {{ group.heading }}
@@ -60,15 +60,16 @@
                 @click="applyTemplateInputHelper(entry)"
               ) {{ entry.example }}
     template(v-else-if="persisted")
-      span.badge.badge-light
+      span.habit-record-value
         // todo: valueないとき、（未入力）とか入れる？
-        span.text-140.mr-1 {{ initialRecord.value }}
+        span.habit-record-value__number {{ initialRecord.value }}
         span {{ habit.value_unit }}
-      .card-text.mt10(v-if="initialRecord.memo && initialRecord.memo.trim()")
+      .habit-record-text(v-if="initialRecord.memo && initialRecord.memo.trim()")
         .markdown.habit-record-content(v-html="initialRecord.markdowned_memo")
 </template>
 
 <script>
+import { CirclePlus, Pencil, Pin, Save, Users } from '@lucide/vue'
 import { nextTick } from 'vue'
 import HmAxios from 'hm_axios.js'
 import {
@@ -83,6 +84,13 @@ import {
 
 export default {
   inheritAttrs: false, // 非prop属性をルート要素に適用したくない場合
+  components: {
+    CirclePlusIcon: CirclePlus,
+    PencilIcon: Pencil,
+    PinIcon: Pin,
+    SaveIcon: Save,
+    UsersIcon: Users,
+  },
   props: {
     habit: {
       type: Object,
@@ -365,8 +373,25 @@ export default {
 </script>
 
 <style scoped lang="sass">
-  i.button
-    display: inline-block
+  .habit-record-card
+    margin-bottom: 15px
+    border: 1px solid #dee2e6
+    border-radius: 4px
+    background: #fff
+
+  .habit-record-header
+    display: flex
+    align-items: center
+    margin: 0
+    padding: 8px
+    border-bottom: 1px solid #dee2e6
+    background: rgba(0, 0, 0, 0.03)
+
+  .habit-record-body
+    padding: 8px
+
+  .button
+    flex-shrink: 0
     cursor: pointer
     padding: 5px 20px
     text-align: center
@@ -387,9 +412,7 @@ export default {
     &.addTemplate
       padding: 0
 
-  .card-header
-    display: flex
-
+  .habit-record-header
     .habit-title
       flex-grow: 1
       a
@@ -397,7 +420,14 @@ export default {
         font-weight: bold
 
       .pinned-icon
+        display: inline-block
+        margin-left: 8px
         color: #f59e0b
+
+      .shared-icon
+        display: inline-block
+        margin-left: 8px
+        color: orange
 
   .recordValueInput
     display: flex
@@ -408,14 +438,42 @@ export default {
     padding: 5px 7px
     border-radius: 5px
 
-    .form-control
+    .habit-record-input
       width: 100px
+      margin-right: 8px
+      padding: 6px 10px
+      border: 1px solid #ced4da
+      border-radius: 4px
+      background: #fff
 
     .recordValueInputLeft
       display: flex
       align-items: center
 
+  .habit-record-text
+    margin-top: 10px
+
+  .habit-record-textarea
+    display: block
+    width: 100%
+    padding: 6px 10px
+    border: 1px solid #ced4da
+    border-radius: 4px
+    background: #fff
+    line-height: 1.5
+
+  .habit-record-value
+    display: inline-block
+    padding: 4px 7px
+    border-radius: 4px
+    background: #f8f9fa
+
+  .habit-record-value__number
+    margin-right: 4px
+    font-size: 1.4em
+
   .template-input-helpers
+    margin-top: 8px
     border: 1px solid #dee2e6
     border-radius: 5px
     background-color: #f8f9fa
