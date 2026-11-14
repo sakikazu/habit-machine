@@ -1,0 +1,4 @@
+/* Bootstrapとの段階移行中はリセットCSSを読み込まず、tw:名前空間で競合を避ける */
+@layer theme, utilities;
+@import "tailwindcss/theme.css" layer(theme) prefix(tw);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(tw);

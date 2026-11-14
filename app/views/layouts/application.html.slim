@@ -10,6 +10,7 @@ html[lang="ja"]
       |  - 日々の記録
     = csrf_meta_tags
     = stylesheet_link_tag 'application', media: 'all'
+    = stylesheet_link_tag 'tailwind', 'data-turbolinks-track': 'reload'
     = favicon_link_tag 'logo/favicon.ico', :rel => 'icon'
     = javascript_include_tag 'application', defer: true
     / ページ別Webpack bundleから分離したruntimeと共通モジュールを一度だけ読み込む

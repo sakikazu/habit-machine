@@ -505,6 +505,10 @@ GEM
       net-sftp (>= 2.1.2)
       net-ssh (>= 2.8.0)
       ostruct
+    tailwindcss-rails (4.7.0)
+      railties (>= 7.0.0)
+      tailwindcss-ruby (~> 4.0)
+    tailwindcss-ruby (4.3.4-x86_64-linux-gnu)
     temple (0.8.2)
     thor (1.5.0)
     tilt (2.0.11)
@@ -608,6 +612,7 @@ DEPENDENCIES
   slim
   slim-rails
   spring
+  tailwindcss-rails
   tty-prompt
   turbolinks (~> 5)
   view_source_map

@@ -82,6 +82,7 @@ gem 'slim'
 gem 'sassc', '2.1.0'
 
 gem 'jsbundling-rails'
+gem 'tailwindcss-rails'
 
 # enexのスクリプトに使用
 gem 'tty-prompt'
