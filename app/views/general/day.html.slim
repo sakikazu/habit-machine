@@ -70,27 +70,27 @@
         | 月間
 
 
-  .row.justify-content-center
-    .sectionHabitRecords.col-md-2
+  .day-layout
+    .sectionHabitRecords
       .page-header
-        h4.d-flex.justify-content-between
+        h4
           | 本日の記録
       p(v-if="habit_records.length == 0") 習慣が登録されていません。
       .habit-records(v-else)
         habit-record(v-for="habit_record in visibleHabitRecords" :habit="habit_record.habit" :record="habit_record.record" target-date="#{@date}" :key="habit_record.habit.id")
-        button.btn.btn-sm.btn-light.btn-block.mb-3(type="button" v-if="hiddenHabitRecordsCount > 0" @click="showAllHabitRecords = true")
+        button.day-secondary-button(type="button" v-if="hiddenHabitRecordsCount > 0" @click="showAllHabitRecords = true")
           | もっと見る（未記録 {{ hiddenHabitRecordsCount }}件）
-        button.btn.btn-sm.btn-light.btn-block.mb-3(type="button" v-else-if="showAllHabitRecords && collapsibleHabitRecordsCount > 0" @click="showAllHabitRecords = false")
+        button.day-secondary-button(type="button" v-else-if="showAllHabitRecords && collapsibleHabitRecordsCount > 0" @click="showAllHabitRecords = false")
           | 閉じる
 
     / NOTE: .overflow-autoを付加すると、子要素の幅が限界を超えた時に、画面全体ではなく、この要素に対してスクロールバーが表示される
     / 付加しないと、画面全体にスクロールバーが表示される
-    .sectionDiaries.col-md-7.overflow-auto
-      .page-header.d-flex
-        h4.flex-grow-1
+    .sectionDiaries
+      .page-header.day-section-header
+        h4
           | 本日の日記&nbsp;
           / 「data-trigger="focus"」を与えることで、本buttonではなく、他の場所のクリック時に消えるようになる（逆に与えないと、他の場所クリックで消えないので不便だった）
-          button.btn.btn-primary(v-show="diariesWithOpsions.length > 1" data-toggle="popover" data-trigger="focus" title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
+          button.day-count-button(v-show="diariesWithOpsions.length > 1" data-toggle="popover" data-trigger="focus" title="日記リスト" :data-content="diary_links_list") {{ diariesWithOpsions.length }}
       .diaries(ref="diariesBody")
         p(v-if="diariesLoading") 読み込み中...
         template(v-else)
@@ -128,14 +128,14 @@
                   @append-memo="showMemoForm"
                 )
       .diary-create-actions(v-if="!diariesLoading")
-        button.btn.btn-block.btn-main-diary.mb-2(type="button" v-if="!hasMainDiary" @click="newMainDiary")
-          i.fa.fa-star
-          | &nbsp;メイン日記を作成
-        button.btn.btn-block.btn-new-diary.ignore-checking-changes.mb-3(type="button" @click="newDiary")
-          i.fa.fa-pencil
-          | &nbsp;日記を書く
+        button.diary-create-button.btn-main-diary(type="button" v-if="!hasMainDiary" @click="newMainDiary")
+          star-icon(:size="17" aria-hidden="true")
+          | メイン日記を作成
+        button.diary-create-button.btn-new-diary.ignore-checking-changes(type="button" @click="newDiary")
+          pencil-icon(:size="17" aria-hidden="true")
+          | 日記を書く
 
-    .sectionPinnedDiaries.col-md-3
+    .sectionPinnedDiaries
       / NOTE: turbolinks permanentで日付遷移時もDOMを保持し、サイドバーの再fetchを防ぐ
       #diariesSidebar[data-turbolinks-permanent]
 
@@ -251,11 +251,21 @@ sass:
     gap: 12px
   // 日記作成の主操作を日付ナビゲーションと同じ青系で統一
   .diary-create-actions
+    display: flex
+    flex-direction: column
+    gap: 8px
     padding-top: 4px
-    .btn
+    .diary-create-button
+      display: inline-flex
+      width: 100%
       min-height: 40px
+      align-items: center
+      justify-content: center
+      gap: 7px
+      border: 1px solid transparent
       border-radius: 6px
       font-weight: 600
+      cursor: pointer
       transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s
     .btn-main-diary
       color: #fff
@@ -286,11 +296,49 @@ sass:
   .sectionDiaries
     flex: 1 1 auto
     max-width: none
-  #dayPage .row.justify-content-center
+    min-width: 0
+    overflow: auto
+  .day-layout
+    display: flex
+    width: 100%
+    align-items: flex-start
     justify-content: flex-start
+    gap: 15px
+  .day-section-header
+    display: flex
+    align-items: center
+    justify-content: space-between
+    h4
+      flex-grow: 1
+  .day-secondary-button,
+  .day-count-button
+    display: inline-flex
+    align-items: center
+    justify-content: center
+    border: 1px solid #d6d3d1
+    border-radius: 6px
+    background: #fff
+    color: #44403c
+    cursor: pointer
+    font-weight: 600
+  .day-secondary-button
+    width: 100%
+    margin-bottom: 16px
+    padding: 6px 12px
+    font-size: 14px
+    &:hover
+      background: #f5f5f4
+  .day-count-button
+    min-width: 34px
+    padding: 5px 10px
+    border-color: #2563eb
+    background: #2563eb
+    color: #fff
+    &:hover
+      background: #1d4ed8
 
   @media (min-width: $desktop-breakpoint)
-    #dayPage .row.justify-content-center
+    .day-layout
       flex-wrap: nowrap
       align-items: flex-start
     .sectionHabitRecords
@@ -299,6 +347,15 @@ sass:
       width: $pinned-diaries-width
     .sectionDiaries
       min-width: 0
+
+  @media (max-width: $desktop-breakpoint - 1px)
+    .day-layout
+      flex-direction: column
+    .sectionHabitRecords,
+    .sectionDiaries,
+    .sectionPinnedDiaries
+      width: 100%
+      max-width: none
 
   // PCではメイン日記を左、他の日記を右に並べる
   @media (min-width: $diary-two-columns-breakpoint)

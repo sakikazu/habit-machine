@@ -1,4 +1,5 @@
 import { createApp, nextTick } from 'vue'
+import { Pencil, Star } from '@lucide/vue'
 import HmAxios from 'hm_axios.js'
 
 import HabitRecord from 'components/habits/HabitRecord'
@@ -19,6 +20,8 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       Toast,
       Modal,
       DayDatePicker,
+      PencilIcon: Pencil,
+      StarIcon: Star,
     },
     data () {
       return {
