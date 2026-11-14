@@ -6,14 +6,14 @@
         p.text-muted.mb-0 現在取り組んでいる習慣
       .habit-index-actions
         = link_to archive_habits_path, class: 'btn btn-light' do
-          = fa_icon 'archive', text: '過去の習慣'
+          = lucide_icon 'archive', size: 16, text: '過去の習慣'
           span.badge.badge-secondary.ml-1 = @disabled_habits_count + @done_habits_count
         = link_to new_habit_path, class: 'btn btn-info' do
-          = fa_icon 'plus', text: '習慣を登録する'
+          = lucide_icon 'plus', size: 16, text: '習慣を登録する'
 
     - if @personal_habits.empty? && @family_habits.empty?
       .habit-empty-state
-        = fa_icon 'check-circle-o', class: 'habit-empty-icon'
+        = lucide_icon 'circle-check', size: 42, class: 'habit-empty-icon'
         h4 有効な習慣はありません
         p.text-muted 新しい習慣を登録すると、ここに表示されます
         = link_to '最初の習慣を登録する', new_habit_path, class: 'btn btn-info'

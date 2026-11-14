@@ -1,5 +1,11 @@
 module ApplicationHelper
   LUCIDE_ICON_NODES = {
+    'archive' => [
+      [:rect, { width: '20', height: '5', x: '2', y: '3', rx: '1' }],
+      [:path, { d: 'M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8' }],
+      [:path, { d: 'M10 12h4' }],
+    ],
+    'arrow-left' => [[:path, { d: 'm12 19-7-7 7-7' }], [:path, { d: 'M19 12H5' }]],
     'calendar' => [
       [:path, { d: 'M8 2v4' }],
       [:path, { d: 'M16 2v4' }],
@@ -8,14 +14,42 @@ module ApplicationHelper
     ],
     'chevron-left' => [[:polyline, { points: '15 18 9 12 15 6' }]],
     'chevron-right' => [[:polyline, { points: '9 18 15 12 9 6' }]],
+    'circle-check' => [
+      [:path, { d: 'M22 11.08V12a10 10 0 1 1-5.93-9.14' }],
+      [:path, { d: 'm9 11 3 3L22 4' }],
+    ],
+    'circle-pause' => [
+      [:circle, { cx: '12', cy: '12', r: '10' }],
+      [:path, { d: 'M10 15V9' }],
+      [:path, { d: 'M14 15V9' }],
+    ],
     'message-circle' => [[:path, { d: 'M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z' }]],
     'pin' => [
       [:path, { d: 'M12 17v5' }],
       [:path, { d: 'M5 17h14' }],
       [:path, { d: 'M6 3h12l-1 7 3 3H4l3-3-1-7z' }],
     ],
+    'pencil' => [
+      [:path, { d: 'M12 20h9' }],
+      [:path, { d: 'M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z' }],
+    ],
+    'plus' => [[:path, { d: 'M5 12h14' }], [:path, { d: 'M12 5v14' }]],
     'square' => [[:rect, { width: '18', height: '18', x: '3', y: '3', rx: '2' }]],
     'star' => [[:polygon, { points: '12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2' }]],
+    'sticky-note' => [
+      [:path, { d: 'M16 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8Z' }],
+      [:path, { d: 'M16 3v5h5' }],
+    ],
+    'user' => [
+      [:path, { d: 'M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2' }],
+      [:circle, { cx: '12', cy: '7', r: '4' }],
+    ],
+    'users' => [
+      [:path, { d: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2' }],
+      [:circle, { cx: '9', cy: '7', r: '4' }],
+      [:path, { d: 'M22 21v-2a4 4 0 0 0-3-3.87' }],
+      [:path, { d: 'M16 3.13a4 4 0 0 1 0 7.75' }],
+    ],
   }.freeze
 
   # RailsビューでLucide互換のインラインSVGを描画する
