@@ -1,10 +1,21 @@
 - url = @tag.new_record? ? tags_path : tag_path(@tag)
-= simple_form_for(@tag, url: url) do |f|
-  = f.error_notification
-  .form-inputs
-    = f.input :name, label: 'タグ名'
-    = f.input :color, label: '文字色、背景色（カンマ区切り）'
-    = f.input :pinned, label: 'ピン留め'
-    = f.input :description, label: '説明', input_html: { rows: 4 }
-  .form-actions
-    = f.button :submit, class: "btn btn-primary"
+= form_with model: @tag, url: url, local: true, class: 'tag-form' do |f|
+  - if @tag.errors.any?
+    .tag-errors[role="alert"]
+      strong 入力内容を確認してください
+      ul
+        - @tag.errors.full_messages.each do |message|
+          li = message
+  .tag-field
+    = f.label :name, 'タグ名'
+    = f.text_field :name, required: true
+  .tag-field
+    = f.label :color, '文字色、背景色（カンマ区切り）'
+    = f.text_field :color
+  label.tag-checkbox
+    = f.check_box :pinned
+    span ピン留め
+  .tag-field
+    = f.label :description, '説明'
+    = f.text_area :description, rows: 4
+  = f.submit '保存する', class: 'tag-button tag-button--primary'
