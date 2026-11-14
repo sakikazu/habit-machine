@@ -39,7 +39,7 @@ Diary
           h5.diary-title
             .noLinkTitle.text-secondary(v-if="modalMode")
               a.date.mr10(:href="`/day/${localDiary.record_at}`" :target="linkWithTargetBlankValue")
-                i.fa.fa-window-restore.mr-1(v-if="linkWithTargetBlank")
+                external-link-icon.action-icon(v-if="linkWithTargetBlank" :size="15" aria-hidden="true")
                 | {{ localDiary.disp_record_at }}
               span.title(v-if="localDiary.title") {{ localDiary.title }}
               span.no-title-yet(v-else) タイトル未設定
@@ -53,21 +53,21 @@ Diary
                 :aria-label="localDiary.title || 'タイトル未設定の日記の詳細を開く'"
               )
                 span.title {{ localDiary.title || 'タイトル未設定' }}
-                i.fa.fa-angle-right.diary-title-link__icon(aria-hidden="true")
+                chevron-right-icon.diary-title-link__icon(:size="17" aria-hidden="true")
               span.main-badge.ml-2(v-if="localDiary.main_in_day")
                 span.main-dot
                 | メイン
         .diary-controls
           .diary-actions
             button.action-pill.primary(v-if="localDiary.id && canAppendMemo" @click.prevent="$emit('append-memo', localDiary)")
-              i.fa.fa-sticky-note-o.mr-1
+              sticky-note-icon.action-icon(:size="16" aria-hidden="true")
               | 追記
             button.action-pill(@click.prevent="edit")
-              i.fa.fa-pencil.mr-1
+              pencil-icon.action-icon(:size="16" aria-hidden="true")
               | 編集
           .action-menu-wrapper(ref="actionMenuWrapper")
             button.action-pill(@click.prevent="toggleActionMenu")
-              i.fa.fa-ellipsis-h.mr-1
+              ellipsis-icon.action-icon(:size="17" aria-hidden="true")
               | その他
             .action-menu(v-if="showActionMenu")
               button.action-menu__item(
@@ -76,25 +76,25 @@ Diary
                 :disabled="favoriting"
                 @click.prevent="toggleFavoriteFromMenu"
               )
-                i.mr-1(:class="isFavorited ? 'fa fa-star' : 'fa fa-star-o'")
+                star-icon.action-icon(:size="16" :fill="isFavorited ? 'currentColor' : 'none'" aria-hidden="true")
                 | {{ favoriteLabel }}
               url-copy-button.action-menu__item(v-if="diaryDetailUrl" :url="diaryDetailUrl")
               button.action-menu__item(@click.prevent="openCategoryModalFromMenu")
-                i.fa.fa-folder-open.mr-1
+                folder-open-icon.action-icon(:size="16" aria-hidden="true")
                 | カテゴリ編集
               a.action-menu__item(v-if="localDiary.history_count > 0" :href="`/diaries/${localDiary.id}/histories`")
-                i.fa.fa-clock-o.mr-1
+                clock-icon.action-icon(:size="16" aria-hidden="true")
                 | 履歴 ({{ localDiary.history_count }})
       .meta-bar.mt-2(v-if="showMetaBar")
         .meta-block(v-if="hasTags")
           .meta-label
-            i.fa.fa-tag.mr-1
+            tag-icon.action-icon(:size="15" aria-hidden="true")
             | タグ
           .tag-list(v-html="localDiary.tag_links")
         .meta-block(v-if="hasCategories")
           .meta-head
             .meta-label
-              i.fa.fa-folder-open.mr-1
+              folder-open-icon.action-icon(:size="15" aria-hidden="true")
               | カテゴリ
           category-links.mt-1(v-if="displayCategories.length > 0" :categories="displayCategories" :savedCategoryIds="localDiary.category_ids" :show-edit-button="false" @edit-category="openCategoryModal")
       .diary-collapse-actions.mt-2(v-if="collapsibleBody")
@@ -103,7 +103,7 @@ Diary
     template(v-if="!bodyCollapsed")
       .backlinks.mt-2.mb-2(v-if="hasBacklinks")
         .d-flex.align-items-center.mb-1
-          i.fa.fa-share-square-o.mr-2
+          share-icon.action-icon(:size="16" aria-hidden="true")
           span.font-weight-bold バックリンク
         ul.pl-3.mb-0
           li(v-for="link in localDiary.backlinks" :key="link.id")
@@ -125,6 +125,7 @@ Diary
 </template>
 
 <script>
+import { ChevronRight, Clock3, Ellipsis, ExternalLink, FolderOpen, Pencil, Share2, Star, StickyNote, Tag } from '@lucide/vue'
 import HmAxios from 'hm_axios.js'
 // Diary内にDiaryFormを含んでいたほうが、diaryコンポーネントを記載しておくだけでその編集も可能なので手軽になる。が、無駄に依存が増えて複雑になってる方が良くないかも
 import DiaryForm from 'components/diaries/DiaryForm'
@@ -135,6 +136,16 @@ import UrlCopyButton from "components/shared/UrlCopyButton"
 export default {
   inheritAttrs: false,
   components: {
+    ChevronRightIcon: ChevronRight,
+    ClockIcon: Clock3,
+    EllipsisIcon: Ellipsis,
+    ExternalLinkIcon: ExternalLink,
+    FolderOpenIcon: FolderOpen,
+    PencilIcon: Pencil,
+    ShareIcon: Share2,
+    StarIcon: Star,
+    StickyNoteIcon: StickyNote,
+    TagIcon: Tag,
     DiaryForm,
     SelectableModal,
     CategoryLinks,
@@ -542,6 +553,10 @@ export default {
   cursor: pointer
   transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease
   text-decoration: none
+
+.action-icon
+  flex-shrink: 0
+  margin-right: 4px
 
 .action-pill.primary
   background: #0ea5e9
