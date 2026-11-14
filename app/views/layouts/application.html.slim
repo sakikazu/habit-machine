@@ -53,14 +53,14 @@ html[lang="ja"]
       ul.navbar-nav.mr-3.mr-lg-0.d-lg-none
         li.nav-item
           = text_field_tag '', '', { id: 'globalSearchWord', class: 'form-control', placeholder: '検索', style: 'width: 80px', readonly: true }
-      button.navbar-toggler[type="button" data-toggle="collapse" data-target="#navbarSupportedContent"]
+      button.navbar-toggler[type="button" data-navigation-toggle="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="メニューを開閉"]
         span.navbar-toggler-icon
       #navbarSupportedContent.collapse.navbar-collapse
         ul.navbar-nav.mr-auto
           li class="nav-item #{active_class('general', only: ['month'])}"
             = link_to '月間記録', this_month_path, class: 'nav-link'
           li class="dropdown nav-item #{active_class('diaries')}"
-            = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+            = link_to "日記", '#', class: 'nav-link dropdown-toggle', data: {navigation_dropdown: true}, aria: {expanded: false}
             .dropdown-menu
               = link_to '日記一覧', diaries_path, class: 'dropdown-item'
               = link_to "人生ハイライト", hilight_diaries_path, class: 'dropdown-item'
@@ -68,7 +68,7 @@ html[lang="ja"]
               = link_to 'タグ管理', tags_path, class: 'dropdown-item'
               = link_to 'カテゴリ管理', manage_categories_path, class: 'dropdown-item'
           li class="dropdown nav-item"
-            = link_to "その他", '#', class: 'nav-link dropdown-toggle', data: {toggle: 'dropdown'}
+            = link_to "その他", '#', class: 'nav-link dropdown-toggle', data: {navigation_dropdown: true}, aria: {expanded: false}
             .dropdown-menu
               = link_to "習慣と記録", habits_path, class: 'dropdown-item'
               = link_to "ノート(Legacy)", habitodos_path, class: 'dropdown-item'
@@ -77,7 +77,7 @@ html[lang="ja"]
               = link_to "YouTubeアーカイブ", youtube_archive_path, class: 'dropdown-item'
 
           li.nav-item.dropdown
-            = link_to current_user&.dispname || '', '#', class: 'btn btn-outline-info dropdown-toggle', data: {toggle: 'dropdown'}
+            = link_to current_user&.dispname || '', '#', class: 'btn btn-outline-info dropdown-toggle', data: {navigation_dropdown: true}, aria: {expanded: false}
             .dropdown-menu
               = link_to 'ユーザー情報編集', edit_user_registration_path, class: 'dropdown-item'
               = link_to 'ログアウト', destroy_user_session_path, method: :delete, class: 'dropdown-item', data: {confirm: "ログアウトしますか？"}
