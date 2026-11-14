@@ -1,4 +1,32 @@
 module ApplicationHelper
+  LUCIDE_ICON_NODES = {
+    'chevron-left' => [[:polyline, { points: '15 18 9 12 15 6' }]],
+    'chevron-right' => [[:polyline, { points: '9 18 15 12 9 6' }]],
+    'message-circle' => [[:path, { d: 'M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z' }]],
+    'square' => [[:rect, { width: '18', height: '18', x: '3', y: '3', rx: '2' }]],
+    'star' => [[:polygon, { points: '12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2' }]],
+  }.freeze
+
+  # RailsビューでLucide互換のインラインSVGを描画する
+  def lucide_icon(name, size: 18, **options)
+    nodes = LUCIDE_ICON_NODES.fetch(name.to_s)
+    css_class = ['lucide', "lucide-#{name}", options.delete(:class)].compact.join(' ')
+    content = safe_join(nodes.map { |tag_name, attributes| tag.public_send(tag_name, **attributes) })
+
+    tag.svg(content, **options.merge(
+      class: css_class,
+      width: size,
+      height: size,
+      viewBox: '0 0 24 24',
+      fill: 'none',
+      stroke: 'currentColor',
+      'stroke-width': 2,
+      'stroke-linecap': 'round',
+      'stroke-linejoin': 'round',
+      'aria-hidden': options[:'aria-label'].blank?
+    ))
+  end
+
   def current_family
     current_user&.family
   end

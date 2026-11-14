@@ -17,7 +17,7 @@ module DiariesHelper
     output += "<span class='badge badge-warning'>ﾊｲﾗｲﾄ</span>".html_safe if diary.is_hilight
     output += "<br>".html_safe if diary.is_hilight or diary.is_secret
     output += tags + "<br>".html_safe if tags.present?
-    output += "<i class='fa fa-star text-danger'></i>" if diary.main_in_day.present?
+    output += lucide_icon('star', size: 16, class: 'text-danger') if diary.main_in_day.present?
     output += "<strong>" + (link_to diary.title_mod, diary_with_date_path(diary.record_at, diary), class: 'diary-title') + "</strong>"
     # ここから日記編集は不要かなー（編集画面をなくしたのでUIを作るのもメンドイし）
     # output += " " + (link_to fa_icon('pencil'), edit_diary_path(diary)) + "<br>"
