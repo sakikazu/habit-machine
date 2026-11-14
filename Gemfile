@@ -25,7 +25,6 @@ gem "image_processing", "~> 2.0"
 gem "mini_magick", "~> 5.0"
 # todo deleteしたいがform_withより楽だなぁ
 gem 'simple_form'
-gem 'font-awesome-rails'
 gem 'lazy_high_charts'
 gem 'browser'
 gem 'redcarpet' # markdown

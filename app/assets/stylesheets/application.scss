@@ -12,7 +12,6 @@
  *= require jquery-ui/theme
  *= require jquery-ui/menu
  *= require jquery-ui/autocomplete
- *= require font-awesome
  *= require_self
  *= require_tree .
  */
@@ -538,10 +537,6 @@ td {
  from bootstrap_and_overrides.css.less
  todo グルーピングして別ファイル切り出したい
 **********************************************/
-
-.fa-1_5x {
-  font-size: 1.5em;
-}
 
 hr {
   margin: 5px 0;
