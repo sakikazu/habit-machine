@@ -539,6 +539,37 @@ hr {
   margin: 5px 0;
 }
 
+.records-table .js-habit-data {
+  position: relative;
+  cursor: pointer;
+}
+
+.record-memo-popover {
+  position: absolute;
+  z-index: 40;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  width: 280px;
+  max-width: 80vw;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  color: #374151;
+  text-align: left;
+  transform: translateX(-50%);
+}
+
+.record-memo-title {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.record-memo-content > :last-child {
+  margin-bottom: 0;
+}
+
 .table th.today {
   border: 3px solid red;
 }

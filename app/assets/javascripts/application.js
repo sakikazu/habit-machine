@@ -26,31 +26,27 @@
 //= require highcharts/highstock
 
 $(document).on('turbolinks:load', function() {
-  // Vue component内のpopoverだとmountedで実行しないと有効にならないので、ここでは、rails viewにあるpopoverが対象
-  $('[data-toggle="popover"]').popover({ html: true });
-  $("a[rel=tooltip]").tooltip();
-
-  var shownPopoverElements = [];
   // セルをクリック時、recordのメモをポップアップ表示する
-  $('table.records-table .js-habit-data').on('click', function(e) {
-    var $ele = $(this).find('.popover-content');
-    hidePopover(shownPopoverElements, $ele);
-    $ele.popover('toggle');
-    shownPopoverElements.push($ele);
+  $('table.records-table .js-habit-data').off('click.recordMemo').on('click.recordMemo', function(e) {
+    const currentPopover = this.querySelector('.record-memo-popover');
+    if (!currentPopover) return;
+
+    document.querySelectorAll('.record-memo-popover:not([hidden])').forEach(function(popover) {
+      if (popover !== currentPopover) popover.hidden = true;
+    });
+    currentPopover.hidden = !currentPopover.hidden;
+  });
+  $(document).off('click.recordMemoOutside').on('click.recordMemoOutside', function(e) {
+    if (e.target.closest('.js-habit-data')) return;
+    document.querySelectorAll('.record-memo-popover:not([hidden])').forEach(function(popover) {
+      popover.hidden = true;
+    });
   });
 
   $('#globalSearchWord').on('click', () => {
     location.href = '/search';
   })
 })
-
-hidePopover = function(elements, $withoutEle = null) {
-  elements.forEach(function($popEle) {
-    if ($withoutEle == null || !$popEle.is($withoutEle)) {
-      $popEle.popover('hide');
-    }
-  });
-}
 
 const getTimestamp = function() {
   return new Date().getTime();
