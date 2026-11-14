@@ -92,11 +92,7 @@ div[style="width: 3000px"]
     tbody
       - @summary_for_bou_type.each do |summary|
         tr
+        tr
           td = summary[:title]
           td = summary[:sum]
           td = summary[:value_unit]
-
-sass:
-  tr.diary-row
-    a.diary-title
-      font-size: 0.9rem

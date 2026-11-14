@@ -1,0 +1,89 @@
+.search_controller.top_action
+  .search-heading-icon
+    display: inline-block
+    margin-right: 7px
+    vertical-align: -3px
+
+  #searchResult
+    .searchResult-header
+      // これがなくても固定ヘッダーできるが、ないとコンテンツがちょっとガクッとなる
+      position: absolute
+      display: flex
+      width: 100%
+      justify-content: center
+      padding: 4px
+      margin-right: -15px
+      margin-left: -15px
+
+      &.fixed
+        position: fixed
+        top: 0
+
+      ul
+        list-style: none
+        margin: 0
+        display: flex
+        li
+          margin-right: 12px
+          a
+            color: #fff
+
+    .searchResult-body
+      display: flex
+      flex-flow: row
+      padding-top: 60px
+
+      #article
+        overflow-y: scroll
+        flex-grow: 1
+        height: 100vh
+      #article  > h3
+        margin-bottom: 25px
+      .result > ul
+        padding-left: 0
+        list-style: none
+      .result > ul > li
+        border-bottom: 1px solid gray
+        cursor: pointer
+      .result > ul > li.active
+        background-color: #d1ecf1
+      .result > ul > li:hover
+        background-color: #d1ecf1
+      .result > ul > li > .title
+        font-weight: bold
+      .highlight
+        background-color: orangered
+
+      #detail
+        flex-basis: 700px
+        flex-shrink: 0
+        margin-left: 30px
+
+        .detailInner
+          padding: 5px 7px
+          border-radius: 7px
+
+        .detailHeader
+          display: flex
+        .closeButton
+          text-align: right
+          width: 50px
+        .detailLink
+          flex-grow: 1
+        .detailContent
+          overflow-y: scroll
+
+    @media screen and (max-width: 1400px)
+      .searchResult-body
+        #detail
+          flex-basis: 500px
+    @media screen and (max-width: 768px)
+      .searchResult-body
+        flex-flow: column
+
+        #article
+          height: 430px
+          margin-right: 0
+        #detail
+          margin-top: 20px
+          margin-left: 0

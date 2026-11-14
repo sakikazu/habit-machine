@@ -40,7 +40,7 @@ html[lang="ja"]
 
     / NOTE: turbolinksでは、head内のscriptはページの初回表示時のみに実行されるので、重複実行させたくないものを置くこと。全てここに置いた方が事故がないか・・
     = yield :addjs_in_head
-  body[class="#{controller.controller_name}_controller" data-turbolinks="#{'false' if @turbolinks_off}"]
+  body[class="#{controller.controller_name}_controller #{controller.action_name}_action" data-turbolinks="#{'false' if @turbolinks_off}"]
     nav.navbar.navbar-expand-lg.navbar-light.bg-light(class="#{@no_header_margin ? '' : 'mb20'}")
       a.navbar-brand[href="#{root_path}"]
         = inline_svg_tag('logo/white-diary.svg', width: '35px', style: 'margin: -5px 0')

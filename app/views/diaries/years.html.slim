@@ -28,50 +28,7 @@ table.table.table-bordered.ten-years-diaries
               - @diaries_by_date[month][day].each do |diary|
                 .text-underline
                   = lucide_icon('square', size: 12) if diary.title.present?
+                  = lucide_icon('square', size: 12) if diary.title.present?
                   = diary.title if diary.title.present?
           - else
             td.bg-secondary
-
-sass:
-  .year-selector
-    display: flex
-    align-items: center
-    gap: 8px
-
-  .year-selector__menu
-    position: relative
-
-  .year-selector__toggle
-    padding: 7px 12px
-    border: 1px solid #dee2e6
-    border-radius: 4px
-    background: #f8f9fa
-    cursor: pointer
-    list-style: none
-
-    &::-webkit-details-marker
-      display: none
-
-  .year-selector__options
-    position: absolute
-    z-index: 30
-    top: calc(100% + 4px)
-    left: 0
-    display: flex
-    width: 120px
-    max-height: 300px
-    overflow-y: auto
-    flex-direction: column
-    border: 1px solid #dee2e6
-    border-radius: 4px
-    background: #fff
-    box-shadow: 0 8px 20px rgba(0, 0, 0, .14)
-
-    a
-      padding: 7px 12px
-      color: #343a40
-      text-decoration: none
-
-      &:hover
-        background: #f3f4f6
-
