@@ -17,36 +17,36 @@
 
   / 「日記にメモ」フォーム
   - append_memo_form = capture do
-    #memo-form.modal.fade[tabindex="-1"]
-      .modal-dialog
-        form.form.form-inline(ref="memoForm" @submit="submitAppendingMemo")
-          .modal-content
-            .modal-header
-              h5.mb-0
-                | 📝
-                | {{ memoModalTitle }}
-            .modal-body
-              .form-row.mb-2
-                .col-6.timepicker.input-group[data-target-input="nearest"]
-                  .input-group-prepend
-                    .input-group-text[data-target='.timepicker' data-toggle='datetimepicker']
-                      clock-icon(:size="20" aria-hidden="true")
-                  input.form-control.datetimepicker-input(type="text" name="diary[time_memo]" data-target=".timepicker")
-                .col-4
-                  select.form-control.w100(name="diary[label_memo]")
-                    option(v-for="cate in memoCategories" :value="cate" v-text="cate")
-              p.text-muted.mb-2(v-if="memoTargetDiaryLabel")
-                sticky-note-icon.memo-inline-icon(:size="15" aria-hidden="true")
-                | 追記先: {{ memoTargetDiaryLabel }}
-              div
-                textarea.form-control.first-focus.w100(name="diary[memo]" v-model="memoContent" ref="memoContentField")
-              input(type="hidden" name="diary[record_at]" :value="memoTargetRecordAt || '#{@date}'")
-              input(type="hidden" name="diary[diary_id]" :value="memoTargetDiaryId")
-            .modal-footer.justify-content-between
-              small.text-muted
-                circle-alert-icon.memo-inline-icon(:size="15" aria-hidden="true")
-                | 選択した日記の本文末尾にメモを追加します
-              button.btn.btn-primary(type="submit") メモ追加
+    #memo-form.memo-modal(v-if="memoFormOpen" :class="{ 'is-over-history': memoOverHistoryModal }" role="dialog" aria-modal="true" :aria-label="memoModalTitle" @keydown.esc="closeMemoForm")
+      .memo-modal__backdrop(@click="closeMemoForm")
+      form.memo-modal__dialog(ref="memoForm" @submit="submitAppendingMemo")
+        header.memo-modal__header
+          h5
+            | 📝
+            | {{ memoModalTitle }}
+          button.memo-modal__close(type="button" aria-label="閉じる" @click="closeMemoForm") ×
+        .memo-modal__body
+          .memo-modal__fields
+            label.memo-modal__field
+              span.memo-modal__field-label
+                clock-icon(:size="17" aria-hidden="true")
+                | 時刻
+              input(type="time" name="diary[time_memo]" v-model="memoTime")
+            label.memo-modal__field
+              span.memo-modal__field-label 分類
+              select(name="diary[label_memo]" v-model="memoCategory")
+                option(v-for="cate in memoCategories" :value="cate" v-text="cate")
+          p.memo-modal__target(v-if="memoTargetDiaryLabel")
+            sticky-note-icon.memo-inline-icon(:size="15" aria-hidden="true")
+            | 追記先: {{ memoTargetDiaryLabel }}
+          textarea.memo-modal__textarea.first-focus(name="diary[memo]" v-model="memoContent" ref="memoContentField" @input="saveMemoDraft")
+          input(type="hidden" name="diary[record_at]" :value="memoTargetRecordAt || '#{@date}'")
+          input(type="hidden" name="diary[diary_id]" :value="memoTargetDiaryId")
+        footer.memo-modal__footer
+          small
+            circle-alert-icon.memo-inline-icon(:size="15" aria-hidden="true")
+            | 選択した日記の本文末尾にメモを追加します
+          button.memo-modal__submit(type="submit") メモ追加
 
   .dayContentHeader
     .nav-container
@@ -234,16 +234,132 @@ sass:
       .action-button
         font-size: 13px;
 
-  #memo-form.modal-over-history
-    z-index: 21030
+  .memo-modal
+    position: fixed
+    z-index: 20020
+    inset: 0
+    display: flex
+    padding: 20px
+    align-items: center
+    justify-content: center
+
+    &.is-over-history
+      z-index: 21030
+
+  .memo-modal__backdrop
+    position: absolute
+    inset: 0
+    background: rgba(0, 0, 0, 0.55)
+
+  .memo-modal__dialog
+    position: relative
+    width: 100%
+    max-width: 520px
+    max-height: calc(100vh - 40px)
+    overflow-y: auto
+    border-radius: 10px
+    background: #fff
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25)
+
+  .memo-modal__header,
+  .memo-modal__footer
+    display: flex
+    padding: 14px 18px
+    align-items: center
+    justify-content: space-between
+    gap: 12px
+
+  .memo-modal__header
+    border-bottom: 1px solid #e5e7eb
+    h5
+      margin: 0
+      font-size: 18px
+
+  .memo-modal__body
+    padding: 18px
+
+  .memo-modal__close
+    border: 0
+    background: transparent
+    color: #6b7280
+    cursor: pointer
+    font-size: 28px
+    line-height: 1
+
+  .memo-modal__fields
+    display: grid
+    grid-template-columns: 1fr 1fr
+    gap: 12px
+    margin-bottom: 12px
+
+  .memo-modal__field
+    display: flex
+    flex-direction: column
+    gap: 5px
+    margin: 0
+    input,
+    select
+      width: 100%
+      padding: 8px 10px
+      border: 1px solid #d1d5db
+      border-radius: 6px
+      background: #fff
+
+  .memo-modal__field-label
+    display: inline-flex
+    align-items: center
+    gap: 5px
+    color: #4b5563
+    font-size: 13px
+    font-weight: 600
+
+  .memo-modal__target
+    margin: 0 0 10px
+    color: #6b7280
+    font-size: 14px
+
+  .memo-modal__textarea
+    display: block
+    width: 100%
+    min-height: 140px
+    padding: 10px 12px
+    border: 1px solid #d1d5db
+    border-radius: 6px
+    resize: vertical
+
+  .memo-modal__footer
+    border-top: 1px solid #e5e7eb
+    small
+      color: #6b7280
+
+  .memo-modal__submit
+    flex-shrink: 0
+    padding: 8px 16px
+    border: 1px solid #2563eb
+    border-radius: 6px
+    background: #2563eb
+    color: #fff
+    cursor: pointer
+    font-weight: 600
+
+    &:hover
+      background: #1d4ed8
 
   .memo-inline-icon
     display: inline-block
     margin-right: 4px
     vertical-align: -2px
 
-  .modal-backdrop.modal-backdrop-over-history
-    z-index: 21020
+  @media (max-width: 640px)
+    .memo-modal
+      padding: 10px
+    .memo-modal__fields
+      grid-template-columns: 1fr
+    .memo-modal__footer
+      align-items: stretch
+      flex-direction: column
+    .memo-modal__submit
+      width: 100%
 
   .diaries-grid
     display: flex

@@ -40,7 +40,10 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       tabidx: 0,
       contentChanged: [],
       memoCategories: ['', '体調', '作業', 'メモ', '休息', 'TODO'],
+      memoCategory: '',
       memoContent: '',
+      memoFormOpen: false,
+      memoTime: '',
       memoTargetDiaryId: null,
       memoTargetDiaryTitle: '',
       memoTargetRecordAt: null,
@@ -121,7 +124,6 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
     beforeUnmount () {
       $(document).off('.dayPage')
       $(window).off('.dayPage')
-      $('#memo-form.modal').off('.dayPage')
       window.removeEventListener('open-diary-modal', this.openDiaryModalListener)
       window.removeEventListener('sidebar-toast', this.sidebarToastListener)
       window.removeEventListener('open-history-append', this.openHistoryAppendListener)
@@ -151,10 +153,8 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         window.addEventListener('open-history-append', this.openHistoryAppendListener)
       },
       setup () {
-        this.setupTimepicker()
         this.shortcutOfPagingLink('prev-day', 'next-day') // ショートカットで日にち移動
         this.setMovePageConfirm()
-        this.setMemoForm()
       },
       // 2カラム判定を監視して日記の初期折りたたみを切り替える
       setupDiaryTwoColumnsWatcher () {
@@ -168,42 +168,6 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         } else if (this.diaryTwoColumnsMediaQuery.addListener) {
           this.diaryTwoColumnsMediaQuery.addListener(this.diaryTwoColumnsMediaListener)
         }
-      },
-      setMemoForm () {
-        $('#memo-form.modal').off('.dayPage').on('shown.bs.modal.dayPage', () => {
-          if (this.memoOverHistoryModal) {
-            this.stackMemoModalOverHistory()
-          }
-          $('#memo-form.modal').find('.first-focus').focus()
-        })
-        $('#memo-form.modal').on('hidden.bs.modal.dayPage', () => {
-          this.memoTargetDiaryId = null
-          this.memoTargetDiaryTitle = ''
-          this.memoTargetRecordAt = null
-          this.memoTargetHistoryId = null
-          this.memoTargetType = 'Diary'
-          this.memoOverHistoryModal = false
-          $('#memo-form').removeClass('modal-over-history')
-          $('.modal-backdrop-over-history').removeClass('modal-backdrop-over-history')
-          if ($('#historyFavoriteModal').hasClass('show')) {
-            $('body').addClass('modal-open')
-          }
-        })
-        this.$refs.memoContentField.addEventListener('input', (event) => {
-          const storageKey = this.memoLocalStorageKey()
-          if (!storageKey) return
-          localStorage.setItem(storageKey, event.target.value)
-        })
-      },
-      // 履歴モーダル上にメモモーダルを重ねるための調整
-      stackMemoModalOverHistory () {
-        const $memoModal = $('#memo-form')
-        $memoModal.addClass('modal-over-history')
-        const $backdrop = $('.modal-backdrop').last()
-        if ($backdrop.length > 0) {
-          $backdrop.addClass('modal-backdrop-over-history')
-        }
-        $('body').addClass('modal-open')
       },
       // LocalStorageによる一時保存があるので、下記対策の重要性は低くはなる
       setMovePageConfirm () {
@@ -242,6 +206,25 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         }
         return null
       },
+      saveMemoDraft () {
+        const storageKey = this.memoLocalStorageKey()
+        if (storageKey) localStorage.setItem(storageKey, this.memoContent)
+      },
+      openMemoForm () {
+        this.memoFormOpen = true
+        nextTick(() => this.$refs.memoContentField?.focus())
+      },
+      closeMemoForm () {
+        this.memoFormOpen = false
+        this.memoTargetDiaryId = null
+        this.memoTargetDiaryTitle = ''
+        this.memoTargetRecordAt = null
+        this.memoTargetHistoryId = null
+        this.memoTargetType = 'Diary'
+        this.memoOverHistoryModal = false
+        this.memoTime = ''
+        this.memoCategory = ''
+      },
       showMemoForm (targetDiary = null) {
         this.memoTargetType = 'Diary'
         this.memoTargetHistoryId = null
@@ -250,7 +233,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         this.memoTargetDiaryTitle = targetDiary ? (targetDiary.title_mod || targetDiary.title || '(タイトルなし)') : ''
         this.memoTargetRecordAt = targetDiary?.record_at || this.targetDate
         this.memoContent = ''
-        $('#memo-form').modal('show')
+        this.openMemoForm()
         const storageKey = this.memoLocalStorageKey()
         const inputtingMemoContent = storageKey ? localStorage.getItem(storageKey) : null
         if (inputtingMemoContent) {
@@ -265,17 +248,12 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         this.memoTargetRecordAt = history.date
         this.memoContent = ''
         this.memoOverHistoryModal = true
-        $('#memo-form').modal('show')
+        this.openMemoForm()
         const storageKey = this.memoLocalStorageKey()
         const inputtingMemoContent = storageKey ? localStorage.getItem(storageKey) : null
         if (inputtingMemoContent) {
           this.memoContent = inputtingMemoContent
         }
-      },
-      setupTimepicker () {
-        $('.timepicker').datetimepicker({
-          format: 'LT'
-        })
       },
       fetchData () {
         this.diariesLoading = true
@@ -387,14 +365,12 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
                   this.$refs.modalDiary?.updateDiary?.(res.data.diary)
                 })
               }
-              $('.timepicker').datetimepicker('clear')
-              $('#memo-form').find('select.form-control').val('')
               this.memoContent = ''
               const storageKey = this.memoLocalStorageKey()
               if (storageKey) {
                 localStorage.removeItem(storageKey)
               }
-              $('#memo-form').modal('hide')
+              this.closeMemoForm()
             })
             .catch(error => {
               this.showToast({isError: true, message: (error?.response?.data?.message || `書いた内容をコピーしてから、リロードして、再度実行してください：${error.message}`)})
@@ -412,14 +388,12 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
               const updatedContent = res.data?.history?.content
               const updatedContentHtml = res.data?.history?.content_html
               window.dispatchEvent(new CustomEvent('history-appended', { detail: { id: this.memoTargetHistoryId, content: updatedContent, content_html: updatedContentHtml } }))
-              $('.timepicker').datetimepicker('clear')
-              $('#memo-form').find('select.form-control').val('')
               this.memoContent = ''
               const storageKey = this.memoLocalStorageKey()
               if (storageKey) {
                 localStorage.removeItem(storageKey)
               }
-              $('#memo-form').modal('hide')
+              this.closeMemoForm()
               window.dispatchEvent(new CustomEvent('favorites-refresh'))
             })
             .catch(error => {
@@ -429,12 +403,9 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         }
       },
       buildMemoText () {
-        const form = this.$refs.memoForm
-        const timeVal = form?.querySelector('input[name="[diary]time_memo"]')?.value || ''
-        const labelVal = form?.querySelector('select[name="[diary]label_memo"]')?.value || ''
         let result = '- '
-        if (timeVal) result += `[${timeVal}]`
-        if (labelVal) result += `[${labelVal}] `
+        if (this.memoTime) result += `[${this.memoTime}]`
+        if (this.memoCategory) result += `[${this.memoCategory}] `
         result += this.memoContent
         return result
       },
