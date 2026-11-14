@@ -12,6 +12,9 @@ html[lang="ja"]
     = stylesheet_link_tag 'application', media: 'all'
     = favicon_link_tag 'logo/favicon.ico', :rel => 'icon'
     = javascript_include_tag 'application', defer: true
+    / ページ別Webpack bundleから分離したruntimeと共通モジュールを一度だけ読み込む
+    = javascript_include_tag 'runtime', 'data-turbolinks-track': 'reload', defer: true
+    = javascript_include_tag 'common', 'data-turbolinks-track': 'reload', defer: true
 
     / for PWA
     link rel="manifest" href="/manifest.json"

@@ -32,6 +32,25 @@ module.exports = {
     path: path.resolve(__dirname, 'app/assets/builds'),
     publicPath: '/assets/'
   },
+  // 複数のページ別bundleで使うVueやAxiosを共通chunkへ分離する
+  optimization: {
+    runtimeChunk: {
+      name: 'runtime'
+    },
+    splitChunks: {
+      chunks: 'all',
+      minChunks: 2,
+      cacheGroups: {
+        default: false,
+        common: {
+          name: 'common',
+          minChunks: 2,
+          priority: 10,
+          reuseExistingChunk: true
+        }
+      }
+    }
+  },
   devtool: isProduction ? 'source-map' : 'eval-source-map',
   module: {
     rules: [
