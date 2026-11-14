@@ -9,10 +9,6 @@
       </button>
     </header>
 
-    <button type="button" class="family-dashboard__filter-toggle" @click="toggleFilters">
-      {{ filtersOpen ? '条件を閉じる' : '条件で絞り込む' }}
-    </button>
-
     <div class="family-dashboard__display-modes" aria-label="表示方法">
       <button
         type="button"
@@ -33,6 +29,10 @@
         タイトル一覧
       </button>
     </div>
+
+    <button type="button" class="family-dashboard__filter-toggle" @click="toggleFilters">
+      {{ filtersOpen ? '条件を閉じる' : '条件で絞り込む' }}
+    </button>
 
     <div class="family-dashboard__controls" :class="{ 'is-open': filtersOpen }">
       <div class="family-dashboard__control">
