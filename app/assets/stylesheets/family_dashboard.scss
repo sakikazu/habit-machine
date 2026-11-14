@@ -513,9 +513,10 @@
 
 .family-dashboard__cards {
   display: grid;
-  gap: 8px;
+  gap: 0;
   margin-right: -24px;
   margin-left: -24px;
+  background: #fff;
 }
 
 .family-dashboard__title-list {
@@ -579,21 +580,31 @@
 
 .family-dashboard__card {
   background: #fff;
-  border: 1px solid #f1dfc6;
-  border-right: 0;
-  border-left: 0;
+  border: 1px solid #e6c99d;
   border-radius: 0;
-  padding: 16px 24px;
+  margin-top: -1px;
+  padding: 0;
   box-shadow: none;
+}
+
+.family-dashboard__card:first-child {
+  margin-top: 0;
 }
 
 .family-dashboard__card-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
+  padding: 9px 24px;
+  border-bottom: 1px solid #f1dfc6;
+  background: #f8ead5;
   font-size: 12px;
   color: #7b6d5a;
+}
+
+.family-dashboard__card-content {
+  padding: 14px 24px 18px;
 }
 
 .family-dashboard__card-heading {
@@ -609,6 +620,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
+  min-height: 32px;
 }
 
 .family-dashboard__date {
@@ -647,10 +659,15 @@
 }
 
 .family-dashboard__edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
   border: none;
   background: transparent;
   color: #7b6d5a;
-  padding: 8px 10px;
+  padding: 0;
   font-size: 16px;
 }
 
@@ -686,9 +703,15 @@
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
+  min-height: 32px;
 }
 
 .family-dashboard__favorite {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 32px;
   border: 1px solid #f1e3cf;
   background: #fff;
   color: #c79a43;
@@ -833,6 +856,15 @@
   }
 
   .family-dashboard__card {
+    padding: 0;
+  }
+
+  .family-dashboard__card-header {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .family-dashboard__card-content {
     padding-right: 18px;
     padding-left: 18px;
   }

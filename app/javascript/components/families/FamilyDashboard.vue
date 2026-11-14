@@ -119,7 +119,12 @@
       <div v-if="loading" class="family-dashboard__loading">読み込み中...</div>
       <div v-else-if="histories.length === 0" class="family-dashboard__empty">記録はありません。</div>
       <div v-else-if="displayMode === 'card'" class="family-dashboard__cards">
-        <article v-for="history in histories" :key="history.id" :id="historyCardId(history)" class="family-dashboard__card">
+        <article
+          v-for="history in histories"
+          :key="history.id"
+          :id="historyCardId(history)"
+          class="family-dashboard__card"
+        >
           <div class="family-dashboard__card-header">
             <div class="family-dashboard__card-heading">
               <div class="family-dashboard__date-group">
@@ -147,39 +152,41 @@
               </button>
             </div>
           </div>
-          <h4 class="family-dashboard__card-title">
-            <button type="button" class="family-dashboard__title-button" @click="openHistoryModal(history)">{{ history.title }}</button>
-            <span class="family-dashboard__card-title-members">
-              <span
-                v-for="name in memberNamePills(history)"
-                :key="`${history.id}-${name}`"
-                class="family-dashboard__member family-dashboard__member--prominent"
-              >
-                <i class="fa fa-child" aria-hidden="true"></i>
-                {{ name }}
+          <div class="family-dashboard__card-content">
+            <h4 class="family-dashboard__card-title">
+              <button type="button" class="family-dashboard__title-button" @click="openHistoryModal(history)">{{ history.title }}</button>
+              <span class="family-dashboard__card-title-members">
+                <span
+                  v-for="name in memberNamePills(history)"
+                  :key="`${history.id}-${name}`"
+                  class="family-dashboard__member family-dashboard__member--prominent"
+                >
+                  <i class="fa fa-child" aria-hidden="true"></i>
+                  {{ name }}
+                </span>
               </span>
-            </span>
-          </h4>
-          <p v-if="history.height || history.weight" class="family-dashboard__metrics">
-            <span v-if="history.height">{{ history.height }}cm</span>
-            <span v-if="history.weight" class="family-dashboard__metric-separator">{{ history.weight }}kg</span>
-          </p>
-          <p
-            v-if="history.content_html || history.content"
-            :ref="`historyContent-${history.id}`"
-            class="family-dashboard__card-body"
-            v-html="history.content_html || nl2br(history.content)"
-          ></p>
-          <button
-            v-if="truncatedHistoryIds[history.id]"
-            type="button"
-            class="family-dashboard__read-more"
-            @click="openHistoryModal(history)"
-          >
-            続きを読む
-            <span aria-hidden="true">→</span>
-          </button>
-          <img v-if="history.eyecatch_url" :src="history.eyecatch_url" alt="" class="family-dashboard__card-image">
+            </h4>
+            <p v-if="history.height || history.weight" class="family-dashboard__metrics">
+              <span v-if="history.height">{{ history.height }}cm</span>
+              <span v-if="history.weight" class="family-dashboard__metric-separator">{{ history.weight }}kg</span>
+            </p>
+            <p
+              v-if="history.content_html || history.content"
+              :ref="`historyContent-${history.id}`"
+              class="family-dashboard__card-body"
+              v-html="history.content_html || nl2br(history.content)"
+            ></p>
+            <button
+              v-if="truncatedHistoryIds[history.id]"
+              type="button"
+              class="family-dashboard__read-more"
+              @click="openHistoryModal(history)"
+            >
+              続きを読む
+              <span aria-hidden="true">→</span>
+            </button>
+            <img v-if="history.eyecatch_url" :src="history.eyecatch_url" alt="" class="family-dashboard__card-image">
+          </div>
         </article>
       </div>
       <div v-else class="family-dashboard__title-list">
