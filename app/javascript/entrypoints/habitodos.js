@@ -6,6 +6,7 @@
 //
 
 import { createApp, nextTick } from 'vue'
+import { List, Save, Trash2 } from '@lucide/vue'
 import HmAxios from 'hm_axios.js'
 import ContentEditor from 'components/habitodos/ContentEditor.vue'
 import CreateForm from 'components/habitodos/CreateForm.vue'
@@ -16,6 +17,9 @@ mountVueOnTurbolinks('#habitodo', (element) => createApp({
   components: {
     ContentEditor,
     CreateForm,
+    ListIcon: List,
+    SaveIcon: Save,
+    TrashIcon: Trash2,
   },
   // TODO: ライフサイクルの共通処理があれば。ログインチェック処理とかに適しているかな？
   mixins: [],

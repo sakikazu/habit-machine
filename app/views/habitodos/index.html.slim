@@ -18,7 +18,7 @@
             | {{ h.title }}
           .ml-2
             / stopでバブリングを止める（saveBodyの後にswitchDocしてるので結局clickイベント実行されてしまうが、意図として残す）
-            i.fa.fa-save v-show="h.unsaved" @click.stop="saveBody(h.uuid)"
+            save-icon.habitodo-icon(v-show="h.unsaved" :size="18" aria-label="保存" @click.stop="saveBody(h.uuid)")
           .ml-3.mr-2
             / TODO: スマホでサイドバー領域の高さを低くしたために、dropdownメニューが全部表示されなくなってしまった
             .dropdown
@@ -35,7 +35,7 @@
                 .dropdown-divider
                 .p-2.text-danger.text-center @click.stop="deleteData(h.uuid)"
                   a.btn.btn-danger[href="javascript:void(0)"]
-                    i.fa.fa-trash.ml-1
+                    trash-icon.habitodo-inline-icon(:size="16" aria-hidden="true")
                     | 削除
 
       / 新規作成
@@ -61,7 +61,7 @@
     #sidebar-right.overflow-y-scroll.col-sm-2.order-2.order-sm-3.bg-light.text-secondary
       #mokujis.mt-3
         h4.text-center.mb-0
-          i.fa.fa-list-ul.mr-2
+          list-icon.habitodo-inline-icon(:size="19" aria-hidden="true")
           |目次
         ul.mokuji-list
           li [
@@ -71,6 +71,15 @@
             a(:href="`#${m['anchor']}`" v-text="m['text']" :class="m['style_class']" data-turbolinks="false")
 
 scss:
+  .habitodo-icon {
+    display: inline-block;
+    cursor: pointer;
+  }
+  .habitodo-inline-icon {
+    display: inline-block;
+    margin-right: 6px;
+    vertical-align: -3px;
+  }
   .middle-area {
     /* .editor内fontSize(em)の基準 */
     font-size: 16px;
