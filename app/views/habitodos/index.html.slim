@@ -21,9 +21,9 @@
             save-icon.habitodo-icon(v-show="h.unsaved" :size="18" aria-label="保存" @click.stop="saveBody(h.uuid)")
           .ml-3.mr-2
             / TODO: スマホでサイドバー領域の高さを低くしたために、dropdownメニューが全部表示されなくなってしまった
-            .dropdown
-              a.dropdown-toggle.text-light data-toggle="dropdown"
-              .dropdown-menu.dropdown-menu-right.dropdown-menu-wide
+            details.habitodo-menu(@click.stop)
+              summary.habitodo-menu__toggle(aria-label="ノート操作")
+              .habitodo-menu__panel
                 .change-title-form.p-2
                   .form-group
                     input type="text" class="form-control" v-model="sortedHabitodos[key].title"
@@ -71,6 +71,34 @@
             a(:href="`#${m['anchor']}`" v-text="m['text']" :class="m['style_class']" data-turbolinks="false")
 
 scss:
+  .habitodo-menu {
+    position: relative;
+  }
+  .habitodo-menu__toggle {
+    cursor: pointer;
+    list-style: none;
+  }
+  .habitodo-menu__toggle::-webkit-details-marker {
+    display: none;
+  }
+  .habitodo-menu__toggle::after {
+    content: '▾';
+    color: #fff;
+  }
+  .habitodo-menu__panel {
+    position: absolute;
+    z-index: 50;
+    top: calc(100% + 4px);
+    right: 0;
+    width: 320px;
+    max-width: 90vw;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 5px;
+    background: #fff;
+    color: #343a40;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
   .habitodo-icon {
     display: inline-block;
     cursor: pointer;

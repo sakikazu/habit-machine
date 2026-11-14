@@ -1,11 +1,12 @@
 .d-flex.justify-content-between.mt10.mb15
   = link_to lucide_icon('chevron-left', size: 22), years_diaries_path(@year - 1), class: "btn btn-light", aria: { label: '前年' }
-  .text-center
+  .text-center.year-selector
     span.text-140.mr-2 = "#{@year}年"
-    = link_to '年選択', '#', class: 'btn btn-light dropdown-toggle', data: {toggle: 'dropdown'}
-    .dropdown-menu
-      - Date.today.year.step(Settings.start_year, -1).each do |year|
-        = link_to year, years_diaries_path(year), class: 'dropdown-item'
+    details.year-selector__menu
+      summary.year-selector__toggle 年選択
+      .year-selector__options
+        - Date.today.year.step(Settings.start_year, -1).each do |year|
+          = link_to year, years_diaries_path(year)
   = link_to lucide_icon('chevron-right', size: 22), years_diaries_path(@year + 1), class: "btn btn-light", aria: { label: '翌年' }
 
 table.table.table-bordered.ten-years-diaries
@@ -30,4 +31,47 @@ table.table.table-bordered.ten-years-diaries
                   = diary.title if diary.title.present?
           - else
             td.bg-secondary
+
+sass:
+  .year-selector
+    display: flex
+    align-items: center
+    gap: 8px
+
+  .year-selector__menu
+    position: relative
+
+  .year-selector__toggle
+    padding: 7px 12px
+    border: 1px solid #dee2e6
+    border-radius: 4px
+    background: #f8f9fa
+    cursor: pointer
+    list-style: none
+
+    &::-webkit-details-marker
+      display: none
+
+  .year-selector__options
+    position: absolute
+    z-index: 30
+    top: calc(100% + 4px)
+    left: 0
+    display: flex
+    width: 120px
+    max-height: 300px
+    overflow-y: auto
+    flex-direction: column
+    border: 1px solid #dee2e6
+    border-radius: 4px
+    background: #fff
+    box-shadow: 0 8px 20px rgba(0, 0, 0, .14)
+
+    a
+      padding: 7px 12px
+      color: #343a40
+      text-decoration: none
+
+      &:hover
+        background: #f3f4f6
 
