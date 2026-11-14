@@ -1,25 +1,24 @@
-.row.justify-content-center
-  .col-sm(style="max-width: 720px")
-    .history-show
-      .history-show__header
-        h2.history-show__title = @history.title
-        .history-show__meta
-          span.history-show__date = dispdate(@history.target_date, true)
-          - if @history.about_date
-            span.history-show__approx (だいたい)
-          - if @history.member_label.present?
-            span.history-show__badge = @history.member_label
-          - if @history.author.present?
-            span.history-show__author = "by #{@history.author.dispname}"
-      - if @history.eyecatch_image.attached?
-        .history-show__image
-          = image_tag @history.eyecatch_image_large, class: 'img-fluid'
-      - if @history.content.present?
-        .history-show__content.markdown = markdown(@history.content)
-      - if @history.data.present?
-        ul.history-show__data-list
-          - @history.data.each do |key, value|
-            li.history-show__data-item = "#{History.human_attribute_name("data.#{key}")}: #{value}"
-      .history-show__actions
-        = link_to '編集', edit_history_path(@history), class: 'btn btn-secondary mr-2'
-        = link_to '削除', history_path(@history), method: :delete, class: 'btn btn-danger', data: { confirm: '本当に削除しますか？' }
+.history-show-page
+  .history-show
+    .history-show__header
+      h2.history-show__title = @history.title
+      .history-show__meta
+        span.history-show__date = dispdate(@history.target_date, true)
+        - if @history.about_date
+          span.history-show__approx (だいたい)
+        - if @history.member_label.present?
+          span.history-show__badge = @history.member_label
+        - if @history.author.present?
+          span.history-show__author = "by #{@history.author.dispname}"
+    - if @history.eyecatch_image.attached?
+      .history-show__image
+        = image_tag @history.eyecatch_image_large
+    - if @history.content.present?
+      .history-show__content.markdown = markdown(@history.content)
+    - if @history.data.present?
+      ul.history-show__data-list
+        - @history.data.each do |key, value|
+          li.history-show__data-item = "#{History.human_attribute_name("data.#{key}")}: #{value}"
+    .history-show__actions
+      = link_to '編集', edit_history_path(@history), class: 'history-action history-action--secondary'
+      = link_to '削除', history_path(@history), method: :delete, class: 'history-action history-action--danger', data: { confirm: '本当に削除しますか？' }

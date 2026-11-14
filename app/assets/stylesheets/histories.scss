@@ -1,4 +1,15 @@
 // Histories#showの表示調整
+.history-form-page,
+.history-show-page {
+  width: calc(100% - 30px);
+  max-width: 720px;
+  margin: 20px auto 40px;
+}
+
+.history-form-page {
+  max-width: 700px;
+}
+
 .history-show {
   background: #fff;
   border: 1px solid #f0e4d6;
@@ -65,6 +76,12 @@
   box-shadow: 0 10px 18px rgba(122, 91, 46, 0.12);
 }
 
+.history-show__image img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
 // 本文の読みやすさ調整
 .history-show__content {
   color: #4a3f32;
@@ -95,6 +112,28 @@
   margin-top: 20px;
   display: flex;
   gap: 8px;
+}
+
+.history-action {
+  display: inline-flex;
+  padding: 7px 13px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.history-action--secondary {
+  border-color: #6c757d;
+  background: #6c757d;
+}
+
+.history-action--danger {
+  border-color: #dc3545;
+  background: #dc3545;
 }
 
 @media (max-width: 768px) {
