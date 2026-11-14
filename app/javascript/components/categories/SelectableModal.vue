@@ -11,8 +11,8 @@
         />
       </div>
       <div class="modal-actions">
-        <button class="btn btn-primary" @click="$emit('save')">保存</button>
-        <button class="btn btn-light" @click="$emit('close')">キャンセル</button>
+        <button class="modal-button modal-button--primary" @click="$emit('save')">保存</button>
+        <button class="modal-button" @click="$emit('close')">キャンセル</button>
       </div>
     </div>
   </div>
@@ -59,4 +59,18 @@ export default {
   margin-top: 15px
   display: flex
   justify-content: space-around
+
+.modal-button
+  padding: 7px 13px
+  border: 1px solid #d1d5db
+  border-radius: 5px
+  background: #f8f9fa
+  color: #343a40
+  cursor: pointer
+  font-weight: 600
+
+.modal-button--primary
+  border-color: #2563eb
+  background: #2563eb
+  color: #fff
 </style>
