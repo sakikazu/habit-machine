@@ -9,7 +9,7 @@
         th ピン留め
         th 説明
         th 日記での使用数
-        th
+        th.tag-table__actions
       - @tags.each do |tag|
         tr
           td = tag.name
@@ -17,7 +17,7 @@
           td.tag-table__center = lucide_icon('pin', size: 16) if tag.pinned?
           td = truncate_30_link(tag.description)
           td = tag.taggings_count
-          td
+          td.tag-table__actions
             = link_to '詳細', tag_path(tag)
             |  / 
             = link_to '編集', edit_tag_path(tag)

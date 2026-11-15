@@ -112,6 +112,11 @@
   text-align: center !important;
 }
 
+.tag-table__actions {
+  width: 1%;
+  white-space: nowrap;
+}
+
 .tag-color-preview,
 .tag-diary-count {
   display: inline-flex;
