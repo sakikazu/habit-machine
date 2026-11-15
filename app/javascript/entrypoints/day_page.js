@@ -255,7 +255,8 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         this.memoTime = `${hour}:${this.memoTimeMinute || '00'}`
       },
       setMemoTimeMinute (minute) {
-        this.memoTime = `${this.memoTimeHour || String(new Date().getHours()).padStart(2, '0')}:${minute}`
+        const normalizedMinute = Math.min(59, Math.max(0, Number.parseInt(minute, 10) || 0))
+        this.memoTime = `${this.memoTimeHour || String(new Date().getHours()).padStart(2, '0')}:${String(normalizedMinute).padStart(2, '0')}`
       },
       setMemoTimeNow () {
         const now = new Date()

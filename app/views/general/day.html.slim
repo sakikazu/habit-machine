@@ -42,7 +42,11 @@
                   span.memo-time-picker__caption 時
                   .memo-time-picker__grid.memo-time-picker__grid--hours
                     button(type="button" v-for="hour in memoTimeHours" :key="hour" :class="{ active: memoTimeHour === hour }" @click="setMemoTimeHour(hour)") {{ hour }}
-                  span.memo-time-picker__caption 分
+                  .memo-time-picker__caption-row
+                    span.memo-time-picker__caption 分（5分刻み）
+                    label.memo-time-picker__minute-input
+                      input(type="number" min="0" max="59" inputmode="numeric" :value="memoTimeMinute" aria-label="分を1分単位で入力" @change="setMemoTimeMinute($event.target.value)")
+                      span 分
                   .memo-time-picker__grid.memo-time-picker__grid--minutes
                     button(type="button" v-for="minute in memoTimeMinutes" :key="minute" :class="{ active: memoTimeMinute === minute }" @click="setMemoTimeMinute(minute)") {{ minute }}
                   .memo-time-picker__footer
