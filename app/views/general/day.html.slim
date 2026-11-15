@@ -28,12 +28,9 @@
         .memo-modal__body
           .memo-modal__fields
             .memo-modal__field
-              span.memo-modal__field-label
-                clock-icon(:size="17" aria-hidden="true")
-                | 時刻
               .memo-time-picker
                 input(type="hidden" name="diary[time_memo]" :value="memoTime")
-                button.memo-time-picker__toggle(type="button" @click="memoTimePickerOpen = !memoTimePickerOpen" :aria-expanded="memoTimePickerOpen.toString()")
+                button.memo-time-picker__toggle(type="button" aria-label="時刻を選択" @click="memoTimePickerOpen = !memoTimePickerOpen" :aria-expanded="memoTimePickerOpen.toString()")
                   clock-icon(:size="18" aria-hidden="true")
                   span
                     | {{ memoTime || '時間を選択' }}
@@ -51,9 +48,8 @@
                   .memo-time-picker__footer
                     button(type="button" @click="clearMemoTime") クリア
                     button(type="button" @click="memoTimePickerOpen = false") 決定
-            label.memo-modal__field
-              span.memo-modal__field-label 分類
-              select(name="diary[label_memo]" v-model="memoCategory")
+            .memo-modal__field
+              select(name="diary[label_memo]" v-model="memoCategory" aria-label="分類")
                 option(v-for="cate in memoCategories" :value="cate" v-text="cate")
           p.memo-modal__target(v-if="memoTargetDiaryLabel")
             sticky-note-icon.memo-inline-icon(:size="15" aria-hidden="true")
@@ -64,7 +60,7 @@
         footer.memo-modal__footer
           small
             circle-alert-icon.memo-inline-icon(:size="15" aria-hidden="true")
-            | 選択した日記の本文末尾にメモを追加します
+            | 本文末尾に追加します
           button.memo-modal__submit(type="submit") メモ追加
 
   .dayContentHeader

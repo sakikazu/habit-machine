@@ -82,7 +82,7 @@ table.ten-years-diaries {
 }
 
 /*footer*/
-footer {
+body > footer {
   margin-top: 70px;
   background-color: black;
   color: white;
@@ -91,7 +91,7 @@ footer {
   width: 100%;
   opacity:0.8;
 }
-footer > p {
+body > footer > p {
   margin: 1px 0;
   font-size: 90%;
 }

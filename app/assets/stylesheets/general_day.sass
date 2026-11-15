@@ -123,19 +123,19 @@
   .memo-modal__header,
   .memo-modal__footer
     display: flex
-    padding: 14px 18px
     align-items: center
     justify-content: space-between
-    gap: 12px
+    gap: 8px
 
   .memo-modal__header
+    padding: 10px 14px
     border-bottom: 1px solid #e5e7eb
     h5
       margin: 0
-      font-size: 18px
+      font-size: 17px
 
   .memo-modal__body
-    padding: 18px
+    padding: 12px 14px 0
 
   .memo-modal__close
     border: 0
@@ -147,9 +147,9 @@
 
   .memo-modal__fields
     display: grid
-    grid-template-columns: 1fr 1fr
-    gap: 12px
-    margin-bottom: 12px
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr)
+    gap: 8px
+    margin-bottom: 8px
 
   .memo-modal__field
     display: flex
@@ -159,7 +159,8 @@
     input,
     select
       width: 100%
-      padding: 8px 10px
+      min-height: 38px
+      padding: 6px 8px
       border: 1px solid #d1d5db
       border-radius: 6px
       background: #fff
@@ -178,8 +179,8 @@
   .memo-time-picker__toggle
     display: flex
     width: 100%
-    min-height: 42px
-    padding: 8px 10px
+    min-height: 38px
+    padding: 6px 8px
     align-items: center
     gap: 8px
     border: 1px solid #d1d5db
@@ -253,24 +254,27 @@
     margin-top: 12px
 
   .memo-modal__target
-    margin: 0 0 10px
+    margin: 0 0 7px
     color: #6b7280
     font-size: 14px
 
   .memo-modal__textarea
     display: block
     width: 100%
-    min-height: 140px
-    padding: 10px 12px
+    min-height: 105px
+    margin: 0
+    padding: 8px 10px
     border: 1px solid #d1d5db
     border-radius: 6px
     resize: vertical
 
   .memo-modal__footer
+    padding: 10px 14px
     border-top: 1px solid #e5e7eb
     background: #f8fafc
     small
       color: #64748b
+      font-size: 12px
 
   .memo-modal__submit
     flex-shrink: 0
@@ -292,14 +296,7 @@
 
   @media (max-width: 640px)
     .memo-modal
-      padding: 10px
-    .memo-modal__fields
-      grid-template-columns: 1fr
-    .memo-modal__footer
-      align-items: stretch
-      flex-direction: column
-    .memo-modal__submit
-      width: 100%
+      padding: 6px
 
   .diaries-grid
     display: flex
