@@ -17,7 +17,5 @@
       p 新しい習慣を登録すると、ここに表示されます
       = link_to '最初の習慣を登録する', new_habit_path, class: 'habit-button habit-button--primary'
   - else
-      = link_to '最初の習慣を登録する', new_habit_path, class: 'habit-button habit-button--primary'
-  - else
     = render 'habit_group', title: '個人の習慣', icon: 'user', habits: @personal_habits, empty_message: '個人の習慣はありません'
     = render 'habit_group', title: '家族の習慣', icon: 'users', habits: @family_habits, empty_message: '家族の習慣はありません'

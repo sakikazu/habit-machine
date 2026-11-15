@@ -63,7 +63,6 @@ ul.alert.alert-danger
 
 - if @calendar_events.present?
   ul
-  ul
     - @calendar_events.each do |event|
       li = "#{event[:title]}(#{I18n.l(event[:start_time])})"
       hr

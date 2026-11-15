@@ -28,7 +28,6 @@ table.table.table-bordered.ten-years-diaries
               - @diaries_by_date[month][day].each do |diary|
                 .text-underline
                   = lucide_icon('square', size: 12) if diary.title.present?
-                  = lucide_icon('square', size: 12) if diary.title.present?
                   = diary.title if diary.title.present?
           - else
             td.bg-secondary

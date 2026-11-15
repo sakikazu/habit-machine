@@ -108,7 +108,6 @@
               a(:href="selectedDetailData?.show_path" v-text="selectedDetailData?.title" target="_blank")
             .closeButton
               span(@click="closeDetail" role="button")
-              span(@click="closeDetail" role="button")
                 = lucide_icon('x', size: 20, 'aria-label': '閉じる')
           .detailContent
             p(v-html="nl2br(selectedDetailData?.body)")

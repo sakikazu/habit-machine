@@ -23,7 +23,6 @@
         - @tags.each do |tag|
           li
             = lucide_icon('pin', size: 15) if tag.pinned?
-            = lucide_icon('pin', size: 15) if tag.pinned?
             = link_to "#{tag.name} (#{tag.taggings_count})", diaries_path(tag: tag.name)
       .diary-tag-panel__footer
         = link_to "タグ管理", tags_path
