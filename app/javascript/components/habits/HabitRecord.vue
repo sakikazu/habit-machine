@@ -5,9 +5,7 @@
       a(:href="`/habits/${habit.id}`")
         | {{ habit.title }}
         pin-icon.pinned-icon(v-if="habit.pinned" :size="16" title="ピン留め中" aria-label="ピン留め中")
-        span.shared-badge(v-if="habit.for_family" aria-label="家族で共有")
-          users-icon(:size="14" aria-hidden="true")
-          span 家族
+        family-badge(v-if="habit.for_family")
     button.button.saveButton(type="button" @click="save" v-if="dataChanged")
       save-icon(:size="17" aria-hidden="true")
       span 保存
@@ -74,9 +72,10 @@
 </template>
 
 <script>
-import { CirclePlus, Pencil, Pin, Save, Users } from '@lucide/vue'
+import { CirclePlus, Pencil, Pin, Save } from '@lucide/vue'
 import { nextTick } from 'vue'
 import HmAxios from 'hm_axios.js'
+import FamilyBadge from 'components/shared/FamilyBadge'
 import {
   headingPathAtEnd,
   lineIndexAt,
@@ -91,10 +90,10 @@ export default {
   inheritAttrs: false, // 非prop属性をルート要素に適用したくない場合
   components: {
     CirclePlusIcon: CirclePlus,
+    FamilyBadge,
     PencilIcon: Pencil,
     PinIcon: Pin,
     SaveIcon: Save,
-    UsersIcon: Users,
   },
   props: {
     habit: {
@@ -433,21 +432,6 @@ export default {
         display: inline-block
         margin-left: 8px
         color: #f59e0b
-
-      .shared-badge
-        display: inline-flex
-        align-items: center
-        gap: 3px
-        margin-left: 8px
-        padding: 2px 6px
-        border: 1px solid #f59e0b
-        border-radius: 999px
-        background: #fff7ed
-        color: #9a3412
-        font-size: 0.75rem
-        font-weight: 600
-        line-height: 1.2
-        vertical-align: middle
 
   .recordValueInput
     display: flex

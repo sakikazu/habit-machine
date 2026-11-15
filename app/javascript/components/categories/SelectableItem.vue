@@ -4,7 +4,7 @@
       <input type="checkbox" :checked="category.selected" @change="$emit('toggle', category.id)" />
       <span>
         {{ category.name }}
-        <Users v-if="category.shared" class="shared-icon" :size="16" aria-label="共有" />
+        <FamilyBadge v-if="category.shared" />
       </span>
     </label>
     <div v-if="category.children && category.children.length" class="children">
@@ -19,12 +19,12 @@
 </template>
 
 <script>
-import { Users } from '@lucide/vue'
+import FamilyBadge from 'components/shared/FamilyBadge'
 
 export default {
   name: "SelectableItem",
   components: {
-    Users
+    FamilyBadge
   },
   props: {
     category: Object
@@ -40,11 +40,6 @@ label
   display: flex
   align-items: center
   gap: 5px
-
-.shared-icon
-  display: inline-block
-  margin-left: 0.5rem
-  color: orange
 
 .children
   margin-left: 20px
