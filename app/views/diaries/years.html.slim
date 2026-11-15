@@ -26,8 +26,8 @@ table.table.table-bordered.ten-years-diaries
               = link_to day_path("#{@year}-#{month}-#{day}") do
                 .badge.badge-light.w100.p-1 = "#{month}/#{day} (#{@diaries_by_date[month][day].size})"
               - @diaries_by_date[month][day].each do |diary|
-                .text-underline
-                  = lucide_icon('square', size: 12) if diary.title.present?
+                .ten-years-diary-title
+                  = lucide_icon('book-open', size: 13, class: 'ten-years-diary-icon') if diary.title.present?
                   = diary.title if diary.title.present?
           - else
-            td.bg-secondary
+            td.ten-years-unavailable-date
