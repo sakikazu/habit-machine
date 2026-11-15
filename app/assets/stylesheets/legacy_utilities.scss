@@ -125,7 +125,8 @@ label { display: inline-block; margin-bottom: .5rem; }
 .form-group { margin-bottom: 1rem; }
 .form-control { display: block; width: 100%; padding: .375rem .75rem; border: 1px solid #ced4da; border-radius: .25rem; background: #fff; color: #495057; line-height: 1.5; }
 .form-control:focus { border-color: #80bdff; box-shadow: 0 0 0 .2rem rgba(0, 123, 255, .18); outline: 0; }
-.form-inline, .input-group { display: flex; align-items: center; }
+.form-inline { display: flex; align-items: center; flex-flow: row wrap; }
+.input-group { display: flex; align-items: center; }
 .form-check { position: relative; display: block; padding-left: 1.25rem; }
 .form-check-input { position: absolute; margin-top: .3rem; margin-left: -1.25rem; }
 .form-check-label { margin-bottom: 0; }
@@ -214,6 +215,7 @@ label { display: inline-block; margin-bottom: .5rem; }
   .mb-sm-0 { margin-bottom: 0 !important; }
   .mr-sm-2 { margin-right: .5rem !important; }
   .my-sm-0 { margin-top: 0 !important; margin-bottom: 0 !important; }
+  .form-inline .form-control { display: inline-block; width: auto; vertical-align: middle; }
   .order-sm-1 { order: 1; }
   .order-sm-2 { order: 2; }
   .order-sm-3 { order: 3; }
