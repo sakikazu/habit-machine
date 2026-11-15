@@ -2,8 +2,8 @@
   <div class="category-item">
     <label>
       <input type="checkbox" :checked="category.selected" @change="$emit('toggle', category.id)" />
-      <span>
-        {{ category.name }}
+      <span class="category-label">
+        <span>{{ category.name }}</span>
         <FamilyBadge v-if="category.shared" />
       </span>
     </label>
@@ -34,15 +34,22 @@ export default {
 
 <style scoped lang="sass">
 .category-item
-  margin-left: 10px
+  margin-left: 6px
 
 label
   display: flex
   align-items: center
-  gap: 5px
+  gap: 4px
+  margin: 0
+
+.category-label
+  display: inline-flex
+  min-width: 0
+  align-items: center
+  white-space: nowrap
 
 .children
-  margin-left: 20px
+  margin-left: 14px
   border-left: 2px solid #ccc
-  padding-left: 10px
+  padding-left: 7px
 </style>

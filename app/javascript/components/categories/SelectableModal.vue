@@ -44,16 +44,16 @@ export default {
 
 .modal-content
   background: white
-  padding: 20px
+  width: min(360px, calc(100vw - 20px))
+  padding: 16px
   border-radius: 10px
-  width: 300px
   text-align: center
   position: relative
   z-index: 3100
 
 .category-list
   text-align: left
-  margin-top: 10px
+  margin-top: 8px
 
 .modal-actions
   margin-top: 15px
