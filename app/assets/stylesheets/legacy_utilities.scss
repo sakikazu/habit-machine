@@ -187,6 +187,16 @@ label { display: inline-block; margin-bottom: .5rem; }
 .navbar-collapse { flex-basis: 100%; flex-grow: 1; align-items: center; }
 .collapse:not(.show) { display: none; }
 
+@media (max-width: 991.98px) {
+  .navbar > .navbar-brand { margin-right: auto; }
+  .navbar > .navbar-nav { flex-shrink: 0; flex-direction: row; margin-right: .25rem !important; }
+  .navbar > .navbar-nav.ml-auto { margin-left: 0 !important; }
+  .navbar > .navbar-nav .nav-link { padding-right: .5rem; padding-left: .5rem; }
+  .navbar > .navbar-nav #globalSearchWord { width: 64px !important; }
+  .navbar > .navbar-toggler { flex-shrink: 0; }
+  .navbar > .navbar-collapse { width: 100%; order: 10; }
+}
+
 .dropdown { position: relative; }
 .dropdown-toggle::after { display: inline-block; margin-left: .255em; border-top: .3em solid; border-right: .3em solid transparent; border-left: .3em solid transparent; vertical-align: .255em; content: ""; }
 .dropdown-menu { position: absolute; z-index: 1000; display: none; min-width: 10rem; margin: .125rem 0 0; padding: .5rem 0; border: 1px solid rgba(0, 0, 0, .15); border-radius: .25rem; background: #fff; box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15); }
