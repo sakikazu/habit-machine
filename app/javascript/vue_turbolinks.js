@@ -6,21 +6,25 @@ export const mountVueOnTurbolinks = (selector, createAppForElement) => {
 
   const mountedApps = new Map()
 
-  const unmountCurrentPage = () => {
-    mountedApps.forEach((app, element) => {
+  const unmountCurrentPage = ({ restoreTemplate = false } = {}) => {
+    mountedApps.forEach(({ app, template }, element) => {
       if (!document.documentElement.contains(element)) return
       app.unmount()
+      // Vueが変更したDOMをキャッシュせず、次回もサーバー描画時のテンプレートから起動する
+      if (restoreTemplate) element.replaceWith(template)
       mountedApps.delete(element)
     })
   }
 
+  document.addEventListener('turbolinks:before-cache', () => unmountCurrentPage({ restoreTemplate: true }))
   document.addEventListener('turbolinks:before-render', unmountCurrentPage)
   const mountCurrentPage = () => {
     document.querySelectorAll(selector).forEach((element) => {
       if (mountedApps.has(element)) return
+      const template = element.cloneNode(true)
       const app = createAppForElement(element)
       app.mount(element)
-      mountedApps.set(element, app)
+      mountedApps.set(element, { app, template })
     })
   }
 
