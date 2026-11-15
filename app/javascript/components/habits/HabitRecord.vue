@@ -7,8 +7,12 @@
         pin-icon.pinned-icon(v-if="habit.pinned" :size="16" title="ピン留め中" aria-label="ピン留め中")
         // TODO: 共有アイコンは、アイコンの右に「共有」というラベルがあり、それらが枠線で囲まれているのが良さそう
         users-icon.shared-icon(v-if="habit.for_family" :size="16" aria-label="家族で共有")
-    save-icon.button.saveButton(:size="18" @click="save" v-if="dataChanged" aria-label="保存")
-    pencil-icon.button.editButton(:size="18" @click="toggleEdit" v-else aria-label="編集")
+    button.button.saveButton(type="button" @click="save" v-if="dataChanged")
+      save-icon(:size="17" aria-hidden="true")
+      span 保存
+    button.button.editButton(type="button" @click="toggleEdit" v-else)
+      pencil-icon(:size="17" aria-hidden="true")
+      span 編集
   .habit-record-body(v-if="editMode || persisted")
     template(v-if="editMode")
       .recordValueInput
@@ -391,9 +395,14 @@ export default {
     padding: 8px
 
   .button
+    display: inline-flex
+    align-items: center
+    gap: 5px
     flex-shrink: 0
     cursor: pointer
-    padding: 5px 20px
+    padding: 5px 12px
+    background: transparent
+    font-size: 0.875rem
     text-align: center
     border-radius: 5px
 
