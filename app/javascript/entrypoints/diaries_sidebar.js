@@ -348,9 +348,11 @@ style.innerHTML = `
   .history-favorite-actions {
     display: flex;
     padding: 14px 18px;
+    align-items: center;
     flex-wrap: wrap;
     gap: 8px;
     border-top: 1px solid #e5e7eb;
+    background: #f8fafc;
   }
   .history-action {
     display: inline-flex;
@@ -433,6 +435,7 @@ style.innerHTML = `
     color: #fff;
   }
   .history-favorite-actions__secondary {
+    margin-left: auto;
     background: #f3f4f6;
     border-color: #e5e7eb;
     color: #374151;
@@ -469,10 +472,18 @@ style.innerHTML = `
       padding: 10px;
     }
     .history-favorite-actions {
-      flex-direction: column;
+      display: grid;
+      padding: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .history-action {
       width: 100%;
+      min-width: 0;
+      padding: 7px 8px;
+      font-size: 0.875rem;
+    }
+    .history-favorite-actions__secondary {
+      margin-left: 0;
     }
   }
 `
