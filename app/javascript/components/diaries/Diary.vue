@@ -459,15 +459,16 @@ export default {
       if (!this.collapsibleBody) return
       this.bodyCollapsed = !this.bodyCollapsed
     },
-    onCancelEdit () {
+    onCancelEdit (formKey) {
+      this.$emit('content-changed', formKey, false)
       this.editMode = false
       if (!this.localDiary.id) {
         // 本当は親の配列の中から削除すれば表示が自然になるんだけど、現状だとポッカリ枠が開いてしまう
         this.$el.remove()
       }
     },
-    onContentChanged (formKey) {
-      this.$emit('content-changed', formKey)
+    onContentChanged (formKey, changed = true) {
+      this.$emit('content-changed', formKey, changed)
     },
     onSubmitted (formKey, updatedDiary) {
       // 親が保持する保存前の日記を特定できるよう、現在のpropsも渡す

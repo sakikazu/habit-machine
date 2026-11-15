@@ -152,6 +152,11 @@ export default {
       return groups
     },
   },
+  watch: {
+    dataChanged (changed) {
+      this.$emit('content-changed', `habit-record-${this.habit.id}`, changed)
+    },
+  },
   created () {
     // NOTE: mountedではなくcreatedで実行することで、template内でinitialRecordがundefinedにならないようにしている
     // templateはcreatedとmountedの間に処理されるという感じかな

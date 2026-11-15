@@ -92,7 +92,7 @@
           | 本日の記録
       p(v-if="habit_records.length == 0") 習慣が登録されていません。
       .habit-records(v-else)
-        habit-record(v-for="habit_record in visibleHabitRecords" :habit="habit_record.habit" :record="habit_record.record" target-date="#{@date}" :key="habit_record.habit.id")
+        habit-record(v-for="habit_record in visibleHabitRecords" :habit="habit_record.habit" :record="habit_record.record" target-date="#{@date}" :key="habit_record.habit.id" @content-changed="onContentChanged")
         button.day-secondary-button(type="button" v-if="hiddenHabitRecordsCount > 0" @click="showAllHabitRecords = true")
           | もっと見る（未記録 {{ hiddenHabitRecordsCount }}件）
         button.day-secondary-button(type="button" v-else-if="showAllHabitRecords && collapsibleHabitRecordsCount > 0" @click="showAllHabitRecords = false")

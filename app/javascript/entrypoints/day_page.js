@@ -210,8 +210,9 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
 
           if(!confirm(formWarningMessage)) {
             e.preventDefault()
+            e.stopImmediatePropagation()
           }
-        }, { signal: this.dayPageEventController.signal })
+        }, { capture: true, signal: this.dayPageEventController.signal })
 
         // ブラウザのタブを閉じようとした時、またはturbolinks以外のリンクをクリックした時の警告
         window.addEventListener('beforeunload', function(event) {
@@ -345,8 +346,13 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
           }
         }, { signal: this.dayPageEventController.signal })
       },
-      onContentChanged (formKey) {
-        this.contentChanged.push(formKey)
+      onContentChanged (formKey, changed = true) {
+        if (!formKey) return
+        if (changed && !this.contentChanged.includes(formKey)) {
+          this.contentChanged.push(formKey)
+        } else if (!changed) {
+          this.contentChanged = this.contentChanged.filter(content => content !== formKey)
+        }
       },
       onSubmitted (formKey, updatedDiary, submittedDiary) {
         this.contentChanged = this.contentChanged.filter(content => content !== formKey)

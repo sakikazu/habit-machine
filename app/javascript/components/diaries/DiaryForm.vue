@@ -445,13 +445,17 @@ export default {
       }
     },
     setCheckUnsavedEvent () {
-      this.$refs.form.addEventListener('change', () => {
+      const markUnsaved = () => {
+        if (this.unsaved) return
         this.unsaved = true
         this.$emit('content-changed', this.formKey)
-      })
+      }
+      this.$refs.form.addEventListener('input', markUnsaved)
+      this.$refs.form.addEventListener('change', markUnsaved)
     },
     updateContent (val) {
       this.htmlContent = val
+      this.markFormChanged()
     },
     submit (event) {
       event.preventDefault()
@@ -519,7 +523,7 @@ export default {
       if (this.unsaved) {
         if(!confirm(formWarningMessage)) return
       }
-      this.$emit('cancel-edit')
+      this.$emit('cancel-edit', this.formKey)
     },
     deleteImage () {
       if (!confirm("本当に画像を削除してもいいですか？")) { return }
