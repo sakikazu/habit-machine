@@ -1,5 +1,6 @@
 const assert = require('assert')
 const {
+  choiceForShortcut,
   headingPathAtEnd,
   lineIndexAt,
   matchHabitTemplateEntries,
@@ -106,6 +107,22 @@ test('候補ボタンは未入力または定義済み候補だけを置換す�
   const entered = '- 寝起き：自由入力'
   const enteredMatch = matchHabitTemplateEntries(entered, parsed.entries)[0]
   assert.strictEqual(replacementForChoice(entered, 0, enteredMatch, '1悪い'), null)
+})
+
+test('Altと上下キーで候補を循環選択する', () => {
+  const choices = ['悪い', '普通', '良い']
+  assert.strictEqual(choiceForShortcut(choices, '-', 'ArrowDown', true), '悪い')
+  assert.strictEqual(choiceForShortcut(choices, '悪い', 'ArrowDown', true), '普通')
+  assert.strictEqual(choiceForShortcut(choices, '良い', 'ArrowDown', true), '悪い')
+  assert.strictEqual(choiceForShortcut(choices, '-', 'ArrowUp', true), '良い')
+  assert.strictEqual(choiceForShortcut(choices, '悪い', 'ArrowUp', true), '良い')
+})
+
+test('Altと数字キーで番号の候補を直接選択する', () => {
+  const choices = ['悪い', '普通', '良い']
+  assert.strictEqual(choiceForShortcut(choices, '-', '2', true), '普通')
+  assert.strictEqual(choiceForShortcut(choices, '-', '4', true), null)
+  assert.strictEqual(choiceForShortcut(choices, '-', '1', false), null)
 })
 
 test('保存済み本文から入力補助を復元する', () => {

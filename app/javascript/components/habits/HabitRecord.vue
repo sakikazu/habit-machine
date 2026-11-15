@@ -28,6 +28,7 @@
           v-model="recordMemo"
           @input="onInputRecordMemo($event)"
           @click="updateActiveInputHelper"
+          @keydown="onMemoKeydown"
           @keyup="onMemoKeyup"
           @select="updateActiveInputHelper"
           @compositionstart="composing = true"
@@ -36,7 +37,9 @@
           rows="5"
         )
         .template-input-helpers(v-if="templateInputHelperGroups.length > 0")
-          .template-input-helpers-title 入力補助
+          .template-input-helpers-title
+            span 入力補助
+            span.template-input-helper-shortcut Alt+↑↓ / Alt+1〜9
           .template-input-helper-group(v-for="group in templateInputHelperGroups" :key="group.key")
             .template-input-helper-heading(v-if="group.heading") {{ group.heading }}
             .template-input-helper-item(
@@ -77,6 +80,7 @@ import { nextTick } from 'vue'
 import HmAxios from 'hm_axios.js'
 import FamilyBadge from 'components/shared/FamilyBadge'
 import {
+  choiceForShortcut,
   headingPathAtEnd,
   lineIndexAt,
   matchHabitTemplateEntries,
@@ -235,6 +239,23 @@ export default {
     onCompositionEnd () {
       this.composing = false
       this.updateActiveInputHelper()
+    },
+    // カーソル行の選択肢をAlt+上下またはAlt+数字で切り替える
+    onMemoKeydown (event) {
+      if (this.composing || event.isComposing || event.ctrlKey || event.metaKey) return
+      const textarea = this.$refs.markdownable_textarea
+      if (!textarea) return
+
+      const lineIndex = lineIndexAt(this.recordMemo, textarea.selectionStart)
+      const match = matchHabitTemplateEntries(this.recordMemo, this.templateInputHelpers)[lineIndex]
+      if (!match) return
+
+      const choice = choiceForShortcut(match.entry.choices, match.value, event.key, event.altKey)
+      const replacement = choice ? replacementForChoice(this.recordMemo, lineIndex, match, choice) : null
+      if (!replacement) return
+
+      event.preventDefault()
+      this.replaceMemoSelection(replacement.start, replacement.end, replacement.replacement)
     },
     // カーソル移動キーの場合だけ入力補助との対応を更新する
     onMemoKeyup (event) {
@@ -485,10 +506,22 @@ export default {
     padding: 8px
 
   .template-input-helpers-title
+    display: flex
+    align-items: center
+    justify-content: space-between
+    gap: 8px
     color: #6c757d
     font-size: .8rem
     font-weight: bold
     margin-bottom: 4px
+
+  .template-input-helper-shortcut
+    font-size: .72rem
+    font-weight: 500
+
+  @media (hover: none), (pointer: coarse)
+    .template-input-helper-shortcut
+      display: none
 
   .template-input-helper-group + .template-input-helper-group
     margin-top: 6px

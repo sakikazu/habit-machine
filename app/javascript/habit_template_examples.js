@@ -175,7 +175,20 @@ function replacementForChoice (text, lineIndex, match, choice) {
   return range ? { ...range, replacement: choice } : null
 }
 
+// Altキーと組み合わせたキーから適用する選択肢を決定する
+function choiceForShortcut (choices, currentValue, key, altKey) {
+  if (!altKey || choices.length === 0) return null
+
+  if (/^[1-9]$/.test(key)) return choices[Number(key) - 1] || null
+  if (key !== 'ArrowUp' && key !== 'ArrowDown') return null
+
+  const currentIndex = choices.indexOf(currentValue)
+  if (key === 'ArrowDown') return choices[currentIndex < 0 ? 0 : (currentIndex + 1) % choices.length]
+  return choices[currentIndex < 0 ? choices.length - 1 : (currentIndex - 1 + choices.length) % choices.length]
+}
+
 module.exports = {
+  choiceForShortcut,
   headingPathAtEnd,
   lineIndexAt,
   matchHabitTemplateEntries,
