@@ -236,6 +236,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         if (storageKey) localStorage.setItem(storageKey, this.memoContent)
       },
       openMemoForm () {
+        this.setMemoTimeNow()
         this.memoFormOpen = true
         nextTick(() => this.$refs.memoContentField?.focus())
       },
@@ -260,7 +261,15 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       },
       setMemoTimeNow () {
         const now = new Date()
-        this.memoTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+        let hour = now.getHours()
+        const currentMinute = now.getMinutes()
+        // 1の位が9なら次の5分単位へ進め、それ以外は直前の5分単位へ切り下げる
+        let minute = currentMinute % 10 === 9 ? currentMinute + 1 : Math.floor(currentMinute / 5) * 5
+        if (minute === 60) {
+          hour = (hour + 1) % 24
+          minute = 0
+        }
+        this.memoTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
       },
       clearMemoTime () {
         this.memoTime = ''

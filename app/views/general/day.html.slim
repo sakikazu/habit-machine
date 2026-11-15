@@ -35,10 +35,6 @@
                   span
                     | {{ memoTime || '時間を選択' }}
                 .memo-time-picker__panel(v-if="memoTimePickerOpen" @click.stop)
-                  .memo-time-picker__heading
-                    strong
-                      | {{ memoTime || '--:--' }}
-                    button(type="button" @click="setMemoTimeNow") 現在時刻
                   span.memo-time-picker__caption 時
                   .memo-time-picker__grid.memo-time-picker__grid--hours
                     button(type="button" v-for="hour in memoTimeHours" :key="hour" :class="{ active: memoTimeHour === hour }" @click="setMemoTimeHour(hour)") {{ hour }}
