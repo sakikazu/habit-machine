@@ -27,11 +27,30 @@
           button.memo-modal__close(type="button" aria-label="閉じる" @click="closeMemoForm") ×
         .memo-modal__body
           .memo-modal__fields
-            label.memo-modal__field
+            .memo-modal__field
               span.memo-modal__field-label
                 clock-icon(:size="17" aria-hidden="true")
                 | 時刻
-              input(type="time" name="diary[time_memo]" v-model="memoTime")
+              .memo-time-picker
+                input(type="hidden" name="diary[time_memo]" :value="memoTime")
+                button.memo-time-picker__toggle(type="button" @click="memoTimePickerOpen = !memoTimePickerOpen" :aria-expanded="memoTimePickerOpen.toString()")
+                  clock-icon(:size="18" aria-hidden="true")
+                  span
+                    | {{ memoTime || '時間を選択' }}
+                .memo-time-picker__panel(v-if="memoTimePickerOpen" @click.stop)
+                  .memo-time-picker__heading
+                    strong
+                      | {{ memoTime || '--:--' }}
+                    button(type="button" @click="setMemoTimeNow") 現在時刻
+                  span.memo-time-picker__caption 時
+                  .memo-time-picker__grid.memo-time-picker__grid--hours
+                    button(type="button" v-for="hour in memoTimeHours" :key="hour" :class="{ active: memoTimeHour === hour }" @click="setMemoTimeHour(hour)") {{ hour }}
+                  span.memo-time-picker__caption 分
+                  .memo-time-picker__grid.memo-time-picker__grid--minutes
+                    button(type="button" v-for="minute in memoTimeMinutes" :key="minute" :class="{ active: memoTimeMinute === minute }" @click="setMemoTimeMinute(minute)") {{ minute }}
+                  .memo-time-picker__footer
+                    button(type="button" @click="clearMemoTime") クリア
+                    button(type="button" @click="memoTimePickerOpen = false") 決定
             label.memo-modal__field
               span.memo-modal__field-label 分類
               select(name="diary[label_memo]" v-model="memoCategory")

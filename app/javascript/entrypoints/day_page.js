@@ -45,6 +45,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       memoContent: '',
       memoFormOpen: false,
       memoTime: '',
+      memoTimePickerOpen: false,
       memoTargetDiaryId: null,
       memoTargetDiaryTitle: '',
       memoTargetRecordAt: null,
@@ -113,6 +114,18 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       memoModalTitle () {
         const date = this.memoTargetRecordAt || this.targetDate
         return this.memoTargetType === 'History' ? `${date} の履歴に追記` : `${date} のメモ`
+      },
+      memoTimeHours () {
+        return Array.from({ length: 24 }, (_, hour) => String(hour).padStart(2, '0'))
+      },
+      memoTimeMinutes () {
+        return Array.from({ length: 12 }, (_, minute) => String(minute * 5).padStart(2, '0'))
+      },
+      memoTimeHour () {
+        return this.memoTime.split(':')[0] || ''
+      },
+      memoTimeMinute () {
+        return this.memoTime.split(':')[1] || ''
       },
     },
     mounted () {
@@ -228,6 +241,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       },
       closeMemoForm () {
         this.memoFormOpen = false
+        this.memoTimePickerOpen = false
         this.memoTargetDiaryId = null
         this.memoTargetDiaryTitle = ''
         this.memoTargetRecordAt = null
@@ -236,6 +250,20 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         this.memoOverHistoryModal = false
         this.memoTime = ''
         this.memoCategory = ''
+      },
+      setMemoTimeHour (hour) {
+        this.memoTime = `${hour}:${this.memoTimeMinute || '00'}`
+      },
+      setMemoTimeMinute (minute) {
+        this.memoTime = `${this.memoTimeHour || String(new Date().getHours()).padStart(2, '0')}:${minute}`
+      },
+      setMemoTimeNow () {
+        const now = new Date()
+        this.memoTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`
+      },
+      clearMemoTime () {
+        this.memoTime = ''
+        this.memoTimePickerOpen = false
       },
       showMemoForm (targetDiary = null) {
         this.memoTargetType = 'Diary'
