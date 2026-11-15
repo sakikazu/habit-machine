@@ -468,13 +468,14 @@ export default {
 
   .habit-record-value
     display: inline-block
-    padding: 4px 7px
+    padding: 2px 5px
     border-radius: 4px
     background: #f8f9fa
 
   .habit-record-value__number
     margin-right: 4px
     font-size: 1.4em
+    font-weight: 700
 
   .template-input-helpers
     margin-top: 8px
