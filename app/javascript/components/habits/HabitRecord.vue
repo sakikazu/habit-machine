@@ -80,13 +80,13 @@ import { nextTick } from 'vue'
 import HmAxios from 'hm_axios.js'
 import FamilyBadge from 'components/shared/FamilyBadge'
 import {
-  choiceForShortcut,
   headingPathAtEnd,
   lineIndexAt,
   matchHabitTemplateEntries,
   parseHabitTemplate,
   replacementFor,
   replacementForChoice,
+  replacementForShortcut,
   restoreHabitTemplateEntries,
 } from 'habit_template_examples.js'
 
@@ -250,8 +250,7 @@ export default {
       const match = matchHabitTemplateEntries(this.recordMemo, this.templateInputHelpers)[lineIndex]
       if (!match) return
 
-      const choice = choiceForShortcut(match.entry.choices, match.value, event.key, event.altKey)
-      const replacement = choice ? replacementForChoice(this.recordMemo, lineIndex, match, choice) : null
+      const replacement = replacementForShortcut(this.recordMemo, lineIndex, match, event.key, event.altKey)
       if (!replacement) return
 
       event.preventDefault()

@@ -7,6 +7,7 @@ const {
   parseHabitTemplate,
   replacementFor,
   replacementForChoice,
+  replacementForShortcut,
   restoreHabitTemplateEntries,
 } = require('../../app/javascript/habit_template_examples.js')
 
@@ -123,6 +124,21 @@ test('Altと数字キーで番号の候補を直接選択する', () => {
   assert.strictEqual(choiceForShortcut(choices, '-', '2', true), '普通')
   assert.strictEqual(choiceForShortcut(choices, '-', '4', true), null)
   assert.strictEqual(choiceForShortcut(choices, '-', '1', false), null)
+})
+
+test('Altと上下キーで単一の入力例を適用する', () => {
+  const parsed = parseHabitTemplate('- 実施：[[選択:はい]]')
+  const match = matchHabitTemplateEntries(parsed.text, parsed.entries)[0]
+  assert.deepStrictEqual(replacementForShortcut(parsed.text, 0, match, 'ArrowDown', true), {
+    start: 5,
+    end: 6,
+    replacement: 'はい',
+  })
+  assert.deepStrictEqual(replacementForShortcut(parsed.text, 0, match, 'ArrowUp', true), {
+    start: 5,
+    end: 6,
+    replacement: 'はい',
+  })
 })
 
 test('保存済み本文から入力補助を復元する', () => {

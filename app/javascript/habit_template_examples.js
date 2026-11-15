@@ -187,6 +187,18 @@ function choiceForShortcut (choices, currentValue, key, altKey) {
   return choices[currentIndex < 0 ? choices.length - 1 : (currentIndex - 1 + choices.length) % choices.length]
 }
 
+// ショートカットに対応する候補または単一の入力例の置換情報を返す
+function replacementForShortcut (text, lineIndex, match, key, altKey) {
+  if (!match || !altKey) return null
+
+  if (match.entry.choices.length > 0) {
+    const choice = choiceForShortcut(match.entry.choices, match.value, key, altKey)
+    return choice ? replacementForChoice(text, lineIndex, match, choice) : null
+  }
+
+  return ['ArrowUp', 'ArrowDown'].includes(key) ? replacementFor(text, lineIndex, match) : null
+}
+
 module.exports = {
   choiceForShortcut,
   headingPathAtEnd,
@@ -195,5 +207,6 @@ module.exports = {
   parseHabitTemplate,
   replacementFor,
   replacementForChoice,
+  replacementForShortcut,
   restoreHabitTemplateEntries,
 }
