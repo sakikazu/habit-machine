@@ -474,7 +474,7 @@ export default {
 
   .habit-record-value__number
     margin-right: 4px
-    font-size: 1.4em
+    font-size: 1.25em
     font-weight: 700
 
   .template-input-helpers
