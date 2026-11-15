@@ -5,8 +5,9 @@
       a(:href="`/habits/${habit.id}`")
         | {{ habit.title }}
         pin-icon.pinned-icon(v-if="habit.pinned" :size="16" title="ピン留め中" aria-label="ピン留め中")
-        // TODO: 共有アイコンは、アイコンの右に「共有」というラベルがあり、それらが枠線で囲まれているのが良さそう
-        users-icon.shared-icon(v-if="habit.for_family" :size="16" aria-label="家族で共有")
+        span.shared-badge(v-if="habit.for_family" aria-label="家族で共有")
+          users-icon(:size="14" aria-hidden="true")
+          span 家族
     button.button.saveButton(type="button" @click="save" v-if="dataChanged")
       save-icon(:size="17" aria-hidden="true")
       span 保存
@@ -433,10 +434,20 @@ export default {
         margin-left: 8px
         color: #f59e0b
 
-      .shared-icon
-        display: inline-block
+      .shared-badge
+        display: inline-flex
+        align-items: center
+        gap: 3px
         margin-left: 8px
-        color: orange
+        padding: 2px 6px
+        border: 1px solid #f59e0b
+        border-radius: 999px
+        background: #fff7ed
+        color: #9a3412
+        font-size: 0.75rem
+        font-weight: 600
+        line-height: 1.2
+        vertical-align: middle
 
   .recordValueInput
     display: flex
