@@ -237,7 +237,8 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         if (storageKey) localStorage.setItem(storageKey, this.memoContent)
       },
       openMemoForm () {
-        this.setMemoTimeNow()
+        this.memoTime = ''
+        this.memoTimePickerOpen = false
         this.memoFormOpen = true
         nextTick(() => this.$refs.memoContentField?.focus())
       },
@@ -259,6 +260,22 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       setMemoTimeMinute (minute) {
         const normalizedMinute = Math.min(59, Math.max(0, Number.parseInt(minute, 10) || 0))
         this.memoTime = `${this.memoTimeHour || String(new Date().getHours()).padStart(2, '0')}:${String(normalizedMinute).padStart(2, '0')}`
+      },
+      // 分を1分ずつ変更し、日付をまたがない範囲で時も連動させる
+      adjustMemoTimeMinute (amount) {
+        const currentHour = Number.parseInt(this.memoTimeHour, 10) || 0
+        const currentMinute = Number.parseInt(this.memoTimeMinute, 10) || 0
+        const minutesPerDay = 24 * 60
+        const adjustedTotal = (currentHour * 60 + currentMinute + amount + minutesPerDay) % minutesPerDay
+        const hour = Math.floor(adjustedTotal / 60)
+        const minute = adjustedTotal % 60
+        this.memoTime = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`
+      },
+      // 時刻選択を開く時点の現在時刻を初期値にする
+      toggleMemoTimePicker () {
+        const opening = !this.memoTimePickerOpen
+        if (opening && !this.memoTime) this.setMemoTimeNow()
+        this.memoTimePickerOpen = opening
       },
       setMemoTimeNow () {
         const now = new Date()
