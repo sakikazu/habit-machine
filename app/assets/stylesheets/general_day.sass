@@ -98,8 +98,9 @@
     z-index: 20020
     inset: 0
     display: flex
-    padding: 20px
-    align-items: center
+    // 画面の高さにかかわらず入力開始位置を上部に保つ
+    padding: 80px 20px 20px
+    align-items: flex-start
     justify-content: center
 
     &.is-over-history
@@ -313,7 +314,7 @@
 
   @media (max-width: 640px)
     .memo-modal
-      padding: 6px
+      padding: 40px 6px 6px
 
   .diaries-grid
     display: flex

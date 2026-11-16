@@ -53,8 +53,10 @@ export default {
       display: flex
       align-items: center
       flex-direction: column
-      justify-content: center
+      // 内容量にかかわらず操作開始位置を上部に保つ
+      justify-content: flex-start
       overflow: hidden
+      padding-top: 80px
       position: fixed
       z-index: 20000
       top: 0
@@ -86,7 +88,7 @@ export default {
         font-size: 1.5rem
 
     .MemberModal_contentWrapper
-      max-height: calc(100vh - 60px)
+      max-height: calc(100vh - 120px)
       margin: 0 auto
       overflow-y: scroll
 
@@ -113,11 +115,14 @@ export default {
         margin-left: auto
 
     @media screen and (max-width:  640px)
+      &
+        padding-top: 40px
       .MemberModal_wrapper
         width: calc( 100% - 40px)
       .MemberModal_controls
         display: none
       .MemberModal_contentWrapper
+        max-height: calc(100vh - 52px)
         overflow-y: auto
       .MemberModal_buttons
         flex-direction: column
