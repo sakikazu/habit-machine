@@ -195,8 +195,8 @@
     z-index: 4
     top: calc(100% + 6px)
     left: 0
-    width: min(330px, calc(100vw - 48px))
-    padding: 12px
+    width: min(300px, calc(100vw - 48px))
+    padding: 8px
     border: 1px solid #d1d5db
     border-radius: 9px
     background: #fff
@@ -205,60 +205,70 @@
   .memo-time-picker__footer
     display: flex
     align-items: center
-    justify-content: space-between
-    gap: 8px
-
-    button
-      padding: 5px 9px
-      border: 1px solid #d1d5db
-      border-radius: 5px
-      background: #f9fafb
-      cursor: pointer
-
-  .memo-time-picker__caption
-    display: block
-    margin: 10px 0 4px
-    color: #6b7280
-    font-size: 12px
-    font-weight: 600
-
-  .memo-time-picker__caption-row
-    display: flex
-    align-items: center
-    justify-content: space-between
-
-  .memo-time-picker__minute-input
-    display: inline-flex
-    align-items: center
+    justify-content: space-around
     gap: 4px
-    margin: 6px 0 2px
-    color: #6b7280
-    font-size: 12px
-
-    input
-      width: 54px
-      min-height: 30px
-      padding: 3px 5px
-      border: 1px solid #d1d5db
-      border-radius: 5px
-      background: #fff
-      text-align: right
+    margin-top: 8px
+    border-top: 1px solid #e5e7eb
 
     button
-      width: 34px
-      min-height: 34px
-      padding: 0
-      border: 1px solid #cbd5e1
-      border-radius: 5px
-      background: #f8fafc
-      color: #1d4ed8
+      width: 33.333%
+      min-height: 38px
+      padding: 5px
+      border: 0
+      background: transparent
+      color: #4b5563
       cursor: pointer
-      font-size: 20px
-      font-weight: 700
-      line-height: 1
+      font-size: 13px
+      white-space: nowrap
 
       &:hover
-        background: #dbeafe
+        background: #f3f4f6
+
+  .memo-time-picker__adjust-row,
+  .memo-time-picker__display
+    display: grid
+    grid-template-columns: 1fr 24px 1fr
+    align-items: center
+    text-align: center
+
+  .memo-time-picker__adjust-row
+    button
+      min-height: 38px
+      border: 0
+      background: transparent
+      color: #2563eb
+      cursor: pointer
+
+      svg
+        display: block
+        margin: 0 auto
+
+      &:hover
+        background: #eff6ff
+
+  .memo-time-picker__display
+    padding: 2px 0
+    font-size: 28px
+
+    button
+      min-height: 48px
+      border: 0
+      border-radius: 4px
+      background: transparent
+      color: #374151
+      cursor: pointer
+      font-size: 28px
+
+      &:hover
+        background: #eff6ff
+        color: #1d4ed8
+
+  .memo-time-picker__heading
+    margin: 2px 0 8px
+    color: #4b5563
+    font-size: 13px
+    font-weight: 600
+    text-align: center
 
   .memo-time-picker__grid
     display: grid
@@ -282,10 +292,7 @@
     grid-template-columns: repeat(6, 1fr)
 
   .memo-time-picker__grid--minutes
-    grid-template-columns: repeat(6, 1fr)
-
-  .memo-time-picker__footer
-    margin-top: 12px
+    grid-template-columns: repeat(4, 1fr)
 
   .memo-modal__target
     margin: 0 0 7px

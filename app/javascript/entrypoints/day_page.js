@@ -1,5 +1,5 @@
 import { createApp, nextTick } from 'vue'
-import { CircleAlert, Clock3, Pencil, Star, StickyNote } from '@lucide/vue'
+import { ChevronDown, ChevronUp, CircleAlert, Clock3, Pencil, Star, StickyNote } from '@lucide/vue'
 import HmAxios from 'hm_axios.js'
 
 import HabitRecord from 'components/habits/HabitRecord'
@@ -20,6 +20,8 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       Toast,
       Modal,
       DayDatePicker,
+      ChevronDownIcon: ChevronDown,
+      ChevronUpIcon: ChevronUp,
       CircleAlertIcon: CircleAlert,
       ClockIcon: Clock3,
       PencilIcon: Pencil,
@@ -46,6 +48,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       memoFormOpen: false,
       memoTime: '',
       memoTimePickerOpen: false,
+      memoTimePickerView: 'time',
       memoTargetDiaryId: null,
       memoTargetDiaryTitle: '',
       memoTargetRecordAt: null,
@@ -172,6 +175,12 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         window.addEventListener('open-diary-modal', this.openDiaryModalListener)
         window.addEventListener('sidebar-toast', this.sidebarToastListener)
         window.addEventListener('open-history-append', this.openHistoryAppendListener)
+        // 時間ピッカーの外側を操作した場合は選択パネルを閉じる
+        document.addEventListener('click', (event) => {
+          if (this.memoTimePickerOpen && !this.$refs.memoTimePicker?.contains(event.target)) {
+            this.memoTimePickerOpen = false
+          }
+        }, { signal: this.dayPageEventController.signal })
       },
       setup () {
         this.dayPageEventController = new AbortController()
@@ -239,6 +248,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       openMemoForm () {
         this.memoTime = ''
         this.memoTimePickerOpen = false
+        this.memoTimePickerView = 'time'
         this.memoFormOpen = true
         nextTick(() => this.$refs.memoContentField?.focus())
       },
@@ -261,6 +271,19 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
         const normalizedMinute = Math.min(59, Math.max(0, Number.parseInt(minute, 10) || 0))
         this.memoTime = `${this.memoTimeHour || String(new Date().getHours()).padStart(2, '0')}:${String(normalizedMinute).padStart(2, '0')}`
       },
+      selectMemoTimeHour (hour) {
+        this.setMemoTimeHour(hour)
+        this.memoTimePickerView = 'time'
+      },
+      selectMemoTimeMinute (minute) {
+        this.setMemoTimeMinute(minute)
+        this.memoTimePickerView = 'time'
+      },
+      // 時を1時間ずつ変更し、同じ日の中で循環させる
+      adjustMemoTimeHour (amount) {
+        const hour = (Number.parseInt(this.memoTimeHour, 10) + amount + 24) % 24
+        this.setMemoTimeHour(String(hour).padStart(2, '0'))
+      },
       // 分を1分ずつ変更し、日付をまたがない範囲で時も連動させる
       adjustMemoTimeMinute (amount) {
         const currentHour = Number.parseInt(this.memoTimeHour, 10) || 0
@@ -275,6 +298,7 @@ mountVueOnTurbolinks('#dayPage', (pageElement) => {
       toggleMemoTimePicker () {
         const opening = !this.memoTimePickerOpen
         if (opening && !this.memoTime) this.setMemoTimeNow()
+        if (opening) this.memoTimePickerView = 'time'
         this.memoTimePickerOpen = opening
       },
       setMemoTimeNow () {
